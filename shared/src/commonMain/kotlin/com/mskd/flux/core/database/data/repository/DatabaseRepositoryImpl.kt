@@ -24,8 +24,12 @@ class DatabaseRepositoryImpl(
     private val seasonsDao: SeasonsDao
 ) : DatabaseRepository {
 
-    override fun flowArtworks(): Flow<List<Artwork>> {
-        return artworksDao.flowArtworks().map { entities -> entities.map { it.toDomain() } }
+    override fun flowArtworks(includePrivates: Boolean): Flow<List<Artwork>> {
+        return artworksDao.flowArtworks(includePrivates = includePrivates).map { entities -> entities.map { it.toDomain() } }
+    }
+
+    override fun flowPrivateArtworks(): Flow<List<Artwork>> {
+        return artworksDao.flowPrivateArtworks().map { entities -> entities.map { it.toDomain() } }
     }
 
     override fun flowArtwork(artworkId: Long): Flow<Artwork?> {
@@ -40,10 +44,6 @@ class DatabaseRepositoryImpl(
         return seasonsDao.flow(artworkId = artworkId).map { entities ->  entities.map { it.toDomain() }.sortedBy { s -> s.season } }
     }
 
-    override suspend fun saveArtworks(artworks: List<Artwork>, overrideLastModification: Boolean) {
-        artworksDao.insertArtworks(artworks = artworks.map { it.toEntity(overrideLastModification = overrideLastModification) })
-    }
-
     override suspend fun saveMedias(medias: List<Media>) {
         mediasDao.insertOrUpdate(medias = medias.map { it.toEntity() })
     }
@@ -56,8 +56,22 @@ class DatabaseRepositoryImpl(
         return artworksDao.getArtwork(artworkId = artworkId)?.toDomain()
     }
 
-    override suspend fun getArtworks(): List<Artwork> {
-        return artworksDao.getArtworks().map { it.toDomain() }
+    override suspend fun getArtworks(includePrivates: Boolean): List<Artwork> {
+        return artworksDao.getArtworks(includePrivates = includePrivates).map { it.toDomain() }
+    }
+
+    override suspend fun setArtworkPrivate(artworkId: Long, isPrivate: Boolean) {
+        artworksDao.setArtworkPrivate(artworkId = artworkId, isPrivate = isPrivate)
+    }
+
+    override suspend fun saveArtworks(artworks: List<Artwork>, overrideLastModification: Boolean) {
+        val privateIds = artworksDao.getPrivateArtworkIds().toSet()
+
+        artworksDao.insertArtworks(artworks = artworks.map { artwork ->
+            artwork.toEntity(overrideLastModification = overrideLastModification).copy(
+                isPrivate = artwork.isPrivate || artwork.id in privateIds
+            )
+        })
     }
 
     override suspend fun getMedias(): List<Media> {

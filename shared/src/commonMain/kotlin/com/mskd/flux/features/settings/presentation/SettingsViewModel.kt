@@ -9,6 +9,10 @@ import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
+import com.mskd.flux.features.privateFolder.domain.usecase.changePrivateFolderPin.ChangePrivateFolderPinUseCase
+import com.mskd.flux.features.privateFolder.domain.usecase.disablePrivateFolder.DisablePrivateFolderUseCase
+import com.mskd.flux.features.privateFolder.domain.usecase.enablePrivateFolder.EnablePrivateFolderUseCase
+import com.mskd.flux.features.privateFolder.domain.usecase.observePrivateFolder.ObservePrivateFolderUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.settings.domain.model.SettingsDialog
 import flux.shared.generated.resources.Res
@@ -31,7 +35,11 @@ class SettingsViewModel(
     private val settingsDataStore: SettingsDataStore,
     private val imagesPrefetchManager: ImagesPrefetchManager,
     private val syncCatalogUseCase: SyncCatalogUseCase,
-    private val updateLanguageUseCase: UpdateLanguageUseCase
+    private val updateLanguageUseCase: UpdateLanguageUseCase,
+    private val observePrivateFolderUseCase: ObservePrivateFolderUseCase,
+    private val enablePrivateFolderUseCase: EnablePrivateFolderUseCase,
+    private val disablePrivateFolderUseCase: DisablePrivateFolderUseCase,
+    private val changePrivateFolderPinUseCase: ChangePrivateFolderPinUseCase
 ) : ViewModel() {
 
     //region Variables
@@ -39,30 +47,80 @@ class SettingsViewModel(
     private val _optionsDialogState = MutableStateFlow<FluxOptionsDialogState<*, SettingsIntent>?>(null)
     private val _settingsDialogState = MutableStateFlow<SettingsDialog?>(null)
 
-    val uiState: StateFlow<SettingsUiState> = combine(
+    private val _privateFolderPinDialog = MutableStateFlow<PrivateFolderPinDialog?>(null)
+    private val _privateFolderPinInput = MutableStateFlow(PrivateFolderPinInput())
+    private val _privateFolderPinError = MutableStateFlow(false)
+
+    private val baseState = combine(
         settingsDataStore.flow,
         _optionsDialogState,
         _settingsDialogState,
         syncCatalogUseCase.state,
         imagesPrefetchManager.state
     ) { settings, dialog, settingsDialog, catalog, images ->
-        SettingsUiState(
-            languageValue = settings.dataLanguage,
-            rewindValue = settings.playerRewindValue,
-            forwardValue = settings.playerForwardValue,
-            useExternalPlayer = settings.externalPlayer,
-            pipIsEnabled = settings.pipIsEnabled,
-            autoKeyboard = settings.autoKeyboard,
+        SettingsBaseState(
+            settings = settings,
             optionsDialog = dialog,
             settingsDialog = settingsDialog,
-            fullSyncInProgress = (catalog as? SyncState.Syncing)?.full == true,
-            prefetchHdImages = settings.prefetchHdImages,
-            prefetchImagesState = images
+            syncState = catalog,
+            imagesState = images
+        )
+    }
+
+    private val privateFolderState = combine(
+        observePrivateFolderUseCase.flow,
+        _privateFolderPinDialog,
+        _privateFolderPinInput,
+        _privateFolderPinError
+    ) { privateFolder, pinDialog, pinInput, pinError ->
+        PrivateFolderSlice(
+            enabled = privateFolder.enabled,
+            pinDialog = pinDialog,
+            pinInput = pinInput,
+            pinError = pinError
+        )
+    }
+
+    val uiState: StateFlow<SettingsUiState> = combine(
+        baseState,
+        privateFolderState
+    ) { base, privateFolder ->
+        SettingsUiState(
+            languageValue = base.settings.dataLanguage,
+            rewindValue = base.settings.playerRewindValue,
+            forwardValue = base.settings.playerForwardValue,
+            useExternalPlayer = base.settings.externalPlayer,
+            pipIsEnabled = base.settings.pipIsEnabled,
+            autoKeyboard = base.settings.autoKeyboard,
+            optionsDialog = base.optionsDialog,
+            settingsDialog = base.settingsDialog,
+            fullSyncInProgress = (base.syncState as? SyncState.Syncing)?.full == true,
+            prefetchHdImages = base.settings.prefetchHdImages,
+            prefetchImagesState = base.imagesState,
+            privateFolderEnabled = privateFolder.enabled,
+            privateFolderPinDialog = privateFolder.pinDialog,
+            privateFolderPinInput = privateFolder.pinInput,
+            privateFolderPinError = privateFolder.pinError
         )
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
         initialValue = SettingsUiState()
+    )
+
+    private data class SettingsBaseState(
+        val settings: SettingsDataStore.State,
+        val optionsDialog: FluxOptionsDialogState<*, SettingsIntent>?,
+        val settingsDialog: SettingsDialog?,
+        val syncState: SyncState,
+        val imagesState: ImagesPrefetchManager.State
+    )
+
+    private data class PrivateFolderSlice(
+        val enabled: Boolean,
+        val pinDialog: PrivateFolderPinDialog?,
+        val pinInput: PrivateFolderPinInput,
+        val pinError: Boolean
     )
 
     private val _event = MutableSharedFlow<SettingsEvent>()
@@ -101,6 +159,16 @@ class SettingsViewModel(
             is SettingsIntent.OnExternalPlayerCheck -> onExternalPlayerCheck(value = intent.checked)
             is SettingsIntent.OnEnablePipCheck -> onEnablePipCheck(value = intent.checked)
             is SettingsIntent.OnPrefetchHdImagesCheck -> onPrefetchImagesCheck(value = intent.checked)
+
+            // Private folder
+            is SettingsIntent.OnPrivateFolderCheck -> onPrivateFolderCheck(checked = intent.checked)
+            SettingsIntent.ShowChangePinDialog -> showPrivateFolderPinDialog(dialog = PrivateFolderPinDialog.CHANGE_PIN)
+            is SettingsIntent.OnPrivateFolderPinChanged -> onPrivateFolderPinChanged(
+                primary = intent.primary,
+                secondary = intent.secondary
+            )
+            SettingsIntent.SubmitPrivateFolderPin -> submitPrivateFolderPin()
+            SettingsIntent.HidePrivateFolderPinDialog -> hidePrivateFolderPinDialog()
         }
     }
 
@@ -214,5 +282,79 @@ class SettingsViewModel(
     private fun showSettingsDialog(dialog: SettingsDialog?) {
         _settingsDialogState.update { dialog }
     }
+
+    //endregion
+
+    //region Private Folder
+
+    private fun onPrivateFolderCheck(checked: Boolean) {
+        if (checked)
+            showPrivateFolderPinDialog(dialog = PrivateFolderPinDialog.CREATE)
+        else
+            showPrivateFolderPinDialog(dialog = PrivateFolderPinDialog.VERIFY_TO_DISABLE)
+    }
+
+    private fun showPrivateFolderPinDialog(dialog: PrivateFolderPinDialog) {
+        _privateFolderPinInput.update { PrivateFolderPinInput() }
+        _privateFolderPinError.update { false }
+        _privateFolderPinDialog.update { dialog }
+    }
+
+    private fun onPrivateFolderPinChanged(primary: String, secondary: String) {
+        val maxLength = PrivateFolderPinInput.PIN_LENGTH
+
+        _privateFolderPinInput.update { current ->
+            current.copy(
+                primary = primary.filter { it.isDigit() }.take(maxLength),
+                secondary = secondary.filter { it.isDigit() }.take(maxLength)
+            )
+        }
+        _privateFolderPinError.update { false }
+    }
+
+    private suspend fun submitPrivateFolderPin() {
+        val dialog = _privateFolderPinDialog.value ?: return
+        val input = _privateFolderPinInput.value
+
+        when (dialog) {
+            PrivateFolderPinDialog.CREATE -> {
+                if (!input.primaryIsComplete) return
+
+                enablePrivateFolderUseCase(pin = input.primary)
+                _event.emit(SettingsEvent.PrivateFolderPinUpdated)
+                hidePrivateFolderPinDialog()
+            }
+            PrivateFolderPinDialog.VERIFY_TO_DISABLE -> {
+                if (!input.primaryIsComplete) return
+
+                val pinIsValid = disablePrivateFolderUseCase(pin = input.primary)
+                if (pinIsValid) {
+                    _event.emit(SettingsEvent.PrivateFolderPinUpdated)
+                    hidePrivateFolderPinDialog()
+                } else {
+                    _privateFolderPinError.update { true }
+                }
+            }
+            PrivateFolderPinDialog.CHANGE_PIN -> {
+                if (!input.primaryIsComplete || !input.secondaryIsComplete) return
+
+                val pinIsValid = changePrivateFolderPinUseCase(oldPin = input.primary, newPin = input.secondary)
+                if (pinIsValid) {
+                    _event.emit(SettingsEvent.PrivateFolderPinUpdated)
+                    hidePrivateFolderPinDialog()
+                } else {
+                    _privateFolderPinError.update { true }
+                }
+            }
+        }
+    }
+
+    private fun hidePrivateFolderPinDialog() {
+        _privateFolderPinDialog.update { null }
+        _privateFolderPinInput.update { PrivateFolderPinInput() }
+        _privateFolderPinError.update { false }
+    }
+
+    //endregion
 
 }

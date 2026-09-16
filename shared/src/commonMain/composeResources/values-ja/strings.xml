@@ -196,4 +196,22 @@
     <string name="top_bar">トップバー</string>
     <string name="continue_watching">続きを見る</string>
     <string name="show_details">詳細を表示</string>
+
+    <string name="private_folder">プライベートフォルダー</string>
+    <string name="private_folder_desc">PINコードで作品を保護します</string>
+    <string name="private_folder_empty">プライベートフォルダーは空です。\nカタログで作品を長押しすると追加できます</string>
+    <string name="added_to_private_folder">プライベートフォルダーに追加しました</string>
+    <string name="removed_from_private_folder">プライベートフォルダーから削除しました</string>
+    <string name="remove_from_private_folder">プライベートフォルダーから削除</string>
+    <string name="pin_gate_title">PINコードを入力してください</string>
+    <string name="pin_field_label">PINコード</string>
+    <string name="pin_create_title">PINコードを作成</string>
+    <string name="pin_create_subtitle">プライベートフォルダーを保護するための4桁のコードを選択してください</string>
+    <string name="pin_disable_title">プライベートフォルダーを無効にする</string>
+    <string name="pin_disable_subtitle">プライベートフォルダーを無効にするにはPINコードを入力してください</string>
+    <string name="pin_change_title">PINコードを変更</string>
+    <string name="pin_change_desc">現在のPINコードを変更します</string>
+    <string name="pin_change_old">現在のコード</string>
+    <string name="pin_change_new">新しいコード</string>
+    <string name="pin_error">PINコードが正しくありません</string>
 </resources>

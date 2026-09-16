@@ -19,6 +19,8 @@ import com.mskd.flux.features.history.domain.repository.HistoryRepository
 import com.mskd.flux.features.history.domain.usecase.GetHistoryUseCase
 import com.mskd.flux.features.player.domain.model.PlaybackAction
 import com.mskd.flux.features.player.domain.usecase.ResolvePlaybackActionUseCase
+import com.mskd.flux.features.privateFolder.domain.datastore.PrivateFolderDataStore
+import com.mskd.flux.features.privateFolder.domain.usecase.setArtworkPrivacy.SetArtworkPrivacyUseCase
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.mockups.DetailsMockup
@@ -60,10 +62,12 @@ class CatalogViewModelTest : FunSpec({
     lateinit var historyDb: HistoryRepository
     lateinit var userDataStore: UserDataStore
     lateinit var tokenDataStore: TokenDataStore
+    lateinit var privateFolderDataStore: PrivateFolderDataStore
     lateinit var appInfo: AppInfo
     lateinit var getHistoryUseCase: GetHistoryUseCase
     lateinit var resolvePlaybackAction: ResolvePlaybackActionUseCase
     lateinit var recordPlaybackResult: SaveProgressUseCase
+    lateinit var setArtworkPrivacy: SetArtworkPrivacyUseCase
 
     beforeTest {
 
@@ -72,6 +76,9 @@ class CatalogViewModelTest : FunSpec({
         }
         userDataStore = mockk(relaxed = true) {
             every { flow } returns MutableStateFlow(UserDataStore.State())
+        }
+        privateFolderDataStore = mockk(relaxed = true) {
+            every { flow } returns MutableStateFlow(PrivateFolderDataStore.State(enabled = true))
         }
 
         syncCatalogUseCase = mockk(relaxed = true) {
@@ -90,6 +97,7 @@ class CatalogViewModelTest : FunSpec({
 
         resolvePlaybackAction = mockk(relaxed = true)
         recordPlaybackResult = mockk(relaxed = true)
+        setArtworkPrivacy = mockk(relaxed = true)
 
         appInfo = AppInfo(
             versionCode = 0,
@@ -111,11 +119,13 @@ class CatalogViewModelTest : FunSpec({
             userDataStore = userDataStore,
             tokenDataStore = tokenDataStore,
             catalogDataStore = catalogDataStore,
+            privateFolderDataStore = privateFolderDataStore,
             appInfo = appInfo,
             syncCatalogUseCase = syncUseCase,
             getHistoryUseCase = getHistoryUseCase,
             resolvePlaybackAction = resolvePlaybackAction,
-            recordPlaybackResult = recordPlaybackResult
+            recordPlaybackResult = recordPlaybackResult,
+            setArtworkPrivacy = setArtworkPrivacy
         )
     }
 
@@ -557,6 +567,42 @@ class CatalogViewModelTest : FunSpec({
             coEvery { recordPlaybackResult(media = media, progress = progress) }
 
         }
+
+    }
+
+    test("OnPrivateFolderTap - should send NavigateToPrivateFolder event") {
+
+        // Given
+        viewModel = createViewModel()
+        viewModel.event.test {
+
+            // When
+            viewModel.handleIntent(CatalogIntent.OnPrivateFolderTap)
+
+            // Then
+            awaitItem() shouldBe CatalogEvent.NavigateToPrivateFolder
+
+        }
+
+    }
+
+    test("OnArtworkLongPress - should mark artwork as private when it is not") {
+
+        // Given
+        val artwork = MediaMockups.movieArtwork
+        viewModel = createViewModel()
+
+        viewModel.event.test {
+
+            // When
+            viewModel.handleIntent(intent = CatalogIntent.OnArtworkLongPress(artwork = artwork))
+
+            // Then
+            awaitItem() shouldBe CatalogEvent.ArtworkAddedToPrivateFolder
+
+        }
+
+        coVerify { setArtworkPrivacy(artworkId = artwork.id, isPrivate = true) }
 
     }
 

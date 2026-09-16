@@ -30,6 +30,7 @@ sealed class CatalogState {
         val history: ImmutableList<HistoryEntry> = persistentListOf(),
         val isRefreshing: Boolean = true,
         val tokenIsMissing: Boolean = false,
+        val privateFolderEnabled: Boolean = false,
 
         // Sort
         val sortingMode: CatalogSortingMode = CatalogSortingMode.LAST_MODIFICATION,
@@ -54,6 +55,10 @@ sealed interface CatalogIntent {
     data object OnHowToTap: CatalogIntent
     data object OnSourcesTap: CatalogIntent
     data object OnTokenTap: CatalogIntent
+    data object OnPrivateFolderTap: CatalogIntent
+
+    // Private folder
+    data class OnArtworkLongPress(val artwork: Artwork): CatalogIntent
 
     // Sort
     data class SelectSortingMode(val mode: CatalogSortingMode): CatalogIntent
@@ -83,6 +88,10 @@ sealed interface CatalogEvent {
     data object NavigateToToken: CatalogEvent
     data object NavigateToHowTo: CatalogEvent
     data object NavigateToSources: CatalogEvent
+    data object NavigateToPrivateFolder: CatalogEvent
+
+    // Private folder
+    data object ArtworkAddedToPrivateFolder: CatalogEvent
 
     // Player
     data class PlayMedia(val media: Media, val externalPlayer: Boolean) : CatalogEvent

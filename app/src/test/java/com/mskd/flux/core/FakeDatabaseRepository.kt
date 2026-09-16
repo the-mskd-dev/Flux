@@ -16,8 +16,15 @@ class FakeDatabaseRepository : DatabaseRepository {
 
     override suspend fun deleteMediasInFolder(folder: UserFolder) {}
 
-    override fun flowArtworks(): Flow<List<Artwork>> {
-        return MutableStateFlow(MediaMockups.artworks)
+    override fun flowArtworks(includePrivates: Boolean): Flow<List<Artwork>> {
+        return MutableStateFlow(
+            if (includePrivates) MediaMockups.artworks
+            else MediaMockups.artworks.filter { !it.isPrivate }
+        )
+    }
+
+    override fun flowPrivateArtworks(): Flow<List<Artwork>> {
+        return MutableStateFlow(MediaMockups.artworks.filter { it.isPrivate })
     }
 
     override fun flowArtwork(artworkId: Long): Flow<Artwork?> {
@@ -37,9 +44,12 @@ class FakeDatabaseRepository : DatabaseRepository {
         return MediaMockups.artworks.find { it.id == artworkId }
     }
 
-    override suspend fun getArtworks(): List<Artwork> {
-        return MediaMockups.artworks
+    override suspend fun getArtworks(includePrivates: Boolean): List<Artwork> {
+        return if (includePrivates) MediaMockups.artworks
+        else MediaMockups.artworks.filter { !it.isPrivate }
     }
+
+    override suspend fun setArtworkPrivate(artworkId: Long, isPrivate: Boolean) {}
 
     override suspend fun getMedias(): List<Media> {
         return MediaMockups.allMedias

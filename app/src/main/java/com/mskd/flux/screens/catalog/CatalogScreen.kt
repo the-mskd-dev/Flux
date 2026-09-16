@@ -20,6 +20,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
@@ -68,6 +70,9 @@ import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
 import com.mskd.flux.utils.rememberExternalPlayerAction
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.added_to_private_folder
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -78,6 +83,8 @@ fun CatalogScreen(
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val addedMessage = stringResource(Res.string.added_to_private_folder)
 
     val launchExternalPlayer = rememberExternalPlayerAction(
         onProgressResult = { progress -> viewModel.handleIntent(CatalogIntent.OnExternalPlayerResult(progress = progress)) },
@@ -95,6 +102,9 @@ fun CatalogScreen(
                 CatalogEvent.NavigateToSettings -> navigate(Route.Settings)
                 CatalogEvent.NavigateToToken -> navigate(Route.Token(fromSetup = false))
                 CatalogEvent.NavigateToSources -> navigate(Route.Sources(fromSetup = false))
+                CatalogEvent.NavigateToPrivateFolder -> navigate(Route.PrivateFolder)
+
+                CatalogEvent.ArtworkAddedToPrivateFolder -> snackbarHostState.showSnackbar(addedMessage)
 
                 is CatalogEvent.PlayMedia -> {
                     if (event.externalPlayer)
@@ -137,10 +147,12 @@ fun CatalogScreen(
                     history = state.history,
                     isRefreshing = state.isRefreshing,
                     tokenIsMissing = state.tokenIsMissing,
+                    privateFolderEnabled = state.privateFolderEnabled,
                     sortingMode = state.sortingMode,
                     showSortingModes = state.showSortingSheet,
                     viewMode = state.viewMode,
                     showViewModes = state.showViewSheet,
+                    snackbarHostState = snackbarHostState,
                     sendIntent = viewModel::handleIntent
                 )
 
@@ -161,10 +173,12 @@ fun CatalogContent(
     history: List<HistoryEntry>,
     isRefreshing: Boolean,
     tokenIsMissing: Boolean,
+    privateFolderEnabled: Boolean,
     sortingMode: CatalogSortingMode,
     showSortingModes: Boolean,
     viewMode: CatalogViewMode,
     showViewModes: Boolean,
+    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     sendIntent: (CatalogIntent) -> Unit
 ) {
 
@@ -179,6 +193,7 @@ fun CatalogContent(
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { paddingValues ->
 
         Column(modifier = Modifier.fillMaxSize()) {
@@ -285,6 +300,7 @@ fun CatalogContent(
                             CatalogMenu(
                                 artworks = artworks,
                                 tokenIsMissing = tokenIsMissing,
+                                privateFolderEnabled = privateFolderEnabled,
                                 sendIntent = sendIntent
                             )
 
@@ -329,6 +345,7 @@ fun CatalogScreen_Preview() {
                 history = MediaMockups.allMedias.map { it.toHistoryEntry() },
                 isRefreshing = false,
                 tokenIsMissing = false,
+                privateFolderEnabled = true,
                 sortingMode = CatalogSortingMode.LAST_MODIFICATION,
                 showSortingModes = false,
                 viewMode = CatalogViewMode.BY_TYPE,
@@ -350,6 +367,7 @@ fun CatalogScreen_Unknown_Preview() {
                 history = emptyList(),
                 isRefreshing = false,
                 tokenIsMissing = true,
+                privateFolderEnabled = true,
                 sortingMode = CatalogSortingMode.LAST_MODIFICATION,
                 showSortingModes = false,
                 viewMode = CatalogViewMode.BY_TYPE,
@@ -371,6 +389,7 @@ fun CatalogScreen_Empty_Preview() {
                 history = emptyList(),
                 isRefreshing = false,
                 tokenIsMissing = true,
+                privateFolderEnabled = true,
                 sortingMode = CatalogSortingMode.LAST_MODIFICATION,
                 showSortingModes = false,
                 viewMode = CatalogViewMode.BY_TYPE,

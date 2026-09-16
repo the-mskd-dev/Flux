@@ -20,6 +20,7 @@ fun LazyGridScope.catalogViewModeGrid(
                 .animateItem().fillMaxWidth(),
             path = artwork.imagePath,
             onClick = { rgb -> sendIntent(CatalogIntent.OnArtworkTap(artwork = artwork, rgb = rgb)) },
+            onLongClick = { sendIntent(CatalogIntent.OnArtworkLongPress(artwork = artwork)) },
             description = artwork.title
         )
     }

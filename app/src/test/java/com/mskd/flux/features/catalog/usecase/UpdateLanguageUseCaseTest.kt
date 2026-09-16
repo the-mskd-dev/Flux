@@ -91,7 +91,7 @@ class UpdateLanguageUseCaseTest : FunSpec({
 
         coEvery { settings.getDataLanguage() } returns Locale.FRENCH
         coEvery { database.getMedias() } returns listOf(movie) + listOf(episode)
-        coEvery { database.getArtworks() } returns listOf(showArtwork)
+        coEvery { database.getArtworks(includePrivates = true) } returns listOf(showArtwork)
         coEvery { database.getSeasons() } returns listOf(season)
 
         useCase = UpdateLanguageUseCase(

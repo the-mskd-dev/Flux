@@ -12,7 +12,8 @@ import kotlinx.coroutines.flow.Flow
 interface DatabaseRepository {
 
     // Flows
-    fun flowArtworks() : Flow<List<Artwork>>
+    fun flowArtworks(includePrivates: Boolean = false) : Flow<List<Artwork>>
+    fun flowPrivateArtworks() : Flow<List<Artwork>>
     fun flowArtwork(artworkId: Long) : Flow<Artwork?>
     fun flowMedias(artworkId: Long): Flow<List<Media>>
     fun flowSeasons(artworkId: Long) : Flow<List<Season>>
@@ -24,7 +25,10 @@ interface DatabaseRepository {
 
     // Artworks
     suspend fun getArtwork(artworkId: Long) : Artwork?
-    suspend fun getArtworks() : List<Artwork>
+    suspend fun getArtworks(includePrivates: Boolean = false) : List<Artwork>
+
+    // Privacy
+    suspend fun setArtworkPrivate(artworkId: Long, isPrivate: Boolean)
 
     // Medias
     suspend fun getMedias() : List<Media>

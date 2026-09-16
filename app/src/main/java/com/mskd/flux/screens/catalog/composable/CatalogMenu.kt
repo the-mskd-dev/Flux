@@ -34,7 +34,9 @@ import flux.shared.generated.resources.add_token
 import flux.shared.generated.resources.ic_add_folder
 import flux.shared.generated.resources.ic_api
 import flux.shared.generated.resources.ic_flux
+import flux.shared.generated.resources.ic_lock
 import flux.shared.generated.resources.other_files
+import flux.shared.generated.resources.private_folder
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -42,6 +44,7 @@ import org.jetbrains.compose.resources.stringResource
 fun CatalogMenu(
     artworks: List<Artwork>,
     tokenIsMissing: Boolean,
+    privateFolderEnabled: Boolean,
     sendIntent: (CatalogIntent) -> Unit
 ) {
 
@@ -77,6 +80,16 @@ fun CatalogMenu(
                 onClick = { sendIntent(CatalogIntent.OnTokenTap) }
             )
         }
+
+        if (privateFolderEnabled) {
+            CatalogMenuItem(
+                text = stringResource(Res.string.private_folder),
+                painter = painterResource(Res.drawable.ic_lock),
+                iconColor = MaterialTheme.colorScheme.primary,
+                onClick = { sendIntent(CatalogIntent.OnPrivateFolderTap) }
+            )
+        }
+
 
     }
 
@@ -133,7 +146,8 @@ fun CatalogMenu_Preview() {
             CatalogMenu(
                 artworks = MediaMockups.artworks,
                 tokenIsMissing = true,
-                sendIntent = {}
+                sendIntent = {},
+                privateFolderEnabled = true
             )
         }
     }

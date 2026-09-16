@@ -214,4 +214,22 @@
     <string name="top_bar">Top bar</string>
     <string name="continue_watching">Continue watching</string>
     <string name="show_details">Show details</string>
+
+    <string name="private_folder">Private folder</string>
+    <string name="private_folder_desc">Protect artworks behind a PIN code</string>
+    <string name="private_folder_empty">Your private folder is empty.\nLong press an artwork in the catalog to add it</string>
+    <string name="added_to_private_folder">Added to private folder</string>
+    <string name="removed_from_private_folder">Removed from private folder</string>
+    <string name="remove_from_private_folder">Remove from private folder</string>
+    <string name="pin_gate_title">Enter your PIN code</string>
+    <string name="pin_field_label">PIN code</string>
+    <string name="pin_create_title">Create a PIN code</string>
+    <string name="pin_create_subtitle">Choose a 4-digit code to protect your private folder</string>
+    <string name="pin_disable_title">Disable private folder</string>
+    <string name="pin_disable_subtitle">Enter your PIN code to disable the private folder</string>
+    <string name="pin_change_title">Change PIN code</string>
+    <string name="pin_change_desc">Replace your current PIN code</string>
+    <string name="pin_change_old">Current code</string>
+    <string name="pin_change_new">New code</string>
+    <string name="pin_error">Incorrect PIN code</string>
 </resources>

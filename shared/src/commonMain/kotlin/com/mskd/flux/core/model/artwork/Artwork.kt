@@ -21,7 +21,9 @@ data class Artwork(
     val type: ContentType = ContentType.SHOW,
     val genreIds: ImmutableList<Int> = persistentListOf(),
 
-    val lastModification: Long? = null
+    val lastModification: Long? = null,
+
+    val isPrivate: Boolean = false
 ) {
 
     val isUnknown: Boolean get() = id == UNKNOWN_ID

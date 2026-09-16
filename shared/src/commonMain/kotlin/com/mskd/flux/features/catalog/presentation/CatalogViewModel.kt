@@ -17,6 +17,7 @@ import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToHowTo
 import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToMovie
+import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToPrivateFolder
 import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToSearch
 import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToSettings
 import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToShow
@@ -28,6 +29,8 @@ import com.mskd.flux.features.history.domain.repository.HistoryRepository
 import com.mskd.flux.features.history.domain.usecase.GetHistoryUseCase
 import com.mskd.flux.features.player.domain.model.PlaybackAction
 import com.mskd.flux.features.player.domain.usecase.ResolvePlaybackActionUseCase
+import com.mskd.flux.features.privateFolder.domain.datastore.PrivateFolderDataStore
+import com.mskd.flux.features.privateFolder.domain.usecase.setArtworkPrivacy.SetArtworkPrivacyUseCase
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.utils.Trace
@@ -52,11 +55,13 @@ class CatalogViewModel(
     private val userDataStore: UserDataStore,
     private val tokenDataStore: TokenDataStore,
     private val catalogDataStore: CatalogDataStore,
+    private val privateFolderDataStore: PrivateFolderDataStore,
     private val syncCatalogUseCase: SyncCatalogUseCase,
     private val getHistoryUseCase: GetHistoryUseCase,
     private val appInfo: AppInfo,
     private val resolvePlaybackAction: ResolvePlaybackActionUseCase,
-    private val recordPlaybackResult: SaveProgressUseCase
+    private val recordPlaybackResult: SaveProgressUseCase,
+    private val setArtworkPrivacy: SetArtworkPrivacyUseCase
 ): ViewModel() {
 
     private val _event = MutableSharedFlow<CatalogEvent>()
@@ -73,12 +78,14 @@ class CatalogViewModel(
         getHistoryUseCase(),
         catalogDataStore.flow,
         tokenDataStore.flow,
-    ) { history, catalog, token  ->
+        privateFolderDataStore.flow
+    ) { history, catalog, token, privateFolder  ->
         CatalogPreferences(
             history = history.toImmutableList(),
             sortingMode = catalog.sortingMode,
             viewMode = catalog.viewMode,
-            token = token
+            token = token,
+            privateFolderEnabled = privateFolder.enabled
         )
     }
 
@@ -120,6 +127,7 @@ class CatalogViewModel(
                     history = preferences.history,
                     isRefreshing = syncState is SyncState.Syncing,
                     tokenIsMissing = preferences.token.isBlank(),
+                    privateFolderEnabled = preferences.privateFolderEnabled,
                     sortingMode = preferences.sortingMode,
                     viewMode = preferences.viewMode,
                     showSortingSheet = showSortingSheet,
@@ -155,6 +163,10 @@ class CatalogViewModel(
             CatalogIntent.OnHowToTap -> _event.emit(NavigateToHowTo)
             CatalogIntent.OnSourcesTap -> _event.emit(NavigateToSources)
             CatalogIntent.OnTokenTap -> _event.emit(NavigateToToken)
+            CatalogIntent.OnPrivateFolderTap -> _event.emit(NavigateToPrivateFolder)
+
+            // Private folder
+            is CatalogIntent.OnArtworkLongPress -> toggleArtworkPrivacy(artwork = intent.artwork)
 
             // Sort
             is CatalogIntent.SelectSortingMode -> selectSortingOption(mode = intent.mode)
@@ -227,6 +239,15 @@ class CatalogViewModel(
 
         onArtworkTap(artwork = artwork, rgb = null)
 
+    }
+
+    private suspend fun toggleArtworkPrivacy(artwork: Artwork) {
+
+        val isPrivate = artworkDb.getArtwork(artworkId = artwork.id)?.isPrivate ?: false
+
+        setArtworkPrivacy(artworkId = artwork.id, isPrivate = !isPrivate)
+
+        _event.emit(CatalogEvent.ArtworkAddedToPrivateFolder)
     }
 
     private suspend fun deleteHistoryEntry(entry: HistoryEntry) {

@@ -109,7 +109,7 @@ class SyncCatalogUseCase(
             catalog = applyCurrentMediaProgress(catalog, dbMedias = dbMedias)
 
             // Capture private ids before full wipe (restored after save)
-            val privateArtworkIds = if (!onlyNew) database.getArtworks(includePrivates = true).map { it.id } else emptyList()
+            val privateArtworkIds = if (!onlyNew) database.getPrivateArtworkIds() else emptyList()
 
             // Save new content
             if (onlyNew) database.deleteMediasNotInFiles((deviceFiles + existingFiles).distinct()) else database.deleteAll()

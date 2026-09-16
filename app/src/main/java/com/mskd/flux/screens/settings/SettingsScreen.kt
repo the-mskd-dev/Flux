@@ -35,9 +35,9 @@ import com.mskd.flux.navigation.domain.Route.Token
 import com.mskd.flux.screens.settings.composables.SettingsAppInfoSection
 import com.mskd.flux.screens.settings.composables.SettingsCustomizationSection
 import com.mskd.flux.screens.settings.composables.SettingsDialogs
-import com.mskd.flux.screens.settings.composables.SettingsPrivateFolderPinDialogs
 import com.mskd.flux.screens.settings.composables.SettingsOtherSection
 import com.mskd.flux.screens.settings.composables.SettingsPlayerSection
+import com.mskd.flux.screens.settings.composables.SettingsPrivateFolderPinDialogs
 import com.mskd.flux.screens.settings.composables.SettingsPrivateFolderSection
 import com.mskd.flux.screens.settings.composables.SettingsSyncSection
 import com.mskd.flux.screens.settings.composables.SettingsTmdbSection

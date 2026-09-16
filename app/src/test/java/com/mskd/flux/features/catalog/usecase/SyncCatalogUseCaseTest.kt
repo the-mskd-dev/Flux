@@ -224,6 +224,75 @@ class SyncCatalogUseCaseTest : FunSpec({
         }
     }
 
+    test("if full sync, only private artworks keep their private flag") {
+        // Given
+        val newCatalog = Catalog(
+            artworks = MediaMockups.artworks,
+            movies = MediaMockups.movies,
+            seasons = MediaMockups.seasons,
+            episodes = MediaMockups.episodes
+        )
+        val privateArtwork = MediaMockups.movieArtwork
+        val publicArtwork = MediaMockups.showArtwork
+
+        val database = mockk<DatabaseRepository>(relaxed = true)
+        coEvery { database.getPrivateArtworkIds() } returns listOf(privateArtwork.id)
+
+        val getDeviceFilesUseCase = mockk<GetDeviceFilesUseCase>()
+        coEvery { getDeviceFilesUseCase() } returns newCatalog.movies.map { it.file }
+
+        val catalogFetcher = mockk<CatalogContentFetcher>(relaxed = true) {
+            coEvery { fetch(any(), any()) } returns newCatalog
+        }
+
+        val useCase = createUseCase(
+            database = database,
+            getDeviceFilesUseCase = getDeviceFilesUseCase,
+            catalogFetcher = catalogFetcher
+        )
+
+        // When
+        useCase.invoke(onlyNew = false)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Then
+        coVerify(exactly = 1) { database.getPrivateArtworkIds() }
+        coVerify(exactly = 1) { database.setArtworkPrivate(artworkId = privateArtwork.id, isPrivate = true) }
+        coVerify(exactly = 0) { database.setArtworkPrivate(artworkId = publicArtwork.id, isPrivate = true) }
+    }
+
+    test("if light sync, private flags are not restored") {
+        // Given
+        val newCatalog = Catalog(
+            artworks = MediaMockups.artworks,
+            movies = MediaMockups.movies,
+            seasons = MediaMockups.seasons,
+            episodes = MediaMockups.episodes
+        )
+        val database = mockk<DatabaseRepository>(relaxed = true)
+
+        val getDeviceFilesUseCase = mockk<GetDeviceFilesUseCase>()
+        coEvery { getDeviceFilesUseCase() } returns newCatalog.movies.map { it.file }
+
+        val catalogFetcher = mockk<CatalogContentFetcher>(relaxed = true) {
+            coEvery { fetch(any(), any()) } returns newCatalog
+        }
+
+        val useCase = createUseCase(
+            database = database,
+            getDeviceFilesUseCase = getDeviceFilesUseCase,
+            catalogFetcher = catalogFetcher
+        )
+
+        // When
+        useCase.invoke(onlyNew = true)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Then
+        coVerify(exactly = 0) { database.getPrivateArtworkIds() }
+        coVerify(exactly = 0) { database.setArtworkPrivate(artworkId = any(), isPrivate = true) }
+    }
+
     // endregion
 
 })

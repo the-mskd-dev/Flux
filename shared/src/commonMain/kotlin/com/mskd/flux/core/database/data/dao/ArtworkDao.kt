@@ -46,6 +46,9 @@ interface ArtworkDao {
     @Query("UPDATE artworks SET isPrivate = :isPrivate WHERE id = :artworkId")
     suspend fun setArtworkPrivate(artworkId: Long, isPrivate: Boolean)
 
+    @Query("UPDATE artworks SET isPrivate = 0 WHERE isPrivate = 1")
+    suspend fun clearPrivateArtworks()
+
     @Query("SELECT id FROM artworks WHERE isPrivate = 1")
     suspend fun getPrivateArtworkIds() : List<Long>
 

@@ -64,6 +64,14 @@ class DatabaseRepositoryImpl(
         artworksDao.setArtworkPrivate(artworkId = artworkId, isPrivate = isPrivate)
     }
 
+    override suspend fun clearPrivateArtworks() {
+        artworksDao.clearPrivateArtworks()
+    }
+
+    override suspend fun getPrivateArtworkIds(): List<Long> {
+        return artworksDao.getPrivateArtworkIds()
+    }
+
     override suspend fun saveArtworks(artworks: List<Artwork>, overrideLastModification: Boolean) {
         val privateIds = artworksDao.getPrivateArtworkIds().toSet()
 

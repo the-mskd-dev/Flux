@@ -97,11 +97,12 @@ class PrivateFolderViewModelTest : FunSpec({
         }
     }
 
-    test(P) {
+    test("disabled private folder - no private artworks are listed") {
         privateFolderFlow.value = PrivateFolderDataStore.State(enabled = false)
 
         viewModel.uiState.test {
             val state = awaitItem()
+            state.locked shouldBe false
             state.artworks shouldBe emptyList() // No artwork is private in mockups
         }
     }

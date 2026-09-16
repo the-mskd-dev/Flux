@@ -7,6 +7,7 @@ import com.mskd.flux.core.database.domain.repository.DetailsRepository
 import com.mskd.flux.core.datastore.domain.UserDataStore
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
+import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.core.AppInfo
 import com.mskd.flux.features.catalog.domain.datastore.CatalogDataStore
 import com.mskd.flux.features.catalog.domain.model.CatalogPreferences
@@ -22,28 +23,40 @@ import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToShow
 import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToSources
 import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToToken
 import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToUnknown
+import com.mskd.flux.features.history.domain.model.HistoryEntry
+import com.mskd.flux.features.history.domain.repository.HistoryRepository
+import com.mskd.flux.features.history.domain.usecase.GetHistoryUseCase
+import com.mskd.flux.features.player.domain.model.PlaybackAction
+import com.mskd.flux.features.player.domain.usecase.ResolvePlaybackActionUseCase
+import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.utils.Trace
 import com.mskd.flux.utils.UpdateManager
 import com.mskd.flux.utils.extensions.filterFor
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class CatalogViewModel(
-    private val syncCatalogUseCase: SyncCatalogUseCase,
     private val artworkDb: DatabaseRepository,
     private val detailsDb: DetailsRepository,
+    private val historyDb: HistoryRepository,
     private val userDataStore: UserDataStore,
     private val tokenDataStore: TokenDataStore,
     private val catalogDataStore: CatalogDataStore,
-    private val appInfo: AppInfo
+    private val syncCatalogUseCase: SyncCatalogUseCase,
+    private val getHistoryUseCase: GetHistoryUseCase,
+    private val appInfo: AppInfo,
+    private val resolvePlaybackAction: ResolvePlaybackActionUseCase,
+    private val recordPlaybackResult: SaveProgressUseCase
 ): ViewModel() {
 
     private val _event = MutableSharedFlow<CatalogEvent>()
@@ -54,13 +67,15 @@ class CatalogViewModel(
 
     private var hasLoadedContent = false
 
+    private var currentMedia: Media? = null
+
     private val preferencesFlow = combine(
-        userDataStore.flow,
+        getHistoryUseCase(),
         catalogDataStore.flow,
         tokenDataStore.flow,
-    ) { user, catalog, token  ->
+    ) { history, catalog, token  ->
         CatalogPreferences(
-            recentlyWatchedIds = user.recentlyWatchedIds,
+            history = history.toImmutableList(),
             sortingMode = catalog.sortingMode,
             viewMode = catalog.viewMode,
             token = token
@@ -100,9 +115,9 @@ class CatalogViewModel(
 
             CatalogUiState(
                 state = CatalogState.Content(
-                    artworks = sortedArtworks,
-                    genres = genres,
-                    lastWatchedMediaIds = preferences.recentlyWatchedIds,
+                    artworks = sortedArtworks.toImmutableList(),
+                    genres = genres.toImmutableList(),
+                    history = preferences.history,
                     isRefreshing = syncState is SyncState.Syncing,
                     tokenIsMissing = preferences.token.isBlank(),
                     sortingMode = preferences.sortingMode,
@@ -148,6 +163,14 @@ class CatalogViewModel(
             // View mode
             is CatalogIntent.SelectViewMode -> selectViewMode(mode = intent.mode)
             is CatalogIntent.ShowViewModes -> showViewModes(show = intent.show)
+
+            // History
+            is CatalogIntent.DeleteHistoryEntry -> deleteHistoryEntry(entry = intent.entry)
+            is CatalogIntent.ShowDetails -> showDetails(media = intent.media)
+
+            // Player
+            is CatalogIntent.PlayMedia -> playMedia(media = intent.media, forceInternal = intent.forceInternal)
+            is CatalogIntent.OnExternalPlayerResult -> onExternalPlayerResult(intent.progress)
         }
     }
 
@@ -194,6 +217,35 @@ class CatalogViewModel(
 
     private fun showViewModes(show: Boolean) {
         _showViewModeSheet.update { show }
+    }
+
+    private suspend fun showDetails(media: Media) {
+
+        val artwork = artworkFlow.firstOrNull()?.first?.find {
+            it.id == media.artworkId
+        } ?: return
+
+        onArtworkTap(artwork = artwork, rgb = null)
+
+    }
+
+    private suspend fun deleteHistoryEntry(entry: HistoryEntry) {
+        historyDb.delete(artworkId = entry.media.artworkId)
+    }
+
+    private suspend fun playMedia(media: Media, forceInternal: Boolean) {
+        currentMedia = media
+        when (val action = resolvePlaybackAction(media = media, forceInternal = forceInternal)) {
+            is PlaybackAction.OpenPlayer -> _event.emit(CatalogEvent.PlayMedia(
+                media = action.media,
+                externalPlayer = action.externalPlayer,
+            ))
+            PlaybackAction.Unavailable -> Unit
+        }
+    }
+
+    private suspend fun onExternalPlayerResult(progress: Long) {
+        currentMedia?.let { recordPlaybackResult(media = it, progress = progress) }
     }
 
 }

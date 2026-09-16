@@ -7,11 +7,17 @@ import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
 import androidx.room.TypeConverters
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
+import com.mskd.flux.core.database.data.dao.ArtworkDao
+import com.mskd.flux.core.database.data.dao.DetailsDao
+import com.mskd.flux.core.database.data.dao.MediasDao
+import com.mskd.flux.core.database.data.dao.SeasonsDao
 import com.mskd.flux.core.database.data.migrations.MIGRATION_5_6
 import com.mskd.flux.core.database.data.model.ArtworkEntity
 import com.mskd.flux.core.database.data.model.GenreEntity
 import com.mskd.flux.core.database.data.model.MediaEntity
 import com.mskd.flux.core.database.data.model.SeasonEntity
+import com.mskd.flux.features.history.data.dao.HistoryDao
+import com.mskd.flux.features.history.data.model.HistoryEntity
 import com.mskd.flux.features.sources.data.local.SourcesDao
 import com.mskd.flux.features.sources.data.local.UserFolderEntity
 import kotlinx.coroutines.Dispatchers
@@ -22,9 +28,10 @@ import kotlinx.coroutines.Dispatchers
         SeasonEntity::class,
         MediaEntity::class,
         UserFolderEntity::class,
-        GenreEntity::class
+        GenreEntity::class,
+        HistoryEntity::class
     ],
-    version = 8,
+    version = 9,
     autoMigrations = [
         AutoMigration(from = 1, to = 2),
         AutoMigration(from = 2, to = 3),
@@ -32,14 +39,18 @@ import kotlinx.coroutines.Dispatchers
         AutoMigration(from = 4, to = 5),
         AutoMigration(from = 6, to = 7),
         AutoMigration(from = 7, to = 8),
+        AutoMigration(from = 8, to = 9),
     ]
 )
 @TypeConverters(Converters::class)
 @ConstructedBy(FluxDatabaseConstructor::class)
 abstract class FluxDatabase : RoomDatabase() {
-    abstract fun dao(): DatabaseDao
+    abstract fun artworkDao(): ArtworkDao
+    abstract fun mediasDao(): MediasDao
+    abstract fun seasonsDao(): SeasonsDao
     abstract fun sourcesDao(): SourcesDao
     abstract fun detailsDao(): DetailsDao
+    abstract fun historyDao(): HistoryDao
 }
 
 expect object FluxDatabaseConstructor : RoomDatabaseConstructor<FluxDatabase> {

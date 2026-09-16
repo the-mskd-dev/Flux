@@ -64,8 +64,7 @@ sealed interface ArtworkIntent {
 
 sealed interface ArtworkEvent {
     object BackToPreviousScreen : ArtworkEvent
-    data class PlayMedia(val mediaId: Long) : ArtworkEvent
-    data class LaunchExternalPlayer(val media: Media) : ArtworkEvent
+    data class PlayMedia(val media: Media, val externalPlayer: Boolean) : ArtworkEvent
     data class OpenUrlInfo(val url: String) : ArtworkEvent
     data class OpenFileExplorer(val media: Media): ArtworkEvent
 }

@@ -8,18 +8,37 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.net.toUri
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.services.ExternalPlayerService
 
 @Composable
-fun rememberExternalPlayerLauncher(context: Context, onProgressResult: (Long) -> Unit) : ManagedActivityResultLauncher<Intent, ActivityResult> {
-    return rememberLauncherForActivityResult(
+fun rememberExternalPlayerAction(
+    onProgressResult: (Long) -> Unit,
+    onFallbackToInternal: (Media) -> Unit,
+): (Media) -> Unit {
+
+    val context = LocalContext.current
+
+    val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
         ExternalPlayerService.stop(context)
         ExternalPlayer.parsePosition(result.data)?.let {
             onProgressResult(it)
+        }
+    }
+
+    return remember(launcher) {
+        { media ->
+            ExternalPlayer.launchPlayer(
+                context = context,
+                media = media,
+                launcher = launcher,
+                onError = { onFallbackToInternal(media) }
+            )
         }
     }
 }

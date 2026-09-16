@@ -9,11 +9,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
@@ -26,8 +27,8 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun ProgressStatusBar(
     modifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colorScheme.tertiary,
     isVisible: Boolean,
+    strokeCap: StrokeCap = ProgressIndicatorDefaults.LinearStrokeCap,
     progress: () -> Float
 ) {
     AnimatedVisibility(
@@ -39,9 +40,11 @@ fun ProgressStatusBar(
             modifier = Modifier
                 .height(8.dp)
                 .fillMaxWidth(),
-            color = color,
+            color = MaterialTheme.colorScheme.tertiary,
+            trackColor = MaterialTheme.colorScheme.tertiaryContainer,
             progress = progress,
             gapSize = 0.dp,
+            strokeCap = strokeCap,
             drawStopIndicator = {}
         )
 

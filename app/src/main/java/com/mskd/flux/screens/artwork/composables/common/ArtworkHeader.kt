@@ -47,7 +47,7 @@ fun ArtworkHeader(
                     end.linkTo(parent.end)
                     width = Dimension.fillToConstraints
                 }
-                .aspectRatio(FluxUI.Images.ratio_6_5),
+                .aspectRatio(FluxUI.Ratio.rectangle),
             fullArtwork = fullArtwork,
             currentMedia = currentMedia,
             selectedSeason = selectedSeason

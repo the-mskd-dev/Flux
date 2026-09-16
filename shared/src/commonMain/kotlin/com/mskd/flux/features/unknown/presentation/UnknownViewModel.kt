@@ -8,6 +8,8 @@ import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
+import com.mskd.flux.features.player.domain.model.PlaybackAction
+import com.mskd.flux.features.player.domain.usecase.ResolvePlaybackActionUseCase
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -23,7 +25,8 @@ import kotlinx.coroutines.launch
 class UnknownViewModel(
     observeArtworkUseCase: ObserveArtworkUseCase,
     settingsDataStore: SettingsDataStore,
-    private val saveProgress: SaveProgressUseCase
+    private val resolvePlaybackAction: ResolvePlaybackActionUseCase,
+    private val recordPlaybackResult: SaveProgressUseCase
 ) : ViewModel() {
 
     //region Variables
@@ -90,17 +93,18 @@ class UnknownViewModel(
 
         selectedMedia = media
 
-        val event = if (uiState.value.useExternalPlayer && !forceInternal)
-            UnknownEvent.LaunchExternalPlayer(media = media)
-        else
-            UnknownEvent.PlayMedia(mediaId = media.mediaId)
-
-        _event.emit(event)
+        when (val action = resolvePlaybackAction(media = media, forceInternal = forceInternal)) {
+            is PlaybackAction.OpenPlayer -> _event.emit(UnknownEvent.PlayMedia(
+                media = action.media,
+                externalPlayer = action.externalPlayer,
+            ))
+            PlaybackAction.Unavailable -> Unit
+        }
     }
 
     private suspend fun onExternalPlayerResult(progress: Long) {
-        selectedMedia?.let { media ->
-            saveProgress(media = media, progress = progress)
+        selectedMedia?.let {
+            recordPlaybackResult(media = it, progress = progress)
             selectedMedia = null
         }
     }

@@ -1,6 +1,6 @@
 package com.mskd.flux.core.database.data.repository
 
-import com.mskd.flux.core.database.data.DetailsDao
+import com.mskd.flux.core.database.data.dao.DetailsDao
 import com.mskd.flux.core.database.data.mappers.toDomain
 import com.mskd.flux.core.database.data.mappers.toEntity
 import com.mskd.flux.core.database.domain.repository.DetailsRepository

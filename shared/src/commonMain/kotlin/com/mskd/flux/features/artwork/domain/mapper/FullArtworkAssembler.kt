@@ -6,8 +6,7 @@ import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Genre
 import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.artwork.Season
-import com.mskd.flux.core.model.files.FileSource
-import com.mskd.flux.features.sources.domain.extension.findForFile
+import com.mskd.flux.features.sources.domain.extension.isAvailableFor
 import com.mskd.flux.features.sources.domain.model.UserFolder
 import kotlinx.collections.immutable.toImmutableList
 
@@ -18,10 +17,8 @@ internal fun buildFullArtworkMovie(
     sources: List<UserFolder>
 ) : FullArtwork {
 
-    val isAvailable = when (movie.file.source) {
-        FileSource.LOCAL -> true
-        FileSource.SAF -> sources.findForFile(file = movie.file)?.isAvailable ?: false
-    }
+
+    val isAvailable = sources.isAvailableFor(file = movie.file)
 
     return FullArtwork.FullMovie(
         artwork = artwork,
@@ -42,16 +39,8 @@ internal fun buildFullArtworkShow(
 
     val episodesWithAvailability = episodes.map { episode ->
 
-        when (episode.file.source) {
-            FileSource.LOCAL -> episode
-            FileSource.SAF -> {
-
-                episode.copy(
-                    isAvailable = sources.findForFile(file = episode.file)?.isAvailable ?: false
-                )
-
-            }
-        }
+        val isAvailable = sources.isAvailableFor(file = episode.file)
+        episode.copy(isAvailable = isAvailable)
 
     }
 

@@ -25,6 +25,7 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.ui.component.media.MediaItem
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxThemePreview
+import com.mskd.flux.utils.extensions.displayCutoutPaddingInLandscape
 
 @Composable
 fun SearchContentGrid(
@@ -38,7 +39,7 @@ fun SearchContentGrid(
 ) {
 
     LazyVerticalGrid(
-        modifier = modifier,
+        modifier = modifier.displayCutoutPaddingInLandscape(),
         columns = GridCells.Fixed(columns),
         horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
         verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small),

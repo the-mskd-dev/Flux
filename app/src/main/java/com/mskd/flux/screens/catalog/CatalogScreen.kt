@@ -68,6 +68,7 @@ import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
 import com.mskd.flux.utils.rememberExternalPlayerAction
+import com.mskd.flux.utils.rememberScreenDimensions
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -178,7 +179,8 @@ fun CatalogContent(
         offsetY = 100.dp.toPx() * pullToRefreshState.distanceFraction
     }
 
-    val columns = FluxUI.itemsPerRow.artworks
+    val screenDimensions = rememberScreenDimensions()
+    val columns = if (screenDimensions.isLarge) 5 else FluxUI.itemsPerRow.artworks
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background

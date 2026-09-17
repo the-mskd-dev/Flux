@@ -284,9 +284,7 @@ fun SettingsPrivateFolderSection(
             onCheckedChange = { sendIntent(SettingsIntent.OnPrivateFolderCheck(it)) }
         )
 
-        AnimatedVisibility(
-            visible = state.privateFolderEnabled
-        ) {
+        if(state.privateFolderEnabled) {
             SettingsItem(
                 text = stringResource(Res.string.pin_change_title),
                 subText = stringResource(Res.string.pin_change_desc),

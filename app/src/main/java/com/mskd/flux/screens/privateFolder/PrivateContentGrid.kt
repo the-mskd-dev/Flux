@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.displayCutoutPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -28,6 +29,7 @@ import com.mskd.flux.ui.component.media.MediaItem
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
+import com.mskd.flux.utils.extensions.displayCutoutPaddingInLandscape
 import com.mskd.flux.utils.rememberScreenDimensions
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_delete
@@ -49,7 +51,8 @@ fun PrivateContentGrid(
     LazyVerticalGrid(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
+            .background(MaterialTheme.colorScheme.background)
+            .displayCutoutPaddingInLandscape(),
         columns = GridCells.Fixed(columns),
         verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
         horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),

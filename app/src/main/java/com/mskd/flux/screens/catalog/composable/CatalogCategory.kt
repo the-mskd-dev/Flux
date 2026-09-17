@@ -26,7 +26,6 @@ import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.ui.component.global.Text
-import com.mskd.flux.ui.component.media.MediaItem
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.itemWidthFor
 import com.mskd.flux.utils.rememberScreenDimensions
@@ -37,6 +36,7 @@ fun CatalogCategory(
     name: String? = null,
     artworks: List<Artwork>,
     sortingOption: CatalogSortingMode,
+    privateFolderEnabled: Boolean,
     onCategoryTap: () -> Unit,
     sendIntent: (CatalogIntent) -> Unit,
 ) {
@@ -86,15 +86,14 @@ fun CatalogCategory(
 
             items(artworks, key = { it.id }) {
 
-                MediaItem(
+                CatalogArtworkItem(
                     modifier = Modifier
                         .animateItem()
                         .width(itemWidth)
                         .aspectRatio(FluxUI.Dimension.itemRatio),
-                    path = it.imagePath,
-                    onClick = { rgb -> sendIntent(CatalogIntent.OnArtworkTap(artwork = it, rgb = rgb)) },
-                    onLongClick = { sendIntent(CatalogIntent.OnArtworkLongPress(artwork = it)) },
-                    description = it.title
+                    artwork = it,
+                    privateFolderEnabled = privateFolderEnabled,
+                    sendIntent = sendIntent
                 )
 
             }

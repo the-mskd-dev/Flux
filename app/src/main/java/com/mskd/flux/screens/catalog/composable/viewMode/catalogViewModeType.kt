@@ -26,6 +26,7 @@ import org.jetbrains.compose.resources.stringResource
 fun LazyGridScope.catalogViewModeType(
     artworks: List<Artwork>,
     sortingMode: CatalogSortingMode,
+    privateFolderEnabled: Boolean,
     sendIntent: (CatalogIntent) -> Unit
 ) {
 
@@ -41,6 +42,7 @@ fun LazyGridScope.catalogViewModeType(
                 name = stringResource(Res.string.shows),
                 artworks = artworks.filter { it.type == ContentType.SHOW && !it.isUnknown },
                 sortingOption = sortingMode,
+                privateFolderEnabled = privateFolderEnabled,
                 onCategoryTap = { sendIntent(CatalogIntent.OnCategoryTap(ContentType.SHOW)) },
                 sendIntent = sendIntent
             )
@@ -49,6 +51,7 @@ fun LazyGridScope.catalogViewModeType(
                 name = stringResource(Res.string.movies),
                 artworks = artworks.filter { it.type == ContentType.MOVIE && !it.isUnknown },
                 sortingOption = sortingMode,
+                privateFolderEnabled = privateFolderEnabled,
                 onCategoryTap = { sendIntent(CatalogIntent.OnCategoryTap(ContentType.MOVIE)) },
                 sendIntent = sendIntent
             )
@@ -68,6 +71,7 @@ fun CatalogViewModeType_Preview() {
             catalogViewModeType(
                 artworks = MediaMockups.artworks,
                 sortingMode = CatalogSortingMode.LAST_MODIFICATION,
+                privateFolderEnabled = true,
                 sendIntent = {}
             )
         }

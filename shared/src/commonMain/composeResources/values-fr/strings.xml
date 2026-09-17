@@ -202,7 +202,7 @@
     <string name="private_folder">Dossier privé</string>
     <string name="private_folder_desc">Protéger des œuvres derrière un code PIN</string>
     <string name="private_folder_empty">Votre dossier privé est vide.\nFaites un appui long sur une œuvre dans le catalogue pour l\'ajouter</string>
-    <string name="added_to_private_folder">Ajouté au dossier privé</string>
+    <string name="add_to_private_folder">Ajouter au dossier privé</string>
     <string name="removed_from_private_folder">Retiré du dossier privé</string>
     <string name="remove_from_private_folder">Retirer du dossier privé</string>
     <string name="pin_gate_title">Saisissez votre code PIN</string>

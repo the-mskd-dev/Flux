@@ -201,7 +201,7 @@
     <string name="private_folder">Cartella privata</string>
     <string name="private_folder_desc">Proteggi le opere con un codice PIN</string>
     <string name="private_folder_empty">La tua cartella privata è vuota.\nTieni premuta un\'opera del catalogo per aggiungerla</string>
-    <string name="added_to_private_folder">Aggiunto alla cartella privata</string>
+    <string name="add_to_private_folder">Aggiungi alla cartella privata</string>
     <string name="removed_from_private_folder">Rimosso dalla cartella privata</string>
     <string name="remove_from_private_folder">Rimuovi dalla cartella privata</string>
     <string name="pin_gate_title">Inserisci il tuo codice PIN</string>

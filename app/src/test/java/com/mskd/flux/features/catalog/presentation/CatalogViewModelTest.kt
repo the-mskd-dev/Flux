@@ -586,22 +586,16 @@ class CatalogViewModelTest : FunSpec({
 
     }
 
-    test("OnArtworkLongPress - should mark artwork as private when it is not") {
+    test("AddArtworkToPrivateFolder - should mark artwork as private") {
 
         // Given
         val artwork = MediaMockups.movieArtwork
         viewModel = createViewModel()
 
-        viewModel.event.test {
+        // When
+        viewModel.handleIntent(intent = CatalogIntent.AddArtworkToPrivateFolder(artwork = artwork))
 
-            // When
-            viewModel.handleIntent(intent = CatalogIntent.OnArtworkLongPress(artwork = artwork))
-
-            // Then
-            awaitItem() shouldBe CatalogEvent.ArtworkAddedToPrivateFolder
-
-        }
-
+        // Then
         coVerify { setArtworkPrivacy(artworkId = artwork.id, isPrivate = true) }
 
     }

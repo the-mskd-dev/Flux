@@ -20,8 +20,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
@@ -70,9 +68,6 @@ import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
 import com.mskd.flux.utils.rememberExternalPlayerAction
-import flux.shared.generated.resources.Res
-import flux.shared.generated.resources.added_to_private_folder
-import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -83,8 +78,6 @@ fun CatalogScreen(
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val snackbarHostState = remember { SnackbarHostState() }
-    val addedMessage = stringResource(Res.string.added_to_private_folder)
 
     val launchExternalPlayer = rememberExternalPlayerAction(
         onProgressResult = { progress -> viewModel.handleIntent(CatalogIntent.OnExternalPlayerResult(progress = progress)) },
@@ -103,8 +96,6 @@ fun CatalogScreen(
                 CatalogEvent.NavigateToToken -> navigate(Route.Token(fromSetup = false))
                 CatalogEvent.NavigateToSources -> navigate(Route.Sources(fromSetup = false))
                 CatalogEvent.NavigateToPrivateFolder -> navigate(Route.PrivateFolder)
-
-                CatalogEvent.ArtworkAddedToPrivateFolder -> snackbarHostState.showSnackbar(addedMessage)
 
                 is CatalogEvent.PlayMedia -> {
                     if (event.externalPlayer)
@@ -152,7 +143,6 @@ fun CatalogScreen(
                     showSortingModes = state.showSortingSheet,
                     viewMode = state.viewMode,
                     showViewModes = state.showViewSheet,
-                    snackbarHostState = snackbarHostState,
                     sendIntent = viewModel::handleIntent
                 )
 
@@ -178,7 +168,6 @@ fun CatalogContent(
     showSortingModes: Boolean,
     viewMode: CatalogViewMode,
     showViewModes: Boolean,
-    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     sendIntent: (CatalogIntent) -> Unit
 ) {
 
@@ -192,8 +181,7 @@ fun CatalogContent(
     val columns = FluxUI.itemsPerRow.artworks
 
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.background,
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+        containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
 
         Column(modifier = Modifier.fillMaxSize()) {
@@ -266,6 +254,7 @@ fun CatalogContent(
                             CatalogViewMode.GRID -> {
                                 catalogViewModeGrid(
                                     artworks = artworks,
+                                    privateFolderEnabled = privateFolderEnabled,
                                     sendIntent = sendIntent
                                 )
                             }
@@ -273,6 +262,7 @@ fun CatalogContent(
                                 catalogViewModeType(
                                     artworks = artworks,
                                     sortingMode = sortingMode,
+                                    privateFolderEnabled = privateFolderEnabled,
                                     sendIntent = sendIntent
                                 )
                             }
@@ -281,6 +271,7 @@ fun CatalogContent(
                                     artworks = artworks,
                                     genres = genres,
                                     sortingMode = sortingMode,
+                                    privateFolderEnabled = privateFolderEnabled,
                                     sendIntent = sendIntent
                                 )
                             }

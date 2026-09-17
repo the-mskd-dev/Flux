@@ -201,7 +201,7 @@
     <string name="private_folder">Privater Ordner</string>
     <string name="private_folder_desc">Werke mit einem PIN-Code schützen</string>
     <string name="private_folder_empty">Dein privater Ordner ist leer.\nHalte ein Werk im Katalog gedrückt, um es hinzuzufügen</string>
-    <string name="added_to_private_folder">Zum privaten Ordner hinzugefügt</string>
+    <string name="add_to_private_folder">Zum privaten Ordner hinzufügen</string>
     <string name="removed_from_private_folder">Aus dem privaten Ordner entfernt</string>
     <string name="remove_from_private_folder">Aus dem privaten Ordner entfernen</string>
     <string name="pin_gate_title">Gib deinen PIN-Code ein</string>

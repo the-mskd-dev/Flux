@@ -166,7 +166,7 @@ class CatalogViewModel(
             CatalogIntent.OnPrivateFolderTap -> _event.emit(NavigateToPrivateFolder)
 
             // Private folder
-            is CatalogIntent.OnArtworkLongPress -> toggleArtworkPrivacy(artwork = intent.artwork)
+            is CatalogIntent.AddArtworkToPrivateFolder -> addArtworkToPrivateFolder(artwork = intent.artwork)
 
             // Sort
             is CatalogIntent.SelectSortingMode -> selectSortingOption(mode = intent.mode)
@@ -241,13 +241,8 @@ class CatalogViewModel(
 
     }
 
-    private suspend fun toggleArtworkPrivacy(artwork: Artwork) {
-
-        val isPrivate = artworkDb.getArtwork(artworkId = artwork.id)?.isPrivate ?: false
-
-        setArtworkPrivacy(artworkId = artwork.id, isPrivate = !isPrivate)
-
-        _event.emit(CatalogEvent.ArtworkAddedToPrivateFolder)
+    private suspend fun addArtworkToPrivateFolder(artwork: Artwork) {
+        setArtworkPrivacy(artworkId = artwork.id, isPrivate = true)
     }
 
     private suspend fun deleteHistoryEntry(entry: HistoryEntry) {

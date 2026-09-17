@@ -58,7 +58,7 @@ sealed interface CatalogIntent {
     data object OnPrivateFolderTap: CatalogIntent
 
     // Private folder
-    data class OnArtworkLongPress(val artwork: Artwork): CatalogIntent
+    data class AddArtworkToPrivateFolder(val artwork: Artwork): CatalogIntent
 
     // Sort
     data class SelectSortingMode(val mode: CatalogSortingMode): CatalogIntent
@@ -89,9 +89,6 @@ sealed interface CatalogEvent {
     data object NavigateToHowTo: CatalogEvent
     data object NavigateToSources: CatalogEvent
     data object NavigateToPrivateFolder: CatalogEvent
-
-    // Private folder
-    data object ArtworkAddedToPrivateFolder: CatalogEvent
 
     // Player
     data class PlayMedia(val media: Media, val externalPlayer: Boolean) : CatalogEvent

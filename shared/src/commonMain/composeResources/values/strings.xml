@@ -218,7 +218,7 @@
     <string name="private_folder">Private folder</string>
     <string name="private_folder_desc">Protect artworks behind a PIN code</string>
     <string name="private_folder_empty">Your private folder is empty.\nLong press an artwork in the catalog to add it</string>
-    <string name="added_to_private_folder">Added to private folder</string>
+    <string name="add_to_private_folder">Add to private folder</string>
     <string name="removed_from_private_folder">Removed from private folder</string>
     <string name="remove_from_private_folder">Remove from private folder</string>
     <string name="pin_gate_title">Enter your PIN code</string>

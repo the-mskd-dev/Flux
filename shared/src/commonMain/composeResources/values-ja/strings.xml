@@ -200,7 +200,7 @@
     <string name="private_folder">プライベートフォルダー</string>
     <string name="private_folder_desc">PINコードで作品を保護します</string>
     <string name="private_folder_empty">プライベートフォルダーは空です。\nカタログで作品を長押しすると追加できます</string>
-    <string name="added_to_private_folder">プライベートフォルダーに追加しました</string>
+    <string name="add_to_private_folder">プライベートフォルダーに追加</string>
     <string name="removed_from_private_folder">プライベートフォルダーから削除しました</string>
     <string name="remove_from_private_folder">プライベートフォルダーから削除</string>
     <string name="pin_gate_title">PINコードを入力してください</string>

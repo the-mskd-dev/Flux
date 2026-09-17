@@ -128,6 +128,31 @@ class PrivateFolderViewModelTest : FunSpec({
         }
     }
 
+    test("clear pin error - error is removed when a new input starts") {
+
+        privateFolderFlow.value = PrivateFolderDataStore.State(enabled = true)
+        coEvery { privateFolderDataStore.verifyPin("0000") } returns false
+
+        viewModel.uiState.test {
+
+            awaitItem()
+
+            viewModel.handleIntent(PrivateFolderIntent.SubmitPin(pin = "0000"))
+
+            val errorState = awaitItem()
+            errorState.pinError shouldBe true
+            errorState.locked shouldBe true
+
+            viewModel.handleIntent(PrivateFolderIntent.ClearPinError)
+
+            val clearedState = awaitItem()
+            clearedState.pinError shouldBe false
+            clearedState.locked shouldBe true
+
+        }
+
+    }
+
     test("remove artwork from private folder") {
         val artwork = MediaMockups.movieArtwork
 

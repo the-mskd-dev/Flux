@@ -11,12 +11,12 @@ data class PrivateFolderUiState(
     val screen: State<Unit> = State.Loading,
     val locked: Boolean = true,
     val artworks: ImmutableList<Artwork> = persistentListOf(),
-    val pinInput: String = "",
     val pinError: Boolean = false
 )
 
 sealed interface PrivateFolderIntent {
     data object OnBackTap: PrivateFolderIntent
+    data object ClearPinError: PrivateFolderIntent
     data class SubmitPin(val pin: String): PrivateFolderIntent
     data class OnArtworkTap(val artwork: Artwork, val rgb: Int? = null): PrivateFolderIntent
     data class RemoveFromPrivateFolder(val artwork: Artwork): PrivateFolderIntent

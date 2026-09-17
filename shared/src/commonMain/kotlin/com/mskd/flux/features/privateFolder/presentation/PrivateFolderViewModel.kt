@@ -64,6 +64,7 @@ class PrivateFolderViewModel(
     fun handleIntent(intent: PrivateFolderIntent) = viewModelScope.launch {
         when (intent) {
             PrivateFolderIntent.OnBackTap -> _event.emit(PrivateFolderEvent.BackToPreviousScreen)
+            PrivateFolderIntent.ClearPinError -> clearPinError()
             is PrivateFolderIntent.SubmitPin -> submitPin(pin = intent.pin)
             is PrivateFolderIntent.OnArtworkTap -> onArtworkTap(artwork = intent.artwork, rgb = intent.rgb)
             is PrivateFolderIntent.RemoveFromPrivateFolder -> removeFromPrivateFolder(artwork = intent.artwork)
@@ -73,6 +74,10 @@ class PrivateFolderViewModel(
     //endregion
 
     //region Private Methods
+
+    private fun clearPinError() {
+        _pinError.update { false }
+    }
 
     private suspend fun submitPin(pin: String) {
         val pinIsValid = privateFolderDataStore.verifyPin(pin = pin)

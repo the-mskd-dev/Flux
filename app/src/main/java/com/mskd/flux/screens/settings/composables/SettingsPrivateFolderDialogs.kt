@@ -201,9 +201,9 @@ fun SettingsChangePinDialog(
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Done
+                        imeAction = ImeAction.Next
                     ),
-                    keyboardActions = KeyboardActions(onDone = { focusRequester.requestFocus() })
+                    keyboardActions = KeyboardActions(onNext = { focusRequester.requestFocus() })
                 )
 
                 OutlinedTextField(

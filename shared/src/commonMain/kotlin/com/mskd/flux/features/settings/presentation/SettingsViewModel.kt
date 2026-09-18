@@ -48,7 +48,6 @@ class SettingsViewModel(
     private val _settingsDialogState = MutableStateFlow<SettingsDialog?>(null)
 
     private val _privateFolderPinDialog = MutableStateFlow<PrivateFolderPinDialog?>(null)
-    private val _privateFolderPinInput = MutableStateFlow(PrivateFolderPinInput())
     private val _privateFolderPinError = MutableStateFlow(false)
 
     private val baseState = combine(
@@ -70,13 +69,11 @@ class SettingsViewModel(
     private val privateFolderState = combine(
         observePrivateFolderUseCase.flow,
         _privateFolderPinDialog,
-        _privateFolderPinInput,
         _privateFolderPinError
-    ) { privateFolder, pinDialog, pinInput, pinError ->
+    ) { privateFolder, pinDialog, pinError ->
         PrivateFolderSlice(
             enabled = privateFolder.enabled,
             pinDialog = pinDialog,
-            pinInput = pinInput,
             pinError = pinError
         )
     }
@@ -99,7 +96,6 @@ class SettingsViewModel(
             prefetchImagesState = base.imagesState,
             privateFolderEnabled = privateFolder.enabled,
             privateFolderPinDialog = privateFolder.pinDialog,
-            privateFolderPinInput = privateFolder.pinInput,
             privateFolderPinError = privateFolder.pinError
         )
     }.stateIn(
@@ -119,7 +115,6 @@ class SettingsViewModel(
     private data class PrivateFolderSlice(
         val enabled: Boolean,
         val pinDialog: PrivateFolderPinDialog?,
-        val pinInput: PrivateFolderPinInput,
         val pinError: Boolean
     )
 
@@ -163,11 +158,8 @@ class SettingsViewModel(
             // Private folder
             is SettingsIntent.OnPrivateFolderCheck -> onPrivateFolderCheck(checked = intent.checked)
             SettingsIntent.ShowChangePinDialog -> showPrivateFolderPinDialog(dialog = PrivateFolderPinDialog.CHANGE_PIN)
-            is SettingsIntent.OnPrivateFolderPinChanged -> onPrivateFolderPinChanged(
-                primary = intent.primary,
-                secondary = intent.secondary
-            )
-            SettingsIntent.SubmitPrivateFolderPin -> submitPrivateFolderPin()
+            SettingsIntent.ClearPrivateFolderPinError -> clearPrivateFolderPinError()
+            is SettingsIntent.SubmitPrivateFolderPin -> submitPrivateFolderPin(pin = intent.pin, newPin = intent.newPin)
             SettingsIntent.HidePrivateFolderPinDialog -> hidePrivateFolderPinDialog()
         }
     }
@@ -295,39 +287,32 @@ class SettingsViewModel(
     }
 
     private fun showPrivateFolderPinDialog(dialog: PrivateFolderPinDialog) {
-        _privateFolderPinInput.update { PrivateFolderPinInput() }
         _privateFolderPinError.update { false }
         _privateFolderPinDialog.update { dialog }
     }
 
-    private fun onPrivateFolderPinChanged(primary: String, secondary: String) {
-        val maxLength = PrivateFolderPinInput.PIN_LENGTH
-
-        _privateFolderPinInput.update { current ->
-            current.copy(
-                primary = primary.filter { it.isDigit() }.take(maxLength),
-                secondary = secondary.filter { it.isDigit() }.take(maxLength)
-            )
-        }
+    private fun clearPrivateFolderPinError() {
         _privateFolderPinError.update { false }
     }
 
-    private suspend fun submitPrivateFolderPin() {
+    private suspend fun submitPrivateFolderPin(pin: String, newPin: String) {
         val dialog = _privateFolderPinDialog.value ?: return
-        val input = _privateFolderPinInput.value
+
+        val pinIsComplete = pin.length == PrivateFolderPinDialog.PIN_LENGTH
+        val newPinIsComplete = newPin.length == PrivateFolderPinDialog.PIN_LENGTH
 
         when (dialog) {
             PrivateFolderPinDialog.CREATE -> {
-                if (!input.primaryIsComplete) return
+                if (!pinIsComplete) return
 
-                enablePrivateFolderUseCase(pin = input.primary)
+                enablePrivateFolderUseCase(pin = pin)
                 _event.emit(SettingsEvent.PrivateFolderPinUpdated)
                 hidePrivateFolderPinDialog()
             }
             PrivateFolderPinDialog.VERIFY_TO_DISABLE -> {
-                if (!input.primaryIsComplete) return
+                if (!pinIsComplete) return
 
-                val pinIsValid = disablePrivateFolderUseCase(pin = input.primary)
+                val pinIsValid = disablePrivateFolderUseCase(pin = pin)
                 if (pinIsValid) {
                     _event.emit(SettingsEvent.PrivateFolderPinUpdated)
                     hidePrivateFolderPinDialog()
@@ -336,9 +321,9 @@ class SettingsViewModel(
                 }
             }
             PrivateFolderPinDialog.CHANGE_PIN -> {
-                if (!input.primaryIsComplete || !input.secondaryIsComplete) return
+                if (!pinIsComplete || !newPinIsComplete) return
 
-                val pinIsValid = changePrivateFolderPinUseCase(oldPin = input.primary, newPin = input.secondary)
+                val pinIsValid = changePrivateFolderPinUseCase(oldPin = pin, newPin = newPin)
                 if (pinIsValid) {
                     _event.emit(SettingsEvent.PrivateFolderPinUpdated)
                     hidePrivateFolderPinDialog()
@@ -351,7 +336,6 @@ class SettingsViewModel(
 
     private fun hidePrivateFolderPinDialog() {
         _privateFolderPinDialog.update { null }
-        _privateFolderPinInput.update { PrivateFolderPinInput() }
         _privateFolderPinError.update { false }
     }
 

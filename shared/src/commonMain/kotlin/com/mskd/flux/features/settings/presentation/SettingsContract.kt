@@ -21,25 +21,15 @@ data class SettingsUiState(
     val prefetchImagesState: ImagesPrefetchManager.State = ImagesPrefetchManager.State.Idle,
     val privateFolderEnabled: Boolean = false,
     val privateFolderPinDialog: PrivateFolderPinDialog? = null,
-    val privateFolderPinInput: PrivateFolderPinInput = PrivateFolderPinInput(),
     val privateFolderPinError: Boolean = false
 )
 
-@Immutable
-data class PrivateFolderPinInput(
-    val primary: String = "",
-    val secondary: String = ""
-) {
-    val primaryIsComplete: Boolean get() = primary.length == PIN_LENGTH
-    val secondaryIsComplete: Boolean get() = secondary.length == PIN_LENGTH
+enum class PrivateFolderPinDialog {
+    CREATE, VERIFY_TO_DISABLE, CHANGE_PIN;
 
     companion object {
         const val PIN_LENGTH = 4
     }
-}
-
-enum class PrivateFolderPinDialog {
-    CREATE, VERIFY_TO_DISABLE, CHANGE_PIN
 }
 
 sealed class SettingsIntent {
@@ -62,8 +52,8 @@ sealed class SettingsIntent {
     // Private folder
     data class OnPrivateFolderCheck(val checked: Boolean): SettingsIntent()
     data object ShowChangePinDialog: SettingsIntent()
-    data class OnPrivateFolderPinChanged(val primary: String, val secondary: String = ""): SettingsIntent()
-    data object SubmitPrivateFolderPin: SettingsIntent()
+    data object ClearPrivateFolderPinError: SettingsIntent()
+    data class SubmitPrivateFolderPin(val pin: String, val newPin: String = ""): SettingsIntent()
     data object HidePrivateFolderPinDialog: SettingsIntent()
 
     // Setters

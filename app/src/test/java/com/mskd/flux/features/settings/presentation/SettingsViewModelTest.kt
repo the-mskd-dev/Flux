@@ -395,7 +395,6 @@ class SettingsViewModelTest : FunSpec({
 
             val state = awaitItem()
             state.privateFolderPinDialog shouldBe PrivateFolderPinDialog.CREATE
-            state.privateFolderPinInput shouldBe PrivateFolderPinInput()
         }
     }
 
@@ -414,10 +413,9 @@ class SettingsViewModelTest : FunSpec({
 
     test("private folder - submit pin enables folder") {
         viewModel.handleIntent(SettingsIntent.OnPrivateFolderCheck(true))
-        viewModel.handleIntent(SettingsIntent.OnPrivateFolderPinChanged(primary = "1234"))
 
         viewModel.event.test {
-            viewModel.handleIntent(SettingsIntent.SubmitPrivateFolderPin)
+            viewModel.handleIntent(SettingsIntent.SubmitPrivateFolderPin(pin = "1234"))
             awaitItem() shouldBe SettingsEvent.PrivateFolderPinUpdated
         }
 
@@ -428,10 +426,9 @@ class SettingsViewModelTest : FunSpec({
         coEvery { disablePrivateFolderUseCase("1234") } returns true
 
         viewModel.handleIntent(SettingsIntent.OnPrivateFolderCheck(false))
-        viewModel.handleIntent(SettingsIntent.OnPrivateFolderPinChanged(primary = "1234"))
 
         viewModel.event.test {
-            viewModel.handleIntent(SettingsIntent.SubmitPrivateFolderPin)
+            viewModel.handleIntent(SettingsIntent.SubmitPrivateFolderPin(pin = "1234"))
             awaitItem() shouldBe SettingsEvent.PrivateFolderPinUpdated
         }
 
@@ -442,10 +439,9 @@ class SettingsViewModelTest : FunSpec({
         coEvery { disablePrivateFolderUseCase("0000") } returns false
 
         viewModel.handleIntent(SettingsIntent.OnPrivateFolderCheck(false))
-        viewModel.handleIntent(SettingsIntent.OnPrivateFolderPinChanged(primary = "0000"))
 
         viewModel.event.test {
-            viewModel.handleIntent(SettingsIntent.SubmitPrivateFolderPin)
+            viewModel.handleIntent(SettingsIntent.SubmitPrivateFolderPin(pin = "0000"))
             expectNoEvents()
         }
 
@@ -460,10 +456,9 @@ class SettingsViewModelTest : FunSpec({
 
     test("private folder - short pin is not submitted") {
         viewModel.handleIntent(SettingsIntent.OnPrivateFolderCheck(true))
-        viewModel.handleIntent(SettingsIntent.OnPrivateFolderPinChanged(primary = "12"))
 
         viewModel.event.test {
-            viewModel.handleIntent(SettingsIntent.SubmitPrivateFolderPin)
+            viewModel.handleIntent(SettingsIntent.SubmitPrivateFolderPin(pin = "12"))
             expectNoEvents()
         }
 
@@ -474,10 +469,9 @@ class SettingsViewModelTest : FunSpec({
         coEvery { changePrivateFolderPinUseCase("1111", "2222") } returns true
 
         viewModel.handleIntent(SettingsIntent.ShowChangePinDialog)
-        viewModel.handleIntent(SettingsIntent.OnPrivateFolderPinChanged(primary = "1111", secondary = "2222"))
 
         viewModel.event.test {
-            viewModel.handleIntent(SettingsIntent.SubmitPrivateFolderPin)
+            viewModel.handleIntent(SettingsIntent.SubmitPrivateFolderPin(pin = "1111", newPin = "2222"))
             awaitItem() shouldBe SettingsEvent.PrivateFolderPinUpdated
         }
 
@@ -488,10 +482,9 @@ class SettingsViewModelTest : FunSpec({
         coEvery { changePrivateFolderPinUseCase("9999", "2222") } returns false
 
         viewModel.handleIntent(SettingsIntent.ShowChangePinDialog)
-        viewModel.handleIntent(SettingsIntent.OnPrivateFolderPinChanged(primary = "9999", secondary = "2222"))
 
         viewModel.event.test {
-            viewModel.handleIntent(SettingsIntent.SubmitPrivateFolderPin)
+            viewModel.handleIntent(SettingsIntent.SubmitPrivateFolderPin(pin = "9999", newPin = "2222"))
             expectNoEvents()
         }
 
@@ -499,6 +492,24 @@ class SettingsViewModelTest : FunSpec({
             val state = awaitItem()
             state.privateFolderPinError shouldBe true
             state.privateFolderPinDialog shouldBe PrivateFolderPinDialog.CHANGE_PIN
+        }
+    }
+
+    test("private folder - clear pin error removes the error") {
+        coEvery { disablePrivateFolderUseCase("0000") } returns false
+
+        viewModel.handleIntent(SettingsIntent.OnPrivateFolderCheck(false))
+        viewModel.handleIntent(SettingsIntent.SubmitPrivateFolderPin(pin = "0000"))
+
+        viewModel.uiState.test {
+            val errorState = awaitItem()
+            errorState.privateFolderPinError shouldBe true
+            errorState.privateFolderPinDialog shouldBe PrivateFolderPinDialog.VERIFY_TO_DISABLE
+
+            viewModel.handleIntent(SettingsIntent.ClearPrivateFolderPinError)
+
+            val clearedState = awaitItem()
+            clearedState.privateFolderPinError shouldBe false
         }
     }
 

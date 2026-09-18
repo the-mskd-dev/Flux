@@ -37,7 +37,7 @@ import com.mskd.flux.screens.settings.composables.SettingsCustomizationSection
 import com.mskd.flux.screens.settings.composables.SettingsDialogs
 import com.mskd.flux.screens.settings.composables.SettingsOtherSection
 import com.mskd.flux.screens.settings.composables.SettingsPlayerSection
-import com.mskd.flux.screens.settings.composables.SettingsPrivateFolderPinDialogs
+import com.mskd.flux.screens.settings.composables.SettingsPrivateFolderDialogs
 import com.mskd.flux.screens.settings.composables.SettingsPrivateFolderSection
 import com.mskd.flux.screens.settings.composables.SettingsSyncSection
 import com.mskd.flux.screens.settings.composables.SettingsTmdbSection
@@ -105,7 +105,7 @@ fun SettingsScreen(
         sendIntent = viewModel::handleIntent
     )
 
-    SettingsPrivateFolderPinDialogs(
+    SettingsPrivateFolderDialogs(
         state = state,
         sendIntent = viewModel::handleIntent
     )

@@ -1,9 +1,19 @@
 package com.mskd.flux.ui.component.global
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Surface
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.cancel
@@ -24,29 +34,41 @@ fun FluxDialog(
     content: @Composable () -> Unit
 ) {
 
-    AlertDialog(
+    Dialog(
         onDismissRequest = onDismiss,
-        confirmButton = {
-            onValidate?.let {
-                TextButton(
-                    onClick = { it() },
-                    content = {
-                        Text.Button.Default(text = onValidateLabel)
+        properties = DialogProperties(decorFitsSystemWindows = false)
+    ) {
+        Surface(
+            shape = FluxUI.shapes.corners,
+            modifier = Modifier.imePadding()
+        ) {
+
+            Column(
+                modifier = Modifier.padding(FluxUI.Space.large),
+                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
+            ) {
+
+                Text.Content.Title(text = title)
+
+                content()
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End,
+                ) {
+
+                    TextButton(onClick = onDismiss) { Text.Button.Default(text = onDismissLabel) }
+
+                    onValidate?.let {
+                        TextButton(onClick = it) { Text.Button.Default(text = onValidateLabel) }
                     }
-                )
-            }
-        },
-        dismissButton = {
-            TextButton(
-                onClick = onDismiss,
-                content = {
-                    Text.Button.Default(text = onDismissLabel)
+
                 }
-            )
-        },
-        title = { Text.Content.Title(text = title) },
-        shape = FluxUI.shapes.corners,
-        text = content
-    )
+
+            }
+
+        }
+
+    }
 
 }

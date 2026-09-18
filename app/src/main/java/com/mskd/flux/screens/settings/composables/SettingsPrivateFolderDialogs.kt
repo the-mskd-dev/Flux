@@ -27,6 +27,7 @@ import com.mskd.flux.features.settings.presentation.SettingsUiState
 import com.mskd.flux.ui.component.global.FluxDialog
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.utils.extensions.toPinInput
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.pin_change_new
 import flux.shared.generated.resources.pin_change_old
@@ -239,8 +240,4 @@ fun SettingsChangePinDialog(
 
     )
 
-}
-
-private fun String.toPinInput(): String {
-    return filter { it.isDigit() }.take(PrivateFolderPinDialog.PIN_LENGTH)
 }

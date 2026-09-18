@@ -16,6 +16,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -114,20 +115,31 @@ fun SettingsPinDialog(
         onValidate = { submit() },
         title = title,
         content = {
+
             Column(
                 verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
             ) {
+
                 Text.Content.Body(text = subtitle)
-                SettingsPinField(
-                    label = stringResource(Res.string.pin_field_label),
-                    input = pin,
-                    isError = isError,
-                    onValueChanged = { value ->
-                        pin = value.toPinInput()
+
+                OutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = pin,
+                    onValueChange = {
+                        pin = it.toPinInput()
                         if (isError) onInputStarted()
                     },
-                    onImeAction = { submit() }
+                    label = { Text.List.Body(text = stringResource(Res.string.pin_field_label)) },
+                    isError = isError,
+                    singleLine = true,
+                    visualTransformation = PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.NumberPassword,
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(onDone = { submit() })
                 )
+
                 if (isError) {
                     Text.Content.Body(
                         text = errorMessage,
@@ -149,7 +161,7 @@ fun SettingsChangePinDialog(
     onDismiss: () -> Unit
 ) {
 
-    val focusManager = LocalFocusManager.current
+    val focusRequester = remember { FocusRequester() }
 
     var oldPin by remember { mutableStateOf("") }
     var newPin by remember { mutableStateOf("") }
@@ -173,67 +185,58 @@ fun SettingsChangePinDialog(
         onValidate = { submit() },
         title = stringResource(Res.string.pin_change_title),
         content = {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
-            ) {
-                SettingsPinField(
-                    label = stringResource(Res.string.pin_change_old),
-                    input = oldPin,
-                    isError = isError,
-                    onValueChanged = { value ->
-                        oldPin = value.toPinInput()
+
+            Column(verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)) {
+
+                OutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = oldPin,
+                    onValueChange = {
+                        oldPin = it.toPinInput()
                         if (isError) onInputStarted()
                     },
-                    imeAction = ImeAction.Next,
-                    onImeAction = { focusManager.moveFocus(FocusDirection.Down) }
-                )
-                SettingsPinField(
-                    label = stringResource(Res.string.pin_change_new),
-                    input = newPin,
+                    label = { Text.List.Body(text = stringResource(Res.string.pin_change_old)) },
                     isError = isError,
-                    onValueChanged = { value ->
-                        newPin = value.toPinInput()
+                    singleLine = true,
+                    visualTransformation = PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(onDone = { focusRequester.requestFocus() })
+                )
+
+                OutlinedTextField(
+                    modifier = Modifier
+                        .focusRequester(focusRequester)
+                        .fillMaxWidth(),
+                    value = newPin,
+                    onValueChange = {
+                        newPin = it.toPinInput()
                         if (isError) onInputStarted()
                     },
-                    onImeAction = { submit() }
+                    label = { Text.List.Body(text = stringResource(Res.string.pin_change_new)) },
+                    isError = isError,
+                    singleLine = true,
+                    visualTransformation = PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(onDone = { submit() })
                 )
+
                 if (isError) {
                     Text.Content.Body(
                         text = errorMessage,
                         color = MaterialTheme.colorScheme.error
                     )
                 }
+
             }
+
         }
-    )
-}
 
-@Composable
-fun SettingsPinField(
-    label: String,
-    input: String,
-    isError: Boolean,
-    onValueChanged: (String) -> Unit,
-    imeAction: ImeAction = ImeAction.Done,
-    onImeAction: () -> Unit
-) {
-
-    OutlinedTextField(
-        modifier = Modifier.fillMaxWidth(),
-        value = input,
-        onValueChange = onValueChanged,
-        label = { Text.List.Body(text = label) },
-        isError = isError,
-        singleLine = true,
-        visualTransformation = PasswordVisualTransformation(),
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.NumberPassword,
-            imeAction = imeAction
-        ),
-        keyboardActions = KeyboardActions(
-            onNext = { onImeAction() },
-            onDone = { onImeAction() }
-        )
     )
 
 }

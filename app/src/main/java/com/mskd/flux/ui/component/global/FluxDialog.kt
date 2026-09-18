@@ -1,5 +1,6 @@
 package com.mskd.flux.ui.component.global
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -44,11 +46,16 @@ fun FluxDialog(
         ) {
 
             Column(
-                modifier = Modifier.padding(FluxUI.Space.large),
+                modifier = Modifier
+                    .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                    .padding(FluxUI.Space.large),
                 verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
             ) {
 
-                Text.Content.Title(text = title)
+                Text.Content.Title(
+                    text = title,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
 
                 content()
 

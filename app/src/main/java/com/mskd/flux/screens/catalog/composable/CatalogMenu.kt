@@ -104,12 +104,11 @@ fun CatalogMenuItem(
 ) {
 
     Surface(
-        modifier = Modifier
-            .width(200.dp)
-            .clickable { onClick() },
+        modifier = Modifier.width(200.dp),
         shape = CircleShape,
         shadowElevation = FluxUI.Elevation.itemShadow,
-        color = MaterialTheme.colorScheme.secondaryContainer
+        color = MaterialTheme.colorScheme.secondaryContainer,
+        onClick = onClick
     ) {
 
         Row(

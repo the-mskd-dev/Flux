@@ -106,7 +106,7 @@ fun PinTextField(
 
             },
             keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.NumberPassword,
+                keyboardType = KeyboardType.Number,
                 imeAction = ImeAction.Done
             ),
             keyboardActions = KeyboardActions(

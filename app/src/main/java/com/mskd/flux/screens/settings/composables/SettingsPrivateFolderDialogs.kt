@@ -2,23 +2,11 @@ package com.mskd.flux.screens.settings.composables
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import com.mskd.flux.features.settings.presentation.PrivateFolderPinDialog
 import com.mskd.flux.features.settings.presentation.SettingsIntent
 import com.mskd.flux.features.settings.presentation.SettingsUiState
@@ -26,19 +14,12 @@ import com.mskd.flux.screens.privateFolder.composables.PinTextField
 import com.mskd.flux.ui.component.global.FluxDialog
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.utils.extensions.toPinInput
 import flux.shared.generated.resources.Res
-import flux.shared.generated.resources.next
-import flux.shared.generated.resources.pin_change_new
-import flux.shared.generated.resources.pin_change_old
-import flux.shared.generated.resources.pin_change_title
 import flux.shared.generated.resources.pin_create_subtitle
 import flux.shared.generated.resources.pin_create_title
 import flux.shared.generated.resources.pin_disable_subtitle
 import flux.shared.generated.resources.pin_disable_title
 import flux.shared.generated.resources.pin_error
-import flux.shared.generated.resources.pin_field_label
-import flux.shared.generated.resources.validate
 import org.jetbrains.compose.resources.stringResource
 
 @Composable

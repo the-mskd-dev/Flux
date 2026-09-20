@@ -1,7 +1,6 @@
 package com.mskd.flux.screens.settings.composables
 
 import android.content.Context
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -41,7 +40,6 @@ import flux.shared.generated.resources.fast_rewind
 import flux.shared.generated.resources.how_to_name_files
 import flux.shared.generated.resources.ic_api
 import flux.shared.generated.resources.ic_customization
-import flux.shared.generated.resources.ic_eraser
 import flux.shared.generated.resources.ic_folder
 import flux.shared.generated.resources.ic_help
 import flux.shared.generated.resources.ic_images
@@ -60,8 +58,6 @@ import flux.shared.generated.resources.images_cached
 import flux.shared.generated.resources.information_language
 import flux.shared.generated.resources.make_a_donation
 import flux.shared.generated.resources.picture_in_picture
-import flux.shared.generated.resources.pin_change_desc
-import flux.shared.generated.resources.pin_change_title
 import flux.shared.generated.resources.private_folder
 import flux.shared.generated.resources.private_folder_desc
 import flux.shared.generated.resources.source_code

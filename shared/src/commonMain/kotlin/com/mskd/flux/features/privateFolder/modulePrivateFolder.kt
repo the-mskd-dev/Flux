@@ -3,7 +3,6 @@ package com.mskd.flux.features.privateFolder
 import com.mskd.flux.di.Qualifiers
 import com.mskd.flux.features.privateFolder.data.datastore.PrivateFolderDataStoreImpl
 import com.mskd.flux.features.privateFolder.domain.datastore.PrivateFolderDataStore
-import com.mskd.flux.features.privateFolder.domain.usecase.changePrivateFolderPin.ChangePrivateFolderPinUseCase
 import com.mskd.flux.features.privateFolder.domain.usecase.disablePrivateFolder.DisablePrivateFolderUseCase
 import com.mskd.flux.features.privateFolder.domain.usecase.enablePrivateFolder.EnablePrivateFolderUseCase
 import com.mskd.flux.features.privateFolder.domain.usecase.observePrivateFolder.ObservePrivateFolderUseCase
@@ -32,7 +31,6 @@ val modulePrivateFolder = module {
 
     singleOf(::EnablePrivateFolderUseCase)
     singleOf(::DisablePrivateFolderUseCase)
-    singleOf(::ChangePrivateFolderPinUseCase)
     singleOf(::SetArtworkPrivacyUseCase)
 
 }

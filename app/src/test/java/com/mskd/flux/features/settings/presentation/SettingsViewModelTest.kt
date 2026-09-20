@@ -8,7 +8,6 @@ import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseC
 import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import com.mskd.flux.features.privateFolder.domain.datastore.PrivateFolderDataStore
-import com.mskd.flux.features.privateFolder.domain.usecase.changePrivateFolderPin.ChangePrivateFolderPinUseCase
 import com.mskd.flux.features.privateFolder.domain.usecase.disablePrivateFolder.DisablePrivateFolderUseCase
 import com.mskd.flux.features.privateFolder.domain.usecase.enablePrivateFolder.EnablePrivateFolderUseCase
 import com.mskd.flux.features.privateFolder.domain.usecase.observePrivateFolder.ObservePrivateFolderUseCase
@@ -39,7 +38,6 @@ class SettingsViewModelTest : FunSpec({
     lateinit var observePrivateFolderUseCase: ObservePrivateFolderUseCase
     lateinit var enablePrivateFolderUseCase: EnablePrivateFolderUseCase
     lateinit var disablePrivateFolderUseCase: DisablePrivateFolderUseCase
-    lateinit var changePrivateFolderPinUseCase: ChangePrivateFolderPinUseCase
 
     val dataStoreFlow = MutableStateFlow(SettingsDataStore.State())
     val privateFolderFlow = MutableStateFlow(PrivateFolderDataStore.State())
@@ -65,7 +63,6 @@ class SettingsViewModelTest : FunSpec({
 
         enablePrivateFolderUseCase = mockk(relaxed = true)
         disablePrivateFolderUseCase = mockk(relaxed = true)
-        changePrivateFolderPinUseCase = mockk(relaxed = true)
 
         viewModel = SettingsViewModel(
             settingsDataStore = settingsDataStore,
@@ -75,7 +72,6 @@ class SettingsViewModelTest : FunSpec({
             observePrivateFolderUseCase = observePrivateFolderUseCase,
             enablePrivateFolderUseCase = enablePrivateFolderUseCase,
             disablePrivateFolderUseCase = disablePrivateFolderUseCase,
-            changePrivateFolderPinUseCase = changePrivateFolderPinUseCase
         )
 
     }
@@ -463,36 +459,6 @@ class SettingsViewModelTest : FunSpec({
         }
 
         coVerify(exactly = 0) { enablePrivateFolderUseCase(any<String>()) }
-    }
-
-    test("private folder - change pin with valid old pin") {
-        coEvery { changePrivateFolderPinUseCase("1111", "2222") } returns true
-
-        viewModel.handleIntent(SettingsIntent.ShowChangePinDialog)
-
-        viewModel.event.test {
-            viewModel.handleIntent(SettingsIntent.SubmitPrivateFolderPin(pin = "1111", newPin = "2222"))
-            awaitItem() shouldBe SettingsEvent.PrivateFolderPinUpdated
-        }
-
-        coVerify { changePrivateFolderPinUseCase("1111", "2222") }
-    }
-
-    test("private folder - change pin with wrong old pin shows error") {
-        coEvery { changePrivateFolderPinUseCase("9999", "2222") } returns false
-
-        viewModel.handleIntent(SettingsIntent.ShowChangePinDialog)
-
-        viewModel.event.test {
-            viewModel.handleIntent(SettingsIntent.SubmitPrivateFolderPin(pin = "9999", newPin = "2222"))
-            expectNoEvents()
-        }
-
-        viewModel.uiState.test {
-            val state = awaitItem()
-            state.privateFolderPinError shouldBe true
-            state.privateFolderPinDialog shouldBe PrivateFolderPinDialog.CHANGE_PIN
-        }
     }
 
     test("private folder - clear pin error removes the error") {

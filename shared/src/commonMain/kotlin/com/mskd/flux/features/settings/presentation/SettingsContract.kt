@@ -25,7 +25,7 @@ data class SettingsUiState(
 )
 
 enum class PrivateFolderPinDialog {
-    CREATE, VERIFY_TO_DISABLE, CHANGE_PIN;
+    CREATE, VERIFY_TO_DISABLE;
 
     companion object {
         const val PIN_LENGTH = 4
@@ -51,7 +51,6 @@ sealed class SettingsIntent {
 
     // Private folder
     data class OnPrivateFolderCheck(val checked: Boolean): SettingsIntent()
-    data object ShowChangePinDialog: SettingsIntent()
     data object ClearPrivateFolderPinError: SettingsIntent()
     data class SubmitPrivateFolderPin(val pin: String, val newPin: String = ""): SettingsIntent()
     data object HidePrivateFolderPinDialog: SettingsIntent()

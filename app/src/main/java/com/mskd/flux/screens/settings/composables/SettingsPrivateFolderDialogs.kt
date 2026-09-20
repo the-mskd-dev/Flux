@@ -14,10 +14,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -29,6 +25,7 @@ import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.extensions.toPinInput
 import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.next
 import flux.shared.generated.resources.pin_change_new
 import flux.shared.generated.resources.pin_change_old
 import flux.shared.generated.resources.pin_change_title
@@ -38,6 +35,7 @@ import flux.shared.generated.resources.pin_disable_subtitle
 import flux.shared.generated.resources.pin_disable_title
 import flux.shared.generated.resources.pin_error
 import flux.shared.generated.resources.pin_field_label
+import flux.shared.generated.resources.validate
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -66,18 +64,6 @@ fun SettingsPrivateFolderDialogs(
                 isError = state.privateFolderPinError,
                 errorMessage = stringResource(Res.string.pin_error),
                 onValidate = { pin -> sendIntent(SettingsIntent.SubmitPrivateFolderPin(pin = pin)) },
-                onInputStarted = { sendIntent(SettingsIntent.ClearPrivateFolderPinError) },
-                onDismiss = { sendIntent(SettingsIntent.HidePrivateFolderPinDialog) }
-            )
-        }
-
-        PrivateFolderPinDialog.CHANGE_PIN -> {
-            SettingsChangePinDialog(
-                isError = state.privateFolderPinError,
-                errorMessage = stringResource(Res.string.pin_error),
-                onValidate = { oldPin, newPin ->
-                    sendIntent(SettingsIntent.SubmitPrivateFolderPin(pin = oldPin, newPin = newPin))
-                },
                 onInputStarted = { sendIntent(SettingsIntent.ClearPrivateFolderPinError) },
                 onDismiss = { sendIntent(SettingsIntent.HidePrivateFolderPinDialog) }
             )
@@ -149,95 +135,6 @@ fun SettingsPinDialog(
                 }
             }
         }
-    )
-
-}
-
-@Composable
-fun SettingsChangePinDialog(
-    isError: Boolean,
-    errorMessage: String,
-    onValidate: (String, String) -> Unit,
-    onInputStarted: () -> Unit,
-    onDismiss: () -> Unit
-) {
-
-    val focusRequester = remember { FocusRequester() }
-
-    var oldPin by remember { mutableStateOf("") }
-    var newPin by remember { mutableStateOf("") }
-
-    fun submit() {
-        if (oldPin.length != PrivateFolderPinDialog.PIN_LENGTH) return
-        if (newPin.length != PrivateFolderPinDialog.PIN_LENGTH) return
-        onValidate(oldPin, newPin)
-    }
-
-    // Wrong pin: the inputs are cleared so the user can start over
-    LaunchedEffect(isError) {
-        if (isError) {
-            oldPin = ""
-            newPin = ""
-        }
-    }
-
-    FluxDialog(
-        onDismiss = onDismiss,
-        onValidate = { submit() },
-        title = stringResource(Res.string.pin_change_title),
-        content = {
-
-            Column(verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)) {
-
-                OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = oldPin,
-                    onValueChange = {
-                        oldPin = it.toPinInput()
-                        if (isError) onInputStarted()
-                    },
-                    label = { Text.List.Body(text = stringResource(Res.string.pin_change_old)) },
-                    isError = isError,
-                    singleLine = true,
-                    visualTransformation = PasswordVisualTransformation(),
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Next
-                    ),
-                    keyboardActions = KeyboardActions(onNext = { focusRequester.requestFocus() })
-                )
-
-                OutlinedTextField(
-                    modifier = Modifier
-                        .focusRequester(focusRequester)
-                        .fillMaxWidth(),
-                    value = newPin,
-                    onValueChange = {
-                        newPin = it.toPinInput()
-                        if (isError) onInputStarted()
-                    },
-                    label = { Text.List.Body(text = stringResource(Res.string.pin_change_new)) },
-                    isError = isError,
-                    singleLine = true,
-                    visualTransformation = PasswordVisualTransformation(),
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Done
-                    ),
-                    keyboardActions = KeyboardActions(onDone = { submit() })
-                )
-
-                if (isError) {
-                    Text.Content.Body(
-                        text = errorMessage,
-                        color = MaterialTheme.colorScheme.error
-                    )
-                }
-
-            }
-
-        }
-
     )
 
 }

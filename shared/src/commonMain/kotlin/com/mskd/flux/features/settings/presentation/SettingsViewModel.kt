@@ -9,7 +9,6 @@ import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
-import com.mskd.flux.features.privateFolder.domain.usecase.changePrivateFolderPin.ChangePrivateFolderPinUseCase
 import com.mskd.flux.features.privateFolder.domain.usecase.disablePrivateFolder.DisablePrivateFolderUseCase
 import com.mskd.flux.features.privateFolder.domain.usecase.enablePrivateFolder.EnablePrivateFolderUseCase
 import com.mskd.flux.features.privateFolder.domain.usecase.observePrivateFolder.ObservePrivateFolderUseCase
@@ -39,7 +38,6 @@ class SettingsViewModel(
     private val observePrivateFolderUseCase: ObservePrivateFolderUseCase,
     private val enablePrivateFolderUseCase: EnablePrivateFolderUseCase,
     private val disablePrivateFolderUseCase: DisablePrivateFolderUseCase,
-    private val changePrivateFolderPinUseCase: ChangePrivateFolderPinUseCase
 ) : ViewModel() {
 
     //region Variables
@@ -157,7 +155,6 @@ class SettingsViewModel(
 
             // Private folder
             is SettingsIntent.OnPrivateFolderCheck -> onPrivateFolderCheck(checked = intent.checked)
-            SettingsIntent.ShowChangePinDialog -> showPrivateFolderPinDialog(dialog = PrivateFolderPinDialog.CHANGE_PIN)
             SettingsIntent.ClearPrivateFolderPinError -> clearPrivateFolderPinError()
             is SettingsIntent.SubmitPrivateFolderPin -> submitPrivateFolderPin(pin = intent.pin, newPin = intent.newPin)
             SettingsIntent.HidePrivateFolderPinDialog -> hidePrivateFolderPinDialog()
@@ -313,17 +310,6 @@ class SettingsViewModel(
                 if (!pinIsComplete) return
 
                 val pinIsValid = disablePrivateFolderUseCase(pin = pin)
-                if (pinIsValid) {
-                    _event.emit(SettingsEvent.PrivateFolderPinUpdated)
-                    hidePrivateFolderPinDialog()
-                } else {
-                    _privateFolderPinError.update { true }
-                }
-            }
-            PrivateFolderPinDialog.CHANGE_PIN -> {
-                if (!pinIsComplete || !newPinIsComplete) return
-
-                val pinIsValid = changePrivateFolderPinUseCase(oldPin = pin, newPin = newPin)
                 if (pinIsValid) {
                     _event.emit(SettingsEvent.PrivateFolderPinUpdated)
                     hidePrivateFolderPinDialog()

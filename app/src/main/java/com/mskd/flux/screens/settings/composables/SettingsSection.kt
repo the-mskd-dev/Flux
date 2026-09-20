@@ -284,17 +284,6 @@ fun SettingsPrivateFolderSection(
             onCheckedChange = { sendIntent(SettingsIntent.OnPrivateFolderCheck(it)) }
         )
 
-        if(state.privateFolderEnabled) {
-            SettingsItem(
-                text = stringResource(Res.string.pin_change_title),
-                subText = stringResource(Res.string.pin_change_desc),
-                painter = painterResource(Res.drawable.ic_eraser),
-                iconColor = iconColor,
-                iconBackgroundColor = bgColor,
-                onClick = { sendIntent(SettingsIntent.ShowChangePinDialog) }
-            )
-        }
-
     }
 
 }

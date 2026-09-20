@@ -12,11 +12,14 @@ import com.mskd.flux.features.catalog.domain.usecase.syncGenres.SyncGenresUseCas
 import com.mskd.flux.features.files.domain.usecase.FilterExistingFilesUseCase
 import com.mskd.flux.features.files.domain.usecase.GetDeviceFilesUseCase
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
+import com.mskd.flux.features.privateFolder.domain.datastore.PrivateFolderDataStore
 import com.mskd.flux.utils.extensions.groupInFolders
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 
 class SyncCatalogUseCase(
     private val database: DatabaseRepository,
+    private val privateFolder: PrivateFolderDataStore,
     private val user: UserDataStore,
     private val imagesPrefetchManager: ImagesPrefetchManager,
     private val appInfo: AppInfo,
@@ -119,6 +122,12 @@ class SyncCatalogUseCase(
 
             // Restore private flags wiped by full sync
             privateArtworkIds.forEach { database.setArtworkPrivate(artworkId = it, isPrivate = true) }
+
+            // Move NSFW artworks to the private folder when included
+            val privateFolderState = privateFolder.flow.first()
+
+            if (privateFolderState.enabled && privateFolderState.includeNsfw)
+                database.setNsfwArtworksPrivate()
 
             coordinator.incrementProgress()
 

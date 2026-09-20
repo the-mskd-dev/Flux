@@ -10,12 +10,16 @@ import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import com.mskd.flux.features.privateFolder.domain.datastore.PrivateFolderDataStore
 import com.mskd.flux.features.privateFolder.domain.usecase.disablePrivateFolder.DisablePrivateFolderUseCase
 import com.mskd.flux.features.privateFolder.domain.usecase.enablePrivateFolder.EnablePrivateFolderUseCase
+import com.mskd.flux.features.privateFolder.domain.usecase.setIncludeNsfw.SetIncludeNsfwUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.settings.domain.model.SettingsDialog
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.types.shouldBeInstanceOf
+import io.kotest.property.Exhaustive
+import io.kotest.property.checkAll
+import io.kotest.property.exhaustive.boolean
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -37,6 +41,7 @@ class SettingsViewModelTest : FunSpec({
     lateinit var updateLanguageUseCase: UpdateLanguageUseCase
     lateinit var enablePrivateFolderUseCase: EnablePrivateFolderUseCase
     lateinit var disablePrivateFolderUseCase: DisablePrivateFolderUseCase
+    lateinit var setIncludeNsfwUseCase: SetIncludeNsfwUseCase
 
     val dataStoreFlow = MutableStateFlow(SettingsDataStore.State())
     val privateFolderFlow = MutableStateFlow(PrivateFolderDataStore.State())
@@ -61,6 +66,7 @@ class SettingsViewModelTest : FunSpec({
         updateLanguageUseCase = mockk(relaxed = true)
         enablePrivateFolderUseCase = mockk(relaxed = true)
         disablePrivateFolderUseCase = mockk(relaxed = true)
+        setIncludeNsfwUseCase = mockk(relaxed = true)
 
         viewModel = SettingsViewModel(
             settingsDataStore = settingsDataStore,
@@ -70,6 +76,7 @@ class SettingsViewModelTest : FunSpec({
             updateLanguageUseCase = updateLanguageUseCase,
             enablePrivateFolderUseCase = enablePrivateFolderUseCase,
             disablePrivateFolderUseCase = disablePrivateFolderUseCase,
+            setIncludeNsfwUseCase = setIncludeNsfwUseCase,
         )
 
     }
@@ -84,6 +91,7 @@ class SettingsViewModelTest : FunSpec({
             initialState.fullSyncInProgress shouldBe false
             initialState.prefetchHdImages shouldBe false
             initialState.privateFolderEnabled shouldBe false
+            initialState.privateFolderIncludeNsfw shouldBe true
         }
     }
 
@@ -474,6 +482,36 @@ class SettingsViewModelTest : FunSpec({
 
             val clearedState = awaitItem()
             clearedState.privateFolderPinError shouldBe false
+        }
+    }
+
+    test("private folder - include nsfw call the use case") {
+
+        checkAll(
+            Exhaustive.boolean()
+        ) { enable ->
+
+            // When
+            viewModel.handleIntent(SettingsIntent.OnPrivateFolderIncludeNsfwCheck(enable))
+
+            // Then
+            coVerify(exactly = 1) { setIncludeNsfwUseCase(includeNsfw = enable) }
+
+        }
+    }
+
+    test("private folder - ui state reflects include nsfw") {
+
+        // Given
+        viewModel.uiState.test {
+            awaitItem()
+
+            // When
+            privateFolderFlow.value = PrivateFolderDataStore.State(enabled = true, includeNsfw = false)
+
+            // Then
+            val state = awaitItem()
+            state.privateFolderIncludeNsfw shouldBe false
         }
     }
 

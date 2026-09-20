@@ -17,6 +17,7 @@ import com.mskd.flux.features.catalog.fake.FakeCatalogSyncCoordinator
 import com.mskd.flux.features.files.domain.usecase.FilterExistingFilesUseCase
 import com.mskd.flux.features.files.domain.usecase.GetDeviceFilesUseCase
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
+import com.mskd.flux.features.privateFolder.domain.datastore.PrivateFolderDataStore
 import com.mskd.flux.mockups.MediaMockups
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -26,6 +27,7 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.resetMain
@@ -45,6 +47,9 @@ class SyncCatalogUseCaseTest : FunSpec({
 
     fun createUseCase(
         database: DatabaseRepository = mockk(relaxed = true),
+        privateFolder: PrivateFolderDataStore = mockk(relaxed = true) {
+            every { flow } returns MutableStateFlow(PrivateFolderDataStore.State())
+        },
         user: UserDataStore = mockk(relaxed = true),
         imagesPrefetchManager: ImagesPrefetchManager = mockk(relaxed = true),
         appInfo: AppInfo = mockk(relaxed = true),
@@ -58,6 +63,7 @@ class SyncCatalogUseCaseTest : FunSpec({
         catalogFetcher: CatalogContentFetcher = mockk(relaxed = true),
     ) = SyncCatalogUseCase(
         database = database,
+        privateFolder = privateFolder,
         user = user,
         imagesPrefetchManager = imagesPrefetchManager,
         appInfo = appInfo,
@@ -291,6 +297,117 @@ class SyncCatalogUseCaseTest : FunSpec({
         // Then
         coVerify(exactly = 0) { database.getPrivateArtworkIds() }
         coVerify(exactly = 0) { database.setArtworkPrivate(artworkId = any(), isPrivate = true) }
+    }
+
+    test("if private folder is enabled with nsfw included, nsfw artworks are marked as private") {
+        // Given
+        val newCatalog = Catalog(
+            artworks = MediaMockups.artworks,
+            movies = MediaMockups.movies,
+            seasons = MediaMockups.seasons,
+            episodes = MediaMockups.episodes
+        )
+        val database = mockk<DatabaseRepository>(relaxed = true)
+        val privateFolder = mockk<PrivateFolderDataStore>(relaxed = true) {
+            every { flow } returns MutableStateFlow(
+                PrivateFolderDataStore.State(enabled = true, includeNsfw = true)
+            )
+        }
+
+        val getDeviceFilesUseCase = mockk<GetDeviceFilesUseCase>()
+        coEvery { getDeviceFilesUseCase() } returns newCatalog.movies.map { it.file }
+
+        val catalogFetcher = mockk<CatalogContentFetcher>(relaxed = true) {
+            coEvery { fetch(any(), any()) } returns newCatalog
+        }
+
+        val useCase = createUseCase(
+            database = database,
+            privateFolder = privateFolder,
+            getDeviceFilesUseCase = getDeviceFilesUseCase,
+            catalogFetcher = catalogFetcher
+        )
+
+        // When
+        useCase.invoke(onlyNew = false)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Then
+        coVerify(exactly = 1) { database.setNsfwArtworksPrivate() }
+    }
+
+    test("if private folder is enabled without nsfw included, nsfw artworks are not marked as private") {
+        // Given
+        val newCatalog = Catalog(
+            artworks = MediaMockups.artworks,
+            movies = MediaMockups.movies,
+            seasons = MediaMockups.seasons,
+            episodes = MediaMockups.episodes
+        )
+        val database = mockk<DatabaseRepository>(relaxed = true)
+        val privateFolder = mockk<PrivateFolderDataStore>(relaxed = true) {
+            every { flow } returns MutableStateFlow(
+                PrivateFolderDataStore.State(enabled = true, includeNsfw = false)
+            )
+        }
+
+        val getDeviceFilesUseCase = mockk<GetDeviceFilesUseCase>()
+        coEvery { getDeviceFilesUseCase() } returns newCatalog.movies.map { it.file }
+
+        val catalogFetcher = mockk<CatalogContentFetcher>(relaxed = true) {
+            coEvery { fetch(any(), any()) } returns newCatalog
+        }
+
+        val useCase = createUseCase(
+            database = database,
+            privateFolder = privateFolder,
+            getDeviceFilesUseCase = getDeviceFilesUseCase,
+            catalogFetcher = catalogFetcher
+        )
+
+        // When
+        useCase.invoke(onlyNew = false)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Then
+        coVerify(exactly = 0) { database.setNsfwArtworksPrivate() }
+    }
+
+    test("if private folder is disabled, nsfw artworks are not marked as private") {
+        // Given
+        val newCatalog = Catalog(
+            artworks = MediaMockups.artworks,
+            movies = MediaMockups.movies,
+            seasons = MediaMockups.seasons,
+            episodes = MediaMockups.episodes
+        )
+        val database = mockk<DatabaseRepository>(relaxed = true)
+        val privateFolder = mockk<PrivateFolderDataStore>(relaxed = true) {
+            every { flow } returns MutableStateFlow(
+                PrivateFolderDataStore.State(enabled = false, includeNsfw = true)
+            )
+        }
+
+        val getDeviceFilesUseCase = mockk<GetDeviceFilesUseCase>()
+        coEvery { getDeviceFilesUseCase() } returns newCatalog.movies.map { it.file }
+
+        val catalogFetcher = mockk<CatalogContentFetcher>(relaxed = true) {
+            coEvery { fetch(any(), any()) } returns newCatalog
+        }
+
+        val useCase = createUseCase(
+            database = database,
+            privateFolder = privateFolder,
+            getDeviceFilesUseCase = getDeviceFilesUseCase,
+            catalogFetcher = catalogFetcher
+        )
+
+        // When
+        useCase.invoke(onlyNew = false)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Then
+        coVerify(exactly = 0) { database.setNsfwArtworksPrivate() }
     }
 
     // endregion

@@ -18,6 +18,7 @@ class PrivateFolderDataStoreImpl(val privateFolderDataStore: DataStore<Preferenc
 
     object Keys {
         val PRIVATE_FOLDER_ENABLED = booleanPreferencesKey("private_folder_enabled")
+        val PRIVATE_FOLDER_INCLUDE_NSFW = booleanPreferencesKey("private_folder_include_nsfw")
         val PRIVATE_FOLDER_PIN = stringPreferencesKey("private_folder_pin")
     }
 
@@ -30,9 +31,11 @@ class PrivateFolderDataStoreImpl(val privateFolderDataStore: DataStore<Preferenc
         .map { preferences ->
 
             val enabled = preferences[Keys.PRIVATE_FOLDER_ENABLED] ?: false
+            val includeNsfw = preferences[Keys.PRIVATE_FOLDER_INCLUDE_NSFW] ?: true
 
             PrivateFolderDataStore.State(
-                enabled = enabled
+                enabled = enabled,
+                includeNsfw = includeNsfw
             )
         }
 
@@ -42,6 +45,12 @@ class PrivateFolderDataStoreImpl(val privateFolderDataStore: DataStore<Preferenc
 
             if (!enabled)
                 preferences.remove(Keys.PRIVATE_FOLDER_PIN)
+        }
+    }
+
+    override suspend fun setIncludeNsfw(includeNsfw: Boolean) {
+        privateFolderDataStore.edit { preferences ->
+            preferences[Keys.PRIVATE_FOLDER_INCLUDE_NSFW] = includeNsfw
         }
     }
 

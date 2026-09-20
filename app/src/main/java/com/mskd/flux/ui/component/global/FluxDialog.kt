@@ -12,6 +12,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -59,8 +60,10 @@ fun FluxDialog(
                 content()
 
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End,
+                    modifier = Modifier
+                        .padding(top = FluxUI.Space.small)
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small, Alignment.End),
                 ) {
 
                     TextButton(onClick = onDismiss) { Text.Button.Default(text = onDismissLabel) }

@@ -13,13 +13,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import com.mskd.flux.features.settings.presentation.PrivateFolderPinDialog
 import com.mskd.flux.features.settings.presentation.SettingsIntent
 import com.mskd.flux.features.settings.presentation.SettingsUiState
+import com.mskd.flux.screens.privateFolder.composables.PinTextField
 import com.mskd.flux.ui.component.global.FluxDialog
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
@@ -85,21 +88,10 @@ fun SettingsPinDialog(
     onDismiss: () -> Unit
 ) {
 
-    var pin by remember { mutableStateOf("") }
-
-    fun submit() {
-        if (pin.length != PrivateFolderPinDialog.PIN_LENGTH) return
-        onValidate(pin)
-    }
-
-    // Wrong pin: the input is cleared so the user can start over
-    LaunchedEffect(isError) {
-        if (isError) pin = ""
-    }
+    val keyboard = LocalSoftwareKeyboardController.current
 
     FluxDialog(
         onDismiss = onDismiss,
-        onValidate = { submit() },
         title = title,
         content = {
 
@@ -109,22 +101,15 @@ fun SettingsPinDialog(
 
                 Text.Content.Body(text = subtitle)
 
-                OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = pin,
-                    onValueChange = {
-                        pin = it.toPinInput()
-                        if (isError) onInputStarted()
-                    },
-                    label = { Text.List.Body(text = stringResource(Res.string.pin_field_label)) },
+                PinTextField(
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
                     isError = isError,
-                    singleLine = true,
-                    visualTransformation = PasswordVisualTransformation(),
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.NumberPassword,
-                        imeAction = ImeAction.Done
-                    ),
-                    keyboardActions = KeyboardActions(onDone = { submit() })
+                    hidePin = false,
+                    onInput = { onInputStarted() },
+                    onDone = {
+                        keyboard?.hide()
+                        onValidate(it)
+                    }
                 )
 
                 if (isError) {

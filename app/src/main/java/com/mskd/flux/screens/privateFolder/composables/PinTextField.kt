@@ -39,8 +39,8 @@ fun PinTextField(
     modifier: Modifier = Modifier,
     isError: Boolean,
     hidePin: Boolean = true,
-    onInput: () -> Unit,
-    onDone: (String) -> Unit
+    onValueChange: (String) -> Unit = {},
+    onDone: (String) -> Unit = {}
 ) {
 
     val pinLength = PrivateFolderPinDialog.PIN_LENGTH
@@ -95,14 +95,13 @@ fun PinTextField(
                 if (digits != pinInput.text) {
                     pinInput = normalized
 
-                    // A new input starts: the previous error is no longer relevant
-                    if (isError) onInput()
-
                     if (digits.length == pinLength)
                         onDone(digits) // Validates automatically on the last digit
                 } else if (pinInput != normalized) {
                     pinInput = normalized // Keep the cursor at the end
                 }
+
+                onValueChange(pinInput.text)
 
             },
             keyboardOptions = KeyboardOptions(

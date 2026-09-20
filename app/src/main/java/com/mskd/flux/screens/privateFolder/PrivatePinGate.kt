@@ -64,7 +64,7 @@ fun PrivatePinGate(
 
         PinTextField(
             isError = isError,
-            onInput = { sendIntent(PrivateFolderIntent.ClearPinError) },
+            onValueChange = { sendIntent(PrivateFolderIntent.ClearPinError) },
             onDone = { sendIntent(PrivateFolderIntent.SubmitPin(pin = it)) }
         )
 

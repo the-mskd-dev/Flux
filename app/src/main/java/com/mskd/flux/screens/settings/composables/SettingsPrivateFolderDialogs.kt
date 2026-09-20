@@ -4,6 +4,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -35,9 +39,7 @@ fun SettingsPrivateFolderDialogs(
                 subtitle = stringResource(Res.string.pin_create_subtitle),
                 isError = state.privateFolderPinError,
                 errorMessage = stringResource(Res.string.pin_error),
-                onValidate = { pin -> sendIntent(SettingsIntent.SubmitPrivateFolderPin(pin = pin)) },
-                onInputStarted = { sendIntent(SettingsIntent.ClearPrivateFolderPinError) },
-                onDismiss = { sendIntent(SettingsIntent.HidePrivateFolderPinDialog) }
+                sendIntent = sendIntent,
             )
         }
 
@@ -47,9 +49,7 @@ fun SettingsPrivateFolderDialogs(
                 subtitle = stringResource(Res.string.pin_disable_subtitle),
                 isError = state.privateFolderPinError,
                 errorMessage = stringResource(Res.string.pin_error),
-                onValidate = { pin -> sendIntent(SettingsIntent.SubmitPrivateFolderPin(pin = pin)) },
-                onInputStarted = { sendIntent(SettingsIntent.ClearPrivateFolderPinError) },
-                onDismiss = { sendIntent(SettingsIntent.HidePrivateFolderPinDialog) }
+                sendIntent = sendIntent,
             )
         }
 
@@ -64,15 +64,18 @@ fun SettingsPinDialog(
     subtitle: String,
     isError: Boolean,
     errorMessage: String,
-    onValidate: (String) -> Unit,
-    onInputStarted: () -> Unit,
-    onDismiss: () -> Unit
+    sendIntent: (SettingsIntent) -> Unit,
 ) {
 
     val keyboard = LocalSoftwareKeyboardController.current
+    var pin by remember { mutableStateOf("") }
 
     FluxDialog(
-        onDismiss = onDismiss,
+        onDismiss = { sendIntent(SettingsIntent.HidePrivateFolderPinDialog) },
+        onValidate = {
+            keyboard?.hide()
+            sendIntent(SettingsIntent.SubmitPrivateFolderPin(pin = pin))
+        },
         title = title,
         content = {
 
@@ -86,10 +89,9 @@ fun SettingsPinDialog(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     isError = isError,
                     hidePin = false,
-                    onInput = { onInputStarted() },
-                    onDone = {
-                        keyboard?.hide()
-                        onValidate(it)
+                    onValueChange = {
+                        sendIntent(SettingsIntent.ClearPrivateFolderPinError)
+                        pin = it
                     }
                 )
 

@@ -15,6 +15,6 @@ fun ArtworkDto.toDomain() : Artwork {
         bannerPath = this.bannerPath.orEmpty(),
         type = if (this.type == MediaTypeDto.MOVIE) ContentType.MOVIE else ContentType.SHOW,
         genreIds = this.genreIds.toImmutableList(),
-        isAdult = this.isAdult
+        nsfw = this.nsfw
     )
 }

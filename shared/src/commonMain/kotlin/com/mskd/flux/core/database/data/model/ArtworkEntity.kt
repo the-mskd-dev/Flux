@@ -19,7 +19,7 @@ data class ArtworkEntity(
     @ColumnInfo(defaultValue = "0")
     val isPrivate: Boolean = false,
     @ColumnInfo(defaultValue = "0")
-    val isAdult: Boolean = false,
+    val nsfw: Boolean = false,
     @ColumnInfo(defaultValue = "")
     val genreIds: List<Int> = emptyList()
 )

@@ -21,7 +21,7 @@ data class Artwork(
     val type: ContentType = ContentType.SHOW,
     val genreIds: ImmutableList<Int> = persistentListOf(),
     val isPrivate: Boolean = false,
-    val isAdult: Boolean = false,
+    val nsfw: Boolean = false,
 
     val lastModification: Long? = null,
 ) {

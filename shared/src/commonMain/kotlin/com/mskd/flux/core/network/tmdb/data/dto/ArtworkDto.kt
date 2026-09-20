@@ -45,7 +45,7 @@ data class ArtworkDto(
     @JsonNames("original_title", "original_name")
     val originalTitle: String,
     @SerialName("adult")
-    val isAdult: Boolean = false,
+    val nsfw: Boolean = false,
     @SerialName("media_type")
     var type: MediaTypeDto?,
 ) {

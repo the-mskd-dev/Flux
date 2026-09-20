@@ -10,7 +10,6 @@ import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import com.mskd.flux.features.privateFolder.domain.datastore.PrivateFolderDataStore
 import com.mskd.flux.features.privateFolder.domain.usecase.disablePrivateFolder.DisablePrivateFolderUseCase
 import com.mskd.flux.features.privateFolder.domain.usecase.enablePrivateFolder.EnablePrivateFolderUseCase
-import com.mskd.flux.features.privateFolder.domain.usecase.observePrivateFolder.ObservePrivateFolderUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.settings.domain.model.SettingsDialog
 import io.kotest.core.spec.style.FunSpec
@@ -32,10 +31,10 @@ class SettingsViewModelTest : FunSpec({
 
     lateinit var viewModel: SettingsViewModel
     lateinit var settingsDataStore: SettingsDataStore
+    lateinit var privateFolderDataStore: PrivateFolderDataStore
     lateinit var imagesPrefetchManager: ImagesPrefetchManager
     lateinit var syncCatalogUseCase: SyncCatalogUseCase
     lateinit var updateLanguageUseCase: UpdateLanguageUseCase
-    lateinit var observePrivateFolderUseCase: ObservePrivateFolderUseCase
     lateinit var enablePrivateFolderUseCase: EnablePrivateFolderUseCase
     lateinit var disablePrivateFolderUseCase: DisablePrivateFolderUseCase
 
@@ -48,6 +47,10 @@ class SettingsViewModelTest : FunSpec({
             every { flow } returns dataStoreFlow
         }
 
+        privateFolderDataStore = mockk(relaxed = true) {
+            every { flow } returns privateFolderFlow
+        }
+
         imagesPrefetchManager = mockk(relaxed = true) {
             every { state } returns MutableStateFlow(ImagesPrefetchManager.State.Idle)
         }
@@ -56,20 +59,15 @@ class SettingsViewModelTest : FunSpec({
             every { state } returns MutableStateFlow(SyncState.Idle)
         }
         updateLanguageUseCase = mockk(relaxed = true)
-
-        observePrivateFolderUseCase = mockk(relaxed = true) {
-            every { flow } returns privateFolderFlow
-        }
-
         enablePrivateFolderUseCase = mockk(relaxed = true)
         disablePrivateFolderUseCase = mockk(relaxed = true)
 
         viewModel = SettingsViewModel(
             settingsDataStore = settingsDataStore,
+            privateFolderDataStore = privateFolderDataStore,
             imagesPrefetchManager = imagesPrefetchManager,
             syncCatalogUseCase = syncCatalogUseCase,
             updateLanguageUseCase = updateLanguageUseCase,
-            observePrivateFolderUseCase = observePrivateFolderUseCase,
             enablePrivateFolderUseCase = enablePrivateFolderUseCase,
             disablePrivateFolderUseCase = disablePrivateFolderUseCase,
         )

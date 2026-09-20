@@ -52,7 +52,7 @@ sealed class SettingsIntent {
     // Private folder
     data class OnPrivateFolderCheck(val checked: Boolean): SettingsIntent()
     data object ClearPrivateFolderPinError: SettingsIntent()
-    data class SubmitPrivateFolderPin(val pin: String, val newPin: String = ""): SettingsIntent()
+    data class SubmitPrivateFolderPin(val pin: String): SettingsIntent()
     data object HidePrivateFolderPinDialog: SettingsIntent()
 
     // Setters

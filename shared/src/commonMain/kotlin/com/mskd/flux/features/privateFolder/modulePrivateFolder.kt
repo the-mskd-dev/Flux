@@ -5,8 +5,6 @@ import com.mskd.flux.features.privateFolder.data.datastore.PrivateFolderDataStor
 import com.mskd.flux.features.privateFolder.domain.datastore.PrivateFolderDataStore
 import com.mskd.flux.features.privateFolder.domain.usecase.disablePrivateFolder.DisablePrivateFolderUseCase
 import com.mskd.flux.features.privateFolder.domain.usecase.enablePrivateFolder.EnablePrivateFolderUseCase
-import com.mskd.flux.features.privateFolder.domain.usecase.observePrivateFolder.ObservePrivateFolderUseCase
-import com.mskd.flux.features.privateFolder.domain.usecase.observePrivateFolder.ObservePrivateFolderUseCaseImpl
 import com.mskd.flux.features.privateFolder.domain.usecase.setArtworkPrivacy.SetArtworkPrivacyUseCase
 import com.mskd.flux.features.privateFolder.presentation.PrivateFolderViewModel
 import org.koin.core.module.dsl.singleOf
@@ -20,12 +18,6 @@ val modulePrivateFolder = module {
     single<PrivateFolderDataStore> {
         PrivateFolderDataStoreImpl(
             privateFolderDataStore = get(Qualifiers.PRIVATE_FOLDER_DATASTORE)
-        )
-    }
-
-    single<ObservePrivateFolderUseCase> {
-        ObservePrivateFolderUseCaseImpl(
-            privateFolderDataStore = get()
         )
     }
 

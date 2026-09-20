@@ -9,9 +9,9 @@ import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
+import com.mskd.flux.features.privateFolder.domain.datastore.PrivateFolderDataStore
 import com.mskd.flux.features.privateFolder.domain.usecase.disablePrivateFolder.DisablePrivateFolderUseCase
 import com.mskd.flux.features.privateFolder.domain.usecase.enablePrivateFolder.EnablePrivateFolderUseCase
-import com.mskd.flux.features.privateFolder.domain.usecase.observePrivateFolder.ObservePrivateFolderUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.settings.domain.model.SettingsDialog
 import flux.shared.generated.resources.Res
@@ -32,10 +32,10 @@ import java.util.Locale
 
 class SettingsViewModel(
     private val settingsDataStore: SettingsDataStore,
+    private val privateFolderDataStore: PrivateFolderDataStore,
     private val imagesPrefetchManager: ImagesPrefetchManager,
     private val syncCatalogUseCase: SyncCatalogUseCase,
     private val updateLanguageUseCase: UpdateLanguageUseCase,
-    private val observePrivateFolderUseCase: ObservePrivateFolderUseCase,
     private val enablePrivateFolderUseCase: EnablePrivateFolderUseCase,
     private val disablePrivateFolderUseCase: DisablePrivateFolderUseCase,
 ) : ViewModel() {
@@ -65,7 +65,7 @@ class SettingsViewModel(
     }
 
     private val privateFolderState = combine(
-        observePrivateFolderUseCase.flow,
+        privateFolderDataStore.flow,
         _privateFolderPinDialog,
         _privateFolderPinError
     ) { privateFolder, pinDialog, pinError ->
@@ -156,7 +156,7 @@ class SettingsViewModel(
             // Private folder
             is SettingsIntent.OnPrivateFolderCheck -> onPrivateFolderCheck(checked = intent.checked)
             SettingsIntent.ClearPrivateFolderPinError -> clearPrivateFolderPinError()
-            is SettingsIntent.SubmitPrivateFolderPin -> submitPrivateFolderPin(pin = intent.pin, newPin = intent.newPin)
+            is SettingsIntent.SubmitPrivateFolderPin -> submitPrivateFolderPin(pin = intent.pin)
             SettingsIntent.HidePrivateFolderPinDialog -> hidePrivateFolderPinDialog()
         }
     }
@@ -292,11 +292,10 @@ class SettingsViewModel(
         _privateFolderPinError.update { false }
     }
 
-    private suspend fun submitPrivateFolderPin(pin: String, newPin: String) {
+    private suspend fun submitPrivateFolderPin(pin: String) {
         val dialog = _privateFolderPinDialog.value ?: return
 
         val pinIsComplete = pin.length == PrivateFolderPinDialog.PIN_LENGTH
-        val newPinIsComplete = newPin.length == PrivateFolderPinDialog.PIN_LENGTH
 
         when (dialog) {
             PrivateFolderPinDialog.CREATE -> {

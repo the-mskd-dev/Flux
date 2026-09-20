@@ -38,6 +38,7 @@ import flux.shared.generated.resources.external_player
 import flux.shared.generated.resources.fast_forward
 import flux.shared.generated.resources.fast_rewind
 import flux.shared.generated.resources.how_to_name_files
+import flux.shared.generated.resources.ic_18_up_rating
 import flux.shared.generated.resources.ic_api
 import flux.shared.generated.resources.ic_customization
 import flux.shared.generated.resources.ic_folder
@@ -46,6 +47,7 @@ import flux.shared.generated.resources.ic_images
 import flux.shared.generated.resources.ic_info
 import flux.shared.generated.resources.ic_keyboard
 import flux.shared.generated.resources.ic_language
+import flux.shared.generated.resources.ic_lock
 import flux.shared.generated.resources.ic_money
 import flux.shared.generated.resources.ic_pip
 import flux.shared.generated.resources.ic_player
@@ -57,6 +59,10 @@ import flux.shared.generated.resources.images_cached
 import flux.shared.generated.resources.information_language
 import flux.shared.generated.resources.make_a_donation
 import flux.shared.generated.resources.picture_in_picture
+import flux.shared.generated.resources.private_folder
+import flux.shared.generated.resources.private_folder_desc
+import flux.shared.generated.resources.private_folder_include_nsfw
+import flux.shared.generated.resources.private_folder_include_nsfw_desc
 import flux.shared.generated.resources.source_code
 import flux.shared.generated.resources.sources
 import flux.shared.generated.resources.sources_short_desc
@@ -251,6 +257,43 @@ fun SettingsOtherSection(
                 )
             }
         )
+
+    }
+
+}
+
+@Composable
+fun SettingsPrivateFolderSection(
+    state: SettingsUiState,
+    sendIntent: (SettingsIntent) -> Unit
+) {
+
+    SettingsSection(
+        iconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        iconBackgroundColor = MaterialTheme.colorScheme.surfaceVariant
+    ) { iconColor, bgColor ->
+
+        SettingsSwitch(
+            text = stringResource(Res.string.private_folder),
+            subText = stringResource(Res.string.private_folder_desc),
+            checked = state.privateFolderEnabled,
+            painter = painterResource(Res.drawable.ic_lock),
+            iconColor = iconColor,
+            iconBackgroundColor = bgColor,
+            onCheckedChange = { sendIntent(SettingsIntent.OnPrivateFolderCheck(it)) }
+        )
+
+        if (state.privateFolderEnabled) {
+            SettingsSwitch(
+                text = stringResource(Res.string.private_folder_include_nsfw),
+                subText = stringResource(Res.string.private_folder_include_nsfw_desc),
+                checked = state.privateFolderIncludeNsfw,
+                painter = painterResource(Res.drawable.ic_18_up_rating),
+                iconColor = iconColor,
+                iconBackgroundColor = bgColor,
+                onCheckedChange = { sendIntent(SettingsIntent.OnPrivateFolderIncludeNsfwCheck(it)) }
+            )
+        }
 
     }
 

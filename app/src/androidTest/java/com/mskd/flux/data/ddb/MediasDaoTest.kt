@@ -10,6 +10,7 @@ import com.mskd.flux.core.database.data.dao.MediasDao
 import com.mskd.flux.core.database.data.mappers.toEntity
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
+import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.mockups.MediaMockups
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -58,6 +59,87 @@ class MediasDaoTest {
         val result = mediasDao.getAll()
         assertEquals(medias.size, result.size)
         assertTrue(result.containsAll(medias))
+    }
+
+    @Test
+    fun insertOrUpdate_does_not_throw_when_an_existing_media_gets_a_new_path() = runTest {
+        // Given
+        val existing = MediaMockups.episode1.toEntity()
+        mediasDao.insert(listOf(existing))
+        val sameMediaWithNewPath = existing.copy(path = "path/naruto/new_path.mkv")
+
+        // When
+        mediasDao.insertOrUpdate(listOf(sameMediaWithNewPath))
+
+        // Then
+        val result = mediasDao.getAll()
+        assertEquals(1, result.size)
+        assertEquals(sameMediaWithNewPath, result.single())
+    }
+
+    @Test
+    fun insertOrUpdate_keeps_only_one_media_when_the_same_identity_is_sent_twice() = runTest {
+        // Given
+        val existing = MediaMockups.episode1.toEntity()
+        val duplicatedWithAnotherPath = existing.copy(path = "path/naruto/duplicated_path.mkv")
+
+        // When
+        mediasDao.insertOrUpdate(listOf(existing, duplicatedWithAnotherPath))
+
+        // Then
+        val result = mediasDao.getAll()
+        assertEquals(1, result.size)
+        assertEquals(existing, result.single())
+    }
+
+    @Test
+    fun insertOrUpdate_updates_an_existing_media_by_its_composite_key() = runTest {
+        // Given
+        val existing = MediaMockups.episode1.toEntity()
+        mediasDao.insert(listOf(existing))
+        val updated = existing.copy(currentTime = 4200L, status = Status.IS_WATCHING)
+
+        // When
+        mediasDao.insertOrUpdate(listOf(updated))
+
+        // Then
+        val result = mediasDao.getAll()
+        assertEquals(1, result.size)
+        assertEquals(4200L, result.single().currentTime)
+        assertEquals(Status.IS_WATCHING, result.single().status)
+    }
+
+    @Test
+    fun insertOrUpdate_deletes_the_stale_media_when_its_path_is_reused_by_another_media() = runTest {
+        // Given
+        val existing = MediaMockups.episode1.toEntity()
+        mediasDao.insert(listOf(existing))
+        val otherMediaOnSamePath = MediaMockups.episode2.toEntity().copy(path = existing.path)
+
+        // When
+        mediasDao.insertOrUpdate(listOf(otherMediaOnSamePath))
+
+        // Then
+        val result = mediasDao.getAll()
+        assertEquals(1, result.size)
+        assertEquals(otherMediaOnSamePath, result.single())
+    }
+
+    @Test
+    fun insertOrUpdate_saves_the_whole_batch_when_a_duplicated_media_is_inside() = runTest {
+        // Given
+        val duplicated = MediaMockups.episode1.toEntity()
+        val duplicatedWithAnotherPath = duplicated.copy(path = "path/naruto/duplicated_path.mkv")
+        val movie = MediaMockups.movie.toEntity()
+
+        // When
+        mediasDao.insertOrUpdate(listOf(duplicated, duplicatedWithAnotherPath, movie))
+
+        // Then
+        val result = mediasDao.getAll()
+        assertEquals(2, result.size)
+        assertTrue(result.contains(duplicated))
+        assertTrue(result.contains(movie))
     }
 
     //endregion

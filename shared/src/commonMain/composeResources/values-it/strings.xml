@@ -197,4 +197,24 @@
     <string name="top_bar">Barra superiore</string>
     <string name="continue_watching">Continua a guardare</string>
     <string name="show_details">Mostra dettagli</string>
+
+    <string name="private_folder">Cartella privata</string>
+    <string name="private_folder_desc">Proteggi le opere con un codice PIN</string>
+    <string name="private_folder_include_nsfw">Includi opere NSFW</string>
+    <string name="private_folder_include_nsfw_desc">Aggiungi automaticamente le opere NSFW alla cartella privata</string>
+    <string name="private_folder_empty">La tua cartella privata è vuota.\nTieni premuta un\'opera del catalogo per aggiungerla</string>
+    <string name="add_to_private_folder">Aggiungi alla cartella privata</string>
+    <string name="removed_from_private_folder">Rimosso dalla cartella privata</string>
+    <string name="remove_from_private_folder">Rimuovi dalla cartella privata</string>
+    <string name="pin_gate_title">Inserisci il tuo codice PIN</string>
+    <string name="pin_field_label">Codice PIN</string>
+    <string name="pin_create_title">Crea un codice PIN</string>
+    <string name="pin_create_subtitle">Scegli un codice a 4 cifre per proteggere la tua cartella privata</string>
+    <string name="pin_disable_title">Disattiva la cartella privata</string>
+    <string name="pin_disable_subtitle">Inserisci il tuo codice PIN per disattivare la cartella privata</string>
+    <string name="pin_change_title">Cambia il codice PIN</string>
+    <string name="pin_change_desc">Sostituisci il tuo codice PIN attuale</string>
+    <string name="pin_change_old">Codice attuale</string>
+    <string name="pin_change_new">Nuovo codice</string>
+    <string name="pin_error">Codice PIN errato</string>
 </resources>

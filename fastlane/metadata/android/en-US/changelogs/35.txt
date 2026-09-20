@@ -1,0 +1,3 @@
+- Feature: Private folder
+- Feature: Fetch NSFW
+- Fix: Crash from 1.8.0

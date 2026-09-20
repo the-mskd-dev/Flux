@@ -60,110 +60,136 @@ class UnknownViewModelTest : FunSpec({
 
     }
 
-    test("initial state") {
+    context("Init") {
 
-        viewModel.uiState.test {
+        test("initial state") {
 
-            val initialState = awaitItem()
+            viewModel.uiState.test {
 
-            initialState.medias shouldBe MediaMockups.unknowns
-            initialState.screen.shouldBeInstanceOf<State.Content<Unit>>()
+                val initialState = awaitItem()
 
-        }
-
-    }
-
-    test("PlayMedia - should call resolvePlaybackAction and then launch player event") {
-
-        checkAll(
-            iterations = 20,
-            Arb.element(MediaMockups.allMedias),
-            Exhaustive.boolean(),
-            Exhaustive.boolean(),
-        ) { media, forceInternal, externalPlayerRequested ->
-
-            // Given
-            val externalPlayer = !forceInternal && externalPlayerRequested
-            coEvery { resolvePlaybackAction(media = media, forceInternal = forceInternal) } returns PlaybackAction.OpenPlayer(media = media, externalPlayer = externalPlayer)
-
-            viewModel.event.test {
-
-                // When
-                viewModel.handleIntent(intent = UnknownIntent.PlayMedia(media = media, forceInternal = forceInternal))
-
-                // Then
-                val event = awaitItem()
-                event.shouldBeInstanceOf<UnknownEvent.PlayMedia>()
-                event.media shouldBe media
-                event.externalPlayer shouldBe externalPlayer
-
-                cancelAndConsumeRemainingEvents()
+                initialState.medias shouldBe MediaMockups.unknowns
+                initialState.screen.shouldBeInstanceOf<State.Content<Unit>>()
 
             }
 
+        }
+
+    }
+
+    context("PlayMedia") {
+
+        test("should call resolvePlaybackAction and then launch player event") {
+
+            checkAll(
+                iterations = 20,
+                Arb.element(MediaMockups.allMedias),
+                Exhaustive.boolean(),
+                Exhaustive.boolean(),
+            ) { media, forceInternal, externalPlayerRequested ->
+
+                // Given
+                val externalPlayer = !forceInternal && externalPlayerRequested
+                coEvery { resolvePlaybackAction(media = media, forceInternal = forceInternal) } returns PlaybackAction.OpenPlayer(media = media, externalPlayer = externalPlayer)
+
+                viewModel.event.test {
+
+                    // When
+                    viewModel.handleIntent(intent = UnknownIntent.PlayMedia(media = media, forceInternal = forceInternal))
+
+                    // Then
+                    val event = awaitItem()
+                    event.shouldBeInstanceOf<UnknownEvent.PlayMedia>()
+                    event.media shouldBe media
+                    event.externalPlayer shouldBe externalPlayer
+
+                    cancelAndConsumeRemainingEvents()
+
+                }
+
+
+            }
 
         }
 
     }
 
-    test("back button") {
-        viewModel.event.test {
 
-            viewModel.handleIntent(UnknownIntent.OnBackTap)
-            val event = awaitItem()
+    context("OnBackTap") {
 
-            event shouldBe UnknownEvent.BackToPreviousScreen
+        test("should emit BackToPreviousScreen event") {
+            viewModel.event.test {
 
-        }
-    }
+                viewModel.handleIntent(UnknownIntent.OnBackTap)
+                val event = awaitItem()
 
-    test("on info tap") {
-        viewModel.event.test {
-            viewModel.handleIntent(UnknownIntent.OnInfoTap)
-            val event = awaitItem()
-            event shouldBe UnknownEvent.NavigateToHowToScreen
-        }
-    }
+                event shouldBe UnknownEvent.BackToPreviousScreen
 
-    test("on external player result") {
-        viewModel.uiState.test {
-            awaitItem()
-
-            viewModel.handleIntent(UnknownIntent.PlayMedia(media = MediaMockups.unknownEpisode))
-            viewModel.handleIntent(UnknownIntent.OnExternalPlayerResult(progress = 5000L))
-
-            coVerify { recordPlaybackResult(media = MediaMockups.unknownEpisode, progress = 5000L) }
-        }
-    }
-
-    test("search word with result") {
-
-        viewModel.uiState.test {
-
-            awaitItem()
-
-            viewModel.handleIntent(UnknownIntent.DoSearch("unknown movie"))
-
-            val state = awaitItem()
-
-            state.searchQuery shouldBe "unknown movie"
-            state.filteredMedias.size shouldBe 1
+            }
         }
 
     }
 
-    test("search word with no result") {
+    context("OnInfoTap") {
 
-        viewModel.uiState.test {
+        test("should emit NavigateToHowToScreen event") {
+            viewModel.event.test {
+                viewModel.handleIntent(UnknownIntent.OnInfoTap)
+                val event = awaitItem()
+                event shouldBe UnknownEvent.NavigateToHowToScreen
+            }
+        }
 
-            awaitItem()
 
-            viewModel.handleIntent(UnknownIntent.DoSearch("AAA"))
+    }
 
-            val state = awaitItem()
+    context("OnExternalPlayerResult") {
 
-            state.searchQuery shouldBe "AAA"
-            state.filteredMedias.size shouldBe 0
+        test("should save progress for external player result") {
+            viewModel.uiState.test {
+                awaitItem()
+
+                viewModel.handleIntent(UnknownIntent.PlayMedia(media = MediaMockups.unknownEpisode))
+                viewModel.handleIntent(UnknownIntent.OnExternalPlayerResult(progress = 5000L))
+
+                coVerify { recordPlaybackResult(media = MediaMockups.unknownEpisode, progress = 5000L) }
+            }
+        }
+
+    }
+
+    context("DoSearch") {
+
+        test("search word with result should return filtered medias") {
+
+            viewModel.uiState.test {
+
+                awaitItem()
+
+                viewModel.handleIntent(UnknownIntent.DoSearch("unknown movie"))
+
+                val state = awaitItem()
+
+                state.searchQuery shouldBe "unknown movie"
+                state.filteredMedias.size shouldBe 1
+            }
+
+        }
+
+        test("search word with no result should return empty result") {
+
+            viewModel.uiState.test {
+
+                awaitItem()
+
+                viewModel.handleIntent(UnknownIntent.DoSearch("AAA"))
+
+                val state = awaitItem()
+
+                state.searchQuery shouldBe "AAA"
+                state.filteredMedias.size shouldBe 0
+
+            }
 
         }
 

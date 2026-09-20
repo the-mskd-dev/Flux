@@ -20,8 +20,11 @@ interface ArtworkDao {
 
 //region Flow
 
-    @Query("SELECT * FROM artworks")
-    fun flowArtworks() : Flow<List<ArtworkEntity>>
+    @Query("SELECT * FROM artworks WHERE (:includePrivates = 1 OR isPrivate = 0)")
+    fun flowArtworks(includePrivates: Boolean = false) : Flow<List<ArtworkEntity>>
+
+    @Query("SELECT * FROM artworks WHERE isPrivate = 1")
+    fun flowPrivateArtworks() : Flow<List<ArtworkEntity>>
 
     @Query("SELECT * FROM artworks WHERE id = :artworkId")
     fun flowArtwork(artworkId: Long) : Flow<ArtworkEntity?>
@@ -33,8 +36,27 @@ interface ArtworkDao {
     @Query("SELECT * FROM artworks WHERE id = :artworkId")
     suspend fun getArtwork(artworkId: Long) : ArtworkEntity?
 
-    @Query("SELECT * FROM artworks")
-    suspend fun getArtworks() : List<ArtworkEntity>
+    @Query("SELECT * FROM artworks WHERE (:includePrivates = 1 OR isPrivate = 0)")
+    suspend fun getArtworks(includePrivates: Boolean = false) : List<ArtworkEntity>
+
+//endregion
+
+//region Private
+
+    @Query("UPDATE artworks SET isPrivate = :isPrivate WHERE id = :artworkId")
+    suspend fun setArtworkPrivate(artworkId: Long, isPrivate: Boolean)
+
+    @Query("UPDATE artworks SET isPrivate = 0 WHERE isPrivate = 1")
+    suspend fun clearPrivateArtworks()
+
+    @Query("SELECT id FROM artworks WHERE isPrivate = 1")
+    suspend fun getPrivateArtworkIds() : List<Long>
+
+    @Query("UPDATE artworks SET isPrivate = 1 WHERE nsfw = 1")
+    suspend fun setNsfwArtworksPrivate()
+
+    @Query("SELECT id FROM artworks WHERE nsfw = 1")
+    suspend fun getNsfwArtworkIds() : List<Long>
 
 //endregion
 

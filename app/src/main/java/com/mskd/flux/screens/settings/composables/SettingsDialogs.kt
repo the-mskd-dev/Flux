@@ -27,6 +27,7 @@ fun SettingsDialogs(
     }
 
 }
+
 @Composable
 fun SettingsFullSyncDialog(
     sendIntent: (SettingsIntent) -> Unit,

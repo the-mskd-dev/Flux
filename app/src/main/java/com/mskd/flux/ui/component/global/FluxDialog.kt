@@ -1,9 +1,21 @@
 package com.mskd.flux.ui.component.global
 
-import androidx.compose.material3.AlertDialog
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.cancel
@@ -24,29 +36,48 @@ fun FluxDialog(
     content: @Composable () -> Unit
 ) {
 
-    AlertDialog(
+    Dialog(
         onDismissRequest = onDismiss,
-        confirmButton = {
-            onValidate?.let {
-                TextButton(
-                    onClick = { it() },
-                    content = {
-                        Text.Button.Default(text = onValidateLabel)
-                    }
+        properties = DialogProperties(decorFitsSystemWindows = false)
+    ) {
+        Card(
+            shape = FluxUI.shapes.corners,
+            modifier = Modifier.imePadding()
+        ) {
+
+            Column(
+                modifier = Modifier
+                    .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                    .padding(FluxUI.Space.large),
+                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
+            ) {
+
+                Text.Content.Title(
+                    text = title,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
-            }
-        },
-        dismissButton = {
-            TextButton(
-                onClick = onDismiss,
-                content = {
-                    Text.Button.Default(text = onDismissLabel)
+
+                content()
+
+                Row(
+                    modifier = Modifier
+                        .padding(top = FluxUI.Space.small)
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small, Alignment.End),
+                ) {
+
+                    TextButton(onClick = onDismiss) { Text.Button.Default(text = onDismissLabel) }
+
+                    onValidate?.let {
+                        TextButton(onClick = it) { Text.Button.Default(text = onValidateLabel) }
+                    }
+
                 }
-            )
-        },
-        title = { Text.Content.Title(text = title) },
-        shape = FluxUI.shapes.corners,
-        text = content
-    )
+
+            }
+
+        }
+
+    }
 
 }

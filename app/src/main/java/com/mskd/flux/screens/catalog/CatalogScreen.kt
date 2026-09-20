@@ -68,6 +68,7 @@ import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
 import com.mskd.flux.utils.rememberExternalPlayerAction
+import com.mskd.flux.utils.rememberScreenDimensions
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -95,6 +96,7 @@ fun CatalogScreen(
                 CatalogEvent.NavigateToSettings -> navigate(Route.Settings)
                 CatalogEvent.NavigateToToken -> navigate(Route.Token(fromSetup = false))
                 CatalogEvent.NavigateToSources -> navigate(Route.Sources(fromSetup = false))
+                CatalogEvent.NavigateToPrivateFolder -> navigate(Route.PrivateFolder)
 
                 is CatalogEvent.PlayMedia -> {
                     if (event.externalPlayer)
@@ -137,6 +139,7 @@ fun CatalogScreen(
                     history = state.history,
                     isRefreshing = state.isRefreshing,
                     tokenIsMissing = state.tokenIsMissing,
+                    privateFolderEnabled = state.privateFolderEnabled,
                     sortingMode = state.sortingMode,
                     showSortingModes = state.showSortingSheet,
                     viewMode = state.viewMode,
@@ -161,6 +164,7 @@ fun CatalogContent(
     history: List<HistoryEntry>,
     isRefreshing: Boolean,
     tokenIsMissing: Boolean,
+    privateFolderEnabled: Boolean,
     sortingMode: CatalogSortingMode,
     showSortingModes: Boolean,
     viewMode: CatalogViewMode,
@@ -175,10 +179,11 @@ fun CatalogContent(
         offsetY = 100.dp.toPx() * pullToRefreshState.distanceFraction
     }
 
-    val columns = FluxUI.itemsPerRow.artworks
+    val screenDimensions = rememberScreenDimensions()
+    val columns = if (screenDimensions.isLarge) 5 else FluxUI.itemsPerRow.artworks
 
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.background,
+        containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
 
         Column(modifier = Modifier.fillMaxSize()) {
@@ -251,6 +256,7 @@ fun CatalogContent(
                             CatalogViewMode.GRID -> {
                                 catalogViewModeGrid(
                                     artworks = artworks,
+                                    privateFolderEnabled = privateFolderEnabled,
                                     sendIntent = sendIntent
                                 )
                             }
@@ -258,6 +264,7 @@ fun CatalogContent(
                                 catalogViewModeType(
                                     artworks = artworks,
                                     sortingMode = sortingMode,
+                                    privateFolderEnabled = privateFolderEnabled,
                                     sendIntent = sendIntent
                                 )
                             }
@@ -266,6 +273,7 @@ fun CatalogContent(
                                     artworks = artworks,
                                     genres = genres,
                                     sortingMode = sortingMode,
+                                    privateFolderEnabled = privateFolderEnabled,
                                     sendIntent = sendIntent
                                 )
                             }
@@ -285,6 +293,7 @@ fun CatalogContent(
                             CatalogMenu(
                                 artworks = artworks,
                                 tokenIsMissing = tokenIsMissing,
+                                privateFolderEnabled = privateFolderEnabled,
                                 sendIntent = sendIntent
                             )
 
@@ -329,6 +338,7 @@ fun CatalogScreen_Preview() {
                 history = MediaMockups.allMedias.map { it.toHistoryEntry() },
                 isRefreshing = false,
                 tokenIsMissing = false,
+                privateFolderEnabled = true,
                 sortingMode = CatalogSortingMode.LAST_MODIFICATION,
                 showSortingModes = false,
                 viewMode = CatalogViewMode.BY_TYPE,
@@ -350,6 +360,7 @@ fun CatalogScreen_Unknown_Preview() {
                 history = emptyList(),
                 isRefreshing = false,
                 tokenIsMissing = true,
+                privateFolderEnabled = true,
                 sortingMode = CatalogSortingMode.LAST_MODIFICATION,
                 showSortingModes = false,
                 viewMode = CatalogViewMode.BY_TYPE,
@@ -371,6 +382,7 @@ fun CatalogScreen_Empty_Preview() {
                 history = emptyList(),
                 isRefreshing = false,
                 tokenIsMissing = true,
+                privateFolderEnabled = true,
                 sortingMode = CatalogSortingMode.LAST_MODIFICATION,
                 showSortingModes = false,
                 viewMode = CatalogViewMode.BY_TYPE,

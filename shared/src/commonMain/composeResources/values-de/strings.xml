@@ -197,4 +197,22 @@
     <string name="top_bar">Obere Leiste</string>
     <string name="continue_watching">Weiterschauen</string>
     <string name="show_details">Details anzeigen</string>
+
+    <string name="private_folder">Privater Ordner</string>
+    <string name="private_folder_desc">Werke mit einem PIN-Code schützen</string>
+    <string name="private_folder_empty">Dein privater Ordner ist leer.\nHalte ein Werk im Katalog gedrückt, um es hinzuzufügen</string>
+    <string name="add_to_private_folder">Zum privaten Ordner hinzufügen</string>
+    <string name="removed_from_private_folder">Aus dem privaten Ordner entfernt</string>
+    <string name="remove_from_private_folder">Aus dem privaten Ordner entfernen</string>
+    <string name="pin_gate_title">Gib deinen PIN-Code ein</string>
+    <string name="pin_field_label">PIN-Code</string>
+    <string name="pin_create_title">PIN-Code erstellen</string>
+    <string name="pin_create_subtitle">Wähle einen 4-stelligen Code, um deinen privaten Ordner zu schützen</string>
+    <string name="pin_disable_title">Privaten Ordner deaktivieren</string>
+    <string name="pin_disable_subtitle">Gib deinen PIN-Code ein, um den privaten Ordner zu deaktivieren</string>
+    <string name="pin_change_title">PIN-Code ändern</string>
+    <string name="pin_change_desc">Ersetze deinen aktuellen PIN-Code</string>
+    <string name="pin_change_old">Aktueller Code</string>
+    <string name="pin_change_new">Neuer Code</string>
+    <string name="pin_error">Falscher PIN-Code</string>
 </resources>

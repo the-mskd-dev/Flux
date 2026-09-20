@@ -17,7 +17,7 @@ class LegacyGenresMigration(
 ) {
 
     suspend fun getSteps(): Int {
-        val artworksToUpdate = database.getArtworks().count { it.genreIds.isEmpty() && !it.isUnknown }
+        val artworksToUpdate = database.getArtworks(includePrivates = true).count { it.genreIds.isEmpty() && !it.isUnknown }
         val genresUpdateIsNeeded = if (detailsRepository.getGenresCount() == 0) 1 else 0
 
         return artworksToUpdate + genresUpdateIsNeeded
@@ -31,7 +31,7 @@ class LegacyGenresMigration(
             onProgress()
         }
 
-        val artworks = database.getArtworks().filter { it.genreIds.isEmpty() && !it.isUnknown }
+        val artworks = database.getArtworks(includePrivates = true).filter { it.genreIds.isEmpty() && !it.isUnknown }
 
         val updatedArtworks = coroutineScope {
 

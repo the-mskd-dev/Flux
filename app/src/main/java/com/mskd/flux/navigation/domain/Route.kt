@@ -39,6 +39,9 @@ sealed class Route : NavKey {
     data object Settings: Route()
 
     @Serializable
+    data object PrivateFolder: Route()
+
+    @Serializable
     data object HowTo: Route()
 
     @Serializable

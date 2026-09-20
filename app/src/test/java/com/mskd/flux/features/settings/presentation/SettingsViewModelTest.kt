@@ -7,12 +7,16 @@ import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
+import com.mskd.flux.features.privateFolder.domain.datastore.PrivateFolderDataStore
+import com.mskd.flux.features.privateFolder.domain.usecase.disablePrivateFolder.DisablePrivateFolderUseCase
+import com.mskd.flux.features.privateFolder.domain.usecase.enablePrivateFolder.EnablePrivateFolderUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.settings.domain.model.SettingsDialog
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.types.shouldBeInstanceOf
+import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
@@ -27,16 +31,24 @@ class SettingsViewModelTest : FunSpec({
 
     lateinit var viewModel: SettingsViewModel
     lateinit var settingsDataStore: SettingsDataStore
+    lateinit var privateFolderDataStore: PrivateFolderDataStore
     lateinit var imagesPrefetchManager: ImagesPrefetchManager
     lateinit var syncCatalogUseCase: SyncCatalogUseCase
     lateinit var updateLanguageUseCase: UpdateLanguageUseCase
+    lateinit var enablePrivateFolderUseCase: EnablePrivateFolderUseCase
+    lateinit var disablePrivateFolderUseCase: DisablePrivateFolderUseCase
 
     val dataStoreFlow = MutableStateFlow(SettingsDataStore.State())
+    val privateFolderFlow = MutableStateFlow(PrivateFolderDataStore.State())
 
     beforeTest {
 
         settingsDataStore = mockk(relaxed = true) {
             every { flow } returns dataStoreFlow
+        }
+
+        privateFolderDataStore = mockk(relaxed = true) {
+            every { flow } returns privateFolderFlow
         }
 
         imagesPrefetchManager = mockk(relaxed = true) {
@@ -47,12 +59,17 @@ class SettingsViewModelTest : FunSpec({
             every { state } returns MutableStateFlow(SyncState.Idle)
         }
         updateLanguageUseCase = mockk(relaxed = true)
+        enablePrivateFolderUseCase = mockk(relaxed = true)
+        disablePrivateFolderUseCase = mockk(relaxed = true)
 
         viewModel = SettingsViewModel(
             settingsDataStore = settingsDataStore,
+            privateFolderDataStore = privateFolderDataStore,
             imagesPrefetchManager = imagesPrefetchManager,
             syncCatalogUseCase = syncCatalogUseCase,
-            updateLanguageUseCase = updateLanguageUseCase
+            updateLanguageUseCase = updateLanguageUseCase,
+            enablePrivateFolderUseCase = enablePrivateFolderUseCase,
+            disablePrivateFolderUseCase = disablePrivateFolderUseCase,
         )
 
     }
@@ -66,6 +83,7 @@ class SettingsViewModelTest : FunSpec({
             initialState.settingsDialog shouldBe null
             initialState.fullSyncInProgress shouldBe false
             initialState.prefetchHdImages shouldBe false
+            initialState.privateFolderEnabled shouldBe false
         }
     }
 
@@ -360,6 +378,102 @@ class SettingsViewModelTest : FunSpec({
 
             viewModel.handleIntent(SettingsIntent.OnPrefetchHdImagesCheck(false))
             coVerify(exactly = 0) { imagesPrefetchManager.prefetchImages() }
+        }
+    }
+
+    test("private folder - checking shows pin creation dialog") {
+        viewModel.uiState.test {
+            awaitItem()
+
+            viewModel.handleIntent(SettingsIntent.OnPrivateFolderCheck(true))
+
+            val state = awaitItem()
+            state.privateFolderPinDialog shouldBe PrivateFolderPinDialog.CREATE
+        }
+    }
+
+    test("private folder - unchecking shows pin verification dialog") {
+        privateFolderFlow.value = PrivateFolderDataStore.State(enabled = true)
+
+        viewModel.uiState.test {
+            awaitItem()
+
+            viewModel.handleIntent(SettingsIntent.OnPrivateFolderCheck(false))
+
+            val state = awaitItem()
+            state.privateFolderPinDialog shouldBe PrivateFolderPinDialog.VERIFY_TO_DISABLE
+        }
+    }
+
+    test("private folder - submit pin enables folder") {
+        viewModel.handleIntent(SettingsIntent.OnPrivateFolderCheck(true))
+
+        viewModel.event.test {
+            viewModel.handleIntent(SettingsIntent.SubmitPrivateFolderPin(pin = "1234"))
+            awaitItem() shouldBe SettingsEvent.PrivateFolderPinUpdated
+        }
+
+        coVerify { enablePrivateFolderUseCase("1234") }
+    }
+
+    test("private folder - submit valid pin disables folder") {
+        coEvery { disablePrivateFolderUseCase("1234") } returns true
+
+        viewModel.handleIntent(SettingsIntent.OnPrivateFolderCheck(false))
+
+        viewModel.event.test {
+            viewModel.handleIntent(SettingsIntent.SubmitPrivateFolderPin(pin = "1234"))
+            awaitItem() shouldBe SettingsEvent.PrivateFolderPinUpdated
+        }
+
+        coVerify { disablePrivateFolderUseCase("1234") }
+    }
+
+    test("private folder - submit wrong pin shows error and keeps dialog") {
+        coEvery { disablePrivateFolderUseCase("0000") } returns false
+
+        viewModel.handleIntent(SettingsIntent.OnPrivateFolderCheck(false))
+
+        viewModel.event.test {
+            viewModel.handleIntent(SettingsIntent.SubmitPrivateFolderPin(pin = "0000"))
+            expectNoEvents()
+        }
+
+        viewModel.uiState.test {
+            val state = awaitItem()
+            state.privateFolderPinError shouldBe true
+            state.privateFolderPinDialog shouldBe PrivateFolderPinDialog.VERIFY_TO_DISABLE
+        }
+
+        coVerify(exactly = 1) { disablePrivateFolderUseCase("0000") }
+    }
+
+    test("private folder - short pin is not submitted") {
+        viewModel.handleIntent(SettingsIntent.OnPrivateFolderCheck(true))
+
+        viewModel.event.test {
+            viewModel.handleIntent(SettingsIntent.SubmitPrivateFolderPin(pin = "12"))
+            expectNoEvents()
+        }
+
+        coVerify(exactly = 0) { enablePrivateFolderUseCase(any<String>()) }
+    }
+
+    test("private folder - clear pin error removes the error") {
+        coEvery { disablePrivateFolderUseCase("0000") } returns false
+
+        viewModel.handleIntent(SettingsIntent.OnPrivateFolderCheck(false))
+        viewModel.handleIntent(SettingsIntent.SubmitPrivateFolderPin(pin = "0000"))
+
+        viewModel.uiState.test {
+            val errorState = awaitItem()
+            errorState.privateFolderPinError shouldBe true
+            errorState.privateFolderPinDialog shouldBe PrivateFolderPinDialog.VERIFY_TO_DISABLE
+
+            viewModel.handleIntent(SettingsIntent.ClearPrivateFolderPinError)
+
+            val clearedState = awaitItem()
+            clearedState.privateFolderPinError shouldBe false
         }
     }
 

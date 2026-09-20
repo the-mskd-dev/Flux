@@ -14,7 +14,7 @@ import androidx.palette.graphics.Palette
 import coil3.toBitmap
 import com.mskd.flux.ui.component.global.FluxImage
 import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.utils.extensions.clickableWithBounce
+import com.mskd.flux.utils.extensions.combinedClickableWithBounce
 
 @Composable
 fun MediaItem(
@@ -23,6 +23,7 @@ fun MediaItem(
     ratio: Float = FluxUI.Dimension.itemRatio,
     shape: Shape = FluxUI.shapes.corners,
     onClick: (Int?) -> Unit,
+    onLongClick: (() -> Unit)? = null,
     description: String
 ) {
 
@@ -31,7 +32,10 @@ fun MediaItem(
     Surface(
         modifier = modifier
             .aspectRatio(ratio)
-            .clickableWithBounce { onClick(seedRgb) },
+            .combinedClickableWithBounce(
+                onClick = { onClick(seedRgb) },
+                onLongClick = onLongClick
+            ),
         shape = shape,
         shadowElevation = FluxUI.Elevation.itemShadow
     ) {

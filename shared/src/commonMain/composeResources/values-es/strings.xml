@@ -197,4 +197,22 @@
     <string name="top_bar">barra superior</string>
     <string name="continue_watching">Continuar viendo</string>
     <string name="show_details">Mostrar detalles</string>
+
+    <string name="private_folder">Carpeta privada</string>
+    <string name="private_folder_desc">Proteger obras con un código PIN</string>
+    <string name="private_folder_empty">Tu carpeta privada está vacía.\nMantén pulsada una obra del catálogo para añadirla</string>
+    <string name="add_to_private_folder">Añadir a la carpeta privada</string>
+    <string name="removed_from_private_folder">Eliminado de la carpeta privada</string>
+    <string name="remove_from_private_folder">Eliminar de la carpeta privada</string>
+    <string name="pin_gate_title">Introduce tu código PIN</string>
+    <string name="pin_field_label">Código PIN</string>
+    <string name="pin_create_title">Crear un código PIN</string>
+    <string name="pin_create_subtitle">Elige un código de 4 dígitos para proteger tu carpeta privada</string>
+    <string name="pin_disable_title">Desactivar la carpeta privada</string>
+    <string name="pin_disable_subtitle">Introduce tu código PIN para desactivar la carpeta privada</string>
+    <string name="pin_change_title">Cambiar el código PIN</string>
+    <string name="pin_change_desc">Reemplazar tu código PIN actual</string>
+    <string name="pin_change_old">Código actual</string>
+    <string name="pin_change_new">Código nuevo</string>
+    <string name="pin_error">Código PIN incorrecto</string>
 </resources>

@@ -25,6 +25,7 @@ fun LazyGridScope.catalogViewModeGenre(
     artworks: List<Artwork>,
     genres: List<Genre>,
     sortingMode: CatalogSortingMode,
+    privateFolderEnabled: Boolean,
     sendIntent: (CatalogIntent) -> Unit
 ) {
 
@@ -50,6 +51,7 @@ fun LazyGridScope.catalogViewModeGenre(
                     name = genre.name,
                     artworks = categoryArtworks,
                     sortingOption = sortingMode,
+                    privateFolderEnabled = privateFolderEnabled,
                     onCategoryTap = { sendIntent(CatalogIntent.OnGenreTap(genre = genre)) },
                     sendIntent = sendIntent
                 )
@@ -71,6 +73,7 @@ fun CatalogViewModeGenre_Preview() {
                 artworks = MediaMockups.artworks,
                 genres = DetailsMockup.allGenres,
                 sortingMode = CatalogSortingMode.LAST_MODIFICATION,
+                privateFolderEnabled = true,
                 sendIntent = {}
             )
         }

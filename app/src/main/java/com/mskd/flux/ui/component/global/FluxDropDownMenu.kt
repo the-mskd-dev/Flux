@@ -19,6 +19,9 @@ fun FluxDropDownMenu(
     items: List<FluxDropDownMenuItem>
 ) {
 
+    if (items.isEmpty())
+        return
+
     DropdownMenu(
         expanded = true,
         onDismissRequest = onDismissRequest,

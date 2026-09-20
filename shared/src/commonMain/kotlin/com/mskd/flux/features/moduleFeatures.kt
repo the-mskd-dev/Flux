@@ -6,6 +6,7 @@ import com.mskd.flux.features.customization.moduleCustomization
 import com.mskd.flux.features.history.moduleHistory
 import com.mskd.flux.features.images.moduleImages
 import com.mskd.flux.features.player.modulePlayer
+import com.mskd.flux.features.privateFolder.modulePrivateFolder
 import com.mskd.flux.features.progress.moduleProgress
 import com.mskd.flux.features.search.moduleSearch
 import com.mskd.flux.features.settings.moduleSettings
@@ -25,6 +26,7 @@ val moduleFeatures = module {
         moduleHistory,
         moduleImages,
         modulePlayer,
+        modulePrivateFolder,
         moduleProgress,
         moduleSearch,
         moduleSettings,

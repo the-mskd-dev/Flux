@@ -217,6 +217,8 @@
 
     <string name="private_folder">Private folder</string>
     <string name="private_folder_desc">Protect artworks behind a PIN code</string>
+    <string name="private_folder_include_nsfw">Include NSFW artworks</string>
+    <string name="private_folder_include_nsfw_desc">Automatically add NSFW artworks to the private folder</string>
     <string name="private_folder_empty">Your private folder is empty.\nLong press an artwork in the catalog to add it</string>
     <string name="add_to_private_folder">Add to private folder</string>
     <string name="removed_from_private_folder">Removed from private folder</string>

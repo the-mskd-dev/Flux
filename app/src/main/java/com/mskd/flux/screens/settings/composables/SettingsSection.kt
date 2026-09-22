@@ -60,6 +60,8 @@ import flux.shared.generated.resources.make_a_donation
 import flux.shared.generated.resources.picture_in_picture
 import flux.shared.generated.resources.private_folder
 import flux.shared.generated.resources.private_folder_desc
+import flux.shared.generated.resources.private_folder_include_nsfw
+import flux.shared.generated.resources.private_folder_include_nsfw_desc
 import flux.shared.generated.resources.source_code
 import flux.shared.generated.resources.sources
 import flux.shared.generated.resources.sources_short_desc
@@ -279,6 +281,18 @@ fun SettingsPrivateFolderSection(
             iconBackgroundColor = bgColor,
             onCheckedChange = { sendIntent(SettingsIntent.OnPrivateFolderCheck(it)) }
         )
+
+        if (state.privateFolderEnabled) {
+            SettingsSwitch(
+                text = stringResource(Res.string.private_folder_include_nsfw),
+                subText = stringResource(Res.string.private_folder_include_nsfw_desc),
+                checked = state.privateFolderIncludeNsfw,
+                painter = painterResource(Res.drawable.ic_lock),
+                iconColor = iconColor,
+                iconBackgroundColor = bgColor,
+                onCheckedChange = { sendIntent(SettingsIntent.OnPrivateFolderIncludeNsfwCheck(it)) }
+            )
+        }
 
     }
 

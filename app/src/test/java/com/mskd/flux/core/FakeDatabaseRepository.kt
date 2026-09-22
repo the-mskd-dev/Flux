@@ -57,6 +57,12 @@ class FakeDatabaseRepository : DatabaseRepository {
         return MediaMockups.artworks.filter { it.isPrivate }.map { it.id }
     }
 
+    override suspend fun setNsfwArtworksPrivate() {}
+
+    override suspend fun getNsfwArtworkIds(): List<Long> {
+        return MediaMockups.artworks.filter { it.nsfw }.map { it.id }
+    }
+
     override suspend fun getMedias(): List<Media> {
         return MediaMockups.allMedias
     }

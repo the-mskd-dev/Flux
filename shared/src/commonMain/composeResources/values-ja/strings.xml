@@ -199,6 +199,8 @@
 
     <string name="private_folder">プライベートフォルダー</string>
     <string name="private_folder_desc">PINコードで作品を保護します</string>
+    <string name="private_folder_include_nsfw">NSFW作品を含める</string>
+    <string name="private_folder_include_nsfw_desc">NSFW作品を自動的にプライベートフォルダーに追加します</string>
     <string name="private_folder_empty">プライベートフォルダーは空です。\nカタログで作品を長押しすると追加できます</string>
     <string name="add_to_private_folder">プライベートフォルダーに追加</string>
     <string name="removed_from_private_folder">プライベートフォルダーから削除しました</string>

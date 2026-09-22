@@ -12,6 +12,7 @@ import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import com.mskd.flux.features.privateFolder.domain.datastore.PrivateFolderDataStore
 import com.mskd.flux.features.privateFolder.domain.usecase.disablePrivateFolder.DisablePrivateFolderUseCase
 import com.mskd.flux.features.privateFolder.domain.usecase.enablePrivateFolder.EnablePrivateFolderUseCase
+import com.mskd.flux.features.privateFolder.domain.usecase.setIncludeNsfw.SetIncludeNsfwUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.settings.domain.model.SettingsDialog
 import flux.shared.generated.resources.Res
@@ -38,6 +39,7 @@ class SettingsViewModel(
     private val updateLanguageUseCase: UpdateLanguageUseCase,
     private val enablePrivateFolderUseCase: EnablePrivateFolderUseCase,
     private val disablePrivateFolderUseCase: DisablePrivateFolderUseCase,
+    private val setIncludeNsfwUseCase: SetIncludeNsfwUseCase,
 ) : ViewModel() {
 
     //region Variables
@@ -71,6 +73,7 @@ class SettingsViewModel(
     ) { privateFolder, pinDialog, pinError ->
         PrivateFolderSlice(
             enabled = privateFolder.enabled,
+            includeNsfw = privateFolder.includeNsfw,
             pinDialog = pinDialog,
             pinError = pinError
         )
@@ -93,6 +96,7 @@ class SettingsViewModel(
             prefetchHdImages = base.settings.prefetchHdImages,
             prefetchImagesState = base.imagesState,
             privateFolderEnabled = privateFolder.enabled,
+            privateFolderIncludeNsfw = privateFolder.includeNsfw,
             privateFolderPinDialog = privateFolder.pinDialog,
             privateFolderPinError = privateFolder.pinError
         )
@@ -112,6 +116,7 @@ class SettingsViewModel(
 
     private data class PrivateFolderSlice(
         val enabled: Boolean,
+        val includeNsfw: Boolean,
         val pinDialog: PrivateFolderPinDialog?,
         val pinError: Boolean
     )
@@ -155,6 +160,7 @@ class SettingsViewModel(
 
             // Private folder
             is SettingsIntent.OnPrivateFolderCheck -> onPrivateFolderCheck(checked = intent.checked)
+            is SettingsIntent.OnPrivateFolderIncludeNsfwCheck -> setIncludeNsfw(includeNsfw = intent.checked)
             SettingsIntent.ClearPrivateFolderPinError -> clearPrivateFolderPinError()
             is SettingsIntent.SubmitPrivateFolderPin -> submitPrivateFolderPin(pin = intent.pin)
             SettingsIntent.HidePrivateFolderPinDialog -> hidePrivateFolderPinDialog()
@@ -290,6 +296,10 @@ class SettingsViewModel(
 
     private fun clearPrivateFolderPinError() {
         _privateFolderPinError.update { false }
+    }
+
+    private suspend fun setIncludeNsfw(includeNsfw: Boolean) {
+        setIncludeNsfwUseCase(includeNsfw = includeNsfw)
     }
 
     private suspend fun submitPrivateFolderPin(pin: String) {

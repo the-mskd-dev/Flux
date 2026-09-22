@@ -34,6 +34,7 @@ class TMDBServiceImpl(private val client: HttpClient) : TMDBService {
             parameter("query", title)
             year?.let { parameter("year", it) }
             parameter("language", language)
+            parameter("include_adult", true)
         }.body()
 
 
@@ -67,6 +68,7 @@ class TMDBServiceImpl(private val client: HttpClient) : TMDBService {
         parameter("query", title)
         year?.let { parameter("year", it) }
         parameter("language", language)
+        parameter("include_adult", true)
     }.body()
 
     override suspend fun getShowDetails(

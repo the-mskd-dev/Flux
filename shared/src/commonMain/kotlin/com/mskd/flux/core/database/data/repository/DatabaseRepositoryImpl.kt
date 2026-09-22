@@ -72,6 +72,14 @@ class DatabaseRepositoryImpl(
         return artworksDao.getPrivateArtworkIds()
     }
 
+    override suspend fun setNsfwArtworksPrivate() {
+        artworksDao.setNsfwArtworksPrivate()
+    }
+
+    override suspend fun getNsfwArtworkIds(): List<Long> {
+        return artworksDao.getNsfwArtworkIds()
+    }
+
     override suspend fun saveArtworks(artworks: List<Artwork>, overrideLastModification: Boolean) {
         val privateIds = artworksDao.getPrivateArtworkIds().toSet()
 

@@ -200,6 +200,8 @@
 
     <string name="private_folder">Cartella privata</string>
     <string name="private_folder_desc">Proteggi le opere con un codice PIN</string>
+    <string name="private_folder_include_nsfw">Includi opere NSFW</string>
+    <string name="private_folder_include_nsfw_desc">Aggiungi automaticamente le opere NSFW alla cartella privata</string>
     <string name="private_folder_empty">La tua cartella privata è vuota.\nTieni premuta un\'opera del catalogo per aggiungerla</string>
     <string name="add_to_private_folder">Aggiungi alla cartella privata</string>
     <string name="removed_from_private_folder">Rimosso dalla cartella privata</string>

@@ -5,7 +5,9 @@ import com.mskd.flux.features.privateFolder.data.datastore.PrivateFolderDataStor
 import com.mskd.flux.features.privateFolder.domain.datastore.PrivateFolderDataStore
 import com.mskd.flux.features.privateFolder.domain.usecase.disablePrivateFolder.DisablePrivateFolderUseCase
 import com.mskd.flux.features.privateFolder.domain.usecase.enablePrivateFolder.EnablePrivateFolderUseCase
+import com.mskd.flux.features.privateFolder.domain.usecase.markNsfwArtworksPrivate.MarkNsfwArtworksPrivateUseCase
 import com.mskd.flux.features.privateFolder.domain.usecase.setArtworkPrivacy.SetArtworkPrivacyUseCase
+import com.mskd.flux.features.privateFolder.domain.usecase.setIncludeNsfw.SetIncludeNsfwUseCase
 import com.mskd.flux.features.privateFolder.presentation.PrivateFolderViewModel
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
@@ -23,6 +25,8 @@ val modulePrivateFolder = module {
 
     singleOf(::EnablePrivateFolderUseCase)
     singleOf(::DisablePrivateFolderUseCase)
+    singleOf(::MarkNsfwArtworksPrivateUseCase)
     singleOf(::SetArtworkPrivacyUseCase)
+    singleOf(::SetIncludeNsfwUseCase)
 
 }

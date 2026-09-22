@@ -52,6 +52,12 @@ interface ArtworkDao {
     @Query("SELECT id FROM artworks WHERE isPrivate = 1")
     suspend fun getPrivateArtworkIds() : List<Long>
 
+    @Query("UPDATE artworks SET isPrivate = 1 WHERE nsfw = 1")
+    suspend fun setNsfwArtworksPrivate()
+
+    @Query("SELECT id FROM artworks WHERE nsfw = 1")
+    suspend fun getNsfwArtworkIds() : List<Long>
+
 //endregion
 
 //region Delete

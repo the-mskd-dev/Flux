@@ -20,6 +20,7 @@ data class SettingsUiState(
     val prefetchHdImages: Boolean = false,
     val prefetchImagesState: ImagesPrefetchManager.State = ImagesPrefetchManager.State.Idle,
     val privateFolderEnabled: Boolean = false,
+    val privateFolderIncludeNsfw: Boolean = true,
     val privateFolderPinDialog: PrivateFolderPinDialog? = null,
     val privateFolderPinError: Boolean = false
 )
@@ -51,6 +52,7 @@ sealed class SettingsIntent {
 
     // Private folder
     data class OnPrivateFolderCheck(val checked: Boolean): SettingsIntent()
+    data class OnPrivateFolderIncludeNsfwCheck(val checked: Boolean): SettingsIntent()
     data object ClearPrivateFolderPinError: SettingsIntent()
     data class SubmitPrivateFolderPin(val pin: String): SettingsIntent()
     data object HidePrivateFolderPinDialog: SettingsIntent()

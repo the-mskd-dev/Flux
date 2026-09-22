@@ -200,6 +200,8 @@
 
     <string name="private_folder">Privater Ordner</string>
     <string name="private_folder_desc">Werke mit einem PIN-Code schützen</string>
+    <string name="private_folder_include_nsfw">NSFW-Werke einbeziehen</string>
+    <string name="private_folder_include_nsfw_desc">NSFW-Werke automatisch zum privaten Ordner hinzufügen</string>
     <string name="private_folder_empty">Dein privater Ordner ist leer.\nHalte ein Werk im Katalog gedrückt, um es hinzuzufügen</string>
     <string name="add_to_private_folder">Zum privaten Ordner hinzufügen</string>
     <string name="removed_from_private_folder">Aus dem privaten Ordner entfernt</string>

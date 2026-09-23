@@ -412,4 +412,37 @@ class SyncCatalogUseCaseTest : FunSpec({
 
     // endregion
 
+    test("if the same media identity is duplicated in the catalog, it is saved only once") {
+        // Given
+        val duplicatedEpisode = MediaMockups.episode1
+        val newCatalog = Catalog(
+            artworks = MediaMockups.artworks,
+            movies = MediaMockups.movies,
+            seasons = MediaMockups.seasons,
+            episodes = MediaMockups.episodes + duplicatedEpisode
+        )
+        val database = mockk<DatabaseRepository>(relaxed = true)
+
+        val getDeviceFilesUseCase = mockk<GetDeviceFilesUseCase>()
+        coEvery { getDeviceFilesUseCase() } returns newCatalog.episodes.map { it.file }
+
+        val catalogFetcher = mockk<CatalogContentFetcher>(relaxed = true) {
+            coEvery { fetch(any(), any()) } returns newCatalog
+        }
+
+        val useCase = createUseCase(
+            database = database,
+            getDeviceFilesUseCase = getDeviceFilesUseCase,
+            catalogFetcher = catalogFetcher
+        )
+
+        // When
+        useCase.invoke(onlyNew = false)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Then
+        coVerify { database.saveMedias(newCatalog.movies + MediaMockups.episodes) }
+    }
+
+
 })

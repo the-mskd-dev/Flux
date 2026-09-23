@@ -118,7 +118,8 @@ class SyncCatalogUseCase(
             if (onlyNew) database.deleteMediasNotInFiles((deviceFiles + existingFiles).distinct()) else database.deleteAll()
             database.saveArtworks(catalog.artworks)
             database.saveSeasons(catalog.seasons)
-            database.saveMedias(catalog.movies + catalog.episodes)
+            // The primary key of medias is (id, artworkId): never save twice the same media identity
+            database.saveMedias((catalog.movies + catalog.episodes).distinctBy { it.mediaId to it.artworkId })
 
             // Restore private flags wiped by full sync
             privateArtworkIds.forEach { database.setArtworkPrivate(artworkId = it, isPrivate = true) }

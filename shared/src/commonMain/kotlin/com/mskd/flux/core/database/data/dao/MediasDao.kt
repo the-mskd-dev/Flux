@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import androidx.room.Upsert
 import com.mskd.flux.core.database.data.model.MediaEntity
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
@@ -19,14 +20,28 @@ interface MediasDao {
     @Insert
     suspend fun insert(medias: List<MediaEntity>)
 
+    @Upsert
+    suspend fun upsert(medias: List<MediaEntity>)
+
     @Transaction
     suspend fun insertOrUpdate(medias: List<MediaEntity>) {
-        val existingByPath = findByPaths(medias.map { it.path }).associateBy { it.path }
+        if (medias.isEmpty()) return
 
-        val (toUpdate, toInsert) = medias.partition { existingByPath.containsKey(it.path) }
+        // The primary key is (id, artworkId): never save twice the same media identity
+        val incoming = medias.distinctBy { it.id to it.artworkId }
 
-        if (toInsert.isNotEmpty()) insert(toInsert)
-        if (toUpdate.isNotEmpty()) update(toUpdate)
+        // The path column has a unique index: free the paths owned by another media identity
+        val existingByPath = findByPaths(paths = incoming.map { it.path }).associateBy { it.path }
+        val stalePaths = incoming
+            .filter { media ->
+                val existing = existingByPath[media.path] ?: return@filter false
+                existing.id != media.id || existing.artworkId != media.artworkId
+            }
+            .map { it.path }
+
+        if (stalePaths.isNotEmpty()) deleteByPaths(paths = stalePaths)
+
+        upsert(medias = incoming)
     }
 
     //endregion
@@ -89,6 +104,9 @@ interface MediasDao {
     //endregion
 
     //region Delete
+
+    @Query("DELETE FROM medias WHERE path IN (:paths)")
+    suspend fun deleteByPaths(paths: List<String>)
 
     @Query("DELETE FROM medias WHERE artworkId IN (:artworkIds)")
     suspend fun deleteMediasByArtworkIds(artworkIds: List<Long>)

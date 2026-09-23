@@ -56,13 +56,21 @@ configure<ApplicationExtension> {
         }
     }
 
-    sourceSets {
-        getByName("androidTest") {
-            resources.directories.add("$rootDir/shared/schemas")
+    flavorDimensions += "distribution"
+
+    productFlavors {
+        create("foss") {
+            dimension = "distribution"
+            isDefault = true
+        }
+        create("playstore") {
+            dimension = "distribution"
+            applicationIdSuffix = ".playstore"
         }
     }
 
     buildTypes {
+
         release {
             if (signingConfigs.findByName("config") != null) {
                 signingConfig = signingConfigs.getByName("config")
@@ -100,15 +108,25 @@ configure<ApplicationExtension> {
                 "proguard-rules.pro"
             )
         }
+
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
+
+    sourceSets {
+        getByName("androidTest") {
+            resources.directories.add("$rootDir/shared/schemas")
+        }
+    }
+
     buildFeatures {
         compose = true
         buildConfig = true
     }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -119,6 +137,7 @@ configure<ApplicationExtension> {
             excludes += "META-INF/*.kotlin_module"
         }
     }
+
     dependenciesInfo {
         includeInApk = false
         includeInBundle = false

@@ -142,6 +142,7 @@ fun CatalogScreen(
                     isRefreshing = state.isRefreshing,
                     tokenIsMissing = state.tokenIsMissing,
                     privateFolderEnabled = state.privateFolderEnabled,
+                    showMessage = state.message.showMessage,
                     sortingMode = state.sortingMode,
                     showSortingModes = state.showSortingSheet,
                     viewMode = state.viewMode,
@@ -167,6 +168,7 @@ fun CatalogContent(
     isRefreshing: Boolean,
     tokenIsMissing: Boolean,
     privateFolderEnabled: Boolean,
+    showMessage: Boolean,
     sortingMode: CatalogSortingMode,
     showSortingModes: Boolean,
     viewMode: CatalogViewMode,
@@ -226,8 +228,10 @@ fun CatalogContent(
                         }
                     }
 
-                    item(span = { GridItemSpan(maxLineSpan) }) {
-                        CatalogMessage(sendIntent = sendIntent)
+                    if (showMessage) {
+                        item(span = { GridItemSpan(maxLineSpan) }) {
+                            CatalogMessage(sendIntent = sendIntent)
+                        }
                     }
 
                     item(span = { GridItemSpan(maxLineSpan) }) {
@@ -345,6 +349,7 @@ fun CatalogScreen_Preview() {
                 isRefreshing = false,
                 tokenIsMissing = false,
                 privateFolderEnabled = true,
+                showMessage = true,
                 sortingMode = CatalogSortingMode.LAST_MODIFICATION,
                 showSortingModes = false,
                 viewMode = CatalogViewMode.BY_TYPE,
@@ -367,6 +372,7 @@ fun CatalogScreen_Unknown_Preview() {
                 isRefreshing = false,
                 tokenIsMissing = true,
                 privateFolderEnabled = true,
+                showMessage = true,
                 sortingMode = CatalogSortingMode.LAST_MODIFICATION,
                 showSortingModes = false,
                 viewMode = CatalogViewMode.BY_TYPE,
@@ -389,6 +395,7 @@ fun CatalogScreen_Empty_Preview() {
                 isRefreshing = false,
                 tokenIsMissing = true,
                 privateFolderEnabled = true,
+                showMessage = true,
                 sortingMode = CatalogSortingMode.LAST_MODIFICATION,
                 showSortingModes = false,
                 viewMode = CatalogViewMode.BY_TYPE,

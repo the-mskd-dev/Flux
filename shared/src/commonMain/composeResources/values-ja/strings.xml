@@ -217,6 +217,17 @@
     <string name="pin_change_new">新しいコード</string>
     <string name="pin_error">PINコードが正しくありません</string>
 
-    <string name="catalog_message">Play Store版がまもなく登場！みなさんの力が必要です！</string>
     <string name="learn_more">詳細を見る</string>
+    <string name="participate">参加する</string>
+
+    <string name="catalog_message">Play Store版がまもなく登場！みなさんの力が必要です！</string>
+    <string name="message_title">Play StoreにFluxが登場！</string>
+    <string-array name="message_details">
+        <item>まず初めに、このアプリを改善するために参加し、フィードバックをくださった皆さん、本当にありがとうございます！こんなに多くの方々に集まっていただけるとは思っていませんでした！</item>
+        <item>アプリの認知度をもう少し広げるため、FluxをPlay Storeでも配信したいと考えています。このバージョンは、アプリの開発に使用している機材費や諸経費を回収することを目的として、有料（わずか1ユーロ）とする予定です。</item>
+        <item>もちろん、Fluxは今後もGitHubとF-Droidで無料で利用可能であり、全く同じ機能を備えています（2つの異なるバージョンを管理したくはないので笑）。</item>
+        <item>ただ、アプリを公開するためにはGoogleの審査を通過するための少数のテスターが必要であり、そのため皆さんの力をお借りしたいと考えています。参加をご希望の方は、テスターリストに登録するためにメールアドレスをお送りいただくだけで大丈夫です。その後、アプリを（通常は無料で）ダウンロードできるPlay Storeのリンクをお送りします。それだけで完了です。</item>
+        <item>皆さんのご協力とご支援に感謝いたします。それでは、またお会いしましょう！</item>
+    </string-array>
+
 </resources>

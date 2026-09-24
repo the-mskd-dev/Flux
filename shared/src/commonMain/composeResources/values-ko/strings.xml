@@ -217,6 +217,17 @@
     <string name="pin_change_new">새 코드</string>
     <string name="pin_error">PIN 코드가 올바르지 않습니다</string>
 
-    <string name="catalog_message">Play Store 버전 출시 임박! 여러분의 도움이 필요합니다!</string>
     <string name="learn_more">자세히 보기</string>
+    <string name="participate">참여하기</string>
+
+    <string name="catalog_message">Play Store 버전 출시 임박! 여러분의 도움이 필요합니다!</string>
+    <string name="message_title">Play Store에서의 Flux!</string>
+    <string-array name="message_details">
+        <item>먼저 이 앱을 개선하기 위해 함께해 주시고 피드백을 남겨주신 모든 분들께 감사드립니다. 이렇게 많은 분들이 참여해 주실 줄은 몰랐습니다!</item>
+        <item>앱의 인지도를 조금 더 높이기 위해 Flux를 Play Store에도 출시하고자 합니다. 이 버전은 앱 개발에 들어가는 비용과 장비 값을 충당하기 위해 유료(단 1유로)로 제공될 예정입니다.</item>
+        <item>물론 Flux는 항상 GitHub와 F-Droid에서 무료로 이용할 수 있으며, 동일한 기능을 제공할 것입니다(두 가지 버전을 따로 관리하고 싶지는 않거든요 ㅎㅎ).</item>
+        <item>하지만 앱을 게시하려면 Google의 검수를 통과하기 위한 소수의 테스터 분들이 필요하여 이렇게 여러분께 도움을 요청하게 되었습니다. 참여를 원하신다면 테스터 목록에 등록할 수 있도록 이메일 주소를 보내주시기만 하면 됩니다. 이후 앱을 (normally 무료로) 다운로드할 수 있는 Play Store 링크를 받으시게 되며, 그거면 끝입니다.</item>
+        <item>여러분들의 도움과 응원에 감사드리며, 곧 다시 뵙겠습니다!</item>
+    </string-array>
+
 </resources>

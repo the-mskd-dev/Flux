@@ -219,6 +219,16 @@
     <string name="pin_change_new">Nouveau code</string>
     <string name="pin_error">Code PIN incorrect</string>
 
-    <string name="catalog_message">Version Play Store en approche, mais j'ai besoin de votre aide !</string>
     <string name="learn_more">En savoir plus</string>
+    <string name="participate">Participer</string>
+
+    <string name="catalog_message">Version Play Store en approche, mais j'ai besoin de votre aide !</string>
+    <string name="message_title">Flux sur le Play Store!</string>>
+    <string-array name="message_details">
+        <item>Tout d'abord merci tout le monde pour votre présence et vos retours pour améliorer cette application, je ne m'attendais pas à ce qu'il y ait autant de monde !</item>
+        <item>Dans un but de donner encore un peu plus de visibilité, je souhaiterais rendre Flux disponible pour le Play Store. Cette version serait payante (1 € seulement), dans le but d'amortir les frais et le matériel que j'utilise pour le développement de l'application.</item>
+        <item>Bien évidemment, Flux sera toujours disponible gratuitement sur GitHub et F-Droid, et possédera les mêmes fonctionnalités (je ne souhaite pas entretenir 2 versions différentes ahah).</item>
+        <item>Cependant afin de publier l'application, j'ai besoin d'une poignée de testeurs et testeuses pour passer la validation de Google, et c'est pourquoi je me tourne vers vous. Si vous souhaitez participer, il suffit juste de m'envoyer votre adresse mail afin que je l'inscrive parmi les testeurs et testeuses, puis vous recevrez un lien Play Store vous proposant de télécharger l'application (gratuitement normalement), et puis c'est tout.</item>
+        <item>Je vous remercie de votre aide et de votre soutien, et à bientôt !</item>
+    </string-array>
 </resources>

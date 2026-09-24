@@ -35,37 +35,6 @@ class FluxApp : Application(), SingletonImageLoader.Factory {
     override fun onCreate() {
         super.onCreate()
 
-        val timestamp = currentTimestampParis()
-        val versionName = BuildConfig.VERSION_NAME
-        val versionCode = BuildConfig.VERSION_CODE
-
-        initAcra {
-            buildConfigClass = BuildConfig::class.java
-            reportFormat = StringFormat.KEY_VALUE_LIST
-
-            reportContent = listOf(
-                ReportField.REPORT_ID,
-                ReportField.APP_VERSION_NAME,
-                ReportField.APP_VERSION_CODE,
-                ReportField.ANDROID_VERSION,
-                ReportField.PHONE_MODEL,
-                ReportField.CUSTOM_DATA,
-                ReportField.STACK_TRACE,
-                ReportField.USER_CRASH_DATE,
-            )
-
-            mailSender {
-                mailTo = Constants.CONTACT.MAIL
-                subject = "Flux - Crash Report - $versionName - $versionCode"
-                reportFileName = "Crash Report - $versionCode - $timestamp.txt"
-            }
-
-            dialog {
-                reportDialogClass = CrashDialogActivity::class.java
-            }
-
-        }
-
         if (BuildConfig.DEBUG) {
             Napier.base(DebugAntilog())
         }
@@ -81,21 +50,8 @@ class FluxApp : Application(), SingletonImageLoader.Factory {
 
         }
 
-        crashLogger.addCustomData(key = CrashKey.FLAVOR, value = BuildConfig.FLAVOR)
+        crashLogger.init()
 
     }
 
-}
-
-private fun currentTimestampParis(): String {
-    val now = Clock.System.now().toLocalDateTime(TimeZone.of("Europe/Paris"))
-    return buildString {
-        append(now.day.toString().padStart(2, '0'))
-        append('-')
-        append(now.month.number.toString().padStart(2, '0'))
-        append('_')
-        append(now.hour.toString().padStart(2, '0'))
-        append('h')
-        append(now.minute.toString().padStart(2, '0'))
-    }
 }

@@ -7,6 +7,7 @@ import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
+import com.mskd.flux.system.UrlLauncher
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -19,6 +20,7 @@ import kotlinx.coroutines.launch
 
 class ShowViewModel(
     private val artworkId: Long,
+    private val urlLauncher: UrlLauncher,
     observeArtworkUseCase: ObserveArtworkUseCase,
     private val resetProgress: ResetProgressUseCase,
 ) : ViewModel() {
@@ -111,7 +113,7 @@ class ShowViewModel(
     private suspend fun openShowInfo() {
         val fullShow = showContent?.fullShow ?: return
 
-        _event.emit(ShowEvent.OpenShowInfo(url = fullShow.artwork.infoUrl))
+        urlLauncher.open(url = fullShow.artwork.infoUrl)
     }
 
     private suspend fun resetProgress() {

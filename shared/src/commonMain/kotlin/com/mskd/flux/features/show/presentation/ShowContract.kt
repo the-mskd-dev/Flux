@@ -39,5 +39,4 @@ sealed class ShowIntent {
 sealed class ShowEvent {
     object BackToPreviousScreen : ShowEvent()
     data class NavigateToSeason(val artworkId: Long, val season: Int, val rgb: Int?) : ShowEvent()
-    data class OpenShowInfo(val url: String) : ShowEvent()
 }

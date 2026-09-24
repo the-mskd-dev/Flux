@@ -50,7 +50,6 @@ import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.utils.FileUtils
 import com.mskd.flux.utils.FluxPreview
-import com.mskd.flux.utils.UriUtils
 import com.mskd.flux.utils.rememberExternalPlayerAction
 import com.mskd.flux.utils.rememberScreenDimensions
 import flux.shared.generated.resources.Res
@@ -88,7 +87,6 @@ fun ArtworkScreen(
                     else
                         navigate(Player(params = PlayerParams.fromMedia(event.media)))
                 }
-                is ArtworkEvent.OpenUrlInfo -> UriUtils.openWebPage(context = context, url = event.url)
                 is ArtworkEvent.OpenFileExplorer -> FileUtils.openFileExplorer(context = context, file = event.media.file)
             }
         }

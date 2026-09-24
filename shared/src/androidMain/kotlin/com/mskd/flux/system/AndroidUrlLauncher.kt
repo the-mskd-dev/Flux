@@ -8,7 +8,9 @@ class AndroidUrlLauncher(private val context: Context) : UrlLauncher {
 
     override fun open(url: String) {
         val uri = url.toUri()
-        val intent = Intent(Intent.ACTION_VIEW, uri)
+        val intent = Intent(Intent.ACTION_VIEW, uri).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
         context.startActivity(intent)
     }
 

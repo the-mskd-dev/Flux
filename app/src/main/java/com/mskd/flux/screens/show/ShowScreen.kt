@@ -48,7 +48,6 @@ import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.ResetProgressDialog
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
-import com.mskd.flux.utils.UriUtils
 import com.mskd.flux.utils.rememberScreenDimensions
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_eraser
@@ -70,14 +69,12 @@ fun ShowScreen(
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
             when (event) {
                 ShowEvent.BackToPreviousScreen -> onBack()
                 is ShowEvent.NavigateToSeason -> navigate(Artwork(artworkId = event.artworkId, season = event.season, rgb = event.rgb))
-                is ShowEvent.OpenShowInfo -> UriUtils.openWebPage(context = context, url = event.url)
             }
         }
     }

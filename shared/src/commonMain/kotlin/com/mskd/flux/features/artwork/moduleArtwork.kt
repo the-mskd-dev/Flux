@@ -20,6 +20,7 @@ val moduleArtwork = module {
         ArtworkViewModel(
             artworkId = params.get(),
             season = params.getOrNull(),
+            urlLauncher = get(),
             settingsDataStore = get(),
             changeMediaStatus = get(),
             markPreviousAsWatched = get(),

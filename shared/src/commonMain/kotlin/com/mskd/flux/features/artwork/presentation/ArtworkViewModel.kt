@@ -8,7 +8,6 @@ import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
-import com.mskd.flux.features.artwork.presentation.ArtworkEvent.OpenUrlInfo
 import com.mskd.flux.features.player.domain.model.PlaybackAction
 import com.mskd.flux.features.player.domain.usecase.ResolvePlaybackActionUseCase
 import com.mskd.flux.features.progress.domain.usecase.ChangeMediaStatusUseCase
@@ -16,6 +15,7 @@ import com.mskd.flux.features.progress.domain.usecase.MarkPreviousAsWatchedUseCa
 import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
+import com.mskd.flux.system.UrlLauncher
 import com.mskd.flux.utils.extensions.firstEpisode
 import com.mskd.flux.utils.extensions.firstEpisodeToWatch
 import com.mskd.flux.utils.extensions.getPreviousEpisodesFor
@@ -32,6 +32,7 @@ import kotlinx.coroutines.launch
 class ArtworkViewModel(
     private val artworkId: Long,
     private val season: Int?,
+    private val urlLauncher: UrlLauncher,
     settingsDataStore: SettingsDataStore,
     observeArtworkUseCase: ObserveArtworkUseCase,
     private val changeMediaStatus: ChangeMediaStatusUseCase,
@@ -102,7 +103,7 @@ class ArtworkViewModel(
             ArtworkIntent.OnBackTap -> _event.emit(ArtworkEvent.BackToPreviousScreen)
             is ArtworkIntent.PlayMedia -> playMedia(media = intent.media, forceInternal = intent.forceInternal)
             ArtworkIntent.OpenArtworkInfo -> openArtworkInfo()
-            is ArtworkIntent.OpenEpisodeInfo -> _event.emit(OpenUrlInfo(url = intent.episode.infoUrl))
+            is ArtworkIntent.OpenEpisodeInfo -> urlLauncher.open(url = intent.episode.infoUrl)
             is ArtworkIntent.OpenFileExplorer -> _event.emit(ArtworkEvent.OpenFileExplorer(media = intent.media))
 
             // Dialogs
@@ -190,7 +191,7 @@ class ArtworkViewModel(
                 is FullArtwork.FullShow -> fullArtwork.seasons.find { it.season == season }?.infoUrl ?: return@let
             }
 
-            _event.emit(OpenUrlInfo(url = url))
+            urlLauncher.open(url = url)
         }
     }
 

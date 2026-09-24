@@ -8,5 +8,5 @@ sealed class StringProvider {
     data class Resource(val resource: StringResource): StringProvider()
     data class ResourceWithArgs(val resource: StringResource, val args: List<Any>): StringProvider()
     data class Plural(val resource: PluralStringResource, val quantity: Int): StringProvider()
-    data class PluraleWithArgs(val resource: PluralStringResource, val quantity: Int, val args: List<Any>): StringProvider()
+    data class PluralWithArgs(val resource: PluralStringResource, val quantity: Int, val args: List<Any>): StringProvider()
 }

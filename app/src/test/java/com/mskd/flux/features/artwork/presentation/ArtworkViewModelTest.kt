@@ -16,6 +16,8 @@ import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.system.FilesLauncher
+import com.mskd.flux.system.UrlLauncher
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -29,6 +31,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -39,6 +42,8 @@ class ArtworkViewModelTest : FunSpec({
 
     lateinit var viewModel: ArtworkViewModel
     lateinit var settingsDataStore: SettingsDataStore
+    lateinit var filesLauncher: FilesLauncher
+    lateinit var urlLauncher: UrlLauncher
     lateinit var observeArtworkUseCase: ObserveArtworkUseCase
     lateinit var changeMediaStatus: ChangeMediaStatusUseCase
     lateinit var markPreviousAsWatched: MarkPreviousAsWatchedUseCase
@@ -50,6 +55,8 @@ class ArtworkViewModelTest : FunSpec({
 
     val updateVm: (id: Long) -> Unit = { id ->
 
+        filesLauncher = mockk(relaxed = true)
+        urlLauncher = mockk(relaxed = true)
         changeMediaStatus = mockk(relaxed = true)
         markPreviousAsWatched = mockk(relaxed = true)
         resetProgress = mockk(relaxed = true)
@@ -66,7 +73,9 @@ class ArtworkViewModelTest : FunSpec({
             markPreviousAsWatched = markPreviousAsWatched,
             resetProgress = resetProgress,
             resolvePlaybackAction = resolvePlaybackAction,
-            recordPlaybackResult = recordPlaybackResult
+            recordPlaybackResult = recordPlaybackResult,
+            filesLauncher = filesLauncher,
+            urlLauncher = urlLauncher
         )
 
     }
@@ -331,29 +340,37 @@ class ArtworkViewModelTest : FunSpec({
         }
     }
 
-    test("open artwork info") {
-        viewModel.uiState.test {
-            expectMostRecentItem()
+    context("OpenArtworkInfo") {
+        test("should call UrlLauncher") {
 
-            viewModel.event.test {
+            viewModel.uiState.test {
+
+                // Given
+                expectMostRecentItem()
+
+                // When
                 viewModel.handleIntent(ArtworkIntent.OpenArtworkInfo)
-                val event = awaitItem()
-                event.shouldBeInstanceOf<ArtworkEvent.OpenUrlInfo>()
-                event.url shouldBe MediaMockups.season1.infoUrl
+
+                // Then
+                verify { urlLauncher.open(url = MediaMockups.season1.infoUrl) }
             }
         }
     }
 
-    test("open episode info") {
-        viewModel.uiState.test {
-            expectMostRecentItem()
+    context("OpenEpisodeInfo") {
+        test("should call UrlLauncher") {
 
-            viewModel.event.test {
+            viewModel.uiState.test {
+
+                // Given
+                expectMostRecentItem()
                 val episode = MediaMockups.episode1
+
+                // When
                 viewModel.handleIntent(ArtworkIntent.OpenEpisodeInfo(episode))
-                val event = awaitItem()
-                event.shouldBeInstanceOf<ArtworkEvent.OpenUrlInfo>()
-                event.url shouldBe episode.infoUrl
+
+                // Then
+                verify { urlLauncher.open(url = episode.infoUrl) }
             }
         }
     }

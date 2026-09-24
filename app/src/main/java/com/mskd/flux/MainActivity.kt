@@ -38,6 +38,7 @@ import com.mskd.flux.screens.catalog.CatalogScreen
 import com.mskd.flux.screens.customization.CustomizationScreen
 import com.mskd.flux.screens.howTo.HowToScreen
 import com.mskd.flux.screens.player.PlayerScreen
+import com.mskd.flux.screens.privateFolder.PrivateScreen
 import com.mskd.flux.screens.search.SearchScreen
 import com.mskd.flux.screens.settings.SettingsScreen
 import com.mskd.flux.screens.setup.SetupScreen
@@ -181,6 +182,12 @@ class MainActivity : ComponentActivity() {
                             }
                             entry<Route.UnknownArtworks> {
                                 UnknownScreen(
+                                    navigate = { route -> navigate(route) },
+                                    onBack = { onBack() },
+                                )
+                            }
+                            entry<Route.PrivateFolder> {
+                                PrivateScreen(
                                     navigate = { route -> navigate(route) },
                                     onBack = { onBack() },
                                 )

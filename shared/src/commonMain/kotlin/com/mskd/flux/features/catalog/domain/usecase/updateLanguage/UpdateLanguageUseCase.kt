@@ -29,7 +29,7 @@ class UpdateLanguageUseCase(
         coordinator.launch(full = false) {
 
             val language = settings.getDataLanguage()
-            val shows = database.getArtworks().filter { it.type == ContentType.SHOW }
+            val shows = database.getArtworks(includePrivates = true).filter { it.type == ContentType.SHOW }
             val medias = database.getMedias()
             val movies = medias.filterIsInstance<Movie>()
             val seasons = database.getSeasons()

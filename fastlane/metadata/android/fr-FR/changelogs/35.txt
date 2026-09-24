@@ -1,0 +1,3 @@
+- Feature: Dossier privé
+- Feature: Récupération des oeuvres NSFW
+- Fix: Crash de la version 1.8.0

@@ -198,4 +198,24 @@
     <string name="top_bar">Barre supérieure</string>
     <string name="continue_watching">Reprendre la lecture</string>
     <string name="show_details">Afficher les détails</string>
+
+    <string name="private_folder">Dossier privé</string>
+    <string name="private_folder_desc">Protéger des œuvres derrière un code PIN</string>
+    <string name="private_folder_include_nsfw">Inclure les œuvres NSFW</string>
+    <string name="private_folder_include_nsfw_desc">Ajouter automatiquement les œuvres NSFW au dossier privé</string>
+    <string name="private_folder_empty">Votre dossier privé est vide.\nFaites un appui long sur une œuvre dans le catalogue pour l\'ajouter</string>
+    <string name="add_to_private_folder">Ajouter au dossier privé</string>
+    <string name="removed_from_private_folder">Retiré du dossier privé</string>
+    <string name="remove_from_private_folder">Retirer du dossier privé</string>
+    <string name="pin_gate_title">Saisissez votre code PIN</string>
+    <string name="pin_field_label">Code PIN</string>
+    <string name="pin_create_title">Créer un code PIN</string>
+    <string name="pin_create_subtitle">Choisissez un code à 4 chiffres pour protéger votre dossier privé</string>
+    <string name="pin_disable_title">Désactiver le dossier privé</string>
+    <string name="pin_disable_subtitle">Saisissez votre code PIN pour désactiver le dossier privé</string>
+    <string name="pin_change_title">Changer le code PIN</string>
+    <string name="pin_change_desc">Remplacer votre code PIN actuel</string>
+    <string name="pin_change_old">Code actuel</string>
+    <string name="pin_change_new">Nouveau code</string>
+    <string name="pin_error">Code PIN incorrect</string>
 </resources>

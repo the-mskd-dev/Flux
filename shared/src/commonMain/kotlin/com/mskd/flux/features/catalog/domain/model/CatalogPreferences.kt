@@ -10,4 +10,5 @@ data class CatalogPreferences(
     val sortingMode: CatalogSortingMode,
     val viewMode: CatalogViewMode,
     val token: String,
+    val privateFolderEnabled: Boolean,
 )

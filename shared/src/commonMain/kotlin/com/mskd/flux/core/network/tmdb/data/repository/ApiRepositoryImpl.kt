@@ -52,12 +52,17 @@ internal class ApiRepositoryImpl(
 
         val season = seasonDto.toDomain(artworkId = artworkId)
 
-        val episodes = files.map { file ->
-            seasonDto.episodes
-                .find { it.season == file.season && it.number == file.episode }
-                ?.toDomain(artworkId = artworkId, file = file)
-                ?: Episode(file = file)
-        }
+        // Several files can resolve to the same episode (same file from several sources, duplicated
+        // file, same episode in different qualities...) and the primary key of medias is (id, artworkId):
+        // keep only one media per episode.
+        val episodes = files
+            .distinctBy { it.season to it.episode }
+            .map { file ->
+                seasonDto.episodes
+                    .find { it.season == file.season && it.number == file.episode }
+                    ?.toDomain(artworkId = artworkId, file = file)
+                    ?: Episode(file = file)
+            }
 
         return season to episodes
     }

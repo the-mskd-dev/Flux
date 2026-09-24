@@ -15,6 +15,10 @@ class SaveToHistoryUseCase(
 
     suspend operator fun invoke(media: Media) {
 
+        // Private artworks must never appear in history
+        if (database.getArtwork(artworkId = media.artworkId)?.isPrivate == true)
+            return
+
         when (media) {
             is Episode -> {
 

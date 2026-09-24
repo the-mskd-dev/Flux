@@ -18,5 +18,6 @@ class GetDeviceFilesUseCaseImpl(
             .map { source -> async { source.getFiles() } }
             .awaitAll()
             .flatten()
+            .distinctBy { it.path }
     }
 }

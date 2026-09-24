@@ -4,9 +4,12 @@ import androidx.annotation.FloatRange
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.foundation.layout.displayCutoutPadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,6 +30,7 @@ import androidx.compose.ui.layout.layout
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.utils.rememberScreenDimensions
 
 fun Modifier.grayScale() : Modifier {
     val saturationMatrix = ColorMatrix().apply { setToSaturation(0f) }
@@ -67,6 +71,35 @@ fun Modifier.clickableWithBounce(
         .clickable(interactionSource = interactionSource, indication = null, onClick = onClick)
 }
 
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun Modifier.combinedClickableWithBounce(
+    onClick: () -> Unit,
+    onLongClick: (() -> Unit)? = null
+): Modifier {
+
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+
+    val animatedScale by animateFloatAsState(
+        targetValue = if (isPressed) .92f else 1f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessMedium
+        ),
+        label = "press_scale"
+    )
+
+    return this
+        .graphicsLayer { scaleX = animatedScale; scaleY = animatedScale }
+        .combinedClickable(
+            interactionSource = interactionSource,
+            indication = null,
+            onClick = onClick,
+            onLongClick = onLongClick
+        )
+}
+
 @Composable
 fun Modifier.groupedShape(
     index: Int,
@@ -105,4 +138,13 @@ fun Modifier.bleedHorizontal(amount: Dp = FluxUI.Space.medium) = layout { measur
     layout(placeable.width - expandPx * 2, placeable.height) {
         placeable.placeRelative(x = -expandPx, y = 0)
     }
+}
+
+@Composable
+fun Modifier.displayCutoutPaddingInLandscape() : Modifier {
+    val screenDimensions = rememberScreenDimensions()
+
+    return this.then(
+        if (screenDimensions.isLarge) Modifier.displayCutoutPadding() else Modifier
+    )
 }

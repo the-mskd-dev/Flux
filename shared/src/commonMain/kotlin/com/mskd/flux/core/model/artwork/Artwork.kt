@@ -20,8 +20,10 @@ data class Artwork(
     val bannerPath: String = "",
     val type: ContentType = ContentType.SHOW,
     val genreIds: ImmutableList<Int> = persistentListOf(),
+    val isPrivate: Boolean = false,
+    val nsfw: Boolean = false,
 
-    val lastModification: Long? = null
+    val lastModification: Long? = null,
 ) {
 
     val isUnknown: Boolean get() = id == UNKNOWN_ID

@@ -37,6 +37,8 @@ import com.mskd.flux.screens.settings.composables.SettingsCustomizationSection
 import com.mskd.flux.screens.settings.composables.SettingsDialogs
 import com.mskd.flux.screens.settings.composables.SettingsOtherSection
 import com.mskd.flux.screens.settings.composables.SettingsPlayerSection
+import com.mskd.flux.screens.settings.composables.SettingsPrivateFolderDialogs
+import com.mskd.flux.screens.settings.composables.SettingsPrivateFolderSection
 import com.mskd.flux.screens.settings.composables.SettingsSyncSection
 import com.mskd.flux.screens.settings.composables.SettingsTmdbSection
 import com.mskd.flux.ui.component.global.FluxOptionsDialog
@@ -78,6 +80,7 @@ fun SettingsScreen(
                 SettingsEvent.NavigateToCustomizationScreen -> navigate(Route.Customization)
                 SettingsEvent.NavigateToSourcesScreen -> navigate(Route.Sources())
                 SettingsEvent.RequestExternalPlayerPermission -> notificationsPermission?.launchPermissionRequest()
+                SettingsEvent.PrivateFolderPinUpdated -> {}
             }
         }
     }
@@ -99,6 +102,11 @@ fun SettingsScreen(
 
     SettingsDialogs(
         dialog = state.settingsDialog,
+        sendIntent = viewModel::handleIntent
+    )
+
+    SettingsPrivateFolderDialogs(
+        state = state,
         sendIntent = viewModel::handleIntent
     )
 
@@ -136,6 +144,11 @@ fun SettingsContent(
             )
 
             SettingsPlayerSection(
+                state = state,
+                sendIntent = sendIntent
+            )
+
+            SettingsPrivateFolderSection(
                 state = state,
                 sendIntent = sendIntent
             )

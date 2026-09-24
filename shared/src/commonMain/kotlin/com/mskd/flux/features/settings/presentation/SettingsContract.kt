@@ -18,8 +18,20 @@ data class SettingsUiState(
     val settingsDialog: SettingsDialog? = null,
     val fullSyncInProgress: Boolean = false,
     val prefetchHdImages: Boolean = false,
-    val prefetchImagesState: ImagesPrefetchManager.State = ImagesPrefetchManager.State.Idle
+    val prefetchImagesState: ImagesPrefetchManager.State = ImagesPrefetchManager.State.Idle,
+    val privateFolderEnabled: Boolean = false,
+    val privateFolderIncludeNsfw: Boolean = true,
+    val privateFolderPinDialog: PrivateFolderPinDialog? = null,
+    val privateFolderPinError: Boolean = false
 )
+
+enum class PrivateFolderPinDialog {
+    CREATE, VERIFY_TO_DISABLE;
+
+    companion object {
+        const val PIN_LENGTH = 4
+    }
+}
 
 sealed class SettingsIntent {
 
@@ -37,6 +49,13 @@ sealed class SettingsIntent {
     data object ShowRewindDialog: SettingsIntent()
     data object ShowForwardDialog: SettingsIntent()
     data class ShowSettingsDialog(val dialog: SettingsDialog?): SettingsIntent()
+
+    // Private folder
+    data class OnPrivateFolderCheck(val checked: Boolean): SettingsIntent()
+    data class OnPrivateFolderIncludeNsfwCheck(val checked: Boolean): SettingsIntent()
+    data object ClearPrivateFolderPinError: SettingsIntent()
+    data class SubmitPrivateFolderPin(val pin: String): SettingsIntent()
+    data object HidePrivateFolderPinDialog: SettingsIntent()
 
     // Setters
     data class SetLanguageValue(val value: Locale?): SettingsIntent()
@@ -60,4 +79,5 @@ sealed class SettingsEvent {
     data object NavigateToAboutScreen: SettingsEvent()
     data object NavigateToSourcesScreen: SettingsEvent()
     data object RequestExternalPlayerPermission: SettingsEvent()
+    data object PrivateFolderPinUpdated: SettingsEvent()
 }

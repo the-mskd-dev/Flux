@@ -1,6 +1,7 @@
 package com.mskd.flux.utils.extensions
 
 import com.mskd.flux.core.model.artwork.Media
+import com.mskd.flux.features.settings.presentation.PrivateFolderPinDialog
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.Trace
 import kotlinx.datetime.LocalDate
@@ -26,3 +27,7 @@ fun String?.uppercaseFirstLetter() : String? {
 val String.tmdbImage : String get() = Constants.TMDB.IMAGE + this
 
 val String.tmdbImageLarge : String get() = Constants.TMDB.IMAGE_LARGE + this
+
+fun String.toPinInput(): String {
+    return filter { it.isDigit() }.take(PrivateFolderPinDialog.PIN_LENGTH)
+}

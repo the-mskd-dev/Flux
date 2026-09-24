@@ -125,6 +125,28 @@ class HistoryDaoTest {
         assertTrue(result.contains(entity2))
     }
 
+    @Test
+    fun history_entry_is_kept_when_the_media_is_saved_with_a_new_path() = runTest {
+        // Given
+        val media = MediaMockups.episode1
+        val existing = media.toEntity()
+        // Catalog is already seeded in setUpDatabase
+        val entity = HistoryEntity(
+            artworkId = media.artworkId,
+            mediaId = media.mediaId,
+            timestamp = Clock.System.now().toEpochMilliseconds()
+        )
+        historyDao.upsert(entity)
+
+        // When
+        mediasDao.insertOrUpdate(listOf(existing.copy(path = "path/naruto/new_path.mkv")))
+
+        // Then
+        val result = historyDao.getAll()
+        assertEquals(1, result.size)
+        assertTrue(result.contains(entity))
+    }
+
     //endregion
 
     //region Flow

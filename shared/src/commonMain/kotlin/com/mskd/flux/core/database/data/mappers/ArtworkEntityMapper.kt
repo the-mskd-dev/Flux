@@ -15,6 +15,8 @@ fun ArtworkEntity.toDomain() : Artwork {
         type = this.type,
         genreIds = this.genreIds.toImmutableList(),
         lastModification = this.lastModification,
+        isPrivate = this.isPrivate,
+        nsfw = this.nsfw
     )
 }
 
@@ -27,6 +29,8 @@ fun Artwork.toEntity(overrideLastModification: Boolean = true) : ArtworkEntity {
         bannerPath = this.bannerPath,
         type = this.type,
         genreIds = this.genreIds,
-        lastModification = if (overrideLastModification) Clock.System.now().toEpochMilliseconds() else this.lastModification
+        lastModification = if (overrideLastModification) Clock.System.now().toEpochMilliseconds() else this.lastModification,
+        isPrivate = this.isPrivate,
+        nsfw = this.nsfw
     )
 }

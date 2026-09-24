@@ -58,7 +58,7 @@ fun CatalogMenu(
                 text = stringResource(Res.string.other_files),
                 painter = painterResource(Res.drawable.ic_flux),
                 iconColor = MaterialTheme.colorScheme.tertiary,
-                onClick = { sendIntent(CatalogIntent.OnArtworkTap(artwork = Artwork.UNKNOWN)) }
+                onClick = { sendIntent(CatalogIntent.OnArtworkClick(artwork = Artwork.UNKNOWN)) }
             )
         }
 
@@ -67,7 +67,7 @@ fun CatalogMenu(
                 text = stringResource(Res.string.add_source),
                 painter = painterResource(Res.drawable.ic_add_folder),
                 iconColor = MaterialTheme.colorScheme.secondary,
-                onClick = { sendIntent(CatalogIntent.OnSourcesTap) }
+                onClick = { sendIntent(CatalogIntent.OnSourcesClick) }
             )
         }
 
@@ -76,7 +76,7 @@ fun CatalogMenu(
                 text = stringResource(Res.string.add_token),
                 painter = painterResource(Res.drawable.ic_api),
                 iconColor = MaterialTheme.colorScheme.primary,
-                onClick = { sendIntent(CatalogIntent.OnTokenTap) }
+                onClick = { sendIntent(CatalogIntent.OnTokenClick) }
             )
         }
 
@@ -85,7 +85,7 @@ fun CatalogMenu(
                 text = stringResource(Res.string.private_folder),
                 painter = painterResource(Res.drawable.ic_lock),
                 iconColor = MaterialTheme.colorScheme.primary,
-                onClick = { sendIntent(CatalogIntent.OnPrivateFolderTap) }
+                onClick = { sendIntent(CatalogIntent.OnPrivateFolderClick) }
             )
         }
 

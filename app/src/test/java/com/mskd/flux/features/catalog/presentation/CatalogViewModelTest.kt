@@ -220,7 +220,7 @@ class CatalogViewModelTest : FunSpec({
         viewModel.event.test {
 
             // When
-            viewModel.handleIntent(CatalogIntent.OnArtworkTap(artwork = MediaMockups.showArtwork, rgb = 0x112233))
+            viewModel.handleIntent(CatalogIntent.OnArtworkClick(artwork = MediaMockups.showArtwork, rgb = 0x112233))
 
             // Then
             awaitItem() shouldBe CatalogEvent.NavigateToShow(artworkId = MediaMockups.showArtwork.id, rgb = 0x112233)
@@ -235,7 +235,7 @@ class CatalogViewModelTest : FunSpec({
         viewModel.event.test {
 
             // When
-            viewModel.handleIntent(CatalogIntent.OnArtworkTap(artwork = MediaMockups.movieArtwork, rgb = 0x112233))
+            viewModel.handleIntent(CatalogIntent.OnArtworkClick(artwork = MediaMockups.movieArtwork, rgb = 0x112233))
 
             // Then
             awaitItem() shouldBe CatalogEvent.NavigateToMovie(artworkId = MediaMockups.movieArtwork.id, rgb = 0x112233)
@@ -250,7 +250,7 @@ class CatalogViewModelTest : FunSpec({
         viewModel.event.test {
 
             // When
-            viewModel.handleIntent(CatalogIntent.OnArtworkTap(artwork = Artwork.UNKNOWN, rgb = null))
+            viewModel.handleIntent(CatalogIntent.OnArtworkClick(artwork = Artwork.UNKNOWN, rgb = null))
 
             // Then
             awaitItem() shouldBe CatalogEvent.NavigateToUnknown
@@ -270,7 +270,7 @@ class CatalogViewModelTest : FunSpec({
             viewModel.event.test {
 
                 // When
-                viewModel.handleIntent(CatalogIntent.OnCategoryTap(category = type))
+                viewModel.handleIntent(CatalogIntent.OnCategoryClick(category = type))
 
                 // Then
                 awaitItem() shouldBe CatalogEvent.NavigateToSearch(category = type)
@@ -294,7 +294,7 @@ class CatalogViewModelTest : FunSpec({
             viewModel.event.test {
 
                 // When
-                viewModel.handleIntent(CatalogIntent.OnGenreTap(genre = genre))
+                viewModel.handleIntent(CatalogIntent.OnGenreClick(genre = genre))
 
                 // Then
                 awaitItem() shouldBe CatalogEvent.NavigateToSearch(genre = genre)
@@ -312,7 +312,7 @@ class CatalogViewModelTest : FunSpec({
         viewModel.event.test {
 
             // When
-            viewModel.handleIntent(CatalogIntent.OnSearchTap)
+            viewModel.handleIntent(CatalogIntent.OnSearchClick)
 
             // Then
             awaitItem() shouldBe CatalogEvent.NavigateToSearch()
@@ -327,7 +327,7 @@ class CatalogViewModelTest : FunSpec({
         viewModel.event.test {
 
             // When
-            viewModel.handleIntent(CatalogIntent.OnSettingsTap)
+            viewModel.handleIntent(CatalogIntent.OnSettingsClick)
 
             // Then
             awaitItem() shouldBe CatalogEvent.NavigateToSettings
@@ -341,7 +341,7 @@ class CatalogViewModelTest : FunSpec({
         viewModel.event.test {
 
             // When
-            viewModel.handleIntent(CatalogIntent.OnHowToTap)
+            viewModel.handleIntent(CatalogIntent.OnHowToClick)
 
             // Then
             awaitItem() shouldBe CatalogEvent.NavigateToHowTo
@@ -577,7 +577,7 @@ class CatalogViewModelTest : FunSpec({
         viewModel.event.test {
 
             // When
-            viewModel.handleIntent(CatalogIntent.OnPrivateFolderTap)
+            viewModel.handleIntent(CatalogIntent.OnPrivateFolderClick)
 
             // Then
             awaitItem() shouldBe CatalogEvent.NavigateToPrivateFolder

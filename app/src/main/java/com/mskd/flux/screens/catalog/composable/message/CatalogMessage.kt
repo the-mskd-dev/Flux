@@ -62,7 +62,7 @@ fun CatalogMessage(
                         fontWeight = FontWeight.Bold
                     )
                 ),
-                linkInteractionListener = { sendIntent(CatalogIntent.ShowMessageDialog(show = true)) }
+                linkInteractionListener = { sendIntent(CatalogIntent.OnMessageTap) }
             )
 
             withLink(linkAnnotation) {

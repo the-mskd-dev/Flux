@@ -52,4 +52,8 @@ sealed class Route : NavKey {
 
     @Serializable
     data class Sources(val fromSetup: Boolean = false): Route()
+
+    @Serializable
+    data object Message: Route()
+
 }

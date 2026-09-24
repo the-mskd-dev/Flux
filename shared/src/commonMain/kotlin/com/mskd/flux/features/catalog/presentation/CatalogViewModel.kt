@@ -169,18 +169,18 @@ class CatalogViewModel(
 
             // Navigation
             is CatalogIntent.SyncCatalog -> syncCatalog()
-            is CatalogIntent.OnArtworkTap -> onArtworkTap(artwork = intent.artwork, rgb = intent.rgb)
-            is CatalogIntent.OnCategoryTap -> _event.emit(NavigateToSearch(category = intent.category))
-            is CatalogIntent.OnGenreTap -> _event.emit(NavigateToSearch(genre = intent.genre))
-            CatalogIntent.OnSearchTap -> _event.emit(NavigateToSearch())
-            CatalogIntent.OnSettingsTap -> _event.emit(NavigateToSettings)
-            CatalogIntent.OnHowToTap -> _event.emit(NavigateToHowTo)
-            CatalogIntent.OnSourcesTap -> _event.emit(NavigateToSources)
-            CatalogIntent.OnTokenTap -> _event.emit(NavigateToToken)
-            CatalogIntent.OnPrivateFolderTap -> _event.emit(NavigateToPrivateFolder)
+            is CatalogIntent.OnArtworkClick -> onArtworkClick(artwork = intent.artwork, rgb = intent.rgb)
+            is CatalogIntent.OnCategoryClick -> _event.emit(NavigateToSearch(category = intent.category))
+            is CatalogIntent.OnGenreClick -> _event.emit(NavigateToSearch(genre = intent.genre))
+            CatalogIntent.OnSearchClick -> _event.emit(NavigateToSearch())
+            CatalogIntent.OnSettingsClick -> _event.emit(NavigateToSettings)
+            CatalogIntent.OnHowToClick -> _event.emit(NavigateToHowTo)
+            CatalogIntent.OnSourcesClick -> _event.emit(NavigateToSources)
+            CatalogIntent.OnTokenClick -> _event.emit(NavigateToToken)
+            CatalogIntent.OnPrivateFolderClick -> _event.emit(NavigateToPrivateFolder)
 
             // Message
-            is CatalogIntent.ShowMessageDialog -> showMessageDialog(show = intent.show)
+            is CatalogIntent.OnMessageTap -> onMessageClick()
             CatalogIntent.HideMessage -> hideMessage()
 
             // Private folder
@@ -219,7 +219,7 @@ class CatalogViewModel(
 
     }
 
-    private suspend fun onArtworkTap(artwork: Artwork, rgb: Int?) {
+    private suspend fun onArtworkClick(artwork: Artwork, rgb: Int?) {
 
         val event = when {
             artwork.id == Artwork.UNKNOWN_ID -> NavigateToUnknown
@@ -255,12 +255,12 @@ class CatalogViewModel(
             it.id == media.artworkId
         } ?: return
 
-        onArtworkTap(artwork = artwork, rgb = null)
+        onArtworkClick(artwork = artwork, rgb = null)
 
     }
 
-    private fun showMessageDialog(show: Boolean) {
-        _showMessageDialog.update { show }
+    private suspend fun onMessageClick() {
+        _event.emit(CatalogEvent.NavigateToMessage)
     }
 
     private suspend fun hideMessage() {

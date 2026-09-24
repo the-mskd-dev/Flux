@@ -35,7 +35,7 @@ fun CatalogEmptyContent(sendIntent: (CatalogIntent) -> Unit) {
         )
 
         TextButton(
-            onClick = { sendIntent(CatalogIntent.OnHowToTap) },
+            onClick = { sendIntent(CatalogIntent.OnHowToClick) },
             contentPadding = PaddingValues(vertical = FluxUI.Space.medium)
         ) {
             Text.Button.Default(text = stringResource(Res.string.how_to_name_files),)

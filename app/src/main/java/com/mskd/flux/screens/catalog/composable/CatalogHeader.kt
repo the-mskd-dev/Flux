@@ -43,7 +43,7 @@ fun CatalogHeader(
     ) {
 
         if (showButtons) {
-            IconButton(onClick = { sendIntent(CatalogIntent.OnSearchTap) }) {
+            IconButton(onClick = { sendIntent(CatalogIntent.OnSearchClick) }) {
                 Icon(
                     imageVector = Icons.Rounded.Search,
                     tint = MaterialTheme.colorScheme.onBackground,
@@ -67,7 +67,7 @@ fun CatalogHeader(
         }
 
         if (showButtons) {
-            IconButton(onClick = { sendIntent(CatalogIntent.OnSettingsTap) }) {
+            IconButton(onClick = { sendIntent(CatalogIntent.OnSettingsClick) }) {
                 Icon(
                     imageVector = Icons.Rounded.Settings,
                     tint = MaterialTheme.colorScheme.onBackground,

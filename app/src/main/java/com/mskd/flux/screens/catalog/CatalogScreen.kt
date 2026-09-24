@@ -98,6 +98,7 @@ fun CatalogScreen(
                 CatalogEvent.NavigateToToken -> navigate(Route.Token(fromSetup = false))
                 CatalogEvent.NavigateToSources -> navigate(Route.Sources(fromSetup = false))
                 CatalogEvent.NavigateToPrivateFolder -> navigate(Route.PrivateFolder)
+                CatalogEvent.NavigateToMessage -> navigate(Route.Message)
 
                 is CatalogEvent.PlayMedia -> {
                     if (event.externalPlayer)

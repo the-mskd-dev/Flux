@@ -6,6 +6,8 @@ import coil3.ImageLoader
 import coil3.SingletonImageLoader
 import com.mskd.flux.di.moduleAndroidApp
 import com.mskd.flux.di.modulePlatform
+import com.mskd.flux.report.CrashKey
+import com.mskd.flux.report.reportAddCustomData
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.CrashDialogActivity
 import io.github.aakira.napier.DebugAntilog
@@ -62,6 +64,8 @@ class FluxApp : Application(), SingletonImageLoader.Factory {
             }
 
         }
+
+        reportAddCustomData(key = CrashKey.FLAVOR, value = BuildConfig.FLAVOR)
 
         if (BuildConfig.DEBUG) {
             Napier.base(DebugAntilog())

@@ -1,4 +1,4 @@
-package com.mskd.flux.platform
+package com.mskd.flux.system
 
 import android.content.Context
 import android.content.Intent

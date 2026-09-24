@@ -14,8 +14,8 @@ import com.mskd.flux.di.QualifiersAndroid
 import com.mskd.flux.features.player.data.PipIsEnabledUseCase
 import com.mskd.flux.features.player.data.usecase.AndroidPipIsEnabledUseCase
 import com.mskd.flux.features.player.presentation.PlayerViewModel
-import com.mskd.flux.platform.AndroidPlayerManager
-import com.mskd.flux.platform.PlayerManager
+import com.mskd.flux.features.player.data.manager.AndroidPlayerManager
+import com.mskd.flux.features.player.domain.manager.PlayerManager
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module

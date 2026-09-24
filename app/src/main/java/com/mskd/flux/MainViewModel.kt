@@ -8,7 +8,7 @@ import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.report.CrashKey
-import com.mskd.flux.report.reportAddCustomData
+import com.mskd.flux.report.CrashLogger
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
@@ -22,6 +22,7 @@ class MainViewModel(
     private val customizationDataStore: CustomizationDataStore,
     private val tokenDataStore: TokenDataStore,
     private val userDataStore: UserDataStore,
+    private val crashLogger: CrashLogger
 ) : ViewModel() {
 
     private val _settings = MutableStateFlow(SettingsDataStore.State())
@@ -37,9 +38,9 @@ class MainViewModel(
                 _settings.update { preferences }
 
                 // Change report values
-                reportAddCustomData(key = CrashKey.SYSTEM_FOLDERS, value = preferences.systemFoldersEnabled.toString())
-                reportAddCustomData(key = CrashKey.DATA_LANGUAGE, value = (preferences.dataLanguage ?: Locale.getDefault()).toString())
-                reportAddCustomData(key = CrashKey.EXTERNAL_PLAYER, value = preferences.externalPlayer.toString())
+                crashLogger.addCustomData(key = CrashKey.SYSTEM_FOLDERS, value = preferences.systemFoldersEnabled.toString())
+                crashLogger.addCustomData(key = CrashKey.DATA_LANGUAGE, value = (preferences.dataLanguage ?: Locale.getDefault()).toString())
+                crashLogger.addCustomData(key = CrashKey.EXTERNAL_PLAYER, value = preferences.externalPlayer.toString())
 
             }
 
@@ -53,7 +54,7 @@ class MainViewModel(
 
         viewModelScope.launch {
             tokenDataStore.flow.collect { token ->
-                reportAddCustomData(key = CrashKey.HAS_TOKEN, value = token.isNotBlank().toString())
+                crashLogger.addCustomData(key = CrashKey.HAS_TOKEN, value = token.isNotBlank().toString())
             }
         }
 

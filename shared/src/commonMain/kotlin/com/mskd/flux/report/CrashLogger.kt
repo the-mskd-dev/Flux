@@ -1,4 +1,6 @@
 package com.mskd.flux.report
 
-expect fun reportAddCustomData(key: CrashKey, value: String)
-expect fun reportAddBreadcrumb(message: String)
+interface CrashLogger {
+    fun addCustomData(key: CrashKey, value: String)
+    fun addBreadcrumb(message: String)
+}

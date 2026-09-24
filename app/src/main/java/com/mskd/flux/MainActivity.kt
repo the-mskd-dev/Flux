@@ -31,7 +31,7 @@ import com.mskd.flux.navigation.component.FluxNavigationBar
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.navigation.domain.Transition
 import com.mskd.flux.navigation.domain.navigateToTab
-import com.mskd.flux.report.reportAddBreadcrumb
+import com.mskd.flux.report.CrashLogger
 import com.mskd.flux.screens.about.AboutScreen
 import com.mskd.flux.screens.artwork.ArtworkScreen
 import com.mskd.flux.screens.catalog.CatalogScreen
@@ -57,6 +57,7 @@ class MainActivity : ComponentActivity() {
 
     val viewModel: MainViewModel by inject()
     val connectivityRepository: ConnectivityRepository by inject()
+    val crashLogger: CrashLogger by inject()
 
     private var onUserLeaveHintCallback: (() -> Unit)? = null
 
@@ -95,12 +96,12 @@ class MainActivity : ComponentActivity() {
 
             val navigate: (Route) -> Unit = { route ->
                 transitions = Transition.Forward to Transition.Backward
-                reportAddBreadcrumb(message = "navigate to $route")
+                crashLogger.addBreadcrumb(message = "navigate to $route")
                 backStack.add(route)
             }
             val onBack: () -> Unit = {
                 transitions = Transition.Forward to Transition.Backward
-                reportAddBreadcrumb(message = "pop to ${backStack.getOrNull(backStack.lastIndex - 1) as? Route}")
+                crashLogger.addBreadcrumb(message = "pop to ${backStack.getOrNull(backStack.lastIndex - 1) as? Route}")
                 backStack.popScreen()
             }
 

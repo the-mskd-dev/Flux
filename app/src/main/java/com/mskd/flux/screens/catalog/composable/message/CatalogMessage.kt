@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.catalog.composable.message
+    package com.mskd.flux.screens.catalog.composable.message
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

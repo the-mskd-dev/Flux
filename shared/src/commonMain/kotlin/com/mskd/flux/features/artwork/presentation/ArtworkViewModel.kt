@@ -15,6 +15,7 @@ import com.mskd.flux.features.progress.domain.usecase.MarkPreviousAsWatchedUseCa
 import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
+import com.mskd.flux.system.FilesLauncher
 import com.mskd.flux.system.UrlLauncher
 import com.mskd.flux.utils.extensions.firstEpisode
 import com.mskd.flux.utils.extensions.firstEpisodeToWatch
@@ -32,6 +33,7 @@ import kotlinx.coroutines.launch
 class ArtworkViewModel(
     private val artworkId: Long,
     private val season: Int?,
+    private val filesLauncher: FilesLauncher,
     private val urlLauncher: UrlLauncher,
     settingsDataStore: SettingsDataStore,
     observeArtworkUseCase: ObserveArtworkUseCase,
@@ -104,7 +106,7 @@ class ArtworkViewModel(
             is ArtworkIntent.PlayMedia -> playMedia(media = intent.media, forceInternal = intent.forceInternal)
             ArtworkIntent.OpenArtworkInfo -> openArtworkInfo()
             is ArtworkIntent.OpenEpisodeInfo -> urlLauncher.open(url = intent.episode.infoUrl)
-            is ArtworkIntent.OpenFileExplorer -> _event.emit(ArtworkEvent.OpenFileExplorer(media = intent.media))
+            is ArtworkIntent.OpenFileExplorer -> filesLauncher.open(file = intent.media.file)
 
             // Dialogs
             ArtworkIntent.CloseDialog -> closeDialog()

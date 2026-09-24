@@ -25,7 +25,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Media
@@ -48,7 +47,6 @@ import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.ResetProgressDialog
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.utils.FileUtils
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.rememberExternalPlayerAction
 import com.mskd.flux.utils.rememberScreenDimensions
@@ -70,7 +68,6 @@ fun ArtworkScreen(
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val context = LocalContext.current
 
     val launchExternalPlayer = rememberExternalPlayerAction(
         onProgressResult = { progress -> viewModel.handleIntent(ArtworkIntent.OnExternalPlayerResult(progress = progress)) },
@@ -87,7 +84,6 @@ fun ArtworkScreen(
                     else
                         navigate(Player(params = PlayerParams.fromMedia(event.media)))
                 }
-                is ArtworkEvent.OpenFileExplorer -> FileUtils.openFileExplorer(context = context, file = event.media.file)
             }
         }
     }

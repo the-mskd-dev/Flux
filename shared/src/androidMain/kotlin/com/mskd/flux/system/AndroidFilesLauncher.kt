@@ -46,7 +46,7 @@ class AndroidFilesLauncher(private val context: Context) : FilesLauncher {
                 context.startActivity(preciseIntent)
                 return
             } catch (e: Exception) {
-                Trace.error(tag = "FileUtils", message = "Precise folder navigation failed, falling back", e)
+                Trace.error(tag = "FilesLauncher", message = "Precise folder navigation failed, falling back", e)
             }
         }
 
@@ -62,7 +62,7 @@ class AndroidFilesLauncher(private val context: Context) : FilesLauncher {
         try {
             context.startActivity(fallbackIntent)
         } catch (e: ActivityNotFoundException) {
-            Trace.error(tag = "FileUtils", message = "No file explorer available at all", e)
+            Trace.error(tag = "FilesLauncher", message = "No file explorer available at all", e)
         }
     }
 

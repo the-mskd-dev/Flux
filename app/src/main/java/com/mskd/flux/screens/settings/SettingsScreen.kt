@@ -63,11 +63,6 @@ fun SettingsScreen(
 
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val notificationsPermission = notificationsPermissionState()
-    val context = LocalContext.current
-    val appVersion = context
-        .packageManager
-        .getPackageInfo(context.packageName, 0)
-        .versionName
 
 
     LaunchedEffect(Unit) {
@@ -87,8 +82,6 @@ fun SettingsScreen(
 
     SettingsContent(
         state = state,
-        context = context,
-        appVersion = appVersion,
         sendIntent = viewModel::handleIntent
     )
 
@@ -116,8 +109,6 @@ fun SettingsScreen(
 @Composable
 fun SettingsContent(
     state: SettingsUiState,
-    context: Context,
-    appVersion: String?,
     sendIntent: (SettingsIntent) -> Unit
 ) {
 
@@ -158,7 +149,6 @@ fun SettingsContent(
             )
 
             SettingsOtherSection(
-                context = context,
                 sendIntent = sendIntent
             )
 
@@ -168,8 +158,8 @@ fun SettingsContent(
             )
 
             SettingsAppInfoSection(
-                context = context,
-                appVersion = appVersion
+                appVersion = state.appVersion,
+                sendIntent = sendIntent
             )
 
             Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding() + FluxUI.Space.bottomScreen))
@@ -205,9 +195,7 @@ fun SettingIcon(
 fun SettingsScreen_Preview() {
     FluxTheme {
         SettingsContent(
-            state = SettingsUiState(),
-            context = LocalContext.current,
-            appVersion = "1.0.0",
+            state = SettingsUiState(appVersion = "6.1.6"),
         ) { }
     }
 }

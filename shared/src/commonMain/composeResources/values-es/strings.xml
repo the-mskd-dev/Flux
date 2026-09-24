@@ -67,7 +67,8 @@
     <string name="which_technologies_desc">Esta aplicación está desarrollada íntegramente en Kotlin con Jetpack Compose. Utilizo Room para la base de datos, Ktor para las llamadas de red y Koin para la inyección de dependencias. También uso GitHub. En cuanto a UI/UX, uso Material 3 y he hecho todo lo posible. Bastante bien, ¿no?</string>
     <string name="how_to_suggest">¿Cómo contactarme o sugerir mejoras?</string>
     <string name="how_to_suggest_desc">Si es un comentario positivo, ¡puedes contactarme por %1$s! De lo contrario, haz lo mismo o directamente en %2$s, pero con la misma amabilidad que si fuera positivo.</string>
-    
+    <string name="contact_me">Contactar conmigo</string>
+    <string name="contact_me_desc">Si quieres decirme algo, es por aquí</string>
     
     <string name="what_is_next">¿Qué es lo siguiente?</string>
     <string name="what_is_next_desc">El objetivo es seguir mejorando la aplicación, ya sea la interfaz, la experiencia de usuario o el rendimiento. Tengo previsto recuperar más datos (género, reparto, etc.) y también planeo añadir nuevas fuentes de datos, no solo archivos del dispositivo.</string>

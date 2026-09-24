@@ -19,7 +19,6 @@ import com.mskd.flux.features.settings.presentation.SettingsIntent
 import com.mskd.flux.features.settings.presentation.SettingsUiState
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.Constants
-import com.mskd.flux.utils.UriUtils
 import com.mskd.flux.utils.extensions.fillMaxWidthWithLimit
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.about
@@ -32,6 +31,8 @@ import flux.shared.generated.resources.button_rewind
 import flux.shared.generated.resources.cache_images
 import flux.shared.generated.resources.cache_images_desc
 import flux.shared.generated.resources.caching_images_in_progress
+import flux.shared.generated.resources.contact_me
+import flux.shared.generated.resources.contact_me_desc
 import flux.shared.generated.resources.customization
 import flux.shared.generated.resources.customization_desc
 import flux.shared.generated.resources.external_player
@@ -48,6 +49,7 @@ import flux.shared.generated.resources.ic_info
 import flux.shared.generated.resources.ic_keyboard
 import flux.shared.generated.resources.ic_language
 import flux.shared.generated.resources.ic_lock
+import flux.shared.generated.resources.ic_mail
 import flux.shared.generated.resources.ic_money
 import flux.shared.generated.resources.ic_pip
 import flux.shared.generated.resources.ic_player
@@ -226,7 +228,6 @@ fun SettingsTmdbSection(
 
 @Composable
 fun SettingsOtherSection(
-    context: Context,
     sendIntent: (SettingsIntent) -> Unit
 ) {
 
@@ -250,12 +251,7 @@ fun SettingsOtherSection(
             painter = painterResource(Res.drawable.ic_money),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
-            onClick = {
-                UriUtils.openWebPage(
-                    context = context,
-                    url = Constants.CONTACT.SPONSOR
-                )
-            }
+            onClick = { sendIntent(SettingsIntent.OpenUrl(url = Constants.CONTACT.SPONSOR)) }
         )
 
     }
@@ -356,8 +352,8 @@ fun SettingsSyncSection(
 
 @Composable
 fun SettingsAppInfoSection(
-    context: Context,
-    appVersion: String?
+    appVersion: String?,
+    sendIntent: (SettingsIntent) -> Unit
 ) {
 
     SettingsSection(
@@ -371,12 +367,16 @@ fun SettingsAppInfoSection(
             painter = painterResource(Res.drawable.ic_social_media),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
-            onClick = {
-                UriUtils.openWebPage(
-                    context = context,
-                    url = Constants.CONTACT.X
-                )
-            }
+            onClick = { sendIntent(SettingsIntent.OpenUrl(url = Constants.CONTACT.X)) }
+        )
+
+        SettingsItem(
+            text = stringResource(Res.string.contact_me),
+            subText = stringResource(Res.string.contact_me_desc),
+            painter = painterResource(Res.drawable.ic_mail),
+            iconColor = iconColor,
+            iconBackgroundColor = bgColor,
+            onClick = { sendIntent(SettingsIntent.SendEmail) }
         )
 
         SettingsItem(
@@ -385,12 +385,7 @@ fun SettingsAppInfoSection(
             painter = painterResource(Res.drawable.ic_sources),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
-            onClick = {
-                UriUtils.openWebPage(
-                    context = context,
-                    url = Constants.CONTACT.GITHUB
-                )
-            }
+            onClick = { sendIntent(SettingsIntent.OpenUrl(url = Constants.CONTACT.GITHUB)) }
         )
 
         appVersion?.let {
@@ -401,12 +396,7 @@ fun SettingsAppInfoSection(
                 painter = painterResource(Res.drawable.ic_version),
                 iconColor = iconColor,
                 iconBackgroundColor = bgColor,
-                onClick = {
-                    UriUtils.openWebPage(
-                        context = context,
-                        url = Constants.CONTACT.RELEASES
-                    )
-                }
+                onClick = { sendIntent(SettingsIntent.OpenUrl(url = Constants.CONTACT.RELEASES)) }
             )
 
         }

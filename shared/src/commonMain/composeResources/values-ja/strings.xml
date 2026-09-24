@@ -67,7 +67,8 @@
     <string name="which_technologies_desc">完全な Kotlin と Jetpack Compose で開発されています。データベースには Room、ネットワーク通信には Ktor、依存関係の注入には Koin を使用しています。コード管理には GitHub を活用しています。UI/UX には Material 3 を採用し、全力を尽くしました。悪くない出来でしょう？</string>
     <string name="how_to_suggest">お問い合わせ・改善のご提案</string>
     <string name="how_to_suggest_desc">ポジティブなフィードバックは %1$s からご連絡ください！ご意見やご要望も同様に %2$s へ、温かいお気持ちとともにお寄せいただけると嬉しいです。</string>
-    
+    <string name="contact_me">お問い合わせ</string>
+    <string name="contact_me_desc">伝えたいことがあれば、こちらからどうぞ</string>
     
     <string name="what_is_next">今後の予定</string>
     <string name="what_is_next_desc">UI、UX、パフォーマンスを含め、アプリの改善を続けていく予定です。より多くのデータ（ジャンル、キャストなど）の取得や、ローカルファイル以外の新しいデータソースの追加も計画しています。</string>

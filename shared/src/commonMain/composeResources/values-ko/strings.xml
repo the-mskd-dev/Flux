@@ -67,7 +67,8 @@
     <string name="which_technologies_desc">이 앱은 Jetpack Compose와 Kotlin으로 완전 개발되었습니다. 데이터베이스는 Room, 네트워크 통신은 Ktor, 의존성 주입은 Koin을 사용합니다. GitHub도 활용하고 있습니다. UI/UX는 Material 3를 적용하여 최선을 다했습니다. 제법 괜찮죠?</string>
     <string name="how_to_suggest">문의 및 개선 요청</string>
     <string name="how_to_suggest_desc">긍정적인 피드백이라면 %1$s(으)로 연락해 주세요! 그렇지 않은 경우에도 피드백만큼이나 따뜻한 마음으로 %2$s에 직접 남겨주세요.</string>
-    
+    <string name="contact_me">문의하기</string>
+    <string name="contact_me_desc">하시고 싶은 말씀이 있다면 이곳으로 보내주세요</string>
     
     <string name="what_is_next">향후 계획</string>
     <string name="what_is_next_desc">목표는 UI, UX, 성능을 지속적으로 개선하는 것입니다. 더 많은 데이터(장르, 출연진 등)를 가져올 예정이며, 기기의 파일뿐만 아니라 새로운 데이터 소스도 추가할 계획입니다.</string>

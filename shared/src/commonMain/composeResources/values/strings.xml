@@ -234,4 +234,7 @@
     <string name="pin_change_old">Current code</string>
     <string name="pin_change_new">New code</string>
     <string name="pin_error">Incorrect PIN code</string>
+
+    <string name="soon_play_store">Play Store version coming soon, but I need your help!</string>
+    <string name="learn_more">Learn more</string>
 </resources>

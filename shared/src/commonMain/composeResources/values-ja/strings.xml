@@ -216,4 +216,7 @@
     <string name="pin_change_old">現在のコード</string>
     <string name="pin_change_new">新しいコード</string>
     <string name="pin_error">PINコードが正しくありません</string>
+
+    <string name="soon_play_store">Play Store版がまもなく登場！みなさんの力が必要です！</string>
+    <string name="learn_more">詳細を見る</string>
 </resources>

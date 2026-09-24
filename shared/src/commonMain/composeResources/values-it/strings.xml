@@ -217,4 +217,7 @@
     <string name="pin_change_old">Codice attuale</string>
     <string name="pin_change_new">Nuovo codice</string>
     <string name="pin_error">Codice PIN errato</string>
+
+    <string name="soon_play_store">Versione Play Store in arrivo, ma ho bisogno del vostro aiuto!</string>
+    <string name="learn_more">Scopri di più</string>
 </resources>

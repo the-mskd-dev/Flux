@@ -32,6 +32,9 @@ sealed class CatalogState {
         val tokenIsMissing: Boolean = false,
         val privateFolderEnabled: Boolean = false,
 
+        // Message
+        val message: CatalogMessageState = CatalogMessageState(),
+
         // Sort
         val sortingMode: CatalogSortingMode = CatalogSortingMode.LAST_MODIFICATION,
         val showSortingSheet: Boolean = false,
@@ -39,6 +42,7 @@ sealed class CatalogState {
         // View
         val viewMode: CatalogViewMode = CatalogViewMode.BY_TYPE,
         val showViewSheet: Boolean = false,
+
     ): CatalogState()
 
 }
@@ -75,6 +79,10 @@ sealed interface CatalogIntent {
     // Player
     data class PlayMedia(val media: Media, val forceInternal: Boolean = false): CatalogIntent
     data class OnExternalPlayerResult(val progress: Long) : CatalogIntent
+
+    // Message
+    data class ShowMessageDialog(val show: Boolean): CatalogIntent
+    data object HideMessage: CatalogIntent
 }
 
 sealed interface CatalogEvent {

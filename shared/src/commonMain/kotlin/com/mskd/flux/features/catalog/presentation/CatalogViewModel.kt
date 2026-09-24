@@ -9,6 +9,7 @@ import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.core.AppInfo
+import com.mskd.flux.core.model.core.Flavor
 import com.mskd.flux.features.catalog.domain.datastore.CatalogDataStore
 import com.mskd.flux.features.catalog.domain.model.CatalogPreferences
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
@@ -69,6 +70,7 @@ class CatalogViewModel(
 
     private val _showSortingSheet = MutableStateFlow(false)
     private val _showViewModeSheet = MutableStateFlow(false)
+    private val _showMessageDialog = MutableStateFlow(false)
 
     private var hasLoadedContent = false
 
@@ -85,7 +87,8 @@ class CatalogViewModel(
             sortingMode = catalog.sortingMode,
             viewMode = catalog.viewMode,
             token = token,
-            privateFolderEnabled = privateFolder.enabled
+            privateFolderEnabled = privateFolder.enabled,
+            hideMessage = catalog.hidePlayStoreMessage
         )
     }
 
@@ -96,13 +99,20 @@ class CatalogViewModel(
         artworks to genres.filterFor(artworks = artworks)
     }
 
+    private val viewFlow = combine(
+        _showSortingSheet,
+        _showViewModeSheet
+    ) { sort, view ->
+        sort to view
+    }
+
     val uiState: StateFlow<CatalogUiState> = combine(
         artworkFlow,
         syncCatalogUseCase.state,
         preferencesFlow,
-        _showSortingSheet,
-        _showViewModeSheet
-    ) { (artworks, genres), syncState, preferences, showSortingSheet, showViewModeSheet  ->
+        viewFlow,
+        _showMessageDialog,
+    ) { (artworks, genres), syncState, preferences, (showSortingSheet, showViewModeSheet), showMessageDialog  ->
 
         if (syncState is SyncState.Syncing && (syncState.full || !hasLoadedContent)) {
 
@@ -131,7 +141,11 @@ class CatalogViewModel(
                     sortingMode = preferences.sortingMode,
                     viewMode = preferences.viewMode,
                     showSortingSheet = showSortingSheet,
-                    showViewSheet = showViewModeSheet
+                    showViewSheet = showViewModeSheet,
+                    message = CatalogMessageState(
+                        showMessage = appInfo.flavor == Flavor.FOSS && !preferences.hideMessage,
+                        showDialog = showMessageDialog
+                    ),
                 ),
             )
 
@@ -164,6 +178,10 @@ class CatalogViewModel(
             CatalogIntent.OnSourcesTap -> _event.emit(NavigateToSources)
             CatalogIntent.OnTokenTap -> _event.emit(NavigateToToken)
             CatalogIntent.OnPrivateFolderTap -> _event.emit(NavigateToPrivateFolder)
+
+            // Message
+            is CatalogIntent.ShowMessageDialog -> showMessageDialog(show = intent.show)
+            CatalogIntent.HideMessage -> hideMessage()
 
             // Private folder
             is CatalogIntent.AddArtworkToPrivateFolder -> addArtworkToPrivateFolder(artwork = intent.artwork)
@@ -239,6 +257,14 @@ class CatalogViewModel(
 
         onArtworkTap(artwork = artwork, rgb = null)
 
+    }
+
+    private fun showMessageDialog(show: Boolean) {
+        _showMessageDialog.update { show }
+    }
+
+    private suspend fun hideMessage() {
+        catalogDataStore.hidePlayStoreMessage()
     }
 
     private suspend fun addArtworkToPrivateFolder(artwork: Artwork) {

@@ -217,6 +217,6 @@
     <string name="pin_change_new">새 코드</string>
     <string name="pin_error">PIN 코드가 올바르지 않습니다</string>
 
-    <string name="soon_play_store">Play Store 버전 출시 임박! 여러분의 도움이 필요합니다!</string>
+    <string name="catalog_message">Play Store 버전 출시 임박! 여러분의 도움이 필요합니다!</string>
     <string name="learn_more">자세히 보기</string>
 </resources>

@@ -57,7 +57,7 @@ import com.mskd.flux.screens.catalog.composable.CatalogEmptyContent
 import com.mskd.flux.screens.catalog.composable.CatalogHeader
 import com.mskd.flux.screens.catalog.composable.CatalogMenu
 import com.mskd.flux.screens.catalog.composable.CatalogViewMenu
-import com.mskd.flux.screens.catalog.composable.PlayStoreMessage
+import com.mskd.flux.screens.catalog.composable.CatalogMessage
 import com.mskd.flux.screens.catalog.composable.history.CatalogHistory
 import com.mskd.flux.screens.catalog.composable.sorting.CatalogSortingSheet
 import com.mskd.flux.screens.catalog.composable.viewMode.CatalogViewModeSheet
@@ -226,7 +226,7 @@ fun CatalogContent(
                     }
 
                     item(span = { GridItemSpan(maxLineSpan) }) {
-                        PlayStoreMessage()
+                        CatalogMessage(sendIntent = sendIntent)
                     }
 
                     item(span = { GridItemSpan(maxLineSpan) }) {

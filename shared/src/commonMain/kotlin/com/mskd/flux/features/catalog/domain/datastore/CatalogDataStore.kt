@@ -11,9 +11,12 @@ interface CatalogDataStore {
     suspend fun setSortingMode(mode: CatalogSortingMode)
     suspend fun setViewMode(mode: CatalogViewMode)
 
+    suspend fun hidePlayStoreMessage() // TODO Delete ASAP
+
     data class State(
         val sortingMode: CatalogSortingMode = CatalogSortingMode.LAST_MODIFICATION,
-        val viewMode: CatalogViewMode = CatalogViewMode.BY_TYPE
+        val viewMode: CatalogViewMode = CatalogViewMode.BY_TYPE,
+        val hidePlayStoreMessage: Boolean = false // TODO Delete ASAP
     )
 
 }

@@ -15,6 +15,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.mskd.flux.features.message.presentation.MessageIntent
+import com.mskd.flux.features.message.presentation.MessageViewModel
 import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxUI
@@ -26,9 +28,13 @@ import flux.shared.generated.resources.message_title
 import flux.shared.generated.resources.participate
 import org.jetbrains.compose.resources.stringArrayResource
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun MessageScreen(onBack: () -> Unit) {
+fun MessageScreen(
+    onBack: () -> Unit,
+    viewModel: MessageViewModel = koinViewModel()
+) {
 
     FluxScaffold(
         title = stringResource(Res.string.message_title),
@@ -62,7 +68,7 @@ fun MessageScreen(onBack: () -> Unit) {
 
             Button(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
-                onClick = { },
+                onClick = { viewModel.handleIntent(MessageIntent.OnActionClick) },
             ) {
                 Text.Button.Default(stringResource(Res.string.participate))
             }
@@ -79,6 +85,6 @@ fun MessageScreen(onBack: () -> Unit) {
 @Composable
 fun MessageScreen_Preview() {
     FluxThemePreview {
-        MessageScreen {}
+        MessageScreen(onBack = {})
     }
 }

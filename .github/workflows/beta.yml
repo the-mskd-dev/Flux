@@ -28,6 +28,7 @@ jobs:
 
       - name: Set up Local Properties
         run: |
+            echo "tmdb_token=${{ secrets.TMDB_TOKEN }}" > local.properties
             echo "firebase_beta_id=${{ secrets.FIREBASE_BETA_ID }}" >> local.properties
 
       - name: Decode Firebase Distribution services

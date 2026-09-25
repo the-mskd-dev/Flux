@@ -3,6 +3,7 @@ package com.mskd.flux.features.token.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.core.model.core.AppInfo
+import com.mskd.flux.core.model.core.Flavor
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.features.token.domain.model.AuthenticateResult
 import com.mskd.flux.features.token.domain.model.TokenMessage
@@ -30,8 +31,8 @@ class TokenViewModel(
 
     init {
         viewModelScope.launch {
-            val token = tokenDataStore.getToken().ifBlank { appInfo.baseToken }
-            setToken(token)
+            val token = tokenDataStore.getToken()
+            setToken(if (token != appInfo.baseToken) token else "")
         }
     }
 
@@ -51,9 +52,13 @@ class TokenViewModel(
 
     private suspend fun saveToken() {
 
+        val token = _uiState.value.token
+        if (token.isBlank())
+            return
+
         _uiState.update { it.copy(isLoading = true) }
 
-        val authenticateResult = saveTokenAndSyncUseCase(token = _uiState.value.token)
+        val authenticateResult = saveTokenAndSyncUseCase(token = token)
 
         when (authenticateResult) {
             AuthenticateResult.SUCCESS -> {

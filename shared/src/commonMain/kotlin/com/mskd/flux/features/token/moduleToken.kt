@@ -13,7 +13,8 @@ val moduleToken = module {
 
     single<TokenDataStore> {
         TokenDataStoreImpl(
-            tokenDataStore = get(Qualifiers.TOKEN_DATASTORE)
+            tokenDataStore = get(Qualifiers.TOKEN_DATASTORE),
+            appInfo = get()
         )
     }
 

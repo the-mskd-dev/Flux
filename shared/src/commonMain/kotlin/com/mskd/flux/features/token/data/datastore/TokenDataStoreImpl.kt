@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.mskd.flux.core.model.core.AppInfo
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -15,7 +16,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 
 class TokenDataStoreImpl(
-    private val tokenDataStore: DataStore<Preferences>
+    private val tokenDataStore: DataStore<Preferences>,
+    private val appInfo: AppInfo
 ) : TokenDataStore {
 
     companion object {
@@ -25,19 +27,19 @@ class TokenDataStoreImpl(
 
     override val flow: Flow<String> = tokenDataStore.data
         .catch { exception -> if (exception is IOException) emit(emptyPreferences()) else throw exception }
-        .map { it[TOKEN_KEY] ?: "" }
+        .map { it.savedToken }
 
     override suspend fun tokenIsAvailable(): Boolean {
-        return tokenDataStore.data.map { it[TOKEN_KEY] }.first()?.isNotBlank() ?: false
+        return tokenDataStore.data.map { it.savedToken }.first().isNotBlank()
     }
 
     override suspend fun getToken(): String {
-        return tokenDataStore.data.map { it[TOKEN_KEY] }.first() ?: ""
+        return tokenDataStore.data.map { it.savedToken }.first()
     }
 
     override suspend fun clearToken() {
         tokenDataStore.edit {
-            it[TOKEN_KEY] = ""
+            it[TOKEN_KEY] = appInfo.baseToken
             it[REQUEST_TOKEN] = false
         }
     }
@@ -57,7 +59,9 @@ class TokenDataStoreImpl(
 
     override val tokenRequested: Boolean
         get() = runBlocking {
-            tokenDataStore.data.map { it[REQUEST_TOKEN] }.first() ?: true
+            tokenDataStore.data.map { (it[REQUEST_TOKEN] ?: true) && it.savedToken.isBlank() }.first()
         }
 
+    private val Preferences.savedToken: String
+        get() = this[TOKEN_KEY] ?: appInfo.baseToken
 }

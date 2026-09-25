@@ -1,6 +1,5 @@
 package com.mskd.flux.screens.settings.composables
 
-import android.content.Context
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

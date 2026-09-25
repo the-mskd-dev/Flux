@@ -2,8 +2,6 @@ package com.mskd.flux.report
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.mskd.flux.BuildConfig
-import com.mskd.flux.utils.Trace
-import org.acra.ACRA
 
 class PlayCrashLogger : CrashLogger {
 

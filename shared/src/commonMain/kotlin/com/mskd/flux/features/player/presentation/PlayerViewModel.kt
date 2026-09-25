@@ -12,6 +12,7 @@ import com.mskd.flux.core.model.player.PlayerTrack.Type
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.features.files.domain.usecase.GetSubtitlesUseCase
 import com.mskd.flux.features.player.data.PipIsEnabledUseCase
+import com.mskd.flux.features.player.domain.manager.PlayerManager
 import com.mskd.flux.features.player.domain.model.PlayerParams
 import com.mskd.flux.features.player.presentation.PlayerUiContent.AmbientOverlay
 import com.mskd.flux.features.player.presentation.PlayerUiContent.NextButton
@@ -19,7 +20,6 @@ import com.mskd.flux.features.player.presentation.PlayerUiContent.SeekOverlay
 import com.mskd.flux.features.player.presentation.PlayerUiContent.SettingsSheet
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
-import com.mskd.flux.features.player.domain.manager.PlayerManager
 import com.mskd.flux.utils.Trace
 import com.mskd.flux.utils.extensions.getNextEpisodeFor
 import com.mskd.flux.utils.extensions.toPlayerTrack

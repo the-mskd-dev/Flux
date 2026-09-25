@@ -27,13 +27,13 @@ import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
 import com.mskd.flux.utils.extensions.fillMaxWidthWithLimit
 import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.catalog_message
 import flux.shared.generated.resources.ic_close
 import flux.shared.generated.resources.learn_more
-import flux.shared.generated.resources.catalog_message
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
-@Composable
+    @Composable
 fun CatalogMessage(
     sendIntent: (CatalogIntent) -> Unit
 ) {

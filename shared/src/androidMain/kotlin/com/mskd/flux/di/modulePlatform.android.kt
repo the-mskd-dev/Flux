@@ -3,8 +3,6 @@ package com.mskd.flux.di
 
 import com.mskd.flux.core.moduleCoreAndroid
 import com.mskd.flux.features.moduleFeaturesAndroid
-import com.mskd.flux.system.AndroidEmailLauncher
-import com.mskd.flux.system.EmailLauncher
 import com.mskd.flux.system.moduleSystemAndroid
 import org.koin.core.module.Module
 import org.koin.dsl.module

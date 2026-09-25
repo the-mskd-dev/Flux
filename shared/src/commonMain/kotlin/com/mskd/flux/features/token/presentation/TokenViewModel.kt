@@ -30,7 +30,7 @@ class TokenViewModel(
 
     init {
         viewModelScope.launch {
-            val token = tokenDataStore.getToken().ifBlank { appInfo.debugToken }
+            val token = tokenDataStore.getToken().ifBlank { appInfo.baseToken }
             setToken(token)
         }
     }

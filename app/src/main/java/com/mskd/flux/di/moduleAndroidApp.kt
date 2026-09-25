@@ -10,13 +10,17 @@ import org.koin.dsl.module
 val moduleAndroidApp = module {
 
     single<AppInfo> {
+
+        val flavor = Flavor.fromString(BuildConfig.FLAVOR)
+
         AppInfo(
             isDebug = BuildConfig.DEBUG,
             versionName = BuildConfig.VERSION_NAME,
             versionCode = BuildConfig.VERSION_CODE,
-            debugToken = if (BuildConfig.DEBUG) BuildConfig.TMDB_TOKEN else "",
-            flavor = Flavor.fromString(BuildConfig.FLAVOR)
+            baseToken = if (BuildConfig.DEBUG || flavor == Flavor.PLAY_STORE) BuildConfig.TMDB_TOKEN else "",
+            flavor = flavor
         )
+        
     }
 
     viewModelOf(::MainViewModel)

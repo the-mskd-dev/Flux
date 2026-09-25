@@ -3,7 +3,11 @@ name: Android Beta CI
 on:
   push:
     branches:
-      - develop
+      - main
+
+permissions:
+  contents: write
+  packages: write
 
 jobs:
   distribute:
@@ -29,27 +33,37 @@ jobs:
       - name: Set up Local Properties
         run: |
             echo "tmdb_token=${{ secrets.TMDB_TOKEN }}" > local.properties
-            echo "firebase_beta_id=${{ secrets.FIREBASE_BETA_ID }}" >> local.properties
+            echo "firebase_beta_id=${{ secrets.FIREBASE_PLAYSTORE_ID }}" >> local.properties
+
+      - name: Set up Google Services
+        run: |
+          cat << 'EOF' > app/src/playstore/google-services.json
+          ${{ secrets.GOOGLE_SERVICES }}
+          EOF
 
       - name: Decode Firebase Distribution services
         run: echo "${{ secrets.FIREBASE_DISTRIBUTION }}" | base64 --decode > firebase-distribution.json
 
       - name: Create Keystore Properties
         run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > keystore.jks
-          echo "keyAlias=${{ secrets.KEYSTORE_ALIAS }}" > keystore.properties
-          echo "keyPassword=${{ secrets.KEYSTORE_PASSWORD }}" >> keystore.properties
-          echo "storeFile=keystore.jks" >> keystore.properties
-          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" >> keystore.properties
+            echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > keystore.jks
+            echo "keyAlias=${{ secrets.KEYSTORE_ALIAS }}" > keystore.properties
+            echo "keyPassword=${{ secrets.KEYSTORE_PASSWORD }}" >> keystore.properties
+            echo "storeFile=keystore.jks" >> keystore.properties
+            echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" >> keystore.properties
+            pwd
 
-      - name: Run Fastlane Beta
+      - name: Run Fastlane Release
         run: |
-            bundle exec fastlane test
-            bundle exec fastlane beta
+          bundle exec fastlane test
+          bundle exec fastlane release_play_store
+        env:
+          RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 
       - name: Clean sensitive files
         if: always()
         run: |
+          rm -f app/google-services.json
           rm -f firebase-distribution.json
           rm -f keystore.jks
           rm -f keystore.properties

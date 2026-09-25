@@ -39,7 +39,8 @@ platform :android do
 
     gradle(
       task: "assemble",
-      build_type: "Beta"
+      flavor: "foss",
+      build_type: "Beta",
     )
 
     firebase_app_distribution(
@@ -56,9 +57,13 @@ platform :android do
   lane :release do
 
     # Build APK
-    gradle(task: "assemble",build_type: "Release")
+    gradle(
+      task: "assemble",
+      flavor: "foss",
+      build_type: "Release",
+    )
 
-    # Check apk file
+    # Check APK file
     source_apk = lane_context[SharedValues::GRADLE_APK_OUTPUT_PATH]
     if source_apk.nil? || !File.exist?(source_apk)
       UI.user_error!("APK not founded")
@@ -69,7 +74,7 @@ platform :android do
     version_name = get_version_name(gradle_file_path: "app/build.gradle.kts")
     tag_name = "#{version_name}"
 
-    # Rename apk file
+    # Rename APK file
     target_apk = File.join(File.dirname(source_apk), "flux-#{tag_name}.apk")
     sh("cp #{source_apk} #{target_apk}")
 
@@ -100,6 +105,37 @@ platform :android do
           commitish: "main",
           upload_assets: [target_apk]
         )
+
+  end
+
+  desc "Create a release version and send it to the Play Store"
+  lane :release_play_store do
+
+    # Build AAB
+    gradle(
+      task: "bundle",
+      flavor: "playstore",
+      build_type: "Release",
+    )
+
+    # Check AAB file
+    source_aab = lane_context[SharedValues::GRADLE_AAB_OUTPUT_PATH]
+    if source_aab.nil? || !File.exist?(source_aab)
+      UI.user_error!("AAB not founded")
+    end
+
+    # Get changelog
+    changelog_path = "../CHANGELOG.md"
+    release_notes = "No changelog"
+
+    if File.exist?(changelog_path)
+        release_notes = File.read(changelog_path)
+        puts "✅ Changelog loaded"
+    else
+        puts "⚠️ Changelog not founded"
+    end
+
+    # Publish on the Play Store
 
   end
 

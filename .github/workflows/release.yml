@@ -45,3 +45,10 @@ jobs:
           bundle exec fastlane release
         env:
           RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+
+      - name: Clean sensitive files
+        if: always()
+        run: |
+          rm -f keystore.jks
+          rm -f keystore.properties
+          rm -f local.properties

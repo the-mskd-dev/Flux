@@ -7,6 +7,10 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.parcelize)
     alias(libs.plugins.kotlin.compose)
+
+    // Play Store version
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.firebase.crashlytics)
 }
 
 // Local properties
@@ -146,6 +150,15 @@ configure<ApplicationExtension> {
 }
 
 kotlin { jvmToolchain(21) }
+
+androidComponents {
+    // Disable Crashlytics for FOSS flavor
+    onVariants(selector().withFlavor("distribution" to "foss")) { variant ->
+        variant.getExtension(com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension::class.java)?.let { crashlytics ->
+            crashlytics.mappingFileUploadEnabled = false
+        }
+    }
+}
 
 dependencies {
 

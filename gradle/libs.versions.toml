@@ -61,6 +61,9 @@ acra = "5.13.1"
 firebaseCrashlyticsPlugin = "3.0.8"
 firebaseBom = "34.19.0"
 
+# -- Google Services --
+googleServices = "4.5.0"
+
 # -- Testing --
 junit = "4.13.2"
 kotest = "6.2.4"
@@ -174,6 +177,7 @@ acra-dialog = { group = "ch.acra", name = "acra-dialog", version.ref = "acra" }
 # -- Firebase --
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
+firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
 
 # -- Test --
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -205,6 +209,7 @@ android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.
 koin-compiler = { id = "io.insert-koin.compiler.plugin", version.ref = "koinPlugin" }
 android-lint = { id = "com.android.lint", version.ref = "agp" }
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlyticsPlugin" }
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 
 [bundles]
 
@@ -315,7 +320,8 @@ android-acra = [
 ]
 
 android-firebase = [
-    "firebase-crashlytics"
+    "firebase-crashlytics",
+    "firebase-analytics"
 ]
 
 android-unit-test = [

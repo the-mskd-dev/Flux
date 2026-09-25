@@ -59,7 +59,10 @@ class TokenDataStoreImpl(
 
     override val tokenRequested: Boolean
         get() = runBlocking {
-            tokenDataStore.data.map { (it[REQUEST_TOKEN] ?: true) && it.savedToken.isBlank() }.first()
+            tokenDataStore.data.map {
+                (it[REQUEST_TOKEN] ?: true) &&
+                        it.savedToken.isBlank()
+            }.first()
         }
 
     private val Preferences.savedToken: String

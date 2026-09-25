@@ -171,6 +171,10 @@ dependencies {
     // Android Testing
     androidTestImplementation(libs.bundles.android.test)
 
+    // Firebase
+    "playstoreImplementation"(platform(libs.firebase.bom))
+    "playstoreImplementation"(libs.bundles.android.firebase)
+
     // UI Testing
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)

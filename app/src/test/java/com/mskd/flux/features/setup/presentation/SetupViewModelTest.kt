@@ -7,7 +7,6 @@ import com.mskd.flux.features.setup.domain.model.SetupScreen
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk

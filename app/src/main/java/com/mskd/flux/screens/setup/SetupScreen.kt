@@ -27,9 +27,9 @@ import com.mskd.flux.features.setup.presentation.SetupIntent
 import com.mskd.flux.features.setup.presentation.SetupUiState
 import com.mskd.flux.features.setup.presentation.SetupViewModel
 import com.mskd.flux.navigation.domain.Route
+import com.mskd.flux.navigation.domain.Route.Catalog
 import com.mskd.flux.navigation.domain.Route.Sources
 import com.mskd.flux.navigation.domain.Route.Token
-import com.mskd.flux.navigation.domain.Route.Catalog
 import com.mskd.flux.screens.setup.composables.SetupSourcesContent
 import com.mskd.flux.screens.setup.composables.SetupWelcomeContent
 import com.mskd.flux.ui.component.global.Text

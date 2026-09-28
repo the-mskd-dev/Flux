@@ -12,7 +12,7 @@ local.properties
 /private
 /app/debug
 /app/release
-/app/google-services.json
+/app/src/playstore/google-services.json
 *.log
 
 # --- Firebase ---

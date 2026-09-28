@@ -204,3 +204,9 @@ tasks.withType<Test>().configureEach {
         exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
     }
 }
+
+tasks.configureEach {
+    if (name.contains("GoogleServices") && name.contains("Foss", ignoreCase = true)) {
+        enabled = false
+    }
+}

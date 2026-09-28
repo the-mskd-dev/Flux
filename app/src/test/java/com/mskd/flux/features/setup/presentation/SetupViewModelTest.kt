@@ -4,9 +4,12 @@ import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.setup.domain.model.SetupScreen
+import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
 
 class SetupViewModelTest : FunSpec( {
@@ -14,64 +17,77 @@ class SetupViewModelTest : FunSpec( {
     fluxExtensions()
 
     lateinit var settingsDataStore: SettingsDataStore
+    lateinit var tokenDataStore: TokenDataStore
     lateinit var viewModel: SetupViewModel
+
+    var tokenRequested = false
 
     beforeTest {
 
         settingsDataStore = mockk(relaxed = true)
+        tokenDataStore = mockk(relaxed = true)
+        every { tokenDataStore.tokenRequested } returns tokenRequested
 
-        viewModel = SetupViewModel(settingsDataStore = settingsDataStore)
+        viewModel = SetupViewModel(
+            settingsDataStore = settingsDataStore,
+            tokenDataStore = tokenDataStore
+        )
 
     }
 
-    test("onNextButton - WELCOME - navigate to SOURCES") {
-        viewModel.uiState.test {
+    context("onNextButton") {
 
-            // Given
-            awaitItem()
+        test("from WELCOME should navigate to SOURCES") {
+            viewModel.uiState.test {
 
-            // When
+                // Given
+                awaitItem()
+
+                // When
+                viewModel.handleIntent(SetupIntent.OnNextButton)
+
+                // Then
+                val screen = awaitItem().screen
+                screen shouldBe SetupScreen.SOURCES
+
+            }
+        }
+
+        test("from SOURCES, if mode is DEFAULT, should sent permissions event") {
+            // Given : go to SOURCES screen
             viewModel.handleIntent(SetupIntent.OnNextButton)
 
-            // Then
-            val screen = awaitItem().screen
-            screen shouldBe SetupScreen.SOURCES
+            viewModel.event.test {
 
+                // When
+                viewModel.handleIntent(SetupIntent.OnNextButton)
+
+                // Then
+                awaitItem() shouldBe SetupEvent.ShowPermissionDialog
+
+            }
         }
-    }
 
-    test("onNextButton - SOURCES - if mode is DEFAULT, sent permissions event") {
-        // Given : go to SOURCES screen
-        viewModel.handleIntent(SetupIntent.OnNextButton)
-
-        viewModel.event.test {
-
-            // When
+        test("SOURCES, if system folders are disabled should emit NavigateToSources") {
+            // Given : go to SOURCES screen, then change mode to CUSTOM
             viewModel.handleIntent(SetupIntent.OnNextButton)
+            viewModel.handleIntent(SetupIntent.EnableSystemFolders(enabled = false))
 
-            // Then
-            awaitItem() shouldBe SetupEvent.ShowPermissionDialog
+            viewModel.event.test {
 
+                // When
+                viewModel.handleIntent(SetupIntent.OnNextButton)
+
+                // Then
+                awaitItem() shouldBe SetupEvent.NavigateToSources
+
+            }
         }
+
+
     }
 
-    test("onNextButton - SOURCES - if system folders are disabled, navigate to Sources") {
-        // Given : go to SOURCES screen, then change mode to CUSTOM
-        viewModel.handleIntent(SetupIntent.OnNextButton)
-        viewModel.handleIntent(SetupIntent.EnableSystemFolders(enabled = false))
-
-        viewModel.event.test {
-
-            // When
-            viewModel.handleIntent(SetupIntent.OnNextButton)
-
-            // Then
-            awaitItem() shouldBe SetupEvent.NavigateToSources
-
-        }
-    }
-
-    test("enableSystemFolders - change mode in SettingsDatastore") {
+    test("EnableSystemFolders should change mode in SettingsDatastore") {
         viewModel.uiState.test {
 
             // Given
@@ -82,24 +98,45 @@ class SetupViewModelTest : FunSpec( {
 
             // Then
             awaitItem().systemFoldersEnabled shouldBe false
-
-            coVerify(exactly = 1) {
-                settingsDataStore.setSystemFolders(enabled = false)
-            }
+            coVerify(exactly = 1) { settingsDataStore.setSystemFolders(enabled = false) }
 
         }
     }
 
-    test("onPermissionGranted - navigate to TokenScreen") {
-        viewModel.event.test {
+    context("onPermissionGranted") {
 
-            // When
-            viewModel.handleIntent(SetupIntent.OnPermissionGranted)
+        test("if token is requested should emit NavigateToToken event") {
 
-            // Then
-            awaitItem() shouldBe SetupEvent.NavigateToToken
+            //Given
+            tokenRequested = true
 
+            viewModel.event.test {
+
+                // When
+                viewModel.handleIntent(SetupIntent.OnPermissionGranted)
+
+                // Then
+                awaitItem() shouldBe SetupEvent.NavigateToToken
+
+            }
         }
+
+        test("if token is not requested should emit NavigateToCatalog event") {
+
+            //Given
+            tokenRequested = false
+
+            viewModel.event.test {
+
+                // When
+                viewModel.handleIntent(SetupIntent.OnPermissionGranted)
+
+                // Then
+                awaitItem() shouldBe SetupEvent.NavigateToCatalog
+
+            }
+        }
+
     }
 
 })

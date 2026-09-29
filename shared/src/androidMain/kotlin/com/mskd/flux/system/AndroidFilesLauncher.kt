@@ -1,4 +1,4 @@
-package com.mskd.flux.utils
+package com.mskd.flux.system
 
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -8,12 +8,13 @@ import android.provider.DocumentsContract
 import androidx.core.net.toUri
 import com.mskd.flux.core.model.files.FileSource
 import com.mskd.flux.core.model.files.UserFile
+import com.mskd.flux.utils.Trace
 
-object FileUtils {
+class AndroidFilesLauncher(private val context: Context) : FilesLauncher {
 
-    fun openFileExplorer(context: Context, file: UserFile) {
+    override fun open(file: UserFile) {
         val targetUri = resolveTargetUri(file)
-        launchExplorer(context, targetUri)
+        launchExplorer(targetUri)
     }
 
     private fun resolveTargetUri(file: UserFile): Uri? {
@@ -32,7 +33,7 @@ object FileUtils {
         }
     }
 
-    private fun launchExplorer(context: Context, targetUri: Uri?) {
+    private fun launchExplorer(targetUri: Uri?) {
 
         if (targetUri != null) {
             val preciseIntent = Intent(Intent.ACTION_VIEW).apply {
@@ -45,7 +46,7 @@ object FileUtils {
                 context.startActivity(preciseIntent)
                 return
             } catch (e: Exception) {
-                Trace.error(tag = "FileUtils", message = "Precise folder navigation failed, falling back", e)
+                Trace.error(tag = "FilesLauncher", message = "Precise folder navigation failed, falling back", e)
             }
         }
 
@@ -61,7 +62,7 @@ object FileUtils {
         try {
             context.startActivity(fallbackIntent)
         } catch (e: ActivityNotFoundException) {
-            Trace.error(tag = "FileUtils", message = "No file explorer available at all", e)
+            Trace.error(tag = "FilesLauncher", message = "No file explorer available at all", e)
         }
     }
 

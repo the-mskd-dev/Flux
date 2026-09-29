@@ -2,6 +2,7 @@ package com.mskd.flux.features.settings.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mskd.flux.core.model.core.AppInfo
 import com.mskd.flux.core.model.core.FluxOptionsDialogItem
 import com.mskd.flux.core.model.core.FluxOptionsDialogState
 import com.mskd.flux.core.model.core.StringProvider
@@ -15,6 +16,8 @@ import com.mskd.flux.features.privateFolder.domain.usecase.enablePrivateFolder.E
 import com.mskd.flux.features.privateFolder.domain.usecase.setIncludeNsfw.SetIncludeNsfwUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.settings.domain.model.SettingsDialog
+import com.mskd.flux.system.EmailLauncher
+import com.mskd.flux.system.UrlLauncher
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.button_forward
 import flux.shared.generated.resources.button_rewind
@@ -32,9 +35,12 @@ import kotlinx.coroutines.launch
 import java.util.Locale
 
 class SettingsViewModel(
+    private val appInfo: AppInfo,
     private val settingsDataStore: SettingsDataStore,
     private val privateFolderDataStore: PrivateFolderDataStore,
     private val imagesPrefetchManager: ImagesPrefetchManager,
+    private val emailLauncher: EmailLauncher,
+    private val urlLauncher: UrlLauncher,
     private val syncCatalogUseCase: SyncCatalogUseCase,
     private val updateLanguageUseCase: UpdateLanguageUseCase,
     private val enablePrivateFolderUseCase: EnablePrivateFolderUseCase,
@@ -98,7 +104,8 @@ class SettingsViewModel(
             privateFolderEnabled = privateFolder.enabled,
             privateFolderIncludeNsfw = privateFolder.includeNsfw,
             privateFolderPinDialog = privateFolder.pinDialog,
-            privateFolderPinError = privateFolder.pinError
+            privateFolderPinError = privateFolder.pinError,
+            appVersion = appInfo.versionName
         )
     }.stateIn(
         scope = viewModelScope,
@@ -157,6 +164,8 @@ class SettingsViewModel(
             is SettingsIntent.OnExternalPlayerCheck -> onExternalPlayerCheck(value = intent.checked)
             is SettingsIntent.OnEnablePipCheck -> onEnablePipCheck(value = intent.checked)
             is SettingsIntent.OnPrefetchHdImagesCheck -> onPrefetchImagesCheck(value = intent.checked)
+            is SettingsIntent.OpenUrl -> urlLauncher.open(url = intent.url)
+            SettingsIntent.SendEmail -> emailLauncher.sendEmail()
 
             // Private folder
             is SettingsIntent.OnPrivateFolderCheck -> onPrivateFolderCheck(checked = intent.checked)

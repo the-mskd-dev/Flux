@@ -58,6 +58,7 @@ import com.mskd.flux.screens.catalog.composable.CatalogHeader
 import com.mskd.flux.screens.catalog.composable.CatalogMenu
 import com.mskd.flux.screens.catalog.composable.CatalogViewMenu
 import com.mskd.flux.screens.catalog.composable.history.CatalogHistory
+import com.mskd.flux.screens.catalog.composable.message.CatalogMessage
 import com.mskd.flux.screens.catalog.composable.sorting.CatalogSortingSheet
 import com.mskd.flux.screens.catalog.composable.viewMode.CatalogViewModeSheet
 import com.mskd.flux.screens.catalog.composable.viewMode.catalogViewModeGenre
@@ -97,6 +98,7 @@ fun CatalogScreen(
                 CatalogEvent.NavigateToToken -> navigate(Route.Token(fromSetup = false))
                 CatalogEvent.NavigateToSources -> navigate(Route.Sources(fromSetup = false))
                 CatalogEvent.NavigateToPrivateFolder -> navigate(Route.PrivateFolder)
+                CatalogEvent.NavigateToMessage -> navigate(Route.Message)
 
                 is CatalogEvent.PlayMedia -> {
                     if (event.externalPlayer)
@@ -140,6 +142,7 @@ fun CatalogScreen(
                     isRefreshing = state.isRefreshing,
                     tokenIsMissing = state.tokenIsMissing,
                     privateFolderEnabled = state.privateFolderEnabled,
+                    showMessage = state.message.showMessage,
                     sortingMode = state.sortingMode,
                     showSortingModes = state.showSortingSheet,
                     viewMode = state.viewMode,
@@ -165,6 +168,7 @@ fun CatalogContent(
     isRefreshing: Boolean,
     tokenIsMissing: Boolean,
     privateFolderEnabled: Boolean,
+    showMessage: Boolean,
     sortingMode: CatalogSortingMode,
     showSortingModes: Boolean,
     viewMode: CatalogViewMode,
@@ -221,6 +225,12 @@ fun CatalogContent(
                     if (artworks.none { !it.isUnknown }) {
                         item(span = { GridItemSpan(maxLineSpan) }) {
                             CatalogEmptyContent(sendIntent = sendIntent)
+                        }
+                    }
+
+                    if (showMessage) {
+                        item(span = { GridItemSpan(maxLineSpan) }) {
+                            CatalogMessage(sendIntent = sendIntent)
                         }
                     }
 
@@ -339,6 +349,7 @@ fun CatalogScreen_Preview() {
                 isRefreshing = false,
                 tokenIsMissing = false,
                 privateFolderEnabled = true,
+                showMessage = true,
                 sortingMode = CatalogSortingMode.LAST_MODIFICATION,
                 showSortingModes = false,
                 viewMode = CatalogViewMode.BY_TYPE,
@@ -361,6 +372,7 @@ fun CatalogScreen_Unknown_Preview() {
                 isRefreshing = false,
                 tokenIsMissing = true,
                 privateFolderEnabled = true,
+                showMessage = true,
                 sortingMode = CatalogSortingMode.LAST_MODIFICATION,
                 showSortingModes = false,
                 viewMode = CatalogViewMode.BY_TYPE,
@@ -383,6 +395,7 @@ fun CatalogScreen_Empty_Preview() {
                 isRefreshing = false,
                 tokenIsMissing = true,
                 privateFolderEnabled = true,
+                showMessage = true,
                 sortingMode = CatalogSortingMode.LAST_MODIFICATION,
                 showSortingModes = false,
                 viewMode = CatalogViewMode.BY_TYPE,

@@ -6,4 +6,5 @@ enum class CrashKey(val key: String) {
     EXTERNAL_PLAYER("external_player"),
     HAS_TOKEN("has_token"),
     SYSTEM_FOLDERS("system_folders"),
+    FLAVOR("flavor"),
 }

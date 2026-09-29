@@ -28,7 +28,6 @@ jobs:
 
       - name: Set up Local Properties
         run: |
-            echo "tmdb_token=${{ secrets.TMDB_TOKEN }}" > local.properties
             echo "firebase_beta_id=${{ secrets.FIREBASE_BETA_ID }}" >> local.properties
 
       - name: Decode Firebase Distribution services
@@ -46,3 +45,11 @@ jobs:
         run: |
             bundle exec fastlane test
             bundle exec fastlane beta
+
+      - name: Clean sensitive files
+        if: always()
+        run: |
+          rm -f firebase-distribution.json
+          rm -f keystore.jks
+          rm -f keystore.properties
+          rm -f local.properties

@@ -43,7 +43,7 @@ fun LazyGridScope.catalogViewModeType(
                 artworks = artworks.filter { it.type == ContentType.SHOW && !it.isUnknown },
                 sortingOption = sortingMode,
                 privateFolderEnabled = privateFolderEnabled,
-                onCategoryTap = { sendIntent(CatalogIntent.OnCategoryTap(ContentType.SHOW)) },
+                onCategoryTap = { sendIntent(CatalogIntent.OnCategoryClick(ContentType.SHOW)) },
                 sendIntent = sendIntent
             )
 
@@ -52,7 +52,7 @@ fun LazyGridScope.catalogViewModeType(
                 artworks = artworks.filter { it.type == ContentType.MOVIE && !it.isUnknown },
                 sortingOption = sortingMode,
                 privateFolderEnabled = privateFolderEnabled,
-                onCategoryTap = { sendIntent(CatalogIntent.OnCategoryTap(ContentType.MOVIE)) },
+                onCategoryTap = { sendIntent(CatalogIntent.OnCategoryClick(ContentType.MOVIE)) },
                 sendIntent = sendIntent
             )
 

@@ -30,8 +30,8 @@ class TokenViewModel(
 
     init {
         viewModelScope.launch {
-            val token = tokenDataStore.getToken().ifBlank { appInfo.debugToken }
-            setToken(token)
+            val token = tokenDataStore.getToken()
+            setToken(if (token != appInfo.baseToken) token else "")
         }
     }
 
@@ -51,9 +51,14 @@ class TokenViewModel(
 
     private suspend fun saveToken() {
 
+        val previousToken = tokenDataStore.getToken()
+        val newToken = _uiState.value.token
+        if (previousToken == newToken || newToken.isBlank())
+            return
+
         _uiState.update { it.copy(isLoading = true) }
 
-        val authenticateResult = saveTokenAndSyncUseCase(token = _uiState.value.token)
+        val authenticateResult = saveTokenAndSyncUseCase(token = newToken)
 
         when (authenticateResult) {
             AuthenticateResult.SUCCESS -> {

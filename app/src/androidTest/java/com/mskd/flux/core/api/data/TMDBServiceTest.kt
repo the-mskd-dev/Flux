@@ -1,4 +1,4 @@
-package com.mskd.flux.data.tmdb
+package com.mskd.flux.core.api.data
 
 import androidx.test.core.app.ApplicationProvider
 import com.mskd.flux.BuildConfig

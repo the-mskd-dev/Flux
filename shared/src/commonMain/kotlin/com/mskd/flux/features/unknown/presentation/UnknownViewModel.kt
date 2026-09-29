@@ -12,6 +12,7 @@ import com.mskd.flux.features.player.domain.model.PlaybackAction
 import com.mskd.flux.features.player.domain.usecase.ResolvePlaybackActionUseCase
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
+import com.mskd.flux.system.FilesLauncher
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -23,6 +24,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class UnknownViewModel(
+    private val filesLauncher: FilesLauncher,
     observeArtworkUseCase: ObserveArtworkUseCase,
     settingsDataStore: SettingsDataStore,
     private val resolvePlaybackAction: ResolvePlaybackActionUseCase,
@@ -77,7 +79,7 @@ class UnknownViewModel(
     fun handleIntent(intent: UnknownIntent) = viewModelScope.launch {
         when (intent) {
             is UnknownIntent.PlayMedia -> playMedia(media = intent.media, forceInternal = intent.forceInternal)
-            is UnknownIntent.OpenFileExplorer -> _event.emit(UnknownEvent.OpenFileExplorer(media = intent.media))
+            is UnknownIntent.OpenFileExplorer -> filesLauncher.open(file = intent.media.file)
             UnknownIntent.OnBackTap -> _event.emit(UnknownEvent.BackToPreviousScreen)
             UnknownIntent.OnInfoTap -> _event.emit(UnknownEvent.NavigateToHowToScreen)
             is UnknownIntent.OnExternalPlayerResult -> onExternalPlayerResult(progress = intent.progress)

@@ -1,6 +1,5 @@
 package com.mskd.flux.screens.settings
 
-import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.mskd.flux.features.customization.domain.model.NavigationStyle
@@ -63,11 +61,6 @@ fun SettingsScreen(
 
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val notificationsPermission = notificationsPermissionState()
-    val context = LocalContext.current
-    val appVersion = context
-        .packageManager
-        .getPackageInfo(context.packageName, 0)
-        .versionName
 
 
     LaunchedEffect(Unit) {
@@ -87,8 +80,6 @@ fun SettingsScreen(
 
     SettingsContent(
         state = state,
-        context = context,
-        appVersion = appVersion,
         sendIntent = viewModel::handleIntent
     )
 
@@ -116,8 +107,6 @@ fun SettingsScreen(
 @Composable
 fun SettingsContent(
     state: SettingsUiState,
-    context: Context,
-    appVersion: String?,
     sendIntent: (SettingsIntent) -> Unit
 ) {
 
@@ -158,7 +147,6 @@ fun SettingsContent(
             )
 
             SettingsOtherSection(
-                context = context,
                 sendIntent = sendIntent
             )
 
@@ -168,8 +156,8 @@ fun SettingsContent(
             )
 
             SettingsAppInfoSection(
-                context = context,
-                appVersion = appVersion
+                appVersion = state.appVersion,
+                sendIntent = sendIntent
             )
 
             Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding() + FluxUI.Space.bottomScreen))
@@ -205,9 +193,7 @@ fun SettingIcon(
 fun SettingsScreen_Preview() {
     FluxTheme {
         SettingsContent(
-            state = SettingsUiState(),
-            context = LocalContext.current,
-            appVersion = "1.0.0",
+            state = SettingsUiState(appVersion = "6.1.6"),
         ) { }
     }
 }

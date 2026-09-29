@@ -7,6 +7,10 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.parcelize)
     alias(libs.plugins.kotlin.compose)
+
+    // Play Store version
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.firebase.crashlytics)
 }
 
 // Local properties
@@ -56,13 +60,21 @@ configure<ApplicationExtension> {
         }
     }
 
-    sourceSets {
-        getByName("androidTest") {
-            resources.directories.add("$rootDir/shared/schemas")
+    flavorDimensions += "distribution"
+
+    productFlavors {
+        create("foss") {
+            dimension = "distribution"
+            isDefault = true
+        }
+        create("playstore") {
+            dimension = "distribution"
+            applicationIdSuffix = ".playstore"
         }
     }
 
     buildTypes {
+
         release {
             if (signingConfigs.findByName("config") != null) {
                 signingConfig = signingConfigs.getByName("config")
@@ -100,15 +112,25 @@ configure<ApplicationExtension> {
                 "proguard-rules.pro"
             )
         }
+
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
+
+    sourceSets {
+        getByName("androidTest") {
+            resources.directories.add("$rootDir/shared/schemas")
+        }
+    }
+
     buildFeatures {
         compose = true
         buildConfig = true
     }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -119,6 +141,7 @@ configure<ApplicationExtension> {
             excludes += "META-INF/*.kotlin_module"
         }
     }
+
     dependenciesInfo {
         includeInApk = false
         includeInBundle = false
@@ -127,6 +150,15 @@ configure<ApplicationExtension> {
 }
 
 kotlin { jvmToolchain(21) }
+
+androidComponents {
+    // Disable Crashlytics for FOSS flavor
+    onVariants(selector().withFlavor("distribution" to "foss")) { variant ->
+        variant.getExtension(com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension::class.java)?.let { crashlytics ->
+            crashlytics.mappingFileUploadEnabled = false
+        }
+    }
+}
 
 dependencies {
 
@@ -152,6 +184,10 @@ dependencies {
     // Android Testing
     androidTestImplementation(libs.bundles.android.test)
 
+    // Firebase
+    "playstoreImplementation"(platform(libs.firebase.bom))
+    "playstoreImplementation"(libs.bundles.android.firebase)
+
     // UI Testing
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
@@ -166,5 +202,11 @@ tasks.withType<Test>().configureEach {
         events("passed", "skipped", "failed")
         showStandardStreams = true
         exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+    }
+}
+
+tasks.configureEach {
+    if (name.contains("GoogleServices") && name.contains("Foss", ignoreCase = true)) {
+        enabled = false
     }
 }

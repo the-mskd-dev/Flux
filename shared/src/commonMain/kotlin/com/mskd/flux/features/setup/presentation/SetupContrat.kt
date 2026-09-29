@@ -19,4 +19,5 @@ sealed interface SetupEvent {
     data object ShowPermissionDialog: SetupEvent
     data object NavigateToToken: SetupEvent
     data object NavigateToSources: SetupEvent
+    data object NavigateToCatalog: SetupEvent
 }

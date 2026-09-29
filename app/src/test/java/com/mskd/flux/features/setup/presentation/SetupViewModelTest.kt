@@ -64,7 +64,7 @@ class SetupViewModelTest : FunSpec( {
             }
         }
 
-        test("SOURCES, if system folders are disabled should emit NavigateToSources") {
+        test("from SOURCES, if system folders are disabled should emit NavigateToSources") {
             // Given : go to SOURCES screen, then change mode to CUSTOM
             viewModel.handleIntent(SetupIntent.OnNextButton)
             viewModel.handleIntent(SetupIntent.EnableSystemFolders(enabled = false))

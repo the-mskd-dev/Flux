@@ -26,6 +26,9 @@ fastlane/test_output
 fastlane/*.json
 fastlane/.env.default
 
+# --- Play Console ---
+play-console-api-key.json
+
 # --- Keys & Signing ---
 keystore.properties
 *.jks

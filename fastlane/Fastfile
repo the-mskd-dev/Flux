@@ -109,7 +109,7 @@ platform :android do
   end
 
   desc "Create a release version and send it to the Play Store"
-  lane :release_play_store do
+  lane :deploy_play_store do
 
     # Build AAB
     gradle(
@@ -136,6 +136,14 @@ platform :android do
     end
 
     # Publish on the Play Store
+    upload_to_play_store(
+      track: 'internal',
+      aab: "app/build/outputs/bundle/release/app-release.aab",
+      skip_upload_apk: true,
+      skip_upload_metadata: false, # Mettre true si tu ne veux pas synchro les textes/captures
+      skip_upload_images: true,
+      skip_upload_screenshots: true
+    )
 
   end
 

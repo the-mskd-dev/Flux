@@ -41,6 +41,12 @@ jobs:
           ${{ secrets.GOOGLE_SERVICES }}
           EOF
 
+      - name: Set up Google API Key
+        run: |
+          cat << 'EOF' > play-console-api-key.json
+          ${{ secrets.PLAY_CONSOLE_API_KEY }}
+          EOF
+
       - name: Decode Firebase Distribution services
         run: echo "${{ secrets.FIREBASE_DISTRIBUTION }}" | base64 --decode > firebase-distribution.json
 
@@ -56,7 +62,7 @@ jobs:
       - name: Run Fastlane Release
         run: |
           bundle exec fastlane test
-          bundle exec fastlane release_play_store
+          bundle exec fastlane deploy_play_store
         env:
           RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 

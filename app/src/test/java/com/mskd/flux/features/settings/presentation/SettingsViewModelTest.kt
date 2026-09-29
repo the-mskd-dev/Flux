@@ -25,6 +25,7 @@ import io.kotest.property.Exhaustive
 import io.kotest.property.arbitrary.int
 import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.boolean
+import io.mockk.clearMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -32,6 +33,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.util.Locale
+import kotlin.math.exp
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SettingsViewModelTest : FunSpec({
@@ -241,7 +243,8 @@ class SettingsViewModelTest : FunSpec({
                 viewModel.handleIntent(SettingsIntent.ShowSettingsDialog(dialog = null))
 
                 // Then
-                awaitItem().settingsDialog shouldBe null
+                val state = expectMostRecentItem()
+                state.settingsDialog shouldBe null
             }
         }
 
@@ -256,7 +259,8 @@ class SettingsViewModelTest : FunSpec({
                 viewModel.handleIntent(SettingsIntent.ProceedFullSync)
 
                 // Then
-                awaitItem().settingsDialog shouldBe null
+                val state = expectMostRecentItem()
+                state.settingsDialog shouldBe null
                 coVerify { syncCatalogUseCase(onlyNew = false) }
             }
         }
@@ -327,7 +331,8 @@ class SettingsViewModelTest : FunSpec({
                 viewModel.handleIntent(SettingsIntent.HideDialog)
 
                 // Then
-                awaitItem().optionsDialog shouldBe null
+                val state = expectMostRecentItem()
+                state.optionsDialog shouldBe null
 
             }
 
@@ -366,7 +371,7 @@ class SettingsViewModelTest : FunSpec({
                 awaitItem()
 
                 // When
-                viewModel.handleIntent(SettingsIntent.SetRewindValue(20))
+                viewModel.handleIntent(SettingsIntent.SetForwardValue(20))
                 dataStoreFlow.value = dataStoreFlow.value.copy(playerForwardValue = 20)
 
                 // Then
@@ -426,8 +431,10 @@ class SettingsViewModelTest : FunSpec({
         test("OnAutoKeyboardCheck should set value in datastore and then close dialog") {
 
             // Given
+            dataStoreFlow.value = dataStoreFlow.value.copy(autoKeyboard = true)
             viewModel.uiState.test {
-                awaitItem()
+                val initialState = awaitItem()
+                initialState.autoKeyboard shouldBe true
 
                 // When
                 viewModel.handleIntent(SettingsIntent.OnAutoKeyboardCheck(false))
@@ -519,6 +526,8 @@ class SettingsViewModelTest : FunSpec({
             checkAll(
                 Exhaustive.boolean()
             ) { check ->
+
+                clearMocks(settingsDataStore, imagesPrefetchManager)
 
                 // Given
                 viewModel.uiState.test {

@@ -13,7 +13,7 @@ import java.io.File
 import java.util.Locale
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class SettingsDataStoreTest : FunSpec({
+class SettingsDataStoreImplTest : FunSpec({
 
     var tempFile: File? = null
     lateinit var settingsDataStore: SettingsDataStore

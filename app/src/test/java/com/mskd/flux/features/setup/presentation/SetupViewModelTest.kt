@@ -19,13 +19,10 @@ class SetupViewModelTest : FunSpec( {
     lateinit var tokenDataStore: TokenDataStore
     lateinit var viewModel: SetupViewModel
 
-    var tokenRequested = false
-
     beforeTest {
 
         settingsDataStore = mockk(relaxed = true)
         tokenDataStore = mockk(relaxed = true)
-        every { tokenDataStore.tokenRequested } returns tokenRequested
 
         viewModel = SetupViewModel(
             settingsDataStore = settingsDataStore,
@@ -107,7 +104,7 @@ class SetupViewModelTest : FunSpec( {
         test("if token is requested should emit NavigateToToken event") {
 
             //Given
-            tokenRequested = true
+            every { tokenDataStore.tokenRequested } returns true
 
             viewModel.event.test {
 
@@ -115,7 +112,8 @@ class SetupViewModelTest : FunSpec( {
                 viewModel.handleIntent(SetupIntent.OnPermissionGranted)
 
                 // Then
-                awaitItem() shouldBe SetupEvent.NavigateToToken
+                val event = awaitItem()
+                event shouldBe SetupEvent.NavigateToToken
 
             }
         }
@@ -123,7 +121,7 @@ class SetupViewModelTest : FunSpec( {
         test("if token is not requested should emit NavigateToCatalog event") {
 
             //Given
-            tokenRequested = false
+            every { tokenDataStore.tokenRequested } returns false
 
             viewModel.event.test {
 

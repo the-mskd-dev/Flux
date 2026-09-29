@@ -12,6 +12,8 @@ local.properties
 /private
 /app/debug
 /app/release
+/app/playstore/release
+/app/foss/release
 /app/src/playstore/google-services.json
 *.log
 

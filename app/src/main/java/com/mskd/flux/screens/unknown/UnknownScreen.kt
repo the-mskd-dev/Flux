@@ -4,6 +4,7 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -143,74 +144,70 @@ fun UnknownScreenContent(
         }
     ) { innerPadding ->
 
-        if (medias.isNotEmpty()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
+        ) {
 
-            LazyColumn(
+            Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
+
+            FluxSearchField(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background),
-                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
-                state = lazyColumnState
-            ) {
+                    .fillMaxWidth()
+                    .padding(horizontal = FluxUI.Space.medium)
+                    .padding(bottom = FluxUI.Space.large),
+                value = searchQuery,
+                onValueChange = { sendIntent(UnknownIntent.DoSearch(it)) },
+            )
 
-                item {
-                    Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
-                }
+            if (medias.isNotEmpty()) {
 
-                item {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
+                    state = lazyColumnState
+                ) {
 
-                    FluxSearchField(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = FluxUI.Space.medium)
-                            .padding(bottom = FluxUI.Space.large),
-                        value = searchQuery,
-                        onValueChange = { sendIntent(UnknownIntent.DoSearch(it)) },
-                    )
+                    items(items = medias, key = { m -> m.id }) { media ->
 
-                }
+                        EpisodeItem(
+                            modifier = Modifier.animateItem(),
+                            episode = media,
+                            isSelected = false,
+                            onClick = { sendIntent(UnknownIntent.PlayMedia(media = media)) },
+                            dropDownMenu = { onDismissRequest ->
+                                UnknownDropDownMenu(
+                                    episode = media,
+                                    onDismissRequest = onDismissRequest,
+                                    sendIntent = sendIntent
+                                )
+                            }
+                        )
 
-                items(items = medias, key = { m -> m.id }) { media ->
-
-                    EpisodeItem(
-                        modifier = Modifier.animateItem(),
-                        episode = media,
-                        isSelected = false,
-                        onClick = { sendIntent(UnknownIntent.PlayMedia(media = media)) },
-                        dropDownMenu = { onDismissRequest ->
-                            UnknownDropDownMenu(
-                                episode = media,
-                                onDismissRequest = onDismissRequest,
-                                sendIntent = sendIntent
-                            )
-                        }
-                    )
+                    }
 
                 }
 
-                item {
-                    Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
-                }
+            } else {
 
-            }
-
-        } else {
-
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-                    .systemBarsPadding(),
-                contentAlignment = Alignment.TopStart
-            ) {
-
-                Text.Content.Body(
+                Box(
                     modifier = Modifier
-                        .align(Alignment.Center)
-                        .fillMaxWidth(),
-                    text = stringResource(Res.string.no_item),
-                    textAlign = TextAlign.Center
-                )
+                        .fillMaxWidth()
+                        .padding(innerPadding)
+                        .systemBarsPadding(),
+                    contentAlignment = Alignment.TopStart
+                ) {
+
+                    Text.Content.Body(
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .fillMaxWidth(),
+                        text = stringResource(Res.string.no_item),
+                        textAlign = TextAlign.Center
+                    )
+
+                }
 
             }
 

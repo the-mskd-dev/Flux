@@ -52,12 +52,12 @@ fun EpisodeItem(
 ) {
 
     Box(
+        modifier = modifier,
         contentAlignment = Alignment.Center
     ) {
 
         if (FluxUI.episodes.large) {
             EpisodeItemLarge(
-                modifier = modifier,
                 episode = episode,
                 isSelected = isSelected,
                 isExpanded = isExpanded,
@@ -67,7 +67,6 @@ fun EpisodeItem(
             )
         } else {
             EpisodeItemSmall(
-                modifier = modifier,
                 episode = episode,
                 isSelected = isSelected,
                 isExpanded = isExpanded,

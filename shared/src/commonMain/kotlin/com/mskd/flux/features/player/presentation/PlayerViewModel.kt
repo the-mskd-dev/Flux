@@ -14,13 +14,13 @@ import com.mskd.flux.features.files.domain.usecase.GetSubtitlesUseCase
 import com.mskd.flux.features.player.data.PipIsEnabledUseCase
 import com.mskd.flux.features.player.domain.manager.PlayerManager
 import com.mskd.flux.features.player.domain.model.PlayerParams
+import com.mskd.flux.features.player.domain.usecase.SaveTrackLanguageUseCase
 import com.mskd.flux.features.player.presentation.PlayerUiContent.AmbientOverlay
 import com.mskd.flux.features.player.presentation.PlayerUiContent.NextButton
 import com.mskd.flux.features.player.presentation.PlayerUiContent.SeekOverlay
 import com.mskd.flux.features.player.presentation.PlayerUiContent.SettingsSheet
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
-import com.mskd.flux.utils.Trace
 import com.mskd.flux.utils.extensions.getNextEpisodeFor
 import com.mskd.flux.utils.extensions.toPlayerTrack
 import kotlinx.coroutines.Job
@@ -40,7 +40,6 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.Locale
 import java.util.UUID
 import kotlin.time.Duration.Companion.seconds
 
@@ -52,7 +51,8 @@ class PlayerViewModel<out T>(
     private val observeArtworkUseCase: ObserveArtworkUseCase,
     private val pipIsEnabledUseCase: PipIsEnabledUseCase,
     private val saveProgressUseCase: SaveProgressUseCase,
-    private val getSubtitlesUseCase: GetSubtitlesUseCase
+    private val getSubtitlesUseCase: GetSubtitlesUseCase,
+    private val saveTrackLanguageUseCase: SaveTrackLanguageUseCase
 ) : ViewModel() {
 
     //region Variables
@@ -320,30 +320,16 @@ class PlayerViewModel<out T>(
     }
 
     private suspend fun updateTracks() {
-        val currentSettings = settingsDataStore.flow.first()
-        val preferredLang = currentSettings.subtitlesLanguage.toPlayerTrack(type = Type.SUBTITLES)
+        val preferredAudio = saveTrackLanguageUseCase.getAudioLanguage().toPlayerTrack(type = Type.AUDIO)
+        val preferredSubtitles = saveTrackLanguageUseCase.getSubtitlesLanguage().toPlayerTrack(type = Type.SUBTITLES)
 
-        playerManager.selectTrack(track = preferredLang)
-
+        playerManager.selectTrack(track = preferredAudio)
+        playerManager.selectTrack(track = preferredSubtitles)
     }
 
     private suspend fun selectTrack(track: PlayerTrack) {
         playerManager.selectTrack(track = track)
-
-        try {
-
-            if (track.language != null) {
-                val locale = Locale.forLanguageTag(track.language)
-                if (track.type == Type.SUBTITLES)
-                    settingsDataStore.setSubtitlesLanguage(locale)
-                else
-                    settingsDataStore.setAudioLanguage(locale)
-            }
-
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Trace.error("PlayerViewModel", "Locale not found for ${track.language}", e)
-        }
+        saveTrackLanguageUseCase(track = track)
     }
 
     private suspend fun showNextEpisode(show: Boolean) {

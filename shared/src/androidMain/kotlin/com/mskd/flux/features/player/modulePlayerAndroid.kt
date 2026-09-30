@@ -53,7 +53,8 @@ val modulePlayerAndroid = module {
 
     factory<PlayerManager<Player>> {
         AndroidPlayerManager(
-            context = androidContext()
+            context = androidContext(),
+            saveTrackLanguageUseCase = get()
         )
     }
 
@@ -66,6 +67,7 @@ val modulePlayerAndroid = module {
             pipIsEnabledUseCase = get(),
             saveProgressUseCase = get(),
             getSubtitlesUseCase = get(),
+            saveTrackLanguageUseCase = get(),
         )
     }
 

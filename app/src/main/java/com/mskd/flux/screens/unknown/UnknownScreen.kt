@@ -4,6 +4,7 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -143,31 +144,52 @@ fun UnknownScreenContent(
         }
     ) { innerPadding ->
 
-        if (medias.isNotEmpty()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
+        ) {
+
+            Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
+
+            FluxSearchField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = FluxUI.Space.medium)
+                    .padding(bottom = FluxUI.Space.large),
+                value = searchQuery,
+                onValueChange = { sendIntent(UnknownIntent.DoSearch(it)) },
+            )
 
             LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background),
+                modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
                 state = lazyColumnState
             ) {
 
-                item {
-                    Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
-                }
+                if (medias.isEmpty()) {
+                    item {
 
-                item {
+                        Box(
+                            modifier = Modifier
+                                .animateItem()
+                                .fillMaxWidth()
+                                .padding(innerPadding)
+                                .systemBarsPadding(),
+                            contentAlignment = Alignment.TopStart
+                        ) {
 
-                    FluxSearchField(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = FluxUI.Space.medium)
-                            .padding(bottom = FluxUI.Space.large),
-                        value = searchQuery,
-                        onValueChange = { sendIntent(UnknownIntent.DoSearch(it)) },
-                    )
+                            Text.Content.Body(
+                                modifier = Modifier
+                                    .align(Alignment.Center)
+                                    .fillMaxWidth(),
+                                text = stringResource(Res.string.no_item),
+                                textAlign = TextAlign.Center
+                            )
 
+                        }
+
+                    }
                 }
 
                 items(items = medias, key = { m -> m.id }) { media ->
@@ -187,30 +209,6 @@ fun UnknownScreenContent(
                     )
 
                 }
-
-                item {
-                    Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
-                }
-
-            }
-
-        } else {
-
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-                    .systemBarsPadding(),
-                contentAlignment = Alignment.TopStart
-            ) {
-
-                Text.Content.Body(
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .fillMaxWidth(),
-                    text = stringResource(Res.string.no_item),
-                    textAlign = TextAlign.Center
-                )
 
             }
 

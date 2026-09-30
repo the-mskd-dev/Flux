@@ -11,8 +11,8 @@ import com.mskd.flux.features.files.domain.usecase.GetSubtitlesUseCase
 import com.mskd.flux.features.player.data.PipIsEnabledUseCase
 import com.mskd.flux.features.player.domain.manager.PlayerManager
 import com.mskd.flux.features.player.domain.model.PlayerParams
-import com.mskd.flux.features.player.fake.PlayerTestCases
 import com.mskd.flux.features.player.domain.usecase.SaveTrackLanguageUseCase
+import com.mskd.flux.features.player.fake.PlayerTestCases
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.mockups.MediaMockups

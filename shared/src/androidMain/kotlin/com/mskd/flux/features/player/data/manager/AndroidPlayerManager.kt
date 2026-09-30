@@ -23,6 +23,7 @@ import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.player.PlayerTrack
 import com.mskd.flux.features.player.domain.manager.PlayerManager
+import com.mskd.flux.features.player.domain.usecase.SaveTrackLanguageUseCase
 import com.mskd.flux.services.PlayerService
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.Trace
@@ -48,7 +49,10 @@ import java.util.Locale
 import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.milliseconds
 
-class AndroidPlayerManager(private val context: Context) : Player.Listener, PlayerManager<Player> {
+class AndroidPlayerManager(
+    private val context: Context,
+    private val saveTrackLanguageUseCase: SaveTrackLanguageUseCase
+) : Player.Listener, PlayerManager<Player> {
 
     private companion object {
         const val TAG = "AndroidPlayerManager"
@@ -200,6 +204,15 @@ class AndroidPlayerManager(private val context: Context) : Player.Listener, Play
 
             currentMediaId = media.mediaId
             player.setMediaItem(mediaItem, media.currentTime)
+
+            // Apply saved track languages before preparing so the
+            // right audio and subtitles tracks are selected at startup
+            player.trackSelectionParameters = player.trackSelectionParameters
+                .buildUpon()
+                .setPreferredAudioLanguage(saveTrackLanguageUseCase.getAudioLanguage().language)
+                .setPreferredTextLanguage(saveTrackLanguageUseCase.getSubtitlesLanguage().language)
+                .build()
+
             player.prepare()
         }
 

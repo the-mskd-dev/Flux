@@ -226,7 +226,7 @@
     <string name="message_title">Flux sul Play Store!</string>
     <string-array name="message_details">
         <item>Prima di tutto grazie a tutti per la vostra presenza e per i vostri feedback per migliorare questa applicazione, non mi aspettavo così tante persone!</item>
-        <item>Con l'obiettivo di dare ancora un po' più di visibilità, vorrei rendere Flux disponibile sul Play Store. Questa versione sarà a pagamento (solo 1€), con lo scopo di ammortizzare le spese e il materiale che utilizzo per lo sviluppo dell'applicazione.</item>
+        <item>Per dargli ancora più visibilità, vorrei rendere Flux disponibile sul Play Store. Si tratterebbe di un'edizione "supporter" (a soli 1 €), per compensare le spese e l'hardware che utilizzo per lo sviluppo dell'app.</item>
         <item>Ovviamente, Flux sarà sempre disponibile gratuitamente su GitHub e F-Droid, e avrà le stesse identiche funzionalità (non voglio gestire 2 versioni diverse ahah).</item>
         <item>Tuttavia, per poter pubblicare l'applicazione, ho bisogno di un pugno di tester per superare la validazione di Google, ed è per questo che mi rivolgo a voi. Se desiderate partecipare, vi basta inviarmi il vostro indirizzo email in modo che possa iscrivervi tra i tester, dopodiché riceverete un link del Play Store che vi proporrà di scaricare l'applicazione (normalmente gratis), e questo è tutto.</item>
         <item>Vi ringrazio per il vostro aiuto e per il vostro supporto, a presto!</item>

@@ -1,8 +1,5 @@
 package com.mskd.flux.ui.component.global
 
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
@@ -30,8 +27,8 @@ import androidx.compose.ui.graphics.GraphicsLayerScope
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import com.mskd.flux.presentation.animateAlphaState
-import com.mskd.flux.presentation.blurForeground
 import com.mskd.flux.presentation.blurBackground
+import com.mskd.flux.presentation.blurForeground
 import com.mskd.flux.ui.theme.FluxUI
 import dev.chrisbanes.haze.rememberHazeState
 

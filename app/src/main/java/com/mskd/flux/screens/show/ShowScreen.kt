@@ -125,36 +125,14 @@ fun ShowScreenContent(
 ) {
 
     val isLargeScreen = rememberScreenDimensions().isLarge
-
     var showMenu by remember { mutableStateOf(false) }
-
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
-    val titleAlpha by remember {
-        derivedStateOf {
-            if (scrollBehavior.state.contentOffset < -10f) 1f else 0f
-        }
-    }
-
-    val animatedAlpha by animateFloatAsState(
-        targetValue = titleAlpha,
-        animationSpec = spring(
-            stiffness = Spring.StiffnessLow,
-            dampingRatio = Spring.DampingRatioNoBouncy
-        ),
-        label = "TitleAlphaAnimation"
-    )
-
     FluxScaffold(
-        modifier = Modifier.graphicsLayer { alpha = animatedAlpha },
-        title = null,
+        title = fullShow.artwork.title,
+        animatedTitle = true,
         onBackTap = { sendIntent(ShowIntent.OnBackTap) },
         scrollBehavior = scrollBehavior,
-        topAppBarColors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color.Transparent,
-            scrolledContainerColor = Color.Transparent,
-            titleContentColor = MaterialTheme.colorScheme.onBackground,
-        ),
         actions = {
 
             IconButton(
@@ -162,6 +140,7 @@ fun ShowScreenContent(
                 content = {
                     Icon(
                         imageVector = Icons.Default.MoreVert,
+                        tint = MaterialTheme.colorScheme.onBackground,
                         contentDescription = "menu button"
                     )
                 }

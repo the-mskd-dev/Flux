@@ -117,7 +117,7 @@ androidx-material3-adaptive = { group = "androidx.compose.material3.adaptive", n
 androidx-palette = { group = "androidx.palette", name = "palette-ktx", version = "1.0.0" }
 haze-core = { group = "dev.chrisbanes.haze", name = "haze", version.ref = "haze" }
 haze-blur = { group = "dev.chrisbanes.haze", name = "haze-blur", version.ref = "haze" }
-haze-blur-materials = { group = "dev.chrisbanes.haze", name = "haze-blur-materials", version.ref = "haze" }
+haze-blur-materials = { group = "dev.chrisbanes.haze", name = "haze-blur-material3", version.ref = "haze" }
 
 # -- Color --
 material-kolor = { group = "com.materialkolor", name = "material-kolor", version = "5.0.0" }

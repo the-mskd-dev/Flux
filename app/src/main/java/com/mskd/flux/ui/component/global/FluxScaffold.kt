@@ -1,7 +1,12 @@
 package com.mskd.flux.ui.component.global
 
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -13,20 +18,27 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.GraphicsLayerScope
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import com.mskd.flux.presentation.blurForeground
+import com.mskd.flux.presentation.blurBackground
 import com.mskd.flux.ui.theme.FluxUI
+import dev.chrisbanes.haze.rememberHazeState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FluxScaffold(
-    modifier: Modifier = Modifier,
     title: String?,
+    animatedTitle: Boolean = false,
     showBackButton: Boolean = true,
     onBackTap: (() -> Unit) = { },
     actions: @Composable (RowScope.() -> Unit) = {},
@@ -34,14 +46,24 @@ fun FluxScaffold(
     floatingActionButton: @Composable (() -> Unit) = {},
     floatingActionButtonPosition: FabPosition = FabPosition.End,
     containerColor: Color = MaterialTheme.colorScheme.background,
-    topAppBarColors: TopAppBarColors = TopAppBarDefaults.topAppBarColors(
-        containerColor = MaterialTheme.colorScheme.background,
-        scrolledContainerColor = MaterialTheme.colorScheme.background,
-        titleContentColor = MaterialTheme.colorScheme.onBackground,
-    ),
     scrollBehavior: TopAppBarScrollBehavior? = TopAppBarDefaults.pinnedScrollBehavior(),
     content: @Composable (PaddingValues) -> Unit
 ) {
+
+    val hazeState = rememberHazeState()
+    val isScrolled by remember {
+        derivedStateOf {
+            scrollBehavior?.let { if (it.state.contentOffset < -10f) 1f else 0f } ?: 1f
+        }
+    }
+    val animatedAlpha by animateFloatAsState(
+        targetValue = isScrolled,
+        animationSpec = spring(
+            stiffness = Spring.StiffnessLow,
+            dampingRatio = Spring.DampingRatioNoBouncy
+        ),
+        label = "topBarBlurAlpha"
+    )
 
     Scaffold(
         modifier = Modifier.then(scrollBehavior?.let { Modifier.nestedScroll(it.nestedScrollConnection) } ?: Modifier),
@@ -52,9 +74,12 @@ fun FluxScaffold(
         topBar = {
 
             FluxTopAppBar(
-                modifier = modifier,
+                modifier = Modifier.blurForeground(
+                    state = hazeState,
+                    alpha = animatedAlpha,
+                ),
                 title = title,
-                colors = topAppBarColors,
+                titleGraphicsLayer = { alpha = if (animatedTitle) animatedAlpha else 1f },
                 actions = actions,
                 onBackTap = if (showBackButton) onBackTap else null,
                 scrollBehavior = scrollBehavior
@@ -62,7 +87,13 @@ fun FluxScaffold(
 
         }
     ) { innerPadding ->
-        content(innerPadding)
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .blurBackground(hazeState)
+        ) {
+            content(innerPadding)
+        }
     }
 }
 
@@ -71,25 +102,29 @@ fun FluxScaffold(
 fun FluxTopAppBar(
     modifier: Modifier = Modifier,
     title: String?,
+    titleGraphicsLayer: GraphicsLayerScope.() -> Unit = {},
     actions: @Composable (RowScope.() -> Unit) = {},
     onBackTap: (() -> Unit)? = null,
-    colors: TopAppBarColors = TopAppBarDefaults.topAppBarColors(),
     scrollBehavior:  TopAppBarScrollBehavior? = null
 ) {
 
     CenterAlignedTopAppBar(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         title = {
 
             Text.TopBar.Title(
                 modifier = Modifier
                     .padding(vertical = FluxUI.Space.extraSmall)
-                    .then(modifier),
+                    .graphicsLayer(titleGraphicsLayer),
                 text = title
             )
 
         },
-        colors = colors,
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color.Transparent,
+            scrolledContainerColor = Color.Transparent,
+            titleContentColor = MaterialTheme.colorScheme.onBackground,
+        ),
         actions = actions,
         navigationIcon = {
             onBackTap?.let {

@@ -26,10 +26,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.GraphicsLayerScope
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import com.mskd.flux.presentation.FluxUI
+import com.mskd.flux.presentation.Text
 import com.mskd.flux.presentation.animateAlphaState
 import com.mskd.flux.presentation.blurBackground
 import com.mskd.flux.presentation.blurForeground
-import com.mskd.flux.ui.theme.FluxUI
 import dev.chrisbanes.haze.rememberHazeState
 
 @OptIn(ExperimentalMaterial3Api::class)

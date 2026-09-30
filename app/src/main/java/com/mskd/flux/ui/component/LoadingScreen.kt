@@ -19,8 +19,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.mskd.flux.core.model.core.StringProvider
-import com.mskd.flux.ui.component.global.Text
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.presentation.FluxUI
+import com.mskd.flux.presentation.Text
 import com.mskd.flux.utils.extensions.resolve
 import kotlin.math.roundToInt
 

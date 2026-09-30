@@ -21,11 +21,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
-import com.mskd.flux.ui.component.global.Text
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.presentation.FluxUI
+import com.mskd.flux.presentation.Text
+import com.mskd.flux.presentation.fillMaxWidthWithLimit
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
-import com.mskd.flux.utils.extensions.fillMaxWidthWithLimit
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.catalog_message
 import flux.shared.generated.resources.ic_close

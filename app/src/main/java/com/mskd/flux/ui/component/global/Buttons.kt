@@ -32,8 +32,9 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.mskd.flux.presentation.FluxUI
+import com.mskd.flux.presentation.Text
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_arrow_down
 import flux.shared.generated.resources.next_episode

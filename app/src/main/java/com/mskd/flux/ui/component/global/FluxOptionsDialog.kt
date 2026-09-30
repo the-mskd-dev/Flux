@@ -20,8 +20,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.core.model.core.FluxOptionsDialogState
+import com.mskd.flux.presentation.FluxUI
+import com.mskd.flux.presentation.Text
 import com.mskd.flux.screens.customization.composables.ColorItem
-import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.extensions.resolve
 import com.mskd.flux.utils.extensions.uppercaseFirstLetter
 import org.jetbrains.compose.resources.stringResource

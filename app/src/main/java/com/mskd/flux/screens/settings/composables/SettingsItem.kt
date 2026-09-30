@@ -12,8 +12,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import com.mskd.flux.presentation.Text
 import com.mskd.flux.screens.settings.SettingIcon
-import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.utils.extensions.uppercaseFirstLetter
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)

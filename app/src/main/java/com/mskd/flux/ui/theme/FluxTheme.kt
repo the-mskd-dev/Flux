@@ -16,7 +16,15 @@ import androidx.compose.ui.unit.dp
 import com.materialkolor.rememberDynamicColorScheme
 import com.mskd.flux.features.connectivity.domain.LocalConnectivity
 import com.mskd.flux.features.customization.domain.datastore.CustomizationDataStore
-import com.mskd.flux.ui.typography.FluxTypography
+import com.mskd.flux.presentation.FluxUI
+import com.mskd.flux.presentation.LocalUiEpisodes
+import com.mskd.flux.presentation.LocalUiGlobal
+import com.mskd.flux.presentation.LocalUiItemsPerRow
+import com.mskd.flux.presentation.LocalUiPlayer
+import com.mskd.flux.presentation.LocalUiShapes
+import com.mskd.flux.presentation.text.LocalEmphasizedTypography
+import com.mskd.flux.presentation.text.fluxEmphasizedTypography
+import com.mskd.flux.presentation.text.fluxTypography
 import com.mskd.flux.utils.UiCommon
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -50,12 +58,13 @@ fun FluxTheme(
         ),
         LocalUiPlayer provides FluxUI.Player(
             waveProgress = customization.waveProgress
-        )
+        ),
+        LocalEmphasizedTypography provides fluxEmphasizedTypography()
     ) {
 
         MaterialExpressiveTheme(
             colorScheme = colorScheme,
-            typography = FluxTypography,
+            typography = fluxTypography(),
             content = content,
         )
         

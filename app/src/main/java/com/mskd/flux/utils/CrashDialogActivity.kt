@@ -22,10 +22,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
 import com.mskd.flux.R
+import com.mskd.flux.presentation.FluxUI
+import com.mskd.flux.presentation.Text
 import com.mskd.flux.ui.component.global.FluxDialog
-import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
 import org.acra.dialog.CrashReportDialogHelper
 
 class CrashDialogActivity : FragmentActivity() {

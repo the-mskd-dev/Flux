@@ -54,6 +54,7 @@ import com.mskd.flux.mockups.DetailsMockup
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.navigation.domain.Route.Player
+import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.presentation.animateAlphaState
 import com.mskd.flux.presentation.blurBackground
 import com.mskd.flux.presentation.blurForeground
@@ -69,7 +70,6 @@ import com.mskd.flux.screens.catalog.composable.viewMode.catalogViewModeGenre
 import com.mskd.flux.screens.catalog.composable.viewMode.catalogViewModeGrid
 import com.mskd.flux.screens.catalog.composable.viewMode.catalogViewModeType
 import com.mskd.flux.ui.component.LoadingScreen
-import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
 import com.mskd.flux.utils.rememberExternalPlayerAction
@@ -324,13 +324,13 @@ fun CatalogContent(
                 sendIntent = sendIntent
             )
 
-        }
-
-        if (state.showSortingSheet) {
             CatalogSortingSheet(
+                isVisible = state.showSortingSheet,
+                hazeState = hazeState,
                 selectedMode = state.sortingMode,
                 sendIntent = sendIntent
             )
+
         }
 
         if (state.showViewSheet) {
@@ -341,7 +341,6 @@ fun CatalogContent(
         }
 
     }
-
 
 }
 

@@ -11,8 +11,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.mskd.flux.presentation.FluxUI
+import com.mskd.flux.presentation.Text
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
 
 @Composable

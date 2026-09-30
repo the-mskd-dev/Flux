@@ -1,7 +1,6 @@
-package com.mskd.flux.ui.component.global
+package com.mskd.flux.presentation
 
 import androidx.compose.foundation.text.TextAutoSize
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
@@ -24,18 +23,18 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
+import com.mskd.flux.presentation.text.LocalEmphasizedTypography
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 object Text {
 
     object Style {
 
         @Composable fun topbarTitle() = MaterialTheme.typography.headlineSmall
-        @Composable fun mainTitle() = MaterialTheme.typography.displaySmallEmphasized
-        @Composable fun contentTitle() = MaterialTheme.typography.titleLargeEmphasized
+        @Composable fun mainTitle() = LocalEmphasizedTypography.current.displaySmall
+        @Composable fun contentTitle() = LocalEmphasizedTypography.current.titleLarge
         @Composable fun contentBody() = MaterialTheme.typography.bodyLarge
         @Composable fun contentLabel() = MaterialTheme.typography.labelMedium
-        @Composable fun cardTitle() = MaterialTheme.typography.titleMediumEmphasized
+        @Composable fun cardTitle() = LocalEmphasizedTypography.current.titleMedium
         @Composable fun cardBody() = MaterialTheme.typography.bodyMedium
         @Composable fun cardLabel() = MaterialTheme.typography.bodySmall
         @Composable fun listSection() = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)

@@ -1,4 +1,4 @@
-package com.mskd.flux.ui.component.global
+package com.mskd.flux.presentation.bottomSheet
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -8,7 +8,8 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.presentation.FluxUI
+import com.mskd.flux.presentation.Text
 
 @Composable
 fun FluxBottomSheetItem(

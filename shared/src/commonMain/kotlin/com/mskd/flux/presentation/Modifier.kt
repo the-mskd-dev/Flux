@@ -1,7 +1,12 @@
 package com.mskd.flux.presentation
 
+import androidx.annotation.FloatRange
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeInput
 import dev.chrisbanes.haze.HazePerformanceMode
 import dev.chrisbanes.haze.HazeState
@@ -35,3 +40,13 @@ fun Modifier.blurForeground(
     performanceMode = performanceMode,
     expandLayerBounds = expandLayerBounds
 )
+
+@Composable
+fun Modifier.fillMaxWidthWithLimit(
+    max: Dp = 500.dp,
+    @FloatRange fraction: Float = 1f
+) : Modifier {
+    return this
+        .widthIn(max = max)
+        .fillMaxWidth(fraction = fraction)
+}

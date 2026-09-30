@@ -23,10 +23,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.presentation.FluxUI
+import com.mskd.flux.presentation.Text
 import com.mskd.flux.ui.component.global.ReadMoreButton
-import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.episode
 import flux.shared.generated.resources.season

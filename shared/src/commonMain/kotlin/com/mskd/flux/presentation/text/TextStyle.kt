@@ -1,4 +1,4 @@
-package com.mskd.flux.ui.typography
+package com.mskd.flux.presentation.text
 
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.LineHeightStyle
@@ -7,7 +7,6 @@ import androidx.compose.ui.unit.sp
 // Region Normal
 
 val displayLarge = TextStyle(
-    fontFamily = RobotoFlex,
     fontSize = 57.sp,
     lineHeight = 64.0.sp,
     letterSpacing = (-0.2).sp,
@@ -18,7 +17,6 @@ val displayLarge = TextStyle(
 )
 
 val displayMedium = TextStyle(
-    fontFamily = RobotoFlex,
     fontSize = 45.sp,
     lineHeight = 52.0.sp,
     letterSpacing = 0.0.sp,
@@ -29,7 +27,6 @@ val displayMedium = TextStyle(
 )
 
 val displaySmall = TextStyle(
-    fontFamily = RobotoFlex,
     fontSize = 36.sp,
     lineHeight = 44.0.sp,
     letterSpacing = 0.0.sp,
@@ -40,7 +37,6 @@ val displaySmall = TextStyle(
 )
 
 val headlineLarge = TextStyle(
-    fontFamily = RobotoFlex,
     fontSize = 32.sp,
     lineHeight = 40.0.sp,
     letterSpacing = 0.0.sp,
@@ -51,7 +47,6 @@ val headlineLarge = TextStyle(
 )
 
 val headlineMedium = TextStyle(
-    fontFamily = RobotoFlex,
     fontSize = 28.sp,
     lineHeight = 36.0.sp,
     letterSpacing = 0.0.sp,
@@ -62,7 +57,6 @@ val headlineMedium = TextStyle(
 )
 
 val headlineSmall = TextStyle(
-    fontFamily = RobotoFlex,
     fontSize = 24.sp,
     lineHeight = 32.0.sp,
     letterSpacing = 0.0.sp,
@@ -73,7 +67,6 @@ val headlineSmall = TextStyle(
 )
 
 val titleLarge = TextStyle(
-    fontFamily = RobotoFlex,
     fontSize = 22.sp,
     lineHeight = 28.0.sp,
     letterSpacing = 0.0.sp,
@@ -84,7 +77,6 @@ val titleLarge = TextStyle(
 )
 
 val titleMedium = TextStyle(
-    fontFamily = RobotoFlex,
     fontSize = 16.sp,
     lineHeight = 24.0.sp,
     letterSpacing = 0.2.sp,
@@ -95,7 +87,6 @@ val titleMedium = TextStyle(
 )
 
 val titleSmall = TextStyle(
-    fontFamily = RobotoFlex,
     fontSize = 14.sp,
     lineHeight = 20.0.sp,
     letterSpacing = 0.1.sp,
@@ -106,7 +97,6 @@ val titleSmall = TextStyle(
 )
 
 val bodyLarge = TextStyle(
-    fontFamily = RobotoFlex,
     fontSize = 16.sp,
     lineHeight = 24.0.sp,
     letterSpacing = 0.5.sp,
@@ -117,7 +107,6 @@ val bodyLarge = TextStyle(
 )
 
 val bodyMedium = TextStyle(
-    fontFamily = RobotoFlex,
     fontSize = 14.sp,
     lineHeight = 20.0.sp,
     letterSpacing = 0.2.sp,
@@ -128,7 +117,6 @@ val bodyMedium = TextStyle(
 )
 
 val bodySmall = TextStyle(
-    fontFamily = RobotoFlex,
     fontSize = 12.sp,
     lineHeight = 16.0.sp,
     letterSpacing = 0.4.sp,
@@ -139,7 +127,6 @@ val bodySmall = TextStyle(
 )
 
 val labelLarge = TextStyle(
-    fontFamily = RobotoFlex,
     fontSize = 14.sp,
     lineHeight = 20.0.sp,
     letterSpacing = 0.1.sp,
@@ -150,7 +137,6 @@ val labelLarge = TextStyle(
 )
 
 val labelMedium = TextStyle(
-    fontFamily = RobotoFlex,
     fontSize = 12.sp,
     lineHeight = 16.0.sp,
     letterSpacing = 0.5.sp,
@@ -161,7 +147,6 @@ val labelMedium = TextStyle(
 )
 
 val labelSmall = TextStyle(
-    fontFamily = RobotoFlex,
     fontSize = 11.sp,
     lineHeight = 16.0.sp,
     letterSpacing = 0.5.sp,
@@ -176,7 +161,6 @@ val labelSmall = TextStyle(
 // region Emphasized
 
 val displayLargeEmphasized = TextStyle(
-    fontFamily = RobotoFlexEmphasized,
     fontSize = 57.sp,
     lineHeight = 64.0.sp,
     //letterSpacing = 0.sp
@@ -187,7 +171,6 @@ val displayLargeEmphasized = TextStyle(
 )
 
 val displayMediumEmphasized = TextStyle(
-    fontFamily = RobotoFlexEmphasized,
     fontSize = 45.sp,
     lineHeight = 52.0.sp,
     letterSpacing = 0.sp,
@@ -198,7 +181,6 @@ val displayMediumEmphasized = TextStyle(
 )
 
 val displaySmallEmphasized = TextStyle(
-    fontFamily = RobotoFlexEmphasized,
     fontSize = 36.sp,
     lineHeight = 44.0.sp,
     letterSpacing = 0.sp,
@@ -209,7 +191,6 @@ val displaySmallEmphasized = TextStyle(
 )
 
 val headlineLargeEmphasized = TextStyle(
-    fontFamily = RobotoFlexEmphasized,
     fontSize = 32.sp,
     lineHeight = 40.0.sp,
     letterSpacing = 0.sp,
@@ -220,7 +201,6 @@ val headlineLargeEmphasized = TextStyle(
 )
 
 val headlineMediumEmphasized = TextStyle(
-    fontFamily = RobotoFlexEmphasized,
     fontSize = 28.sp,
     lineHeight = 36.0.sp,
     letterSpacing = 0.sp,
@@ -231,7 +211,6 @@ val headlineMediumEmphasized = TextStyle(
 )
 
 val headlineSmallEmphasized = TextStyle(
-    fontFamily = RobotoFlexEmphasized,
     fontSize = 24.sp,
     lineHeight = 32.0.sp,
     letterSpacing = 0.sp,
@@ -242,7 +221,6 @@ val headlineSmallEmphasized = TextStyle(
 )
 
 val titleLargeEmphasized = TextStyle(
-    fontFamily = RobotoFlexEmphasized,
     fontSize = 22.sp,
     lineHeight = 28.0.sp,
     letterSpacing = 0.sp,
@@ -253,7 +231,6 @@ val titleLargeEmphasized = TextStyle(
 )
 
 val titleMediumEmphasized = TextStyle(
-    fontFamily = RobotoFlexEmphasized,
     fontSize = 16.sp,
     lineHeight = 24.0.sp,
     letterSpacing = 0.15.sp,
@@ -264,7 +241,6 @@ val titleMediumEmphasized = TextStyle(
 )
 
 val titleSmallEmphasized = TextStyle(
-    fontFamily = RobotoFlexEmphasized,
     fontSize = 14.sp,
     lineHeight = 20.0.sp,
     letterSpacing = 0.1.sp,
@@ -275,7 +251,6 @@ val titleSmallEmphasized = TextStyle(
 )
 
 val bodyLargeEmphasized = TextStyle(
-    fontFamily = RobotoFlexEmphasized,
     fontSize = 16.sp,
     lineHeight = 24.0.sp,
     letterSpacing = 0.15.sp,
@@ -286,7 +261,6 @@ val bodyLargeEmphasized = TextStyle(
 )
 
 val bodyMediumEmphasized = TextStyle(
-    fontFamily = RobotoFlexEmphasized,
     fontSize = 14.sp,
     lineHeight = 20.0.sp,
     letterSpacing = 0.25.sp,
@@ -297,7 +271,6 @@ val bodyMediumEmphasized = TextStyle(
 )
 
 val bodySmallEmphasized = TextStyle(
-    fontFamily = RobotoFlexEmphasized,
     fontSize = 12.sp,
     lineHeight = 16.0.sp,
     letterSpacing = 0.4.sp,
@@ -308,7 +281,6 @@ val bodySmallEmphasized = TextStyle(
 )
 
 val labelLargeEmphasized = TextStyle(
-    fontFamily = RobotoFlexEmphasized,
     fontSize = 14.sp,
     lineHeight = 20.0.sp,
     letterSpacing = 0.1.sp,
@@ -319,7 +291,6 @@ val labelLargeEmphasized = TextStyle(
 )
 
 val labelMediumEmphasized = TextStyle(
-    fontFamily = RobotoFlexEmphasized,
     fontSize = 12.sp,
     lineHeight = 16.0.sp,
     letterSpacing = 0.5.sp,
@@ -330,7 +301,6 @@ val labelMediumEmphasized = TextStyle(
 )
 
 val labelSmallEmphasized = TextStyle(
-    fontFamily = RobotoFlexEmphasized,
     fontSize = 11.sp,
     lineHeight = 16.0.sp,
     letterSpacing = 0.5.sp,

@@ -16,7 +16,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.presentation.FluxUI
+import com.mskd.flux.presentation.Text
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.cancel
 import flux.shared.generated.resources.validate

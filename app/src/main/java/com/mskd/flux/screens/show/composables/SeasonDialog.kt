@@ -22,9 +22,9 @@ import androidx.compose.ui.window.DialogProperties
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.features.show.presentation.ShowIntent
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.ui.component.global.Text
+import com.mskd.flux.presentation.FluxUI
+import com.mskd.flux.presentation.Text
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.no_summary

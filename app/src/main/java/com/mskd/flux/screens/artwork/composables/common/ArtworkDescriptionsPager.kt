@@ -17,11 +17,11 @@ import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.ui.component.media.EpisodesDetails
 import com.mskd.flux.ui.component.media.MediaDetailsHorizontal
 import com.mskd.flux.ui.component.media.OverviewItem
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.extensions.clickableWithBounce
 import flux.shared.generated.resources.Res

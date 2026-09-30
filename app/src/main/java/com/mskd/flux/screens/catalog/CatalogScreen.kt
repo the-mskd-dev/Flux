@@ -52,6 +52,7 @@ import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.domain.model.CatalogViewMode
 import com.mskd.flux.features.catalog.presentation.CatalogEvent
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
+import com.mskd.flux.features.catalog.presentation.CatalogMessageState
 import com.mskd.flux.features.catalog.presentation.CatalogState
 import com.mskd.flux.features.catalog.presentation.CatalogViewModel
 import com.mskd.flux.features.history.data.mapper.toHistoryEntry
@@ -82,6 +83,8 @@ import com.mskd.flux.utils.FluxThemePreview
 import com.mskd.flux.utils.rememberExternalPlayerAction
 import com.mskd.flux.utils.rememberScreenDimensions
 import dev.chrisbanes.haze.rememberHazeState
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -148,17 +151,7 @@ fun CatalogScreen(
             is CatalogState.Content -> {
 
                 CatalogContent(
-                    artworks = state.artworks,
-                    genres = state.genres,
-                    history = state.history,
-                    isRefreshing = state.isRefreshing,
-                    tokenIsMissing = state.tokenIsMissing,
-                    privateFolderEnabled = state.privateFolderEnabled,
-                    showMessage = state.message.showMessage,
-                    sortingMode = state.sortingMode,
-                    showSortingModes = state.showSortingSheet,
-                    viewMode = state.viewMode,
-                    showViewModes = state.showViewSheet,
+                    state = state,
                     sendIntent = viewModel::handleIntent
                 )
 
@@ -174,17 +167,7 @@ fun CatalogScreen(
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun CatalogContent(
-    artworks: List<Artwork>,
-    genres: List<Genre>,
-    history: List<HistoryEntry>,
-    isRefreshing: Boolean,
-    tokenIsMissing: Boolean,
-    privateFolderEnabled: Boolean,
-    showMessage: Boolean,
-    sortingMode: CatalogSortingMode,
-    showSortingModes: Boolean,
-    viewMode: CatalogViewMode,
-    showViewModes: Boolean,
+    state: CatalogState.Content,
     sendIntent: (CatalogIntent) -> Unit
 ) {
 
@@ -216,7 +199,7 @@ fun CatalogContent(
                 modifier = Modifier
                     .fillMaxSize()
                     .blurBackground(state = hazeState),
-                isRefreshing = isRefreshing,
+                isRefreshing = state.isRefreshing,
                 onRefresh = { sendIntent(CatalogIntent.SyncCatalog) },
                 state = pullToRefreshState,
                 indicator = {
@@ -226,7 +209,7 @@ fun CatalogContent(
                             .scale(loaderAnim)
                             .align(Alignment.TopCenter),
                         state = pullToRefreshState,
-                        isRefreshing = isRefreshing
+                        isRefreshing = state.isRefreshing
                     )
                 }
             ) {
@@ -246,13 +229,13 @@ fun CatalogContent(
                     state = gridState,
                 ) {
 
-                    if (artworks.none { !it.isUnknown }) {
+                    if (state.artworks.none { !it.isUnknown }) {
                         item(span = { GridItemSpan(maxLineSpan) }) {
                             CatalogEmptyContent(sendIntent = sendIntent)
                         }
                     }
 
-                    if (showMessage) {
+                    if (state.message.showMessage) {
                         item(span = { GridItemSpan(maxLineSpan) }) {
                             CatalogMessage(sendIntent = sendIntent)
                         }
@@ -262,13 +245,13 @@ fun CatalogContent(
 
                         CatalogHistory(
                             modifier = Modifier.animateItem(),
-                            entries = history,
+                            entries = state.history,
                             sendIntent = sendIntent
                         )
 
                     }
 
-                    if (artworks.any { !it.isUnknown }) {
+                    if (state.artworks.any { !it.isUnknown }) {
 
                         item(span = { GridItemSpan(maxLineSpan) }) {
 
@@ -278,36 +261,36 @@ fun CatalogContent(
                             ) {
 
                                 CatalogViewMenu(
-                                    sortingMode = sortingMode,
-                                    viewMode = viewMode,
+                                    sortingMode = state.sortingMode,
+                                    viewMode = state.viewMode,
                                     sendIntent = sendIntent
                                 )
 
                             }
                         }
 
-                        when (viewMode) {
+                        when (state.viewMode) {
                             CatalogViewMode.GRID -> {
                                 catalogViewModeGrid(
-                                    artworks = artworks,
-                                    privateFolderEnabled = privateFolderEnabled,
+                                    artworks = state.artworks,
+                                    privateFolderEnabled = state.privateFolderEnabled,
                                     sendIntent = sendIntent
                                 )
                             }
                             CatalogViewMode.BY_TYPE -> {
                                 catalogViewModeType(
-                                    artworks = artworks,
-                                    sortingMode = sortingMode,
-                                    privateFolderEnabled = privateFolderEnabled,
+                                    artworks = state.artworks,
+                                    sortingMode = state.sortingMode,
+                                    privateFolderEnabled = state.privateFolderEnabled,
                                     sendIntent = sendIntent
                                 )
                             }
                             CatalogViewMode.BY_GENRE -> {
                                 catalogViewModeGenre(
-                                    artworks = artworks,
-                                    genres = genres,
-                                    sortingMode = sortingMode,
-                                    privateFolderEnabled = privateFolderEnabled,
+                                    artworks = state.artworks,
+                                    genres = state.genres,
+                                    sortingMode = state.sortingMode,
+                                    privateFolderEnabled = state.privateFolderEnabled,
                                     sendIntent = sendIntent
                                 )
                             }
@@ -325,9 +308,9 @@ fun CatalogContent(
                         ) {
 
                             CatalogMenu(
-                                artworks = artworks,
-                                tokenIsMissing = tokenIsMissing,
-                                privateFolderEnabled = privateFolderEnabled,
+                                artworks = state.artworks,
+                                tokenIsMissing = state.tokenIsMissing,
+                                privateFolderEnabled = state.privateFolderEnabled,
                                 sendIntent = sendIntent
                             )
 
@@ -351,16 +334,16 @@ fun CatalogContent(
 
         }
 
-        if (showSortingModes) {
+        if (state.showSortingSheet) {
             CatalogSortingSheet(
-                selectedMode = sortingMode,
+                selectedMode = state.sortingMode,
                 sendIntent = sendIntent
             )
         }
 
-        if (showViewModes) {
+        if (state.showViewSheet) {
             CatalogViewModeSheet(
-                selectedMode = viewMode,
+                selectedMode = state.viewMode,
                 sendIntent = sendIntent
             )
         }
@@ -376,17 +359,21 @@ fun CatalogScreen_Preview() {
     FluxThemePreview {
         Surface {
             CatalogContent(
-                artworks = MediaMockups.artworks,
-                genres = DetailsMockup.allGenres,
-                history = MediaMockups.allMedias.map { it.toHistoryEntry() },
-                isRefreshing = false,
-                tokenIsMissing = false,
-                privateFolderEnabled = true,
-                showMessage = true,
-                sortingMode = CatalogSortingMode.LAST_MODIFICATION,
-                showSortingModes = false,
-                viewMode = CatalogViewMode.BY_TYPE,
-                showViewModes = false,
+                state = CatalogState.Content(
+                    artworks = MediaMockups.artworks.toImmutableList(),
+                    genres = DetailsMockup.allGenres.toImmutableList(),
+                    history = MediaMockups.allMedias.map { it.toHistoryEntry() }.toImmutableList(),
+                    isRefreshing = false,
+                    tokenIsMissing = false,
+                    privateFolderEnabled = true,
+                    message = CatalogMessageState(
+                        showMessage = true
+                    ),
+                    sortingMode = CatalogSortingMode.LAST_MODIFICATION,
+                    showSortingSheet = false,
+                    viewMode = CatalogViewMode.BY_TYPE,
+                    showViewSheet = false,
+                ),
                 sendIntent = {}
             )
         }
@@ -399,17 +386,21 @@ fun CatalogScreen_Unknown_Preview() {
     FluxThemePreview {
         Surface {
             CatalogContent(
-                artworks = listOf(MediaMockups.unknownArtwork),
-                genres = emptyList(),
-                history = emptyList(),
-                isRefreshing = false,
-                tokenIsMissing = true,
-                privateFolderEnabled = true,
-                showMessage = true,
-                sortingMode = CatalogSortingMode.LAST_MODIFICATION,
-                showSortingModes = false,
-                viewMode = CatalogViewMode.BY_TYPE,
-                showViewModes = false,
+                state = CatalogState.Content(
+                    artworks = listOf(MediaMockups.unknownArtwork).toImmutableList(),
+                    genres = persistentListOf(),
+                    history = persistentListOf(),
+                    isRefreshing = false,
+                    tokenIsMissing = true,
+                    privateFolderEnabled = true,
+                    message = CatalogMessageState(
+                        showMessage = true
+                    ),
+                    sortingMode = CatalogSortingMode.LAST_MODIFICATION,
+                    showSortingSheet = false,
+                    viewMode = CatalogViewMode.BY_TYPE,
+                    showViewSheet = false,
+                ),
                 sendIntent = {}
             )
         }
@@ -422,17 +413,21 @@ fun CatalogScreen_Empty_Preview() {
     FluxThemePreview {
         Surface {
             CatalogContent(
-                artworks = emptyList(),
-                genres = emptyList(),
-                history = emptyList(),
-                isRefreshing = false,
-                tokenIsMissing = true,
-                privateFolderEnabled = true,
-                showMessage = true,
-                sortingMode = CatalogSortingMode.LAST_MODIFICATION,
-                showSortingModes = false,
-                viewMode = CatalogViewMode.BY_TYPE,
-                showViewModes = false,
+                state = CatalogState.Content(
+                    artworks = persistentListOf(),
+                    genres = persistentListOf(),
+                    history = persistentListOf(),
+                    isRefreshing = false,
+                    tokenIsMissing = true,
+                    privateFolderEnabled = true,
+                    message = CatalogMessageState(
+                        showMessage = true
+                    ),
+                    sortingMode = CatalogSortingMode.LAST_MODIFICATION,
+                    showSortingSheet = false,
+                    viewMode = CatalogViewMode.BY_TYPE,
+                    showViewSheet = false,
+                ),
                 sendIntent = {}
             )
         }

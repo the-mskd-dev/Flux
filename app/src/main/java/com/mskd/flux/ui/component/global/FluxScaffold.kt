@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.GraphicsLayerScope
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import com.mskd.flux.presentation.animateAlphaState
 import com.mskd.flux.presentation.blurForeground
 import com.mskd.flux.presentation.blurBackground
 import com.mskd.flux.ui.theme.FluxUI
@@ -56,14 +57,7 @@ fun FluxScaffold(
             scrollBehavior?.let { if (it.state.contentOffset < -10f) 1f else 0f } ?: 1f
         }
     }
-    val animatedAlpha by animateFloatAsState(
-        targetValue = isScrolled,
-        animationSpec = spring(
-            stiffness = Spring.StiffnessLow,
-            dampingRatio = Spring.DampingRatioNoBouncy
-        ),
-        label = "topBarBlurAlpha"
-    )
+    val animatedAlpha by animateAlphaState(targetValue = isScrolled,)
 
     Scaffold(
         modifier = Modifier.then(scrollBehavior?.let { Modifier.nestedScroll(it.nestedScrollConnection) } ?: Modifier),

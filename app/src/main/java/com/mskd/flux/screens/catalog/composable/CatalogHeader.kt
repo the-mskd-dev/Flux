@@ -29,13 +29,14 @@ import org.jetbrains.compose.resources.painterResource
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun CatalogHeader(
+    modifier: Modifier = Modifier,
     sendIntent: (CatalogIntent) -> Unit
 ) {
 
     val showButtons = LocalUiGlobal.current.navigationStyle == NavigationStyle.TOP_BAR
 
     Row(
-        modifier = Modifier
+        modifier = modifier
             .padding(vertical = FluxUI.Space.small, horizontal = FluxUI.Space.small)
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,

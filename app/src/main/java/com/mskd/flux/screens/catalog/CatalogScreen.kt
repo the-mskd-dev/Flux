@@ -1,11 +1,15 @@
 package com.mskd.flux.screens.catalog
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -16,6 +20,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
@@ -26,14 +31,17 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -53,6 +61,9 @@ import com.mskd.flux.mockups.DetailsMockup
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.navigation.domain.Route.Player
+import com.mskd.flux.presentation.animateAlphaState
+import com.mskd.flux.presentation.blurBackground
+import com.mskd.flux.presentation.blurForeground
 import com.mskd.flux.screens.catalog.composable.CatalogEmptyContent
 import com.mskd.flux.screens.catalog.composable.CatalogHeader
 import com.mskd.flux.screens.catalog.composable.CatalogMenu
@@ -70,6 +81,7 @@ import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
 import com.mskd.flux.utils.rememberExternalPlayerAction
 import com.mskd.flux.utils.rememberScreenDimensions
+import dev.chrisbanes.haze.rememberHazeState
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -186,24 +198,31 @@ fun CatalogContent(
     val screenDimensions = rememberScreenDimensions()
     val columns = if (screenDimensions.isLarge) 5 else FluxUI.itemsPerRow.artworks
 
+    val gridState = rememberLazyGridState()
+    val isScrolled by remember { derivedStateOf { gridState.canScrollBackward } }
+    val blurAlpha by animateAlphaState(targetValue = if (isScrolled) 1f else 0f,)
+
+    val density = LocalDensity.current
+    var headerHeight by remember { mutableStateOf(0.dp) }
+    val hazeState = rememberHazeState()
+
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
 
-        Column(modifier = Modifier.fillMaxSize()) {
-
-            Spacer(modifier = Modifier.height(paddingValues.calculateTopPadding()))
-
-            CatalogHeader(sendIntent = sendIntent)
+        Box(modifier = Modifier.fillMaxSize()) {
 
             PullToRefreshBox(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .blurBackground(state = hazeState),
                 isRefreshing = isRefreshing,
                 onRefresh = { sendIntent(CatalogIntent.SyncCatalog) },
                 state = pullToRefreshState,
                 indicator = {
                     PullToRefreshDefaults.LoadingIndicator(
                         modifier = Modifier
+                            .padding(top = headerHeight)
                             .scale(loaderAnim)
                             .align(Alignment.TopCenter),
                         state = pullToRefreshState,
@@ -219,7 +238,12 @@ fun CatalogContent(
                     columns = GridCells.Fixed(columns),
                     verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
                     horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
-                    contentPadding = PaddingValues(horizontal = FluxUI.Space.medium)
+                    contentPadding = PaddingValues(
+                        start = FluxUI.Space.medium,
+                        end = FluxUI.Space.medium,
+                        top = headerHeight
+                    ),
+                    state = gridState,
                 ) {
 
                     if (artworks.none { !it.isUnknown }) {
@@ -315,8 +339,17 @@ fun CatalogContent(
 
             }
 
-        }
+            CatalogHeader(
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .fillMaxWidth()
+                    .onSizeChanged { headerHeight = with(density) { it.height.toDp() } }
+                    .blurForeground(state = hazeState, alpha = blurAlpha)
+                    .padding(top = paddingValues.calculateTopPadding()),
+                sendIntent = sendIntent
+            )
 
+        }
 
         if (showSortingModes) {
             CatalogSortingSheet(

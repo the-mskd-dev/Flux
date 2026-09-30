@@ -1,0 +1,2 @@
+- Core: Version Play Store
+- Fix: Sauvegarde des préférences de language pour les sous titres et pistes audio

@@ -161,69 +161,54 @@ fun UnknownScreenContent(
                 onValueChange = { sendIntent(UnknownIntent.DoSearch(it)) },
             )
 
-            Crossfade(
-                targetState = medias.isEmpty(),
-                modifier = Modifier.fillMaxSize()
-            ) { isEmpty ->
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
+                state = lazyColumnState
+            ) {
 
-                if (isEmpty) {
+                if (medias.isEmpty()) {
+                    item {
 
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(innerPadding)
-                            .systemBarsPadding(),
-                        contentAlignment = Alignment.TopStart
-                    ) {
-
-                        Text.Content.Body(
+                        Box(
                             modifier = Modifier
-                                .align(Alignment.Center)
-                                .fillMaxWidth(),
-                            text = stringResource(Res.string.no_item),
-                            textAlign = TextAlign.Center
-                        )
+                                .animateItem()
+                                .fillMaxWidth()
+                                .padding(innerPadding)
+                                .systemBarsPadding(),
+                            contentAlignment = Alignment.TopStart
+                        ) {
 
-                    }
-
-                } else {
-
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
-                        state = lazyColumnState
-                    ) {
-
-                        items(items = medias, key = { m -> m.id }) { media ->
-
-                            EpisodeItem(
-                                modifier = Modifier.animateItem(),
-                                episode = media,
-                                isSelected = false,
-                                onClick = { sendIntent(UnknownIntent.PlayMedia(media = media)) },
-                                dropDownMenu = { onDismissRequest ->
-                                    UnknownDropDownMenu(
-                                        episode = media,
-                                        onDismissRequest = onDismissRequest,
-                                        sendIntent = sendIntent
-                                    )
-                                }
+                            Text.Content.Body(
+                                modifier = Modifier
+                                    .align(Alignment.Center)
+                                    .fillMaxWidth(),
+                                text = stringResource(Res.string.no_item),
+                                textAlign = TextAlign.Center
                             )
 
                         }
 
                     }
-
                 }
 
-            }
-            if (medias.isNotEmpty()) {
+                items(items = medias, key = { m -> m.id }) { media ->
 
+                    EpisodeItem(
+                        modifier = Modifier.animateItem(),
+                        episode = media,
+                        isSelected = false,
+                        onClick = { sendIntent(UnknownIntent.PlayMedia(media = media)) },
+                        dropDownMenu = { onDismissRequest ->
+                            UnknownDropDownMenu(
+                                episode = media,
+                                onDismissRequest = onDismissRequest,
+                                sendIntent = sendIntent
+                            )
+                        }
+                    )
 
-
-            } else {
-
-
+                }
 
             }
 

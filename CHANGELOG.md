@@ -1,5 +1,3 @@
-## Version 1.8.1
+## Version 1.8.2
 
-- Feature: Private folder
-- Feature: Fetch NSFW
-- Fix: Crash from 1.8.0
+- Core: Play Store version

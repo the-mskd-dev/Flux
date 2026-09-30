@@ -57,7 +57,7 @@ fun FluxBottomSheet(
             Box(
                 Modifier
                     .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.scrim)
+                    .background(MaterialTheme.colorScheme.scrim.copy(alpha = .3f))
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,

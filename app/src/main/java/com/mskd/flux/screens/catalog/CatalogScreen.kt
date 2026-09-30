@@ -331,13 +331,13 @@ fun CatalogContent(
                 sendIntent = sendIntent
             )
 
-        }
-
-        if (state.showViewSheet) {
             CatalogViewModeSheet(
+                isVisible = state.showViewSheet,
+                hazeState = hazeState,
                 selectedMode = state.viewMode,
                 sendIntent = sendIntent
             )
+
         }
 
     }

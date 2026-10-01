@@ -48,15 +48,20 @@ fun FluxBottomSheetHost(
     hazeState: HazeState,
 ) {
 
-    val entry = host.entry as? ModalEntry.BottomSheet ?: return
+    val current = host.entry as? ModalEntry.BottomSheet
+    val holder = remember { arrayOfNulls<ModalEntry.BottomSheet>(1) }
+    if (current != null) holder[0] = current
+    val entry = current ?: holder[0]
 
-    BackHandler(enabled = host.visible, onBack = entry.onDismiss)
+    val visible = host.visible && current != null
+
+    BackHandler(enabled = host.visible, onBack = { entry?.onDismiss?.invoke() })
 
     Box(modifier = Modifier.fillMaxSize()) {
 
         // Scrim
         AnimatedVisibility(
-            visible = host.visible,
+            visible = visible,
             modifier = Modifier.matchParentSize(),
             enter = fadeIn(),
             exit = fadeOut()
@@ -68,14 +73,14 @@ fun FluxBottomSheetHost(
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,
-                        onClick = entry.onDismiss
+                        onClick = { entry?.onDismiss() }
                     )
             )
         }
 
         // Sheet
         AnimatedVisibility(
-            visible = host.visible,
+            visible = visible,
             modifier = Modifier.align(Alignment.BottomCenter),
             enter = slideInVertically(
                 animationSpec = spring(
@@ -104,10 +109,10 @@ fun FluxBottomSheetHost(
 
                     Text.List.Title(
                         modifier = Modifier.padding(horizontal = FluxUI.Space.medium),
-                        text = entry.title,
+                        text = entry?.title,
                     )
 
-                    entry.content(this)
+                    entry?.content(this)
 
                 }
 

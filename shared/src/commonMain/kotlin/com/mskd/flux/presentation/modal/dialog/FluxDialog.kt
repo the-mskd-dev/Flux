@@ -52,15 +52,20 @@ fun FluxDialogHost(
     hazeState: HazeState,
 ) {
 
-    val entry = host.entry as? ModalEntry.Dialog ?: return
+    val current = host.entry as? ModalEntry.Dialog
+    val holder = remember { arrayOfNulls<ModalEntry.Dialog>(1) }
+    if (current != null) holder[0] = current
+    val entry = current ?: holder[0]
 
-    BackHandler(enabled = host.visible, onBack = entry.onDismiss)
+    val visible = host.visible && current != null
+
+    BackHandler(enabled = host.visible, onBack = { entry?.onDismiss?.invoke() })
 
     Box(modifier = Modifier.fillMaxSize()) {
 
         // Scrim
         AnimatedVisibility(
-            visible = host.visible,
+            visible = visible,
             modifier = Modifier.matchParentSize(),
             enter = fadeIn(),
             exit = fadeOut()
@@ -72,14 +77,14 @@ fun FluxDialogHost(
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,
-                        onClick = entry.onDismiss
+                        onClick = { entry?.onDismiss() }
                     )
             )
         }
 
         // Sheet
         AnimatedVisibility(
-            visible = host.visible,
+            visible = visible,
             modifier = Modifier
                 .align(Alignment.Center)
                 .padding(horizontal = FluxUI.Space.large)
@@ -87,9 +92,9 @@ fun FluxDialogHost(
             enter = scaleIn(
                 animationSpec = spring(
                     dampingRatio = Spring.DampingRatioLowBouncy,
-                    stiffness = Spring.StiffnessMediumLow
+                    stiffness = Spring.StiffnessMedium
                 )
-            ) + fadeIn(animationSpec = spring(stiffness = Spring.StiffnessMediumLow)),
+            ) + fadeIn(animationSpec = spring(stiffness = Spring.StiffnessMedium)),
             exit = fadeOut()
         ) {
 
@@ -113,10 +118,10 @@ fun FluxDialogHost(
                 ) {
 
                     Text.Content.Title(
-                        text = entry.title,
+                        text = entry?.title,
                     )
 
-                    entry.content(this)
+                    entry?.content(this)
 
                     Row(
                         modifier = Modifier
@@ -125,9 +130,11 @@ fun FluxDialogHost(
                         horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small, Alignment.End),
                     ) {
 
-                        TextButton(onClick = entry.onDismiss) { Text.Button.Default(text = entry.onDismissLabel) }
+                        entry?.let {
+                            TextButton(onClick = it.onDismiss) { Text.Button.Default(text = it.onDismissLabel) }
+                        }
 
-                        entry.onValidate?.let {
+                        entry?.onValidate?.let {
                             TextButton(onClick = it) { Text.Button.Default(text = entry.onValidateLabel) }
                         }
 

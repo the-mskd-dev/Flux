@@ -41,7 +41,7 @@ jobs:
 
       - name: Run Fastlane Release
         run: |
-          bundle exec fastlane test
+          bundle exec fastlane test_foss
           bundle exec fastlane release
         env:
           RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}

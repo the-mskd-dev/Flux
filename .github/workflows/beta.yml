@@ -43,7 +43,7 @@ jobs:
 
       - name: Run Fastlane Beta
         run: |
-            bundle exec fastlane test
+            bundle exec fastlane test_foss
             bundle exec fastlane beta
 
       - name: Clean sensitive files

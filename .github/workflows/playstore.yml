@@ -61,7 +61,7 @@ jobs:
 
       - name: Run Fastlane Release
         run: |
-          bundle exec fastlane test
+          bundle exec fastlane test_play_store
           bundle exec fastlane deploy_play_store
         env:
           RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}

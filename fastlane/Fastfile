@@ -17,9 +17,14 @@ default_platform(:android)
 
 platform :android do
 
-  desc "Runs all the tests"
-  lane :test do
-    gradle(task: "testDebugUnitTest")
+  desc "Runs all the tests for the playstore version"
+  lane :test_play_store do
+    gradle(task: "testPlaystoreDebugUnitTest")
+  end
+
+  desc "Runs all the tests for the foss version"
+  lane :test_foss do
+    gradle(task: "testFossDebugUnitTest")
   end
 
   desc "Create a beta version and send it to Firebase"

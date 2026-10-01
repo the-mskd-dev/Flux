@@ -12,8 +12,8 @@ import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.ui.component.global.FluxImage
-import com.mskd.flux.ui.component.global.ProgressStatusBar
-import com.mskd.flux.ui.component.global.ProgressStatusChip
+import com.mskd.flux.presentation.global.ProgressStatusBar
+import com.mskd.flux.presentation.global.ProgressStatusChip
 import com.mskd.flux.utils.extensions.grayScale
 
 @Composable

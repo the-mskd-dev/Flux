@@ -39,7 +39,7 @@ import com.mskd.flux.presentation.LocalUiShapes
 import com.mskd.flux.presentation.text.Text
 import com.mskd.flux.presentation.fillMaxWidthWithLimit
 import com.mskd.flux.ui.component.global.FluxImage
-import com.mskd.flux.ui.component.global.ProgressStatusBar
+import com.mskd.flux.presentation.global.ProgressStatusBar
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
 import com.mskd.flux.utils.extensions.bleedHorizontal

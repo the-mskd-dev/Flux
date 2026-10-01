@@ -15,7 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.presentation.Text
-import com.mskd.flux.ui.component.global.FluxDialog
+import com.mskd.flux.presentation.dialog.FluxDialog
 
 @Composable
 fun ItemsPerRowDialog(

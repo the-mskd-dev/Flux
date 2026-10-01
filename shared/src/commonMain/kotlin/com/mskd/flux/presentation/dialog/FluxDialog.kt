@@ -1,4 +1,4 @@
-package com.mskd.flux.ui.component.global
+package com.mskd.flux.presentation.dialog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

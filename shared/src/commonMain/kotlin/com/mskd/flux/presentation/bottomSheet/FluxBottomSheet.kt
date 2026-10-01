@@ -147,7 +147,7 @@ fun FluxBottomSheet(
     SideEffect {
         if (isVisible) {
             host.owner = owner
-            host.entry = SheetEntry(title, onDismiss, content) // contenu rafraîchi à chaque recomposition
+            host.entry = SheetEntry(title, onDismiss, content)
             host.visible = true
         } else if (host.owner === owner) {
             host.visible = false

@@ -43,7 +43,7 @@ import com.mskd.flux.screens.settings.composables.SettingsSyncSection
 import com.mskd.flux.screens.settings.composables.SettingsTmdbSection
 import com.mskd.flux.ui.component.global.FluxOptionsDialog
 import com.mskd.flux.ui.component.global.FluxScaffold
-import com.mskd.flux.ui.theme.FluxTheme
+import com.mskd.flux.presentation.colors.FluxTheme
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.notificationsPermissionState
 import flux.shared.generated.resources.Res

@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.presentation.text.Text
-import com.mskd.flux.ui.theme.FluxTheme
+import com.mskd.flux.presentation.colors.FluxTheme
 import com.mskd.flux.utils.FluxPreview
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.oups_an_error_occured

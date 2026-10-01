@@ -34,7 +34,7 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.ui.component.global.FluxImage
 import com.mskd.flux.ui.component.global.Image
-import com.mskd.flux.ui.theme.FluxTheme
+import com.mskd.flux.presentation.colors.FluxTheme
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.extensions.tmdbImage
 

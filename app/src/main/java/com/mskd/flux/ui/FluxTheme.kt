@@ -1,12 +1,12 @@
-package com.mskd.flux.ui.theme
+package com.mskd.flux.ui
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
+import com.materialkolor.rememberDynamicColorScheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ColorScheme
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialExpressiveTheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
@@ -17,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.materialkolor.rememberDynamicColorScheme
 import com.mskd.flux.features.connectivity.domain.LocalConnectivity
 import com.mskd.flux.features.customization.domain.datastore.CustomizationDataStore
 import com.mskd.flux.presentation.FluxUI
@@ -34,10 +33,11 @@ import com.mskd.flux.presentation.modal.dialog.FluxDialogHost
 import com.mskd.flux.presentation.text.LocalEmphasizedTypography
 import com.mskd.flux.presentation.text.fluxEmphasizedTypography
 import com.mskd.flux.presentation.text.fluxTypography
+import com.mskd.flux.presentation.colors.fluxDarkScheme
+import com.mskd.flux.presentation.colors.fluxLightScheme
 import com.mskd.flux.utils.UiCommon
 import dev.chrisbanes.haze.rememberHazeState
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun FluxTheme(
     isOnline: Boolean = true,

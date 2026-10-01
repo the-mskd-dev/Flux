@@ -1,4 +1,4 @@
-package com.mskd.flux.ui.theme
+package com.mskd.flux.presentation.colors
 import androidx.compose.ui.graphics.Color
 
 val primaryLight = Color(0xFF804D79)

@@ -20,7 +20,7 @@ import androidx.compose.ui.text.AnnotatedString
 import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.presentation.text.Text
 import com.mskd.flux.ui.component.global.FluxScaffold
-import com.mskd.flux.ui.theme.FluxTheme
+import com.mskd.flux.presentation.colors.FluxTheme
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.buildLinkedString

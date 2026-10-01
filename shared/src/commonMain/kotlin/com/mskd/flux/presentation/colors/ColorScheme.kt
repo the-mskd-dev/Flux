@@ -1,4 +1,4 @@
-package com.mskd.flux.ui.theme
+package com.mskd.flux.presentation.colors
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Immutable

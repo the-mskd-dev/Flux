@@ -29,7 +29,7 @@ import com.mskd.flux.screens.artwork.composables.common.ArtworkDescriptionsPager
 import com.mskd.flux.screens.artwork.composables.common.ArtworkImage
 import com.mskd.flux.ui.component.media.EpisodeDropDownMenu
 import com.mskd.flux.ui.component.media.EpisodeItem
-import com.mskd.flux.ui.theme.FluxTheme
+import com.mskd.flux.presentation.colors.FluxTheme
 import com.mskd.flux.utils.LandscapePreview
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.episodes

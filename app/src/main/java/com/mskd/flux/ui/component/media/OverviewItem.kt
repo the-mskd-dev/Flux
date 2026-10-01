@@ -26,7 +26,7 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.presentation.text.Text
 import com.mskd.flux.ui.component.global.ReadMoreButton
-import com.mskd.flux.ui.theme.FluxTheme
+import com.mskd.flux.presentation.colors.FluxTheme
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.episode
 import flux.shared.generated.resources.season

@@ -114,13 +114,17 @@ class CatalogViewModel(
         _showMessageDialog,
     ) { (artworks, genres), syncState, preferences, (showSortingSheet, showViewModeSheet), showMessageDialog  ->
 
-        if (syncState is SyncState.Syncing && (syncState.full || !hasLoadedContent)) {
+        if (syncState is SyncState.Syncing && syncState.full) {
+
+            Trace.debug("Full loading")
 
             CatalogUiState(
                 state = CatalogState.Loading(syncState = syncState),
             )
 
         } else {
+
+            Trace.debug("Just refresh")
 
             hasLoadedContent = true
 

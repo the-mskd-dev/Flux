@@ -7,7 +7,6 @@ import com.mskd.flux.core.model.core.AppInfo
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.fetcher.CatalogContentFetcher
 import com.mskd.flux.features.catalog.domain.model.SyncState
-import com.mskd.flux.features.catalog.domain.usecase.migration.LegacyGenresMigration
 import com.mskd.flux.features.catalog.domain.usecase.syncGenres.SyncGenresUseCase
 import com.mskd.flux.features.files.domain.usecase.FilterExistingFilesUseCase
 import com.mskd.flux.features.files.domain.usecase.GetDeviceFilesUseCase
@@ -27,7 +26,6 @@ class SyncCatalogUseCase(
     private val getDeviceFilesUseCase: GetDeviceFilesUseCase,
     private val filterExistingFilesUseCase: FilterExistingFilesUseCase,
     private val syncGenresUseCase: SyncGenresUseCase,
-    private val legacyGenresMigration: LegacyGenresMigration,
     private val catalogFetcher: CatalogContentFetcher,
 ) {
 
@@ -61,14 +59,6 @@ class SyncCatalogUseCase(
 
             if (newFiles.isEmpty()) {
                 database.deleteMediasNotInFiles(existingFiles)
-
-                // TODO: Delete in October 2026
-                val steps = legacyGenresMigration.getSteps()
-                if (steps > 0) {
-                    coordinator.setTotalSteps(steps)
-                    legacyGenresMigration.migrate { coordinator.incrementProgress() }
-                }
-
                 user.setSyncTime(System.currentTimeMillis())
                 user.setVersionCode(appInfo.versionCode)
                 return@launch
@@ -94,12 +84,7 @@ class SyncCatalogUseCase(
             // Save
             steps += 1
 
-            steps += legacyGenresMigration.getSteps() // TODO: Delete in October 2026
-
             coordinator.setTotalSteps(steps)
-
-            // TODO: Delete in October 2026
-            legacyGenresMigration.migrate { coordinator.incrementProgress() }
 
             // Get Genres
             if (!onlyNew) syncGenresUseCase()

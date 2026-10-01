@@ -1,3 +1,6 @@
 - Core: Version Play Store
 - Fix: Sauvegarde des préférences de language pour les sous titres et pistes audio
 - Fix: Recherche dans les Autres fichiers
+- UI: Accélération du chargement de l'accueil
+- UI: Amélioration de l'UI
+- Core: Débuts de CMP

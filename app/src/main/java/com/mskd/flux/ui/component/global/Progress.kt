@@ -89,7 +89,6 @@ fun ResetProgressDialog(
 ) {
 
     FluxDialog(
-        isVisible = true,
         title = stringResource(Res.string.reset_progress),
         onDismiss = onDismiss,
         onValidateLabel = stringResource(Res.string.reset),

@@ -31,12 +31,12 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.navigation.domain.Route.Player
 import com.mskd.flux.presentation.Text
+import com.mskd.flux.presentation.modal.dialog.FluxDialog
 import com.mskd.flux.screens.artwork.composables.ArtworkContentLarge
 import com.mskd.flux.screens.artwork.composables.ArtworkContentRegular
 import com.mskd.flux.screens.artwork.composables.common.ArtworkDropDownMenu
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.global.ErrorScreen
-import com.mskd.flux.presentation.modal.dialog.FluxDialog
 import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.ResetProgressDialog
 import com.mskd.flux.ui.theme.FluxTheme

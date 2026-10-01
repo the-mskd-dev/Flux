@@ -38,7 +38,6 @@ fun <T, R> FluxOptionsDialog(
     var selectedValue by remember { mutableStateOf(state.currentValue) }
 
     FluxDialog(
-        isVisible = true,
         onDismiss = onDismiss,
         onValidate = { onValidate(state.applyValue.invoke(selectedValue)) },
         title = stringResource(state.titleResId),

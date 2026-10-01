@@ -7,10 +7,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
-import flux.shared.generated.resources.Res
-import flux.shared.generated.resources.cancel
-import flux.shared.generated.resources.validate
-import org.jetbrains.compose.resources.stringResource
 
 @Stable
 class ModalHostState {

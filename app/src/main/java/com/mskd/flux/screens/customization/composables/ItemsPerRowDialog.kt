@@ -29,7 +29,6 @@ fun ItemsPerRowDialog(
     var currentValue by remember { mutableIntStateOf(value) }
 
     FluxDialog(
-        isVisible = true,
         onDismiss = onDismiss,
         onValidate = { onValidate(currentValue) },
         title = title,

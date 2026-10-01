@@ -35,7 +35,6 @@ fun SettingsFullSyncDialog(
 ) {
 
     FluxDialog(
-        isVisible = true,
         onDismiss = onDismiss,
         onValidate = { sendIntent(SettingsIntent.ProceedFullSync) },
         title = stringResource(Res.string.sync_library),

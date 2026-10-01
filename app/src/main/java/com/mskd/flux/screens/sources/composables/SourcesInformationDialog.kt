@@ -25,7 +25,6 @@ fun SourcesInformationDialog(
 ) {
 
     FluxDialog(
-        isVisible = true,
         title = stringResource(Res.string.dialog_sources_title),
         onDismiss = { sendIntent(SourcesIntent.CloseDialog) },
         onDismissLabel = stringResource(Res.string.got_it)

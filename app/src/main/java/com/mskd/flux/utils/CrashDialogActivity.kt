@@ -83,7 +83,6 @@ fun CrashDialogContent(
     ) {
 
         FluxDialog(
-            isVisible = true,
             onDismiss = onDismiss,
             onValidate = { onSend(comment) },
             title = stringResource(R.string.acra_dialog_title),

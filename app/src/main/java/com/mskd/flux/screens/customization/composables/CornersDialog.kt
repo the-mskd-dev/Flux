@@ -51,7 +51,6 @@ fun CornersDialog(
     val animatedValue by animateIntAsState(currentValue)
 
     FluxDialog(
-        isVisible = true,
         onDismiss = onDismiss,
         onValidate = { onValidate(currentValue) },
         title = stringResource(Res.string.corners),

@@ -45,7 +45,7 @@ import com.mskd.flux.ui.component.global.ErrorScreen
 import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.FluxSearchField
 import com.mskd.flux.ui.component.media.EpisodeItem
-import com.mskd.flux.presentation.colors.FluxTheme
+import com.mskd.flux.ui.FluxTheme
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.rememberExternalPlayerAction
 import flux.shared.generated.resources.Res

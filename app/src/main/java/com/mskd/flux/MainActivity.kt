@@ -47,7 +47,7 @@ import com.mskd.flux.screens.show.ShowScreen
 import com.mskd.flux.screens.sources.SourcesScreen
 import com.mskd.flux.screens.token.TokenScreen
 import com.mskd.flux.screens.unknown.UnknownScreen
-import com.mskd.flux.presentation.colors.FluxTheme
+import com.mskd.flux.ui.FluxTheme
 import com.mskd.flux.presentation.colors.createColorScheme
 import com.mskd.flux.utils.extensions.popScreen
 import com.mskd.flux.utils.notificationsPermissionState

@@ -35,7 +35,7 @@ import com.mskd.flux.features.player.presentation.PlayerUiContent
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.ui.component.global.CountDownButton
-import com.mskd.flux.presentation.colors.FluxTheme
+import com.mskd.flux.ui.FluxTheme
 import com.mskd.flux.utils.FluxPreview
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.next_episode

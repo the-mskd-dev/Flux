@@ -28,7 +28,7 @@ import com.mskd.flux.presentation.text.Text
 import com.mskd.flux.screens.artwork.composables.common.ArtworkImageFull
 import com.mskd.flux.screens.artwork.composables.common.GenresTags
 import com.mskd.flux.ui.component.media.OverviewItem
-import com.mskd.flux.presentation.colors.FluxTheme
+import com.mskd.flux.ui.FluxTheme
 import com.mskd.flux.utils.LandscapePreview
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.no_summary

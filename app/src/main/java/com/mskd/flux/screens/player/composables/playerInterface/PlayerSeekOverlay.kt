@@ -30,7 +30,7 @@ import androidx.constraintlayout.compose.layoutId
 import com.mskd.flux.features.player.presentation.PlayerUiContent
 import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.presentation.text.Text
-import com.mskd.flux.presentation.colors.FluxTheme
+import com.mskd.flux.ui.FluxTheme
 import com.mskd.flux.utils.LandscapePreview
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_forward

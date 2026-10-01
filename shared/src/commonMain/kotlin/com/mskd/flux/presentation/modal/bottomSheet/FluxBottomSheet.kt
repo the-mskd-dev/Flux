@@ -82,7 +82,12 @@ fun FluxBottomSheetHost(
         AnimatedVisibility(
             visible = host.visible,
             modifier = Modifier.align(Alignment.BottomCenter),
-            enter = slideInVertically { it } + fadeIn(),
+            enter = slideInVertically(
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioNoBouncy,
+                    stiffness = Spring.StiffnessMedium
+                )
+            ) { it } + fadeIn(animationSpec = spring(stiffness = Spring.StiffnessMedium)),
             exit = slideOutVertically { it } + fadeOut()
         ) {
             Surface(

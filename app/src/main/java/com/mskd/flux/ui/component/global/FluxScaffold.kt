@@ -27,7 +27,7 @@ import androidx.compose.ui.graphics.GraphicsLayerScope
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import com.mskd.flux.presentation.FluxUI
-import com.mskd.flux.presentation.Text
+import com.mskd.flux.presentation.text.Text
 import com.mskd.flux.presentation.animateAlphaState
 import com.mskd.flux.presentation.blurBackground
 import com.mskd.flux.presentation.blurForeground

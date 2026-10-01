@@ -17,7 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.presentation.FluxUI
-import com.mskd.flux.presentation.Text
+import com.mskd.flux.presentation.text.Text
 import com.mskd.flux.presentation.modal.dialog.FluxDialog
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.reset

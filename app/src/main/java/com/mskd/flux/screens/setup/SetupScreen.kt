@@ -31,7 +31,7 @@ import com.mskd.flux.navigation.domain.Route.Catalog
 import com.mskd.flux.navigation.domain.Route.Sources
 import com.mskd.flux.navigation.domain.Route.Token
 import com.mskd.flux.presentation.FluxUI
-import com.mskd.flux.presentation.Text
+import com.mskd.flux.presentation.text.Text
 import com.mskd.flux.presentation.fillMaxWidthWithLimit
 import com.mskd.flux.screens.setup.composables.SetupSourcesContent
 import com.mskd.flux.screens.setup.composables.SetupWelcomeContent

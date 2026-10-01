@@ -1,4 +1,4 @@
-package com.mskd.flux.presentation
+package com.mskd.flux.presentation.text
 
 import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.LocalContentColor
@@ -23,26 +23,39 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
-import com.mskd.flux.presentation.text.LocalEmphasizedTypography
 
 object Text {
 
     object Style {
 
-        @Composable fun topbarTitle() = MaterialTheme.typography.headlineSmall
-        @Composable fun mainTitle() = LocalEmphasizedTypography.current.displaySmall
-        @Composable fun contentTitle() = LocalEmphasizedTypography.current.titleLarge
-        @Composable fun contentBody() = MaterialTheme.typography.bodyLarge
-        @Composable fun contentLabel() = MaterialTheme.typography.labelMedium
-        @Composable fun cardTitle() = LocalEmphasizedTypography.current.titleMedium
-        @Composable fun cardBody() = MaterialTheme.typography.bodyMedium
-        @Composable fun cardLabel() = MaterialTheme.typography.bodySmall
-        @Composable fun listSection() = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
-        @Composable fun listTitle() = MaterialTheme.typography.bodyLarge
-        @Composable fun listBody() = MaterialTheme.typography.bodyMedium
-        @Composable fun buttonDefault() = MaterialTheme.typography.titleMedium.copy(fontFeatureSettings = "tnum")
-        @Composable fun buttonNavigationBarItem() = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.W500)
-        @Composable fun buttonChip() = MaterialTheme.typography.bodyMedium
+        @Composable
+        fun topbarTitle() = MaterialTheme.typography.headlineSmall
+        @Composable
+        fun mainTitle() = LocalEmphasizedTypography.current.displaySmall
+        @Composable
+        fun contentTitle() = LocalEmphasizedTypography.current.titleLarge
+        @Composable
+        fun contentBody() = MaterialTheme.typography.bodyLarge
+        @Composable
+        fun contentLabel() = MaterialTheme.typography.labelMedium
+        @Composable
+        fun cardTitle() = LocalEmphasizedTypography.current.titleMedium
+        @Composable
+        fun cardBody() = MaterialTheme.typography.bodyMedium
+        @Composable
+        fun cardLabel() = MaterialTheme.typography.bodySmall
+        @Composable
+        fun listSection() = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
+        @Composable
+        fun listTitle() = MaterialTheme.typography.bodyLarge
+        @Composable
+        fun listBody() = MaterialTheme.typography.bodyMedium
+        @Composable
+        fun buttonDefault() = MaterialTheme.typography.titleMedium.copy(fontFeatureSettings = "tnum")
+        @Composable
+        fun buttonNavigationBarItem() = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.W500)
+        @Composable
+        fun buttonChip() = MaterialTheme.typography.bodyMedium
 
     }
 

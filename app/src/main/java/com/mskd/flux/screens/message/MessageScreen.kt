@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import com.mskd.flux.features.message.presentation.MessageIntent
 import com.mskd.flux.features.message.presentation.MessageViewModel
 import com.mskd.flux.presentation.FluxUI
-import com.mskd.flux.presentation.Text
+import com.mskd.flux.presentation.text.Text
 import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview

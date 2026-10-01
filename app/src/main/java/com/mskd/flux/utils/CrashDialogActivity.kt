@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
 import com.mskd.flux.R
 import com.mskd.flux.presentation.FluxUI
-import com.mskd.flux.presentation.Text
+import com.mskd.flux.presentation.text.Text
 import com.mskd.flux.presentation.modal.dialog.FluxDialog
 import com.mskd.flux.ui.theme.FluxTheme
 import org.acra.dialog.CrashReportDialogHelper

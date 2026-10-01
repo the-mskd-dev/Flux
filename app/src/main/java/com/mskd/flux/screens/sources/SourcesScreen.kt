@@ -51,7 +51,7 @@ import com.mskd.flux.features.sources.presentation.SourcesViewModel
 import com.mskd.flux.mockups.FilesMockups
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.presentation.FluxUI
-import com.mskd.flux.presentation.Text
+import com.mskd.flux.presentation.text.Text
 import com.mskd.flux.presentations.components.rememberSafFolderPicker
 import com.mskd.flux.screens.sources.composables.items.CustomSourceItem
 import com.mskd.flux.screens.sources.composables.items.SystemSourceItem

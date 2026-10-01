@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.mskd.flux.presentation.Text
+import com.mskd.flux.presentation.text.Text
 
 @Composable
 fun FluxDropDownMenu(

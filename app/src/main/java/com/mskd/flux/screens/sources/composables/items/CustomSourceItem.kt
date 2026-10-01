@@ -35,7 +35,7 @@ import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.features.sources.domain.model.cleanPath
 import com.mskd.flux.features.sources.domain.model.name
 import com.mskd.flux.presentation.FluxUI
-import com.mskd.flux.presentation.Text
+import com.mskd.flux.presentation.text.Text
 import com.mskd.flux.utils.FluxThemePreview
 import com.mskd.flux.utils.extensions.groupedShape
 import flux.shared.generated.resources.Res

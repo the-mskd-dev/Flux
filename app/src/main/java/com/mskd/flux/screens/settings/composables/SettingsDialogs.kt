@@ -3,7 +3,7 @@ package com.mskd.flux.screens.settings.composables
 import androidx.compose.runtime.Composable
 import com.mskd.flux.features.settings.domain.model.SettingsDialog
 import com.mskd.flux.features.settings.presentation.SettingsIntent
-import com.mskd.flux.presentation.Text
+import com.mskd.flux.presentation.text.Text
 import com.mskd.flux.presentation.modal.dialog.FluxDialog
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.sync_library

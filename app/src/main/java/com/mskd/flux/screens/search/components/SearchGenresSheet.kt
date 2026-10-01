@@ -17,7 +17,7 @@ import com.mskd.flux.core.model.artwork.Genre
 import com.mskd.flux.features.search.presentation.SearchIntent
 import com.mskd.flux.mockups.DetailsMockup
 import com.mskd.flux.presentation.FluxUI
-import com.mskd.flux.presentation.Text
+import com.mskd.flux.presentation.text.Text
 import com.mskd.flux.presentation.modal.bottomSheet.FluxBottomSheet
 import com.mskd.flux.presentation.modal.bottomSheet.FluxBottomSheetItem
 import com.mskd.flux.utils.FluxThemePreview

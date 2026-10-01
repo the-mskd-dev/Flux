@@ -21,7 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.core.model.core.FluxOptionsDialogState
 import com.mskd.flux.presentation.FluxUI
-import com.mskd.flux.presentation.Text
+import com.mskd.flux.presentation.text.Text
 import com.mskd.flux.presentation.modal.dialog.FluxDialog
 import com.mskd.flux.screens.customization.composables.ColorItem
 import com.mskd.flux.utils.extensions.resolve

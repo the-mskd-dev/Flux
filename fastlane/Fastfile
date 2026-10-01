@@ -53,7 +53,7 @@ platform :android do
       groups: "distribution",
       service_credentials_file: "firebase-distribution.json",
       release_notes_file: "CHANGELOG.md",
-      android_artifact_path: "app/build/outputs/apk/beta/app-beta.apk"
+      android_artifact_path: "app/build/outputs/apk/foss/beta/app-foss-beta.apk"
     )
 
   end

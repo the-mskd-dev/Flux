@@ -166,8 +166,6 @@
     <string name="confirm_source_deletion">이 폴더를 삭제하면 포함된 파일의 시청 진행 상황이 손실됩니다.\n정말로 삭제하시겠습니까?</string>
     <string name="add_source">소스 추가</string>
     <string name="got_it">확인</string>
-    <string name="dialog_sources_title">나만의 폴더, 나만의 규칙!</string>
-    <string name="dialog_sources_description">더 많은 제어권을 제공하기 위해 앱이 이제 %1$s 및 %2$s 폴더에 집중합니다.\n\n동영상이 보이지 않나요? 걱정 마세요! 설정에서 언제든지 폴더를 빠르게 추가할 수 있습니다.</string>
     <string name="content_unavailable">콘텐츠를 이용할 수 없음</string>
     <string name="open_in_file_explorer">파일 탐색기에서 열기</string>
     <string name="next">다음</string>

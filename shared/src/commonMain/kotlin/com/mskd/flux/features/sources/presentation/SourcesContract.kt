@@ -7,7 +7,6 @@ import com.mskd.flux.features.sources.domain.model.UserFolder
 @Immutable
 data class SourcesUiState(
     val state: State<SourcesContent> = State.Loading,
-    val showFeatureDialog: Boolean = false
 )
 
 @Immutable
@@ -35,9 +34,6 @@ sealed interface SourcesIntent {
     data class Delete(val folder: UserFolder) : SourcesIntent
     data object UndoDelete: SourcesIntent
     data object FinalizeDelete: SourcesIntent
-
-    // Dialog
-    data object CloseDialog: SourcesIntent
 
     // Permissions
     data object OnPermissionGranted: SourcesIntent

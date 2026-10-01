@@ -72,8 +72,6 @@ class CatalogViewModel(
     private val _showViewModeSheet = MutableStateFlow(false)
     private val _showMessageDialog = MutableStateFlow(false)
 
-    private var hasLoadedContent = false
-
     private var currentMedia: Media? = null
 
     private val preferencesFlow = combine(
@@ -114,15 +112,13 @@ class CatalogViewModel(
         _showMessageDialog,
     ) { (artworks, genres), syncState, preferences, (showSortingSheet, showViewModeSheet), showMessageDialog  ->
 
-        if (syncState is SyncState.Syncing && (syncState.full || !hasLoadedContent)) {
+        if (syncState is SyncState.Syncing && syncState.full) {
 
             CatalogUiState(
                 state = CatalogState.Loading(syncState = syncState),
             )
 
         } else {
-
-            hasLoadedContent = true
 
             val sortedArtworks = when (preferences.sortingMode) {
                 CatalogSortingMode.LAST_MODIFICATION -> artworks.sortedByDescending { it.lastModification }

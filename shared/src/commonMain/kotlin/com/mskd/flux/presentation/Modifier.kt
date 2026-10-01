@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeInput
 import dev.chrisbanes.haze.HazePerformanceMode
 import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.blur.HazeBlurDefaults
 import dev.chrisbanes.haze.blur.HazeBlurStyle
 import dev.chrisbanes.haze.blur.hazeBlur
 import dev.chrisbanes.haze.blur.material3.Material3
@@ -30,12 +31,14 @@ fun Modifier.blurBackground(
 fun Modifier.blurForeground(
     state: HazeState,
     alpha: Float = 1f,
+    radius: Dp = HazeBlurDefaults.blurRadius,
     performanceMode: HazePerformanceMode? = null,
     expandLayerBounds: Boolean = true
 ) = this.hazeBlur(
     input = HazeInput.Sources(state),
     style = HazeBlurStyle.Material3 {
         alpha(alpha)
+        blurRadius(radius)
     },
     performanceMode = performanceMode,
     expandLayerBounds = expandLayerBounds

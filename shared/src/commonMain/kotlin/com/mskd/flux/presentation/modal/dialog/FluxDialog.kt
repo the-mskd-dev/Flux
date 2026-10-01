@@ -74,6 +74,7 @@ fun FluxDialogHost(
             Box(
                 Modifier
                     .fillMaxSize()
+                    .blurForeground(state = hazeState, radius = 3.dp)
                     .background(MaterialTheme.colorScheme.scrim.copy(alpha = .3f))
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
@@ -113,7 +114,7 @@ fun FluxDialogHost(
                     modifier = Modifier
                         .fillMaxWidth()
                         .blurForeground(hazeState)
-                        .background(MaterialTheme.colorScheme.surfaceContainer.copy(alpha = .8f))
+                        .background(MaterialTheme.colorScheme.surfaceContainer.copy(alpha = .9f))
                         .padding(FluxUI.Space.large),
                     verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
                 ) {

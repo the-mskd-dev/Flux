@@ -69,7 +69,8 @@ fun FluxBottomSheetHost(
             Box(
                 Modifier
                     .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.scrim.copy(alpha = .2f))
+                    .blurForeground(state = hazeState, radius = 3.dp)
+                    .background(MaterialTheme.colorScheme.scrim.copy(alpha = .3f))
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,
@@ -101,7 +102,7 @@ fun FluxBottomSheetHost(
                     modifier = Modifier
                         .fillMaxWidth()
                         .blurForeground(hazeState)
-                        .background(MaterialTheme.colorScheme.surfaceContainer.copy(alpha = .8f))
+                        .background(MaterialTheme.colorScheme.surfaceContainer.copy(alpha = .9f))
                         .navigationBarsPadding()
                         .padding(vertical = FluxUI.Space.medium),
                     verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)

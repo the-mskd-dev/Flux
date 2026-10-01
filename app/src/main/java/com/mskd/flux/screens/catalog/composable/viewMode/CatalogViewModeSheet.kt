@@ -31,7 +31,6 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun CatalogViewModeSheet(
     isVisible: Boolean,
-    hazeState: HazeState = rememberHazeState(),
     selectedMode: CatalogViewMode,
     sendIntent: (CatalogIntent) -> Unit
 ) {
@@ -39,7 +38,6 @@ fun CatalogViewModeSheet(
     FluxBottomSheet(
         isVisible = isVisible,
         title = stringResource(Res.string.view),
-        hazeState = hazeState,
         onDismiss = { sendIntent(CatalogIntent.ShowViewModes(show = false)) },
         content = {
 

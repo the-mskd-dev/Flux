@@ -324,21 +324,19 @@ fun CatalogContent(
                 sendIntent = sendIntent
             )
 
-            CatalogSortingSheet(
-                isVisible = state.showSortingSheet,
-                hazeState = hazeState,
-                selectedMode = state.sortingMode,
-                sendIntent = sendIntent
-            )
-
-            CatalogViewModeSheet(
-                isVisible = state.showViewSheet,
-                hazeState = hazeState,
-                selectedMode = state.viewMode,
-                sendIntent = sendIntent
-            )
-
         }
+
+        CatalogSortingSheet(
+            isVisible = state.showSortingSheet,
+            selectedMode = state.sortingMode,
+            sendIntent = sendIntent
+        )
+
+        CatalogViewModeSheet(
+            isVisible = state.showViewSheet,
+            selectedMode = state.viewMode,
+            sendIntent = sendIntent
+        )
 
     }
 

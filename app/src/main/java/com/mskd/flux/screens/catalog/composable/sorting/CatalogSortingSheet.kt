@@ -22,7 +22,6 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun CatalogSortingSheet(
     isVisible: Boolean,
-    hazeState: HazeState = rememberHazeState(),
     selectedMode: CatalogSortingMode,
     sendIntent: (CatalogIntent) -> Unit
 ) {
@@ -30,7 +29,6 @@ fun CatalogSortingSheet(
     FluxBottomSheet(
         isVisible = isVisible,
         title = stringResource(Res.string.sort_by),
-        hazeState = hazeState,
         onDismiss = { sendIntent(CatalogIntent.ShowSortingModes(show = false)) },
         content = {
 

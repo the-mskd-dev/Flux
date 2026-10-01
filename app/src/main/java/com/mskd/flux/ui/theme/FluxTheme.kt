@@ -2,6 +2,8 @@ package com.mskd.flux.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -10,6 +12,8 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -22,10 +26,15 @@ import com.mskd.flux.presentation.LocalUiGlobal
 import com.mskd.flux.presentation.LocalUiItemsPerRow
 import com.mskd.flux.presentation.LocalUiPlayer
 import com.mskd.flux.presentation.LocalUiShapes
+import com.mskd.flux.presentation.blurBackground
+import com.mskd.flux.presentation.bottomSheet.FluxBottomSheetHost
+import com.mskd.flux.presentation.bottomSheet.LocalSheetHost
+import com.mskd.flux.presentation.bottomSheet.SheetHostState
 import com.mskd.flux.presentation.text.LocalEmphasizedTypography
 import com.mskd.flux.presentation.text.fluxEmphasizedTypography
 import com.mskd.flux.presentation.text.fluxTypography
 import com.mskd.flux.utils.UiCommon
+import dev.chrisbanes.haze.rememberHazeState
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -39,6 +48,9 @@ fun FluxTheme(
         theme = customization.uiTheme,
         color = customization.color
     )
+
+    val sheetHost = remember { SheetHostState() }
+    val sheetHazeState = rememberHazeState()
 
     CompositionLocalProvider(
         LocalConnectivity provides isOnline,
@@ -59,14 +71,31 @@ fun FluxTheme(
         LocalUiPlayer provides FluxUI.Player(
             waveProgress = customization.waveProgress
         ),
-        LocalEmphasizedTypography provides fluxEmphasizedTypography()
+        LocalEmphasizedTypography provides fluxEmphasizedTypography(),
+        LocalSheetHost provides sheetHost
     ) {
 
         MaterialExpressiveTheme(
             colorScheme = colorScheme,
             typography = fluxTypography(),
-            content = content,
-        )
+        ) {
+
+            Box(Modifier.fillMaxSize()) {
+
+                Box(Modifier.fillMaxSize().blurBackground(sheetHazeState)) {
+
+                    content()
+
+                }
+
+                FluxBottomSheetHost(
+                    host = sheetHost,
+                    hazeState = sheetHazeState
+                )
+
+            }
+
+        }
         
     }
 

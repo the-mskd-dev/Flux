@@ -26,6 +26,7 @@ import com.mskd.flux.features.search.presentation.SearchIntent
 import com.mskd.flux.mockups.DetailsMockup
 import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.presentation.Text
+import com.mskd.flux.presentation.bottomSheet.FluxBottomSheet
 import com.mskd.flux.presentation.bottomSheet.FluxBottomSheetItem
 import com.mskd.flux.presentation.fillMaxWidthWithLimit
 import com.mskd.flux.utils.FluxThemePreview
@@ -37,6 +38,7 @@ import org.jetbrains.compose.resources.stringResource
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchGenresSheet(
+    isVisible: Boolean,
     genres: List<Genre>,
     selectedGenreIds: List<Int>,
     sendIntent: (SearchIntent) -> Unit
@@ -44,53 +46,40 @@ fun SearchGenresSheet(
 
     val clearButtonAlpha by animateFloatAsState(if (selectedGenreIds.isEmpty()) 0f else 1f)
 
-    ModalBottomSheet(
-        modifier = Modifier.fillMaxWidthWithLimit(),
-        contentWindowInsets = { WindowInsets()},
-        onDismissRequest = { sendIntent(SearchIntent.ShowGenresSelection(show = false)) },
+    FluxBottomSheet(
+        isVisible = isVisible,
+        onDismiss = { sendIntent(SearchIntent.ShowGenresSelection(show = false)) },
     ) {
-        Column(
+
+        Row(
             modifier = Modifier
-                .verticalScroll(rememberScrollState())
-                .fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
+                .fillMaxWidth()
+                .padding(horizontal = FluxUI.Space.medium),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = FluxUI.Space.medium),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+            Text.List.Title(
+                text = stringResource(Res.string.genres)
+            )
+
+            TextButton(
+                modifier = Modifier.alpha(clearButtonAlpha),
+                onClick = { if (selectedGenreIds.isNotEmpty()) sendIntent(SearchIntent.ClearGenres) }
             ) {
-
-                Text.List.Title(
-                    text = stringResource(Res.string.genres)
-                )
-
-                TextButton(
-                    modifier = Modifier.alpha(clearButtonAlpha),
-                    onClick = { if (selectedGenreIds.isNotEmpty()) sendIntent(SearchIntent.ClearGenres) }
-                ) {
-                    Text.Button.Default(text = stringResource(Res.string.clear))
-                }
-
+                Text.Button.Default(text = stringResource(Res.string.clear))
             }
 
-            genres.forEach { genre ->
-                FluxBottomSheetItem(
-                    isSelected = selectedGenreIds.contains(genre.id),
-                    text = genre.name,
-                    onClick = { sendIntent(SearchIntent.SelectGenre(genre = genre)) }
-                )
-            }
+        }
 
-            Spacer(
-                Modifier
-                    .navigationBarsPadding()
-                    .height(FluxUI.Space.large)
+        genres.forEach { genre ->
+            FluxBottomSheetItem(
+                isSelected = selectedGenreIds.contains(genre.id),
+                text = genre.name,
+                onClick = { sendIntent(SearchIntent.SelectGenre(genre = genre)) }
             )
         }
+
     }
 
 }
@@ -101,6 +90,7 @@ fun SearchGenresSheet(
 fun CatalogViewModeSheet_Preview() {
     FluxThemePreview {
         SearchGenresSheet(
+            isVisible = true,
             genres = DetailsMockup.allGenres.take(8),
             selectedGenreIds = DetailsMockup.allGenres.take(3).map { it.id },
             sendIntent = {}

@@ -54,7 +54,7 @@ class SheetHostState {
 }
 
 internal class SheetEntry(
-    val title: String,
+    val title: String?,
     val onDismiss: () -> Unit,
     val content: @Composable ColumnScope.() -> Unit,
 )
@@ -137,7 +137,7 @@ fun FluxBottomSheetHost(
 @Composable
 fun FluxBottomSheet(
     isVisible: Boolean,
-    title: String,
+    title: String? = null,
     onDismiss: () -> Unit,
     content: @Composable ColumnScope.() -> Unit,
 ) {

@@ -166,13 +166,12 @@ fun SearchContent(
 
         }
 
-        if (state.actions.showGenresSelection) {
-            SearchGenresSheet(
-                genres = state.availableGenres,
-                selectedGenreIds = state.actions.selectedGenres,
-                sendIntent = sendIntent
-            )
-        }
+        SearchGenresSheet(
+            isVisible = state.actions.showGenresSelection,
+            genres = state.availableGenres,
+            selectedGenreIds = state.actions.selectedGenres,
+            sendIntent = sendIntent
+        )
 
     }
 

@@ -24,9 +24,11 @@ import com.mskd.flux.features.show.presentation.ShowIntent
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.presentation.Text
+import com.mskd.flux.presentation.modal.dialog.FluxDialog
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.utils.FluxPreview
 import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.close
 import flux.shared.generated.resources.no_summary
 import flux.shared.generated.resources.season
 import org.jetbrains.compose.resources.stringResource
@@ -38,40 +40,22 @@ fun SeasonDialog(
     sendIntent: (ShowIntent) -> Unit
 ) {
 
-    BasicAlertDialog(
-        onDismissRequest = { sendIntent(ShowIntent.CloseDialog) },
-        properties = DialogProperties(usePlatformDefaultWidth = false)
+    FluxDialog(
+        onDismiss = { sendIntent(ShowIntent.CloseDialog) },
+        onDismissLabel = stringResource(Res.string.close),
+        title = season.title.ifEmpty { stringResource(Res.string.season, season.season) }
     ) {
 
-        Card(
+        Column(
             modifier = Modifier
-                .widthIn(max = 500.dp)
-                .fillMaxWidth()
-                .heightIn(max = 700.dp)
-                .padding(horizontal = FluxUI.Space.medium, vertical = FluxUI.Space.large),
-            shape = FluxUI.shapes.corners,
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                contentColor = MaterialTheme.colorScheme.onTertiaryContainer
-            )
+                .verticalScroll(rememberScrollState())
+                .padding(all = FluxUI.Space.medium),
+            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
         ) {
 
-            Column(
-                modifier = Modifier
-                    .verticalScroll(rememberScrollState())
-                    .padding(all = FluxUI.Space.medium),
-                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
-            ) {
-
-                Text.Content.Title(
-                    text = season.title.ifEmpty { stringResource(Res.string.season, season.season) },
-                )
-
-                Text.Content.Body(
-                    text = season.description.ifEmpty { stringResource(Res.string.no_summary) },
-                )
-
-            }
+            Text.Content.Body(
+                text = season.description.ifEmpty { stringResource(Res.string.no_summary) },
+            )
 
         }
 

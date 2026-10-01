@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -103,6 +104,7 @@ fun FluxDialogHost(
             Surface(
                 modifier = Modifier
                     .fillMaxWidthWithLimit()
+                    .heightIn(max = 700.dp)
                     .imePadding(),
                 shape = RoundedCornerShape(28.dp),
                 color = Color.Transparent,
@@ -155,7 +157,7 @@ fun FluxDialogHost(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FluxDialog(
-    isVisible: Boolean,
+    isVisible: Boolean = true,
     onDismiss: () -> Unit,
     onDismissLabel: String = stringResource(Res.string.cancel),
     onValidate: (() -> Unit)? = null,

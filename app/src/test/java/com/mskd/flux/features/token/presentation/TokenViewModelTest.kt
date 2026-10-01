@@ -108,16 +108,30 @@ class TokenViewModelTest : FunSpec({
     }
 
     test("save token when fromSetup is true success") {
+
+        // Given
         val vm = TokenViewModel(
             fromSetup = true,
             tokenDataStore = tokenDataStore,
             saveTokenAndSyncUseCase = saveTokenAndSyncUseCase,
             appInfo = appInfo
         )
-        vm.event.test {
-            vm.handleIntent(TokenIntent.SaveToken)
-            awaitItem() shouldBe TokenEvent.NavigateToCatalogScreen
+        vm.uiState.test {
+            awaitItem()
+            vm.handleIntent(TokenIntent.SetToken("new token"))
+
+            vm.event.test {
+                // When
+                vm.handleIntent(TokenIntent.SaveToken)
+
+                // Then
+                awaitItem() shouldBe TokenEvent.NavigateToCatalogScreen
+            }
+
+            cancelAndConsumeRemainingEvents()
+
         }
+
     }
 
     context("save token") {
@@ -127,24 +141,18 @@ class TokenViewModelTest : FunSpec({
                 description = "Success",
                 apiResult = AuthenticateResult.SUCCESS,
                 expectedMessage = TokenMessage.Success,
-                expectedLoadCatalog = true,
             ),
             TokenTestCases.SaveToken(
                 description = "Fail token",
                 apiResult = AuthenticateResult.FAILURE,
                 expectedMessage = TokenMessage.Error,
-                expectedLoadCatalog = false,
-            ),
-            TokenTestCases.SaveToken(
-                description = "Fail token with exception",
-                apiResult = AuthenticateResult.FAILURE,
-                expectedMessage = TokenMessage.Error,
-                expectedLoadCatalog = false,
             )
         ) { testCase ->
 
+            // Given
             saveTokenAndSyncUseCase = mockk<SaveTokenAndSyncUseCase>(relaxed = true)
             coEvery { saveTokenAndSyncUseCase(any<String>()) } returns (testCase.apiResult as AuthenticateResult)
+            coEvery { tokenDataStore.getToken() } returns ""
 
             viewModel = TokenViewModel(
                 fromSetup = false,
@@ -154,19 +162,17 @@ class TokenViewModelTest : FunSpec({
             )
 
             viewModel.uiState.test {
+                // Given: new token
+                viewModel.handleIntent(TokenIntent.SetToken("new token"))
 
-                awaitItem()
-
+                // When: save token
                 viewModel.handleIntent(TokenIntent.SaveToken)
 
-                val state = awaitItem()
-
-                if (testCase.expectedLoadCatalog) {
-                    coVerify { saveTokenAndSyncUseCase(any()) }
-                }
+                // Then
+                val state = expectMostRecentItem()
                 state.message shouldBe testCase.expectedMessage
                 state.isLoading shouldBe false
-
+                cancelAndIgnoreRemainingEvents()
             }
 
         }

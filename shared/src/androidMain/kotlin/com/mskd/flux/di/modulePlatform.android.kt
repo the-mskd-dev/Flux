@@ -3,6 +3,7 @@ package com.mskd.flux.di
 
 import com.mskd.flux.core.moduleCoreAndroid
 import com.mskd.flux.features.moduleFeaturesAndroid
+import com.mskd.flux.system.moduleSystemAndroid
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
@@ -15,6 +16,7 @@ actual val modulePlatform: Module = module {
     includes(
         moduleCoreAndroid,
         moduleFeaturesAndroid,
+        moduleSystemAndroid,
     )
 
 }

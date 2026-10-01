@@ -67,7 +67,8 @@
     <string name="which_technologies_desc">Esta aplicación está desarrollada íntegramente en Kotlin con Jetpack Compose. Utilizo Room para la base de datos, Ktor para las llamadas de red y Koin para la inyección de dependencias. También uso GitHub. En cuanto a UI/UX, uso Material 3 y he hecho todo lo posible. Bastante bien, ¿no?</string>
     <string name="how_to_suggest">¿Cómo contactarme o sugerir mejoras?</string>
     <string name="how_to_suggest_desc">Si es un comentario positivo, ¡puedes contactarme por %1$s! De lo contrario, haz lo mismo o directamente en %2$s, pero con la misma amabilidad que si fuera positivo.</string>
-    
+    <string name="contact_me">Contactar conmigo</string>
+    <string name="contact_me_desc">Si quieres decirme algo, es por aquí</string>
     
     <string name="what_is_next">¿Qué es lo siguiente?</string>
     <string name="what_is_next_desc">El objetivo es seguir mejorando la aplicación, ya sea la interfaz, la experiencia de usuario o el rendimiento. Tengo previsto recuperar más datos (género, reparto, etc.) y también planeo añadir nuevas fuentes de datos, no solo archivos del dispositivo.</string>
@@ -166,8 +167,6 @@
     <string name="confirm_source_deletion">Eliminar esta carpeta provocará la pérdida del progreso de los archivos que contiene.\n¿Estás seguro de que quieres eliminarla?</string>
     <string name="add_source">Añadir fuente</string>
     <string name="got_it">Entendido</string>
-    <string name="dialog_sources_title">¡Tus carpetas, tus reglas!</string>
-    <string name="dialog_sources_description">Para darte más control, la aplicación ahora se centra en tus carpetas %1$s y %2$s.\n\n¿Falta un vídeo? ¡Que no cunda el pánico! Puedes añadir tus propias carpetas en un instante desde los ajustes.</string>
     <string name="content_unavailable">Contenido no disponible</string>
     <string name="open_in_file_explorer">Abrir en el explorador de archivos</string>
     <string name="next">Siguiente</string>
@@ -217,4 +216,18 @@
     <string name="pin_change_old">Código actual</string>
     <string name="pin_change_new">Código nuevo</string>
     <string name="pin_error">Código PIN incorrecto</string>
+
+    <string name="learn_more">Más información</string>
+    <string name="participate">Participar</string>
+
+    <string name="catalog_message">¡Se acerca la versión de Play Store, pero necesito vuestra ayuda!</string>
+    <string name="message_title">¡Flux en la Play Store!</string>
+    <string-array name="message_details">
+        <item>Antes de nada, ¡gracias a todos por vuestra presencia y vuestros comentarios para mejorar esta aplicación, no me esperaba a tanta gente!</item>
+        <item>Para darle aún más visibilidad, me gustaría poner Flux disponible en la Play Store. Sería una edición para colaboradores (por solo 1 €), con el fin de compensar las tarifas y el hardware que utilizo para el desarrollo de la aplicación.</item>
+        <item>Por supuesto, Flux seguirá estando disponible gratuitamente en GitHub y F-Droid, y tendrá las mismas funciones (no quiero mantener 2 versiones diferentes jajaja).</item>
+        <item>Sin embargo, para poder publicar la aplicación, necesito un puñado de probadores para pasar la validación de Google, y por eso me dirijo a vosotros. Si queréis participar, solo tenéis que enviarme vuestra dirección de correo electrónico para que os añada a la lista de probadores, y luego recibiréis un enlace de la Play Store para descargar la aplicación (normalmente gratis), y eso es todo.</item>
+        <item>¡Muchas gracias por vuestra ayuda y apoyo, hasta pronto!</item>
+    </string-array>
+
 </resources>

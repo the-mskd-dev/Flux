@@ -36,13 +36,13 @@ import com.mskd.flux.features.search.presentation.SearchViewModel
 import com.mskd.flux.mockups.DetailsMockup
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.navigation.domain.Route
+import com.mskd.flux.presentation.FluxUI
+import com.mskd.flux.presentation.LocalUiGlobal
 import com.mskd.flux.screens.search.components.SearchContentGrid
 import com.mskd.flux.screens.search.components.SearchFilters
 import com.mskd.flux.screens.search.components.SearchGenresSheet
 import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.FluxSearchField
-import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.ui.theme.LocalUiGlobal
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
 import com.mskd.flux.utils.itemWidthFor
@@ -166,13 +166,12 @@ fun SearchContent(
 
         }
 
-        if (state.actions.showGenresSelection) {
-            SearchGenresSheet(
-                genres = state.availableGenres,
-                selectedGenreIds = state.actions.selectedGenres,
-                sendIntent = sendIntent
-            )
-        }
+        SearchGenresSheet(
+            isVisible = state.actions.showGenresSelection,
+            genres = state.availableGenres,
+            selectedGenreIds = state.actions.selectedGenres,
+            sendIntent = sendIntent
+        )
 
     }
 

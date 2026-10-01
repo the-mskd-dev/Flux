@@ -37,7 +37,7 @@ fun CatalogArtworkItem(
         MediaItem(
             modifier = Modifier.fillMaxSize(),
             path = artwork.imagePath,
-            onClick = { rgb -> sendIntent(CatalogIntent.OnArtworkTap(artwork = artwork, rgb = rgb)) },
+            onClick = { rgb -> sendIntent(CatalogIntent.OnArtworkClick(artwork = artwork, rgb = rgb)) },
             onLongClick = { if (privateFolderEnabled) menuExpanded = true },
             description = artwork.title
         )

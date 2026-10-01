@@ -21,6 +21,7 @@ import com.mskd.flux.features.customization.presentation.CustomizationEvent
 import com.mskd.flux.features.customization.presentation.CustomizationIntent
 import com.mskd.flux.features.customization.presentation.CustomizationUiState
 import com.mskd.flux.features.customization.presentation.CustomizationViewModel
+import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.screens.customization.composables.CornersDialog
 import com.mskd.flux.screens.customization.composables.CustomizationArtworkSection
 import com.mskd.flux.screens.customization.composables.CustomizationGlobalSection
@@ -29,7 +30,6 @@ import com.mskd.flux.screens.customization.composables.CustomizationThemeSection
 import com.mskd.flux.screens.customization.composables.ItemsPerRowDialog
 import com.mskd.flux.ui.component.global.FluxOptionsDialog
 import com.mskd.flux.ui.component.global.FluxScaffold
-import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
 import com.mskd.flux.utils.extensions.resolve

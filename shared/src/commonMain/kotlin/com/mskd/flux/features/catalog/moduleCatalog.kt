@@ -16,7 +16,6 @@ import com.mskd.flux.features.catalog.domain.fetcher.SeasonMetadataFetcherImpl
 import com.mskd.flux.features.catalog.domain.resolver.MediaResolver
 import com.mskd.flux.features.catalog.domain.resolver.MediaResolverImpl
 import com.mskd.flux.features.catalog.domain.usecase.cleanCatalog.CleanCatalogUseCase
-import com.mskd.flux.features.catalog.domain.usecase.migration.LegacyGenresMigration
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.catalog.domain.usecase.syncGenres.SyncGenresUseCase
 import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
@@ -80,7 +79,6 @@ val moduleCatalog = module {
     singleOf(::CleanCatalogUseCase)
     singleOf(::SyncCatalogUseCase)
     singleOf(::SyncGenresUseCase)
-    singleOf(::LegacyGenresMigration)
 
     single<UpdateLanguageUseCase> {
         UpdateLanguageUseCase(

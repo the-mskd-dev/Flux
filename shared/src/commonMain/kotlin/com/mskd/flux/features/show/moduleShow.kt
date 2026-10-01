@@ -9,6 +9,7 @@ val moduleShow = module {
     viewModel { params ->
         ShowViewModel(
             artworkId = params.get(),
+            urlLauncher = get(),
             observeArtworkUseCase = get(),
             resetProgress = get(),
         )

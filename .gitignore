@@ -12,7 +12,9 @@ local.properties
 /private
 /app/debug
 /app/release
-/app/google-services.json
+/app/playstore/release
+/app/foss/release
+/app/src/playstore/google-services.json
 *.log
 
 # --- Firebase ---
@@ -25,6 +27,9 @@ fastlane/screenshots
 fastlane/test_output
 fastlane/*.json
 fastlane/.env.default
+
+# --- Play Console ---
+play-console-api-key.json
 
 # --- Keys & Signing ---
 keystore.properties

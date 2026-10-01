@@ -7,11 +7,13 @@ import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtwo
 import com.mskd.flux.features.artwork.fake.FakeObserveArtworkUseCase
 import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.system.UrlLauncher
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.mockk.coVerify
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -22,15 +24,18 @@ class ShowViewModelTest : FunSpec({
     lateinit var viewModel: ShowViewModel
     lateinit var observeArtworkUseCase: ObserveArtworkUseCase
     lateinit var resetProgress: ResetProgressUseCase
+    lateinit var urlLauncher: UrlLauncher
 
     val updateVm: () -> Unit = {
 
         resetProgress = mockk(relaxed = true)
+        urlLauncher = mockk(relaxed = true)
 
         viewModel = ShowViewModel(
             artworkId = MediaMockups.showArtwork.id,
             observeArtworkUseCase = observeArtworkUseCase,
-            resetProgress = resetProgress
+            resetProgress = resetProgress,
+            urlLauncher = urlLauncher
         )
 
     }
@@ -112,16 +117,18 @@ class ShowViewModelTest : FunSpec({
     }
 
     test("open show info") {
+
+        // Given
         viewModel.uiState.test {
             expectMostRecentItem()
 
-            viewModel.event.test {
-                viewModel.handleIntent(ShowIntent.OpenShowInfo)
-                val event = awaitItem()
-                event.shouldBeInstanceOf<ShowEvent.OpenShowInfo>()
-                event.url shouldBe MediaMockups.showArtwork.infoUrl
-            }
+            // When
+            viewModel.handleIntent(ShowIntent.OpenShowInfo)
+
+            // Then
+            verify { urlLauncher.open(MediaMockups.showArtwork.infoUrl) }
         }
+
     }
 
     test("reset progress") {
@@ -144,7 +151,8 @@ class ShowViewModelTest : FunSpec({
         viewModel = ShowViewModel(
             artworkId = -999L,
             observeArtworkUseCase = observeArtworkUseCase,
-            resetProgress = resetProgress
+            resetProgress = resetProgress,
+            urlLauncher = urlLauncher
         )
 
         viewModel.uiState.test {
@@ -158,7 +166,8 @@ class ShowViewModelTest : FunSpec({
         viewModel = ShowViewModel(
             artworkId = MediaMockups.movieArtwork.id,
             observeArtworkUseCase = observeArtworkUseCase,
-            resetProgress = resetProgress
+            resetProgress = resetProgress,
+            urlLauncher = urlLauncher
         )
 
         viewModel.uiState.test {

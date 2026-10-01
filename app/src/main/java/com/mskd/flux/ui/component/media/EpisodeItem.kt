@@ -28,10 +28,10 @@ import androidx.compose.ui.unit.dp
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.presentation.FluxUI
+import com.mskd.flux.presentation.Text
 import com.mskd.flux.ui.component.global.FixedChip
 import com.mskd.flux.ui.component.global.ReadMoreButton
-import com.mskd.flux.ui.component.global.Text
-import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxThemePreview
 import com.mskd.flux.utils.PortraitPreview
 import com.mskd.flux.utils.extensions.grayScale
@@ -52,12 +52,12 @@ fun EpisodeItem(
 ) {
 
     Box(
+        modifier = modifier,
         contentAlignment = Alignment.Center
     ) {
 
         if (FluxUI.episodes.large) {
             EpisodeItemLarge(
-                modifier = modifier,
                 episode = episode,
                 isSelected = isSelected,
                 isExpanded = isExpanded,
@@ -67,7 +67,6 @@ fun EpisodeItem(
             )
         } else {
             EpisodeItemSmall(
-                modifier = modifier,
                 episode = episode,
                 isSelected = isSelected,
                 isExpanded = isExpanded,

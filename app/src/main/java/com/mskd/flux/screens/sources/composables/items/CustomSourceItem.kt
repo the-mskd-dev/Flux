@@ -34,8 +34,8 @@ import androidx.compose.ui.unit.dp
 import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.features.sources.domain.model.cleanPath
 import com.mskd.flux.features.sources.domain.model.name
-import com.mskd.flux.ui.component.global.Text
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.presentation.FluxUI
+import com.mskd.flux.presentation.Text
 import com.mskd.flux.utils.FluxThemePreview
 import com.mskd.flux.utils.extensions.groupedShape
 import flux.shared.generated.resources.Res
@@ -72,7 +72,7 @@ fun LazyItemScope.CustomSourceItem(
         dismissState.snapTo(SwipeToDismissBoxValue.Settled)
     }
 
-    val backgroundColor = if (!folder.isAvailable) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.surfaceBright
+    val backgroundColor = if (!folder.isAvailable) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.surfaceContainer
     val contentColor = if (!folder.isAvailable) MaterialTheme.colorScheme.onError else MaterialTheme.colorScheme.onSurface
 
     SwipeToDismissBox(

@@ -22,11 +22,11 @@ import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.features.privateFolder.presentation.PrivateFolderIntent
 import com.mskd.flux.features.privateFolder.presentation.PrivateFolderUiState
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.ui.component.global.FluxDropDownMenu
 import com.mskd.flux.ui.component.global.FluxDropDownMenuItem
 import com.mskd.flux.ui.component.media.MediaItem
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.extensions.displayCutoutPaddingInLandscape
 import com.mskd.flux.utils.rememberScreenDimensions

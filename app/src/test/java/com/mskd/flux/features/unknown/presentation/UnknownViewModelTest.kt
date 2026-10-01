@@ -10,6 +10,7 @@ import com.mskd.flux.features.player.domain.usecase.ResolvePlaybackActionUseCase
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.system.FilesLauncher
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
@@ -22,6 +23,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class UnknownViewModelTest : FunSpec({
@@ -33,17 +35,20 @@ class UnknownViewModelTest : FunSpec({
     lateinit var settingsDataStore: SettingsDataStore
     lateinit var resolvePlaybackAction: ResolvePlaybackActionUseCase
     lateinit var recordPlaybackResult: SaveProgressUseCase
+    lateinit var filesLauncher: FilesLauncher
 
     val updateVm: () -> Unit = {
 
         resolvePlaybackAction = mockk(relaxed = true)
         recordPlaybackResult = mockk(relaxed = true)
+        filesLauncher = mockk(relaxed = true)
 
         viewModel = UnknownViewModel(
             observeArtworkUseCase = observeArtworkUseCase,
             settingsDataStore = settingsDataStore,
             resolvePlaybackAction = resolvePlaybackAction,
-            recordPlaybackResult = recordPlaybackResult
+            recordPlaybackResult = recordPlaybackResult,
+            filesLauncher = filesLauncher
         )
 
     }
@@ -193,6 +198,28 @@ class UnknownViewModelTest : FunSpec({
 
         }
 
+    }
+
+    context("OpenFileExplorer") {
+
+        test("should call filesLauncher") {
+
+            // Given
+            val media = MediaMockups.unknownEpisode
+
+            viewModel.uiState.test {
+                awaitItem()
+
+                // When
+                viewModel.handleIntent(UnknownIntent.OpenFileExplorer(media))
+
+                // Then
+                verify { filesLauncher.open(file = media.file) }
+
+            }
+
+
+        }
     }
 
 })

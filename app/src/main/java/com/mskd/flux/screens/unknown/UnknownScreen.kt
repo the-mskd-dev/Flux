@@ -4,6 +4,7 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,7 +24,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -37,16 +37,15 @@ import com.mskd.flux.features.unknown.presentation.UnknownViewModel
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.navigation.domain.Route.Player
+import com.mskd.flux.presentation.FluxUI
+import com.mskd.flux.presentation.Text
 import com.mskd.flux.screens.unknown.composables.UnknownDropDownMenu
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.global.ErrorScreen
 import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.FluxSearchField
-import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.component.media.EpisodeItem
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.utils.FileUtils
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.rememberExternalPlayerAction
 import flux.shared.generated.resources.Res
@@ -67,7 +66,6 @@ fun UnknownScreen(
     viewModel: UnknownViewModel = koinViewModel()
 ) {
 
-    val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     val launchExternalPlayer = rememberExternalPlayerAction(
@@ -86,7 +84,6 @@ fun UnknownScreen(
                     else
                         navigate(Player(params = PlayerParams.fromMedia(event.media)))
                 }
-                is UnknownEvent.OpenFileExplorer -> FileUtils.openFileExplorer(context = context, file = event.media.file)
             }
         }
     }
@@ -147,31 +144,52 @@ fun UnknownScreenContent(
         }
     ) { innerPadding ->
 
-        if (medias.isNotEmpty()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
+        ) {
+
+            Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
+
+            FluxSearchField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = FluxUI.Space.medium)
+                    .padding(bottom = FluxUI.Space.large),
+                value = searchQuery,
+                onValueChange = { sendIntent(UnknownIntent.DoSearch(it)) },
+            )
 
             LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background),
+                modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
                 state = lazyColumnState
             ) {
 
-                item {
-                    Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
-                }
+                if (medias.isEmpty()) {
+                    item {
 
-                item {
+                        Box(
+                            modifier = Modifier
+                                .animateItem()
+                                .fillMaxWidth()
+                                .padding(innerPadding)
+                                .systemBarsPadding(),
+                            contentAlignment = Alignment.TopStart
+                        ) {
 
-                    FluxSearchField(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = FluxUI.Space.medium)
-                            .padding(bottom = FluxUI.Space.large),
-                        value = searchQuery,
-                        onValueChange = { sendIntent(UnknownIntent.DoSearch(it)) },
-                    )
+                            Text.Content.Body(
+                                modifier = Modifier
+                                    .align(Alignment.Center)
+                                    .fillMaxWidth(),
+                                text = stringResource(Res.string.no_item),
+                                textAlign = TextAlign.Center
+                            )
 
+                        }
+
+                    }
                 }
 
                 items(items = medias, key = { m -> m.id }) { media ->
@@ -191,30 +209,6 @@ fun UnknownScreenContent(
                     )
 
                 }
-
-                item {
-                    Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
-                }
-
-            }
-
-        } else {
-
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-                    .systemBarsPadding(),
-                contentAlignment = Alignment.TopStart
-            ) {
-
-                Text.Content.Body(
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .fillMaxWidth(),
-                    text = stringResource(Res.string.no_item),
-                    textAlign = TextAlign.Center
-                )
 
             }
 

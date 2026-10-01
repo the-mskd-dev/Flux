@@ -7,7 +7,7 @@ import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.min
 import androidx.window.core.layout.WindowSizeClass
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.presentation.FluxUI
 
 
 data class ScreenDimensions(

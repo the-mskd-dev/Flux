@@ -1,5 +1,8 @@
-## Version 1.8.1
+## Version 1.8.2
 
-- Feature: Private folder
-- Feature: Fetch NSFW
-- Fix: Crash from 1.8.0
+- Core: Play Store version
+- Fix: Save tracks languages
+- Fix: Search in Other files
+- UI: Speed up home screen loading
+- UI: UI enhancement
+- Core: Beginning of CMP

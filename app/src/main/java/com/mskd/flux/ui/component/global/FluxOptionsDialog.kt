@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import com.mskd.flux.core.model.core.FluxOptionsDialogState
 import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.presentation.Text
-import com.mskd.flux.presentation.dialog.FluxDialog
+import com.mskd.flux.presentation.modal.dialog.FluxDialog
 import com.mskd.flux.screens.customization.composables.ColorItem
 import com.mskd.flux.utils.extensions.resolve
 import com.mskd.flux.utils.extensions.uppercaseFirstLetter
@@ -38,6 +38,7 @@ fun <T, R> FluxOptionsDialog(
     var selectedValue by remember { mutableStateOf(state.currentValue) }
 
     FluxDialog(
+        isVisible = true,
         onDismiss = onDismiss,
         onValidate = { onValidate(state.applyValue.invoke(selectedValue)) },
         title = stringResource(state.titleResId),

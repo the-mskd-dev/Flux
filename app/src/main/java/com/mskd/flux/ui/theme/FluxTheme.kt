@@ -27,9 +27,10 @@ import com.mskd.flux.presentation.LocalUiItemsPerRow
 import com.mskd.flux.presentation.LocalUiPlayer
 import com.mskd.flux.presentation.LocalUiShapes
 import com.mskd.flux.presentation.blurBackground
-import com.mskd.flux.presentation.bottomSheet.FluxBottomSheetHost
-import com.mskd.flux.presentation.bottomSheet.LocalSheetHost
-import com.mskd.flux.presentation.bottomSheet.SheetHostState
+import com.mskd.flux.presentation.modal.LocalModalHost
+import com.mskd.flux.presentation.modal.ModalHostState
+import com.mskd.flux.presentation.modal.bottomSheet.FluxBottomSheetHost
+import com.mskd.flux.presentation.modal.dialog.FluxDialogHost
 import com.mskd.flux.presentation.text.LocalEmphasizedTypography
 import com.mskd.flux.presentation.text.fluxEmphasizedTypography
 import com.mskd.flux.presentation.text.fluxTypography
@@ -49,8 +50,8 @@ fun FluxTheme(
         color = customization.color
     )
 
-    val sheetHost = remember { SheetHostState() }
-    val sheetHazeState = rememberHazeState()
+    val modalHost = remember { ModalHostState() }
+    val modalHazeState = rememberHazeState()
 
     CompositionLocalProvider(
         LocalConnectivity provides isOnline,
@@ -72,7 +73,7 @@ fun FluxTheme(
             waveProgress = customization.waveProgress
         ),
         LocalEmphasizedTypography provides fluxEmphasizedTypography(),
-        LocalSheetHost provides sheetHost
+        LocalModalHost provides modalHost
     ) {
 
         MaterialExpressiveTheme(
@@ -82,17 +83,21 @@ fun FluxTheme(
 
             Box(Modifier.fillMaxSize()) {
 
-                Box(Modifier.fillMaxSize().blurBackground(sheetHazeState)) {
+                Box(Modifier.fillMaxSize().blurBackground(modalHazeState)) {
 
                     content()
 
                 }
 
                 FluxBottomSheetHost(
-                    host = sheetHost,
-                    hazeState = sheetHazeState
+                    host = modalHost,
+                    hazeState = modalHazeState
                 )
 
+                FluxDialogHost(
+                    host = modalHost,
+                    hazeState = modalHazeState
+                )
             }
 
         }

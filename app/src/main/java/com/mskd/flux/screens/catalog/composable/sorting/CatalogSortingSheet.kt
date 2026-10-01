@@ -7,13 +7,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
-import com.mskd.flux.presentation.bottomSheet.FluxBottomSheet
-import com.mskd.flux.presentation.bottomSheet.FluxBottomSheetItem
+import com.mskd.flux.presentation.modal.bottomSheet.FluxBottomSheet
+import com.mskd.flux.presentation.modal.bottomSheet.FluxBottomSheetItem
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
 import com.mskd.flux.utils.extensions.resolve
-import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.rememberHazeState
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.sort_by
 import org.jetbrains.compose.resources.stringResource

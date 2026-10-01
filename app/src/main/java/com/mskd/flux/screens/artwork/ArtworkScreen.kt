@@ -36,7 +36,7 @@ import com.mskd.flux.screens.artwork.composables.ArtworkContentRegular
 import com.mskd.flux.screens.artwork.composables.common.ArtworkDropDownMenu
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.global.ErrorScreen
-import com.mskd.flux.presentation.dialog.FluxDialog
+import com.mskd.flux.presentation.modal.dialog.FluxDialog
 import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.ResetProgressDialog
 import com.mskd.flux.ui.theme.FluxTheme
@@ -194,15 +194,14 @@ fun ArtworkScreenContent(
 
     }
 
-    if (dialog is ArtworkDialog.EpisodeStatusConfirmation) {
-        FluxDialog(
-            content = {
-                Text.Content.Body(text = stringResource(Res.string.mark_previous_episodes_as_watched))
-            },
-            onDismiss = { sendIntent(ArtworkIntent.CloseDialog) },
-            onValidate = { sendIntent(ArtworkIntent.MarkPreviousEpisodesAsWatched) }
-        )
-    }
+    FluxDialog(
+        isVisible = dialog is ArtworkDialog.EpisodeStatusConfirmation,
+        content = {
+            Text.Content.Body(text = stringResource(Res.string.mark_previous_episodes_as_watched))
+        },
+        onDismiss = { sendIntent(ArtworkIntent.CloseDialog) },
+        onValidate = { sendIntent(ArtworkIntent.MarkPreviousEpisodesAsWatched) }
+    )
 
     if (dialog is ArtworkDialog.ResetProgressConfirmation) {
         ResetProgressDialog(

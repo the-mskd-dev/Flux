@@ -15,7 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.presentation.Text
-import com.mskd.flux.presentation.dialog.FluxDialog
+import com.mskd.flux.presentation.modal.dialog.FluxDialog
 
 @Composable
 fun ItemsPerRowDialog(
@@ -29,6 +29,7 @@ fun ItemsPerRowDialog(
     var currentValue by remember { mutableIntStateOf(value) }
 
     FluxDialog(
+        isVisible = true,
         onDismiss = onDismiss,
         onValidate = { onValidate(currentValue) },
         title = title,

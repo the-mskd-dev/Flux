@@ -24,7 +24,7 @@ import androidx.fragment.app.FragmentActivity
 import com.mskd.flux.R
 import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.presentation.Text
-import com.mskd.flux.presentation.dialog.FluxDialog
+import com.mskd.flux.presentation.modal.dialog.FluxDialog
 import com.mskd.flux.ui.theme.FluxTheme
 import org.acra.dialog.CrashReportDialogHelper
 
@@ -83,6 +83,7 @@ fun CrashDialogContent(
     ) {
 
         FluxDialog(
+            isVisible = true,
             onDismiss = onDismiss,
             onValidate = { onSend(comment) },
             title = stringResource(R.string.acra_dialog_title),

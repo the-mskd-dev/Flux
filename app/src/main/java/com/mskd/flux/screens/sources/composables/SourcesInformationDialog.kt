@@ -11,7 +11,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.features.sources.presentation.SourcesIntent
 import com.mskd.flux.presentation.Text
-import com.mskd.flux.presentation.dialog.FluxDialog
+import com.mskd.flux.presentation.modal.dialog.FluxDialog
 import com.mskd.flux.ui.theme.FluxTheme
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.dialog_sources_description
@@ -25,6 +25,7 @@ fun SourcesInformationDialog(
 ) {
 
     FluxDialog(
+        isVisible = true,
         title = stringResource(Res.string.dialog_sources_title),
         onDismiss = { sendIntent(SourcesIntent.CloseDialog) },
         onDismissLabel = stringResource(Res.string.got_it)

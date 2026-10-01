@@ -2,7 +2,6 @@ package com.mskd.flux.features.catalog.domain.usecase.syncCatalog
 
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
 import com.mskd.flux.core.datastore.domain.UserDataStore
-import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.core.AppInfo
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.fetcher.CatalogContentFetcher

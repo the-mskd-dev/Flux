@@ -30,13 +30,13 @@ import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.navigation.domain.Route.Catalog
 import com.mskd.flux.navigation.domain.Route.Sources
 import com.mskd.flux.navigation.domain.Route.Token
+import com.mskd.flux.presentation.FluxUI
+import com.mskd.flux.presentation.Text
+import com.mskd.flux.presentation.fillMaxWidthWithLimit
 import com.mskd.flux.screens.setup.composables.SetupSourcesContent
 import com.mskd.flux.screens.setup.composables.SetupWelcomeContent
-import com.mskd.flux.ui.component.global.Text
-import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
-import com.mskd.flux.utils.extensions.fillMaxWidthWithLimit
 import com.mskd.flux.utils.storagePermissionState
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_flux

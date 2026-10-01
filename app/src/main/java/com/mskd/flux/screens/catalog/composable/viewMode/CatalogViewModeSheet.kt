@@ -1,23 +1,16 @@
 package com.mskd.flux.screens.catalog.composable.viewMode
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.mskd.flux.features.catalog.domain.model.CatalogViewMode
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
-import com.mskd.flux.ui.component.global.FluxBottomSheetItem
-import com.mskd.flux.ui.component.global.Text
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.presentation.modal.bottomSheet.FluxBottomSheet
+import com.mskd.flux.presentation.modal.bottomSheet.FluxBottomSheetItem
 import com.mskd.flux.utils.FluxThemePreview
-import com.mskd.flux.utils.extensions.fillMaxWidthWithLimit
 import com.mskd.flux.utils.extensions.resolve
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.view
@@ -26,23 +19,16 @@ import org.jetbrains.compose.resources.stringResource
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CatalogViewModeSheet(
+    isVisible: Boolean,
     selectedMode: CatalogViewMode,
     sendIntent: (CatalogIntent) -> Unit
 ) {
 
-    ModalBottomSheet(
-        modifier = Modifier.fillMaxWidthWithLimit(),
-        onDismissRequest = { sendIntent(CatalogIntent.ShowViewModes(show = false)) },
-    ) {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
-        ) {
-
-            Text.List.Title(
-                modifier = Modifier.padding(horizontal = FluxUI.Space.medium),
-                text = stringResource(Res.string.view)
-            )
+    FluxBottomSheet(
+        isVisible = isVisible,
+        title = stringResource(Res.string.view),
+        onDismiss = { sendIntent(CatalogIntent.ShowViewModes(show = false)) },
+        content = {
 
             CatalogViewMode.entries.forEach { option ->
                 FluxBottomSheetItem(
@@ -51,8 +37,9 @@ fun CatalogViewModeSheet(
                     onClick = { sendIntent(CatalogIntent.SelectViewMode(option)) }
                 )
             }
+
         }
-    }
+    )
 
 }
 
@@ -63,6 +50,7 @@ fun CatalogViewModeSheet_Preview() {
     FluxThemePreview {
         Box(modifier = Modifier.fillMaxSize()) {
             CatalogViewModeSheet(
+                isVisible = true,
                 selectedMode = CatalogViewMode.BY_TYPE,
                 sendIntent = {}
             )

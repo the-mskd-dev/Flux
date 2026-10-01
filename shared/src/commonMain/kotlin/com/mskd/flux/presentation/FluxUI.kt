@@ -1,4 +1,4 @@
-package com.mskd.flux.ui.theme
+package com.mskd.flux.presentation
 
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring

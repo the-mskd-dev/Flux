@@ -2,6 +2,8 @@ package com.mskd.flux.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -10,14 +12,30 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.materialkolor.rememberDynamicColorScheme
 import com.mskd.flux.features.connectivity.domain.LocalConnectivity
 import com.mskd.flux.features.customization.domain.datastore.CustomizationDataStore
-import com.mskd.flux.ui.typography.FluxTypography
+import com.mskd.flux.presentation.FluxUI
+import com.mskd.flux.presentation.LocalUiEpisodes
+import com.mskd.flux.presentation.LocalUiGlobal
+import com.mskd.flux.presentation.LocalUiItemsPerRow
+import com.mskd.flux.presentation.LocalUiPlayer
+import com.mskd.flux.presentation.LocalUiShapes
+import com.mskd.flux.presentation.blurBackground
+import com.mskd.flux.presentation.modal.LocalModalHost
+import com.mskd.flux.presentation.modal.ModalHostState
+import com.mskd.flux.presentation.modal.bottomSheet.FluxBottomSheetHost
+import com.mskd.flux.presentation.modal.dialog.FluxDialogHost
+import com.mskd.flux.presentation.text.LocalEmphasizedTypography
+import com.mskd.flux.presentation.text.fluxEmphasizedTypography
+import com.mskd.flux.presentation.text.fluxTypography
 import com.mskd.flux.utils.UiCommon
+import dev.chrisbanes.haze.rememberHazeState
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -31,6 +49,9 @@ fun FluxTheme(
         theme = customization.uiTheme,
         color = customization.color
     )
+
+    val modalHost = remember { ModalHostState() }
+    val modalHazeState = rememberHazeState()
 
     CompositionLocalProvider(
         LocalConnectivity provides isOnline,
@@ -50,14 +71,36 @@ fun FluxTheme(
         ),
         LocalUiPlayer provides FluxUI.Player(
             waveProgress = customization.waveProgress
-        )
+        ),
+        LocalEmphasizedTypography provides fluxEmphasizedTypography(),
+        LocalModalHost provides modalHost
     ) {
 
         MaterialExpressiveTheme(
             colorScheme = colorScheme,
-            typography = FluxTypography,
-            content = content,
-        )
+            typography = fluxTypography(),
+        ) {
+
+            Box(Modifier.fillMaxSize()) {
+
+                Box(Modifier.fillMaxSize().blurBackground(modalHazeState)) {
+
+                    content()
+
+                }
+
+                FluxBottomSheetHost(
+                    host = modalHost,
+                    hazeState = modalHazeState
+                )
+
+                FluxDialogHost(
+                    host = modalHost,
+                    hazeState = modalHazeState
+                )
+            }
+
+        }
         
     }
 

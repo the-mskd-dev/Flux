@@ -22,12 +22,12 @@ import androidx.constraintlayout.compose.Dimension
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.features.show.presentation.ShowIntent
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.presentation.FluxUI
+import com.mskd.flux.presentation.Text
 import com.mskd.flux.screens.artwork.composables.common.ArtworkImageFull
 import com.mskd.flux.screens.artwork.composables.common.GenresTags
-import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.component.media.OverviewItem
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.PortraitPreview
 import com.mskd.flux.utils.extensions.bleedHorizontal
 import flux.shared.generated.resources.Res

@@ -70,6 +70,7 @@ kotlin {
                 api(libs.bundles.shared.room)
                 api(libs.bundles.shared.datastore)
                 api(libs.bundles.shared.tools)
+                api(libs.bundles.shared.ui)
             }
         }
 

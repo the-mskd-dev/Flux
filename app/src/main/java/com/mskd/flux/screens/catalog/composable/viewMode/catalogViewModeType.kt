@@ -14,8 +14,8 @@ import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.screens.catalog.composable.CatalogCategory
-import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.FluxThemePreview
 import com.mskd.flux.utils.extensions.bleedHorizontal
 import flux.shared.generated.resources.Res

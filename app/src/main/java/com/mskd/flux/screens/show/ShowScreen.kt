@@ -1,9 +1,6 @@
 package com.mskd.flux.screens.show
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
@@ -18,14 +15,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.core.State
@@ -125,36 +118,14 @@ fun ShowScreenContent(
 ) {
 
     val isLargeScreen = rememberScreenDimensions().isLarge
-
     var showMenu by remember { mutableStateOf(false) }
-
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
-    val titleAlpha by remember {
-        derivedStateOf {
-            if (scrollBehavior.state.contentOffset < -10f) 1f else 0f
-        }
-    }
-
-    val animatedAlpha by animateFloatAsState(
-        targetValue = titleAlpha,
-        animationSpec = spring(
-            stiffness = Spring.StiffnessLow,
-            dampingRatio = Spring.DampingRatioNoBouncy
-        ),
-        label = "TitleAlphaAnimation"
-    )
-
     FluxScaffold(
-        modifier = Modifier.graphicsLayer { alpha = animatedAlpha },
-        title = null,
+        title = fullShow.artwork.title,
+        animatedTitle = true,
         onBackTap = { sendIntent(ShowIntent.OnBackTap) },
         scrollBehavior = scrollBehavior,
-        topAppBarColors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color.Transparent,
-            scrolledContainerColor = Color.Transparent,
-            titleContentColor = MaterialTheme.colorScheme.onBackground,
-        ),
         actions = {
 
             IconButton(
@@ -162,6 +133,7 @@ fun ShowScreenContent(
                 content = {
                     Icon(
                         imageVector = Icons.Default.MoreVert,
+                        tint = MaterialTheme.colorScheme.onBackground,
                         contentDescription = "menu button"
                     )
                 }

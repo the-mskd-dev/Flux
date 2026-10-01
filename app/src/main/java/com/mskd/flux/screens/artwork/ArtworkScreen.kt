@@ -1,9 +1,6 @@
 package com.mskd.flux.screens.artwork
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
@@ -17,14 +14,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Media
@@ -37,15 +30,15 @@ import com.mskd.flux.features.player.domain.model.PlayerParams
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.navigation.domain.Route.Player
+import com.mskd.flux.presentation.Text
+import com.mskd.flux.presentation.modal.dialog.FluxDialog
 import com.mskd.flux.screens.artwork.composables.ArtworkContentLarge
 import com.mskd.flux.screens.artwork.composables.ArtworkContentRegular
 import com.mskd.flux.screens.artwork.composables.common.ArtworkDropDownMenu
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.global.ErrorScreen
-import com.mskd.flux.ui.component.global.FluxDialog
 import com.mskd.flux.ui.component.global.FluxScaffold
 import com.mskd.flux.ui.component.global.ResetProgressDialog
-import com.mskd.flux.ui.component.global.Text
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.rememberExternalPlayerAction
@@ -145,21 +138,6 @@ fun ArtworkScreenContent(
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     var showMenu by remember { mutableStateOf(false) }
 
-    val titleAlpha by remember {
-        derivedStateOf {
-            if (scrollBehavior.state.contentOffset < -10f) 1f else 0f
-        }
-    }
-
-    val animatedAlpha by animateFloatAsState(
-        targetValue = titleAlpha,
-        animationSpec = spring(
-            stiffness = Spring.StiffnessLow,
-            dampingRatio = Spring.DampingRatioNoBouncy
-        ),
-        label = "TitleAlphaAnimation"
-    )
-
     val title = when {
         isLargeScreen -> null
         fullArtwork is FullArtwork.FullShow -> (fullArtwork.seasons.find { it.season == selectedSeason }?.title ?: "").ifBlank { fullArtwork.artwork.title }
@@ -167,19 +145,15 @@ fun ArtworkScreenContent(
     }
 
     FluxScaffold(
-        modifier = Modifier.graphicsLayer { alpha = animatedAlpha },
         title = title,
-        topAppBarColors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color.Transparent,
-            scrolledContainerColor = if (title?.isNotBlank() == true) MaterialTheme.colorScheme.background else Color.Transparent,
-            titleContentColor = MaterialTheme.colorScheme.onBackground,
-        ),
+        animatedTitle = true,
         actions = {
             IconButton(
                 onClick = { showMenu = true },
                 content = {
                     Icon(
                         imageVector = Icons.Default.MoreVert,
+                        tint = MaterialTheme.colorScheme.onBackground,
                         contentDescription = "menu button"
                     )
                 }
@@ -220,15 +194,14 @@ fun ArtworkScreenContent(
 
     }
 
-    if (dialog is ArtworkDialog.EpisodeStatusConfirmation) {
-        FluxDialog(
-            content = {
-                Text.Content.Body(text = stringResource(Res.string.mark_previous_episodes_as_watched))
-            },
-            onDismiss = { sendIntent(ArtworkIntent.CloseDialog) },
-            onValidate = { sendIntent(ArtworkIntent.MarkPreviousEpisodesAsWatched) }
-        )
-    }
+    FluxDialog(
+        isVisible = dialog is ArtworkDialog.EpisodeStatusConfirmation,
+        content = {
+            Text.Content.Body(text = stringResource(Res.string.mark_previous_episodes_as_watched))
+        },
+        onDismiss = { sendIntent(ArtworkIntent.CloseDialog) },
+        onValidate = { sendIntent(ArtworkIntent.MarkPreviousEpisodesAsWatched) }
+    )
 
     if (dialog is ArtworkDialog.ResetProgressConfirmation) {
         ResetProgressDialog(

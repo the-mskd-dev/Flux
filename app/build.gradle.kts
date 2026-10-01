@@ -206,7 +206,14 @@ tasks.withType<Test>().configureEach {
 }
 
 tasks.configureEach {
-    if (name.contains("GoogleServices") && name.contains("Foss", ignoreCase = true)) {
+    val isFossTask = name.contains("Foss", ignoreCase = true)
+
+    val tasksToDisable = listOf(
+        "GoogleServices",
+        "Crashlytics"
+    )
+
+    if (isFossTask && tasksToDisable.any { name.contains(it) }) {
         enabled = false
     }
 }

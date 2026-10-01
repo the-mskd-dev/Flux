@@ -155,13 +155,6 @@ fun SourcesScreen(
 
     }
 
-    // TODO: Delete in October 2026
-    if (uiState.showFeatureDialog) {
-        SourcesInformationDialog(
-            sendIntent = { viewModel.handleIntent(intent = it) }
-        )
-    }
-
 }
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)

@@ -167,8 +167,6 @@
     <string name="confirm_source_deletion">L'eliminazione di questa cartella comporterà la perdita dei progressi per i file in essa contenuti.\nSei sicuro di volerla eliminare?</string>
     <string name="add_source">Aggiungi sorgente</string>
     <string name="got_it">Capito</string>
-    <string name="dialog_sources_title">Le tue cartelle, le tue regole!</string>
-    <string name="dialog_sources_description">Per darti maggiore controllo, l'app ora si concentra sulle tue cartelle %1$s e %2$s.\n\nManca un video? Niente panico! Puoi aggiungere le tue cartelle in un attimo dalle impostazioni.</string>
     <string name="content_unavailable">Contenuto non disponibile</string>
     <string name="open_in_file_explorer">Apri in Gestione file</string>
     <string name="next">Avanti</string>

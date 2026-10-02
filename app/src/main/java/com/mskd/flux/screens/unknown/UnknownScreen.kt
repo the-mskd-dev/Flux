@@ -43,7 +43,7 @@ import com.mskd.flux.screens.unknown.composables.UnknownDropDownMenu
 import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.global.ErrorScreen
 import com.mskd.flux.ui.component.global.FluxScaffold
-import com.mskd.flux.ui.component.global.FluxSearchField
+import com.mskd.flux.presentation.global.FluxSearchField
 import com.mskd.flux.ui.component.media.EpisodeItem
 import com.mskd.flux.ui.FluxTheme
 import com.mskd.flux.utils.FluxPreview

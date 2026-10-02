@@ -252,7 +252,11 @@ shared-tools = [
 shared-ui = [
     "haze-core",
     "haze-blur",
-    "haze-blur-materials"
+    "haze-blur-materials",
+    "androidx-material-icons-core",
+    "androidx-material3-adaptive",
+    "androidx-palette",
+    "material-kolor"
 ]
 
 # -- Android --
@@ -283,13 +287,6 @@ android-compose = [
 android-compose-debug = [
     "androidx-ui-tooling",
     "androidx-ui-test-manifest"
-]
-
-android-ui = [
-    "androidx-material-icons-core",
-    "androidx-material3-adaptive",
-    "androidx-palette",
-    "material-kolor"
 ]
 
 android-image = [

@@ -1,4 +1,4 @@
-package com.mskd.flux.ui.component.global
+package com.mskd.flux.presentation.global
 
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState

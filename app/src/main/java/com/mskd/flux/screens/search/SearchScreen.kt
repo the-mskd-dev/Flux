@@ -42,7 +42,7 @@ import com.mskd.flux.screens.search.components.SearchContentGrid
 import com.mskd.flux.screens.search.components.SearchFilters
 import com.mskd.flux.screens.search.components.SearchGenresSheet
 import com.mskd.flux.ui.component.global.FluxScaffold
-import com.mskd.flux.ui.component.global.FluxSearchField
+import com.mskd.flux.presentation.global.FluxSearchField
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
 import com.mskd.flux.utils.itemWidthFor

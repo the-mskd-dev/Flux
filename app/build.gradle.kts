@@ -169,9 +169,6 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.bundles.android.compose)
 
-    // UI
-    implementation(libs.bundles.android.ui)
-
     // Navigation 3
     implementation(libs.bundles.android.navigation)
 

@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.palette.graphics.Palette
 import coil3.toBitmap
 import com.mskd.flux.presentation.FluxUI
-import com.mskd.flux.ui.component.global.FluxImage
+import com.mskd.flux.presentation.global.FluxImage
 import com.mskd.flux.utils.extensions.combinedClickableWithBounce
 
 @Composable

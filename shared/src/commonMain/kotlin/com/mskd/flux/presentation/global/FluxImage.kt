@@ -1,4 +1,4 @@
-package com.mskd.flux.ui.component.global
+package com.mskd.flux.presentation.global
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -16,6 +16,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePainter
+import coil3.compose.LocalPlatformContext
 import coil3.compose.rememberAsyncImagePainter
 import coil3.request.ImageRequest
 import coil3.request.allowHardware
@@ -36,7 +37,7 @@ fun FluxImage(
     contentScale: ContentScale = ContentScale.Crop,
     onSuccess: ((AsyncImagePainter.State.Success) -> Unit)? = null
 ) {
-    val context = LocalContext.current
+    val context = LocalPlatformContext.current
     val urlLow = path.tmdbImage
     val urlHigh = path.tmdbImageLarge
 
@@ -100,7 +101,7 @@ fun FluxImage(
                 scaleY = 1.06f
                 translationY = -(size.height * 0.03f)
             },
-            model = ImageRequest.Builder(LocalContext.current)
+            model = ImageRequest.Builder(LocalPlatformContext.current)
                 .data(media.file.path)
                 .apply {
                     if (media.status == Status.IS_WATCHING)

@@ -32,7 +32,6 @@ import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.presentation.text.Text
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
-import com.mskd.flux.utils.extensions.resolve
 import org.jetbrains.compose.resources.painterResource
 
 @Composable

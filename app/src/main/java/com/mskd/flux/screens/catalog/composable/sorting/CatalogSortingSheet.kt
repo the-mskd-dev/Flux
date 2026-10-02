@@ -11,7 +11,6 @@ import com.mskd.flux.presentation.modal.bottomSheet.FluxBottomSheet
 import com.mskd.flux.presentation.modal.bottomSheet.FluxBottomSheetItem
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
-import com.mskd.flux.utils.extensions.resolve
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.sort_by
 import org.jetbrains.compose.resources.stringResource

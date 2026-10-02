@@ -1,6 +1,6 @@
 package com.mskd.flux.features.catalog.domain.coordinator
 
-import com.mskd.flux.core.model.core.StringProvider
+import com.mskd.flux.presentation.text.TextProvider
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.utils.Trace
 import flux.shared.generated.resources.Res
@@ -68,7 +68,7 @@ class CatalogSyncCoordinatorImpl(
             if (current is SyncState.Syncing) {
                 current.copy(
                     progress = progress,
-                    description = StringProvider.Resource(Res.string.sync_in_progress)
+                    description = TextProvider.Resource(Res.string.sync_in_progress)
                 )
             } else {
                 current

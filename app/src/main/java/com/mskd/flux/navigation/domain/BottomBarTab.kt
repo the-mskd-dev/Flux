@@ -1,7 +1,7 @@
 package com.mskd.flux.navigation.domain
 
 import androidx.navigation3.runtime.NavKey
-import com.mskd.flux.core.model.core.StringProvider
+import com.mskd.flux.presentation.text.TextProvider
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.home
 import flux.shared.generated.resources.ic_home
@@ -11,10 +11,10 @@ import flux.shared.generated.resources.search
 import flux.shared.generated.resources.settings
 import org.jetbrains.compose.resources.DrawableResource
 
-enum class BottomBarTab(val route: Route, val iconRes: DrawableResource, val label: StringProvider) {
-    CATALOG(Route.Catalog, Res.drawable.ic_home, StringProvider.Resource(Res.string.home)),
-    SEARCH(Route.Search(), Res.drawable.ic_search, StringProvider.Resource(Res.string.search)),
-    SETTINGS(Route.Settings, Res.drawable.ic_settings, StringProvider.Resource(Res.string.settings)),
+enum class BottomBarTab(val route: Route, val iconRes: DrawableResource, val label: TextProvider) {
+    CATALOG(Route.Catalog, Res.drawable.ic_home, TextProvider.Resource(Res.string.home)),
+    SEARCH(Route.Search(), Res.drawable.ic_search, TextProvider.Resource(Res.string.search)),
+    SETTINGS(Route.Settings, Res.drawable.ic_settings, TextProvider.Resource(Res.string.settings)),
 }
 
 fun Route?.isSameTabAs(target: Route): Boolean = when (target) {

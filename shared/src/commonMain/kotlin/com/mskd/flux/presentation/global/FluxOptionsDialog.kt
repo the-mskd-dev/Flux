@@ -1,4 +1,4 @@
-package com.mskd.flux.ui.component.global
+package com.mskd.flux.presentation.global
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -23,8 +23,6 @@ import com.mskd.flux.core.model.core.FluxOptionsDialogState
 import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.presentation.text.Text
 import com.mskd.flux.presentation.modal.dialog.FluxDialog
-import com.mskd.flux.screens.customization.composables.ColorItem
-import com.mskd.flux.utils.extensions.resolve
 import com.mskd.flux.utils.extensions.uppercaseFirstLetter
 import org.jetbrains.compose.resources.stringResource
 
@@ -71,7 +69,7 @@ fun <T, R> FluxOptionsDialog(
                             horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
                         ) {
 
-                            ColorItem(option.color)
+                            ColorDot(option.color)
 
                             val value = option.label.resolve()
                             Text.Content.Body(

@@ -6,7 +6,7 @@ import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.core.State
-import com.mskd.flux.core.model.core.StringProvider
+import com.mskd.flux.presentation.text.TextProvider
 import com.mskd.flux.core.model.player.PlayerTrack
 import com.mskd.flux.core.model.player.PlayerTrack.Type
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
@@ -96,7 +96,7 @@ class PlayerViewModel<out T>(
             }
             playerState is PlayerManager.State.Error -> {
                 val (code, message) = playerState
-                PlayerUiState(state = State.Error(code = code, message = message?.let { StringProvider.Static(it) }))
+                PlayerUiState(state = State.Error(code = code, message = message?.let { TextProvider.Static(it) }))
             }
             artworkState !is State.Content || playerState !is PlayerManager.State.Ready ->
                 PlayerUiState(state = State.Loading)

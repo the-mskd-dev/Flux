@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.presentation.text.Text
-import com.mskd.flux.ui.component.global.FluxScaffold
+import com.mskd.flux.presentation.global.FluxScaffold
 import com.mskd.flux.ui.FluxTheme
 import com.mskd.flux.utils.FluxPreview
 import flux.shared.generated.resources.Res

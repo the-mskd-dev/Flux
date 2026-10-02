@@ -41,8 +41,8 @@ import com.mskd.flux.screens.settings.composables.SettingsPrivateFolderDialogs
 import com.mskd.flux.screens.settings.composables.SettingsPrivateFolderSection
 import com.mskd.flux.screens.settings.composables.SettingsSyncSection
 import com.mskd.flux.screens.settings.composables.SettingsTmdbSection
-import com.mskd.flux.ui.component.global.FluxOptionsDialog
-import com.mskd.flux.ui.component.global.FluxScaffold
+import com.mskd.flux.presentation.global.FluxOptionsDialog
+import com.mskd.flux.presentation.global.FluxScaffold
 import com.mskd.flux.ui.FluxTheme
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.notificationsPermissionState

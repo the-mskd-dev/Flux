@@ -36,7 +36,7 @@ import com.mskd.flux.ui.component.LoadingScreen
 import com.mskd.flux.ui.component.global.ErrorScreen
 import com.mskd.flux.ui.component.global.FluxDropDownMenu
 import com.mskd.flux.ui.component.global.FluxDropDownMenuItem
-import com.mskd.flux.ui.component.global.FluxScaffold
+import com.mskd.flux.presentation.global.FluxScaffold
 import com.mskd.flux.presentation.global.ResetProgressDialog
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview

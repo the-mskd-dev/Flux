@@ -18,16 +18,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.mskd.flux.core.model.core.StringProvider
+import com.mskd.flux.presentation.text.TextProvider
 import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.presentation.text.Text
-import com.mskd.flux.utils.extensions.resolve
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun LoadingScreen(
-    text: StringProvider? = null,
+    text: TextProvider? = null,
     progress: (() -> Float)? = null
 ) {
 

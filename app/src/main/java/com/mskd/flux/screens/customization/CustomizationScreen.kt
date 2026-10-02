@@ -28,11 +28,10 @@ import com.mskd.flux.screens.customization.composables.CustomizationGlobalSectio
 import com.mskd.flux.screens.customization.composables.CustomizationPlayerSection
 import com.mskd.flux.screens.customization.composables.CustomizationThemeSection
 import com.mskd.flux.screens.customization.composables.ItemsPerRowDialog
-import com.mskd.flux.ui.component.global.FluxOptionsDialog
-import com.mskd.flux.ui.component.global.FluxScaffold
+import com.mskd.flux.presentation.global.FluxOptionsDialog
+import com.mskd.flux.presentation.global.FluxScaffold
 import com.mskd.flux.utils.FluxPreview
 import com.mskd.flux.utils.FluxThemePreview
-import com.mskd.flux.utils.extensions.resolve
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.customization
 import org.jetbrains.compose.resources.stringResource

@@ -15,7 +15,6 @@ import com.mskd.flux.screens.settings.composables.SettingsItem
 import com.mskd.flux.screens.settings.composables.SettingsSection
 import com.mskd.flux.screens.settings.composables.SettingsSwitch
 import com.mskd.flux.utils.UiCommon
-import com.mskd.flux.utils.extensions.resolve
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.accent_color
 import flux.shared.generated.resources.accent_color_desc
@@ -130,19 +129,5 @@ fun CustomizationPlayerSection(
         )
 
     }
-
-}
-
-@Composable
-fun ColorItem(color: Color?) {
-
-    color ?: return
-
-    Box(
-        modifier = Modifier
-            .clip(CircleShape)
-            .size(24.dp)
-            .background(color)
-    )
 
 }

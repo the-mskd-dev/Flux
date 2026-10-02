@@ -10,7 +10,8 @@ kotlin = "2.4.10"
 ksp = "2.3.9"
 
 # -- KMP Core
-composeMultiplatform = "1.11.1"
+composeMultiplatform = "1.12.1"
+composeMaterialAdaptive = "1.3.0-rc01"
 
 # -- Android Core --
 coreKtx = "1.19.0"
@@ -21,18 +22,17 @@ activityCompose = "1.13.0"
 kotlinxSerializationCore = "1.11.0"
 kotlinxCollectionsImmutable = "0.5.1"
 
-# -- Compose & UI --
+# -- Compose --
 composeBom = "2026.08.00"
-composeUiText = "1.12.0"
-material3 = "1.5.0-alpha26"
-adaptive = "1.3.0"
-constraintLayout = "1.1.2"
+compose = "1.13.0-alpha01"
+
+# -- UI --
 haze = "2.0.1"
+material3 = "1.13.0-alpha01"
 
 # -- Navigation --
 nav3Core = "1.1.6"
 lifecycleNav3 = "2.11.0"
-material3AdaptiveNav3 = "1.3.0"
 
 # -- Accompanist --
 accompanist = "0.37.3"
@@ -82,9 +82,6 @@ documentfile = "1.1.0"
 
 [libraries]
 
-# -- KMP Core --
-components-resources = { group = "org.jetbrains.compose.components", name = "components-resources", version.ref = "composeMultiplatform" }
-
 # -- Android Core --
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
@@ -95,38 +92,42 @@ androidx-documentfile = { group = "androidx.documentfile", name = "documentfile"
 
 # -- Compose --
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
-androidx-ui = { group = "androidx.compose.ui", name = "ui" }
-androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
-androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
-androidx-ui-text = { group = "androidx.compose.ui", name = "ui-text", version.ref = "composeUiText" }
-androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
-androidx-constraintlayout-compose = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintLayout" }
+
+# -- Compose Multiplatform --
+components-resources = { group = "org.jetbrains.compose.components", name = "components-resources", version.ref = "composeMultiplatform" }
+compose-ui = { group = "org.jetbrains.compose.ui", name = "ui", version.ref = "compose" }
+compose-ui-graphics = { group = "org.jetbrains.compose.ui", name = "ui-graphics", version.ref = "compose" }
+compose-ui-text = { group = "org.jetbrains.compose.ui", name = "ui-text", version.ref = "compose" }
+compose-ui-tooling-preview = { group = "org.jetbrains.compose.ui", name = "ui-tooling-preview", version.ref = "compose" }
+compose-material3 = { group = "org.jetbrains.compose.material3", name = "material3", version.ref = "material3" }
+compose-constraintlayout = { group = "tech.annexflow.compose", name = "constraintlayout-compose-multiplatform", version = "0.8.2" }
+compose-material-icons = { group = "org.jetbrains.compose.material", name = "material-icons-core", version = "1.7.3" }
+compose-material-adaptive = { group = "org.jetbrains.compose.material3.adaptive", name = "adaptive", version.ref = "composeMaterialAdaptive" }
+compose-material-adaptive-navigation = { group = "org.jetbrains.compose.material3.adaptive", name = "adaptive-navigation3", version.ref = "composeMaterialAdaptive" }
+compose-navigation = { group = "org.jetbrains.androidx.navigation", name = "navigation-compose", version = "2.10.0-beta01" }
 
 # -- Kotlin --
 kotlinx-serialization-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "kotlinxSerializationCore" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationCore" }
-kotlinx-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable-jvm", version.ref = "kotlinxCollectionsImmutable" }
+kotlinx-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinxCollectionsImmutable" }
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version = "0.8.0" }
 
 # -- UI --
-androidx-material-icons-core = { group = "androidx.compose.material", name = "material-icons-core" }
-androidx-material3-adaptive = { group = "androidx.compose.material3.adaptive", name = "adaptive", version.ref = "adaptive" }
 androidx-palette = { group = "androidx.palette", name = "palette-ktx", version = "1.0.0" }
 haze-core = { group = "dev.chrisbanes.haze", name = "haze", version.ref = "haze" }
 haze-blur = { group = "dev.chrisbanes.haze", name = "haze-blur", version.ref = "haze" }
 haze-blur-materials = { group = "dev.chrisbanes.haze", name = "haze-blur-material3", version.ref = "haze" }
 
 # -- Color --
-material-kolor = { group = "com.materialkolor", name = "material-kolor", version = "5.0.0" }
+material-kolor = { group = "com.materialkolor", name = "material-kolor", version = "5.0.1" }
 
 # -- Navigation --
 androidx-navigation3-runtime = { group = "androidx.navigation3", name = "navigation3-runtime", version.ref = "nav3Core" }
 androidx-navigation3-ui = { group = "androidx.navigation3", name = "navigation3-ui", version.ref = "nav3Core" }
 androidx-lifecycle-viewmodel-nav3 = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-navigation3", version.ref = "lifecycleNav3" }
-androidx-material3-adaptive-navigation3 = { group = "androidx.compose.material3.adaptive", name = "adaptive-navigation3", version.ref = "material3AdaptiveNav3" }
 
 # -- Accompanist --
 accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist" }
@@ -236,6 +237,8 @@ shared-di = [
 ]
 shared-image = [
     "coil-network-ktor",
+    "coil-video",
+    "coil-compose",
 ]
 shared-room = [
     "androidx-sqlite-bundled",
@@ -253,10 +256,19 @@ shared-ui = [
     "haze-core",
     "haze-blur",
     "haze-blur-materials",
-    "androidx-material-icons-core",
-    "androidx-material3-adaptive",
     "androidx-palette",
-    "material-kolor"
+    "material-kolor",
+    "compose-material3",
+    "compose-ui",
+    "compose-ui-text",
+    "compose-ui-graphics",
+    "components-resources",
+    "compose-ui-tooling-preview",
+    "compose-constraintlayout",
+    "compose-material-icons",
+    "compose-material-adaptive",
+    "compose-material-adaptive-navigation",
+    "compose-navigation"
 ]
 
 # -- Android --
@@ -274,13 +286,7 @@ android-network = [
 ]
 
 android-compose = [
-    "androidx-ui",
-    "androidx-ui-graphics",
-    "androidx-ui-tooling-preview",
-    "androidx-ui-text",
-    "androidx-material3",
     "androidx-lifecycle-viewmodel-compose",
-    "androidx-constraintlayout-compose",
     "androidx-activity-compose"
 ]
 
@@ -289,16 +295,10 @@ android-compose-debug = [
     "androidx-ui-test-manifest"
 ]
 
-android-image = [
-    "coil-video",
-    "coil-compose",
-]
-
 android-navigation = [
     "androidx-navigation3-runtime",
     "androidx-navigation3-ui",
     "androidx-lifecycle-viewmodel-nav3",
-    "androidx-material3-adaptive-navigation3"
 ]
 
 android-accompanist = [

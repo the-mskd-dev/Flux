@@ -75,7 +75,7 @@ fun CornersDialog(
                         ToggleButton(
                             checked = currentValue == value,
                             onCheckedChange = { currentValue = value },
-                            colors = ToggleButtonDefaults.toggleButtonColors(
+                            colors = ToggleButtonDefaults.colors(
                                 containerColor = MaterialTheme.colorScheme.tertiaryContainer,
                                 contentColor = MaterialTheme.colorScheme.onTertiaryContainer
                             )

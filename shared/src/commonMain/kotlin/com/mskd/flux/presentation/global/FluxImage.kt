@@ -13,19 +13,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePainter
 import coil3.compose.LocalPlatformContext
 import coil3.compose.rememberAsyncImagePainter
 import coil3.request.ImageRequest
-import coil3.request.allowHardware
 import coil3.request.crossfade
-import coil3.video.videoFrameMillis
-import coil3.video.videoFramePercent
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Status
+import com.mskd.flux.features.images.data.videoFrame
 import com.mskd.flux.utils.extensions.tmdbImage
 import com.mskd.flux.utils.extensions.tmdbImageLarge
 
@@ -52,7 +49,6 @@ fun FluxImage(
             model = ImageRequest.Builder(context)
                 .data(urlLow)
                 .crossfade(true)
-                .allowHardware(false)
                 .build(),
             placeholder = Image.placeholder,
             error = Image.error,
@@ -103,12 +99,10 @@ fun FluxImage(
             },
             model = ImageRequest.Builder(LocalPlatformContext.current)
                 .data(media.file.path)
-                .apply {
-                    if (media.status == Status.IS_WATCHING)
-                        videoFrameMillis(media.currentTime)
-                    else
-                        videoFramePercent(.05)
-                }
+                .videoFrame(
+                    currentTimeMillis = media.currentTime.takeIf { media.status == Status.IS_WATCHING },
+                    fallbackPercent = .05
+                )
                 .crossfade(true)
                 .build(),
             contentScale = contentScale,

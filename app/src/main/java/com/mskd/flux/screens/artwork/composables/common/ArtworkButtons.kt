@@ -80,7 +80,7 @@ fun ArtworkButtons(
             checked = media.status == Status.WATCHED,
             enabled = media.isAvailable,
             onCheckedChange = { sendIntent(ArtworkIntent.PlayMedia(media)) },
-            colors = ToggleButtonDefaults.toggleButtonColors(
+            colors = ToggleButtonDefaults.colors(
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
                 checkedContainerColor = MaterialTheme.colorScheme.surfaceVariant,

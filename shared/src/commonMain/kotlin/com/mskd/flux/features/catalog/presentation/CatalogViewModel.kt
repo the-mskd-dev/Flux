@@ -9,6 +9,7 @@ import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.core.AppInfo
+import com.mskd.flux.core.model.core.Flavor
 import com.mskd.flux.features.catalog.domain.datastore.CatalogDataStore
 import com.mskd.flux.features.catalog.domain.model.CatalogPreferences
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
@@ -69,8 +70,7 @@ class CatalogViewModel(
 
     private val _showSortingSheet = MutableStateFlow(false)
     private val _showViewModeSheet = MutableStateFlow(false)
-
-    private var hasLoadedContent = false
+    private val _showMessageDialog = MutableStateFlow(false)
 
     private var currentMedia: Media? = null
 
@@ -85,7 +85,8 @@ class CatalogViewModel(
             sortingMode = catalog.sortingMode,
             viewMode = catalog.viewMode,
             token = token,
-            privateFolderEnabled = privateFolder.enabled
+            privateFolderEnabled = privateFolder.enabled,
+            hideMessage = catalog.hidePlayStoreMessage
         )
     }
 
@@ -96,23 +97,28 @@ class CatalogViewModel(
         artworks to genres.filterFor(artworks = artworks)
     }
 
+    private val viewFlow = combine(
+        _showSortingSheet,
+        _showViewModeSheet
+    ) { sort, view ->
+        sort to view
+    }
+
     val uiState: StateFlow<CatalogUiState> = combine(
         artworkFlow,
         syncCatalogUseCase.state,
         preferencesFlow,
-        _showSortingSheet,
-        _showViewModeSheet
-    ) { (artworks, genres), syncState, preferences, showSortingSheet, showViewModeSheet  ->
+        viewFlow,
+        _showMessageDialog,
+    ) { (artworks, genres), syncState, preferences, (showSortingSheet, showViewModeSheet), showMessageDialog  ->
 
-        if (syncState is SyncState.Syncing && (syncState.full || !hasLoadedContent)) {
+        if (syncState is SyncState.Syncing && syncState.full) {
 
             CatalogUiState(
                 state = CatalogState.Loading(syncState = syncState),
             )
 
         } else {
-
-            hasLoadedContent = true
 
             val sortedArtworks = when (preferences.sortingMode) {
                 CatalogSortingMode.LAST_MODIFICATION -> artworks.sortedByDescending { it.lastModification }
@@ -131,7 +137,11 @@ class CatalogViewModel(
                     sortingMode = preferences.sortingMode,
                     viewMode = preferences.viewMode,
                     showSortingSheet = showSortingSheet,
-                    showViewSheet = showViewModeSheet
+                    showViewSheet = showViewModeSheet,
+                    message = CatalogMessageState(
+                        showMessage = appInfo.flavor == Flavor.FOSS && !preferences.hideMessage,
+                        showDialog = showMessageDialog
+                    ),
                 ),
             )
 
@@ -155,15 +165,19 @@ class CatalogViewModel(
 
             // Navigation
             is CatalogIntent.SyncCatalog -> syncCatalog()
-            is CatalogIntent.OnArtworkTap -> onArtworkTap(artwork = intent.artwork, rgb = intent.rgb)
-            is CatalogIntent.OnCategoryTap -> _event.emit(NavigateToSearch(category = intent.category))
-            is CatalogIntent.OnGenreTap -> _event.emit(NavigateToSearch(genre = intent.genre))
-            CatalogIntent.OnSearchTap -> _event.emit(NavigateToSearch())
-            CatalogIntent.OnSettingsTap -> _event.emit(NavigateToSettings)
-            CatalogIntent.OnHowToTap -> _event.emit(NavigateToHowTo)
-            CatalogIntent.OnSourcesTap -> _event.emit(NavigateToSources)
-            CatalogIntent.OnTokenTap -> _event.emit(NavigateToToken)
-            CatalogIntent.OnPrivateFolderTap -> _event.emit(NavigateToPrivateFolder)
+            is CatalogIntent.OnArtworkClick -> onArtworkClick(artwork = intent.artwork, rgb = intent.rgb)
+            is CatalogIntent.OnCategoryClick -> _event.emit(NavigateToSearch(category = intent.category))
+            is CatalogIntent.OnGenreClick -> _event.emit(NavigateToSearch(genre = intent.genre))
+            CatalogIntent.OnSearchClick -> _event.emit(NavigateToSearch())
+            CatalogIntent.OnSettingsClick -> _event.emit(NavigateToSettings)
+            CatalogIntent.OnHowToClick -> _event.emit(NavigateToHowTo)
+            CatalogIntent.OnSourcesClick -> _event.emit(NavigateToSources)
+            CatalogIntent.OnTokenClick -> _event.emit(NavigateToToken)
+            CatalogIntent.OnPrivateFolderClick -> _event.emit(NavigateToPrivateFolder)
+
+            // Message
+            is CatalogIntent.OnMessageTap -> onMessageClick()
+            CatalogIntent.HideMessage -> hideMessage()
 
             // Private folder
             is CatalogIntent.AddArtworkToPrivateFolder -> addArtworkToPrivateFolder(artwork = intent.artwork)
@@ -201,7 +215,7 @@ class CatalogViewModel(
 
     }
 
-    private suspend fun onArtworkTap(artwork: Artwork, rgb: Int?) {
+    private suspend fun onArtworkClick(artwork: Artwork, rgb: Int?) {
 
         val event = when {
             artwork.id == Artwork.UNKNOWN_ID -> NavigateToUnknown
@@ -237,8 +251,16 @@ class CatalogViewModel(
             it.id == media.artworkId
         } ?: return
 
-        onArtworkTap(artwork = artwork, rgb = null)
+        onArtworkClick(artwork = artwork, rgb = null)
 
+    }
+
+    private suspend fun onMessageClick() {
+        _event.emit(CatalogEvent.NavigateToMessage)
+    }
+
+    private suspend fun hideMessage() {
+        catalogDataStore.hidePlayStoreMessage()
     }
 
     private suspend fun addArtworkToPrivateFolder(artwork: Artwork) {

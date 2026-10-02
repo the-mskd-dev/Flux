@@ -19,8 +19,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.features.customization.domain.model.NavigationStyle
-import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.ui.theme.LocalUiGlobal
+import com.mskd.flux.presentation.FluxUI
+import com.mskd.flux.presentation.LocalUiGlobal
 import com.mskd.flux.utils.FluxThemePreview
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_flux
@@ -29,13 +29,14 @@ import org.jetbrains.compose.resources.painterResource
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun CatalogHeader(
+    modifier: Modifier = Modifier,
     sendIntent: (CatalogIntent) -> Unit
 ) {
 
     val showButtons = LocalUiGlobal.current.navigationStyle == NavigationStyle.TOP_BAR
 
     Row(
-        modifier = Modifier
+        modifier = modifier
             .padding(vertical = FluxUI.Space.small, horizontal = FluxUI.Space.small)
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -43,7 +44,7 @@ fun CatalogHeader(
     ) {
 
         if (showButtons) {
-            IconButton(onClick = { sendIntent(CatalogIntent.OnSearchTap) }) {
+            IconButton(onClick = { sendIntent(CatalogIntent.OnSearchClick) }) {
                 Icon(
                     imageVector = Icons.Rounded.Search,
                     tint = MaterialTheme.colorScheme.onBackground,
@@ -67,7 +68,7 @@ fun CatalogHeader(
         }
 
         if (showButtons) {
-            IconButton(onClick = { sendIntent(CatalogIntent.OnSettingsTap) }) {
+            IconButton(onClick = { sendIntent(CatalogIntent.OnSettingsClick) }) {
                 Icon(
                     imageVector = Icons.Rounded.Settings,
                     tint = MaterialTheme.colorScheme.onBackground,

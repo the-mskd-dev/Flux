@@ -9,13 +9,14 @@ import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtwo
 import com.mskd.flux.features.artwork.fake.FakeObserveArtworkUseCase
 import com.mskd.flux.features.files.domain.usecase.GetSubtitlesUseCase
 import com.mskd.flux.features.player.data.PipIsEnabledUseCase
+import com.mskd.flux.features.player.domain.manager.PlayerManager
 import com.mskd.flux.features.player.domain.model.PlayerParams
+import com.mskd.flux.features.player.domain.usecase.SaveTrackLanguageUseCase
 import com.mskd.flux.features.player.fake.PlayerTestCases
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.PlayerMockups
-import com.mskd.flux.platform.PlayerManager
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.lastEpisode
 import com.mskd.flux.utils.extensions.minToMs
@@ -29,6 +30,7 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
+import java.util.Locale
 
 class PlayerViewModelTest : FunSpec({
 
@@ -42,6 +44,7 @@ class PlayerViewModelTest : FunSpec({
     lateinit var player: Player
     lateinit var pipIsEnabledUseCase: PipIsEnabledUseCase
     lateinit var getSubtitlesUseCase: GetSubtitlesUseCase
+    lateinit var saveTrackLanguageUseCase: SaveTrackLanguageUseCase
 
     fun updateVm(mediaId: Long = MediaMockups.episode1.mediaId) {
 
@@ -60,6 +63,7 @@ class PlayerViewModelTest : FunSpec({
             pipIsEnabledUseCase = pipIsEnabledUseCase,
             saveProgressUseCase = recordProgress,
             getSubtitlesUseCase = getSubtitlesUseCase,
+            saveTrackLanguageUseCase = saveTrackLanguageUseCase,
         )
 
     }
@@ -81,6 +85,10 @@ class PlayerViewModelTest : FunSpec({
         pipIsEnabledUseCase = mockk(relaxed = true)
         getSubtitlesUseCase = mockk(relaxed = true)
         recordProgress = mockk(relaxed = true)
+        saveTrackLanguageUseCase = mockk(relaxed = true) {
+            coEvery { getAudioLanguage() } returns Locale.ENGLISH
+            coEvery { getSubtitlesLanguage() } returns Locale.ENGLISH
+        }
         observeArtworkUseCase = FakeObserveArtworkUseCase()
 
         updateVm()
@@ -313,11 +321,7 @@ class PlayerViewModelTest : FunSpec({
                 viewModel.handleIntent(PlayerIntent.SelectTrack(testCase.track))
 
                 coVerify { playerManager.selectTrack(track = testCase.track) }
-                if (testCase.track.type == PlayerTrack.Type.SUBTITLES) {
-                    coVerify { settingsDataStore.setSubtitlesLanguage(any()) }
-                } else {
-                    coVerify { settingsDataStore.setAudioLanguage(any()) }
-                }
+                coVerify { saveTrackLanguageUseCase(track = testCase.track) }
 
             }
 
@@ -517,6 +521,7 @@ class PlayerViewModelTest : FunSpec({
             every { flow } returns MutableStateFlow(SettingsDataStore.State())
             coEvery { setAudioLanguage(any()) } throws RuntimeException("Mock database write failure")
         }
+        saveTrackLanguageUseCase = SaveTrackLanguageUseCase(settings = settingsDataStore)
         updateVm()
 
         viewModel.uiState.test {

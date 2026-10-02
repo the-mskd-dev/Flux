@@ -10,7 +10,6 @@ import com.mskd.flux.core.model.files.FileSource
 import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.features.catalog.domain.fetcher.CatalogContentFetcher
 import com.mskd.flux.features.catalog.domain.model.SyncState
-import com.mskd.flux.features.catalog.domain.usecase.migration.LegacyGenresMigration
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.catalog.domain.usecase.syncGenres.SyncGenresUseCase
 import com.mskd.flux.features.catalog.fake.FakeCatalogSyncCoordinator
@@ -59,7 +58,6 @@ class SyncCatalogUseCaseTest : FunSpec({
         },
         filterExistingFilesUseCase: FilterExistingFilesUseCase = mockk(relaxed = true),
         syncGenresUseCase: SyncGenresUseCase = mockk(relaxed = true),
-        legacyGenresMigration: LegacyGenresMigration = mockk(relaxed = true),
         catalogFetcher: CatalogContentFetcher = mockk(relaxed = true),
     ) = SyncCatalogUseCase(
         database = database,
@@ -71,7 +69,6 @@ class SyncCatalogUseCaseTest : FunSpec({
         getDeviceFilesUseCase = getDeviceFilesUseCase,
         filterExistingFilesUseCase = filterExistingFilesUseCase,
         syncGenresUseCase = syncGenresUseCase,
-        legacyGenresMigration = legacyGenresMigration,
         catalogFetcher = catalogFetcher,
     )
 

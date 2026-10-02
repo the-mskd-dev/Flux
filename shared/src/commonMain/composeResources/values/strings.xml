@@ -83,6 +83,8 @@
     <string name="which_technologies_desc">This app is entirely developed in Kotlin with Jetpack Compose. I use Room for the database, Ktor for network calls, and Koin for dependency injection. I use also GitHub. As for the UI/UX, I use Material 3, and I did my best. Not too shabby, right?</string>
     <string name="how_to_suggest">How to contact me or suggest improvements?</string>
     <string name="how_to_suggest_desc">If it's positive feedback, you can contact me by %1$s! Otherwise, do the same thing or directly on %2$s, but with as much kindness as if it were positive.</string>
+    <string name="contact_me">Contact me</string>
+    <string name="contact_me_desc">If you want to tell me something, it's here</string>
     <string name="mail" translatable="false">mail</string>
     <string name="github" translatable="false">Github</string>
     <string name="what_is_next">What's next?</string>
@@ -183,8 +185,6 @@
     <string name="confirm_source_deletion">Deleting this folder will result in the loss of progress for the files it contains.\nAre you sure you want to delete it?</string>
     <string name="add_source">Add source</string>
     <string name="got_it">Got it</string>
-    <string name="dialog_sources_title">Your folders, your rules!</string>
-    <string name="dialog_sources_description">To give you more control, the app now focuses on your %1$s and %2$s folders.\n\nMissing a video? Don't panic! You can add your own folders in a flash from the settings.</string>
     <string name="content_unavailable">Content unavailable</string>
     <string name="open_in_file_explorer">Open in file explorer</string>
     <string name="next">Next</string>
@@ -234,4 +234,17 @@
     <string name="pin_change_old">Current code</string>
     <string name="pin_change_new">New code</string>
     <string name="pin_error">Incorrect PIN code</string>
+
+    <string name="learn_more">Learn more</string>
+    <string name="participate">Participate</string>
+
+    <string name="catalog_message">Play Store version coming soon, but I need your help!</string>
+    <string name="message_title">Flux on the Play Store!</string>
+    <string-array name="message_details">
+        <item>First of all, thank you everyone for your presence and your feedback to improve this app, I didn't expect so many people!</item>
+        <item>In order to give it even a bit more visibility, I would like to make Flux available on the Play Store. This would be a supporter edition (€1 only), in order to offset the fees and hardware I use for the app's development.</item>
+        <item>Of course, Flux will always be available for free on GitHub and F-Droid, and will have the exact same features (I don't want to maintain 2 different versions haha).</item>
+        <item>However, in order to publish the app, I need a handful of testers to pass Google's validation, and that's why I'm turning to you. If you'd like to participate, all you need to do is send me your email address so I can add you to the list of testers, and then you'll receive a Play Store link inviting you to download the app (normally for free), and that's it.</item>
+        <item>Thank you for your help and support, and see you soon!</item>
+    </string-array>
 </resources>

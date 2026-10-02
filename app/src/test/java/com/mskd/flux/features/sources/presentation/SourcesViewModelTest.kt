@@ -1,7 +1,6 @@
 package com.mskd.flux.features.sources.presentation
 
 import app.cash.turbine.test
-import com.mskd.flux.core.datastore.domain.UserDataStore
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.core.model.files.FileSource
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
@@ -39,7 +38,6 @@ class SourcesViewModelTest : FunSpec({
     fun createViewModel(
         fromSetup: Boolean = false,
         folders: List<UserFolder> = emptyList(),
-        userDataStore: UserDataStore = mockk(relaxed = true),
         settingsDataStore: SettingsDataStore = mockk(relaxed = true) {
             every { flow } returns MutableStateFlow(SettingsDataStore.State())
         },
@@ -54,7 +52,6 @@ class SourcesViewModelTest : FunSpec({
 
         return SourcesViewModel(
             fromSetup = fromSetup,
-            userDataStore = userDataStore,
             settingsDataStore = settingsDataStore,
             tokenDataStore = tokenDataStore,
             flowSourcesUseCase = flowSourcesUseCase,

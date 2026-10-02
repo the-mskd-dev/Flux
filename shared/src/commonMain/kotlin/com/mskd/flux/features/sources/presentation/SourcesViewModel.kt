@@ -2,7 +2,6 @@ package com.mskd.flux.features.sources.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mskd.flux.core.datastore.domain.UserDataStore
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.core.model.files.FileSource
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
@@ -23,7 +22,6 @@ import kotlinx.coroutines.launch
 
 class SourcesViewModel(
     private val fromSetup: Boolean,
-    private val userDataStore: UserDataStore,
     private val settingsDataStore: SettingsDataStore,
     private val tokenDataStore: TokenDataStore,
     flowSourcesUseCase: FlowSourcesUseCase,
@@ -38,14 +36,12 @@ class SourcesViewModel(
     val event = _event.receiveAsFlow()
 
     private val _deleteState = MutableStateFlow<UserFolder?>(null)
-    private val _showDialogState = MutableStateFlow(false)
 
     val uiState = combine(
         flowSourcesUseCase(),
         _deleteState,
-        _showDialogState,
         settingsDataStore.flow
-    ) { folders, deleteState, showDialogState, settings ->
+    ) { folders, deleteState, settings ->
 
         SourcesUiState(
             state = State.Content(
@@ -56,7 +52,6 @@ class SourcesViewModel(
                     systemFoldersEnabled = settings.systemFoldersEnabled
                 )
             ),
-            showFeatureDialog = showDialogState
         )
 
     }.stateIn(
@@ -83,16 +78,6 @@ class SourcesViewModel(
             intentChannel.receiveAsFlow().collect { intent ->
                 processIntent(intent)
             }
-        }
-
-        // TODO: Delete in October 2026
-        // Show new feature dialog
-        viewModelScope.launch {
-
-            if (userDataStore.getVersionCode() in 1..27) {
-                _showDialogState.update { true }
-            }
-
         }
 
     }
@@ -125,9 +110,6 @@ class SourcesViewModel(
             is SourcesIntent.Delete -> delete(folder = intent.folder)
             SourcesIntent.UndoDelete -> undoDelete()
             SourcesIntent.FinalizeDelete -> finalizeDelete()
-
-            // Dialog
-            SourcesIntent.CloseDialog -> closeDialog()
 
             // Permissions
             SourcesIntent.OnPermissionGranted -> onPermissionGranted()
@@ -179,10 +161,6 @@ class SourcesViewModel(
         val folder = _deleteState.value ?: return
         deleteSourceUseCase(folder = folder, deleteMedias = true)
         _deleteState.update { null }
-    }
-
-    private fun closeDialog() {
-        _showDialogState.update { false }
     }
 
     private suspend fun onSystemFoldersSwitch() {

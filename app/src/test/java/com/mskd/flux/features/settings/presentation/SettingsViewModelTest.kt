@@ -2,6 +2,7 @@ package com.mskd.flux.features.settings.presentation
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
+import com.mskd.flux.core.model.core.AppInfo
 import com.mskd.flux.core.model.core.FluxOptionsDialogState
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
@@ -13,13 +14,18 @@ import com.mskd.flux.features.privateFolder.domain.usecase.enablePrivateFolder.E
 import com.mskd.flux.features.privateFolder.domain.usecase.setIncludeNsfw.SetIncludeNsfwUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.settings.domain.model.SettingsDialog
+import com.mskd.flux.system.EmailLauncher
+import com.mskd.flux.system.UrlLauncher
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.types.shouldBeInstanceOf
+import io.kotest.property.Arb
 import io.kotest.property.Exhaustive
+import io.kotest.property.arbitrary.int
 import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.boolean
+import io.mockk.clearMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -34,6 +40,7 @@ class SettingsViewModelTest : FunSpec({
     fluxExtensions()
 
     lateinit var viewModel: SettingsViewModel
+    lateinit var appInfo: AppInfo
     lateinit var settingsDataStore: SettingsDataStore
     lateinit var privateFolderDataStore: PrivateFolderDataStore
     lateinit var imagesPrefetchManager: ImagesPrefetchManager
@@ -42,11 +49,20 @@ class SettingsViewModelTest : FunSpec({
     lateinit var enablePrivateFolderUseCase: EnablePrivateFolderUseCase
     lateinit var disablePrivateFolderUseCase: DisablePrivateFolderUseCase
     lateinit var setIncludeNsfwUseCase: SetIncludeNsfwUseCase
+    lateinit var emailLauncher: EmailLauncher
+    lateinit var urlLauncher: UrlLauncher
 
     val dataStoreFlow = MutableStateFlow(SettingsDataStore.State())
     val privateFolderFlow = MutableStateFlow(PrivateFolderDataStore.State())
+    val imagesPrefetchFlow = MutableStateFlow(ImagesPrefetchManager.State.Idle)
+    val syncCatalogFlow = MutableStateFlow(SyncState.Idle)
 
     beforeTest {
+
+        appInfo = AppInfo(
+            versionCode = 616,
+            versionName = "1.6.10"
+        )
 
         settingsDataStore = mockk(relaxed = true) {
             every { flow } returns dataStoreFlow
@@ -57,18 +73,22 @@ class SettingsViewModelTest : FunSpec({
         }
 
         imagesPrefetchManager = mockk(relaxed = true) {
-            every { state } returns MutableStateFlow(ImagesPrefetchManager.State.Idle)
+            every { state } returns imagesPrefetchFlow
         }
 
         syncCatalogUseCase = mockk(relaxed = true) {
-            every { state } returns MutableStateFlow(SyncState.Idle)
+            every { state } returns syncCatalogFlow
         }
         updateLanguageUseCase = mockk(relaxed = true)
         enablePrivateFolderUseCase = mockk(relaxed = true)
         disablePrivateFolderUseCase = mockk(relaxed = true)
         setIncludeNsfwUseCase = mockk(relaxed = true)
 
+        emailLauncher = mockk(relaxed = true)
+        urlLauncher = mockk(relaxed = true)
+
         viewModel = SettingsViewModel(
+            appInfo = appInfo,
             settingsDataStore = settingsDataStore,
             privateFolderDataStore = privateFolderDataStore,
             imagesPrefetchManager = imagesPrefetchManager,
@@ -77,442 +97,611 @@ class SettingsViewModelTest : FunSpec({
             enablePrivateFolderUseCase = enablePrivateFolderUseCase,
             disablePrivateFolderUseCase = disablePrivateFolderUseCase,
             setIncludeNsfwUseCase = setIncludeNsfwUseCase,
+            emailLauncher = emailLauncher,
+            urlLauncher = urlLauncher
         )
 
     }
 
-    test("initial state") {
-        viewModel.uiState.test {
-            val initialState = awaitItem()
-            initialState.rewindValue shouldBe 10
-            initialState.forwardValue shouldBe 10
-            initialState.optionsDialog shouldBe null
-            initialState.settingsDialog shouldBe null
-            initialState.fullSyncInProgress shouldBe false
-            initialState.prefetchHdImages shouldBe false
-            initialState.privateFolderEnabled shouldBe false
-            initialState.privateFolderIncludeNsfw shouldBe true
+    context("Initial State") {
+        test("should return default values") {
+            viewModel.uiState.test {
+                val initialState = awaitItem()
+                initialState.rewindValue shouldBe 10
+                initialState.forwardValue shouldBe 10
+                initialState.optionsDialog shouldBe null
+                initialState.settingsDialog shouldBe null
+                initialState.fullSyncInProgress shouldBe false
+                initialState.prefetchHdImages shouldBe false
+                initialState.privateFolderEnabled shouldBe false
+                initialState.privateFolderIncludeNsfw shouldBe true
+            }
         }
+
+        test("should react to value changes") {
+
+            checkAll(
+                iterations = 30,
+                Arb.int(),
+                Arb.int(),
+                Exhaustive.boolean(),
+                Exhaustive.boolean(),
+                Exhaustive.boolean(),
+                Exhaustive.boolean(),
+                Exhaustive.boolean(),
+                Exhaustive.boolean(),
+            ) {
+                rewindValue,
+                forwardValue,
+                prefetchHdImages,
+                privateFolderEnabled,
+                privateFolderIncludeNsfw,
+                pipIsEnabled,
+                autoKeyboard,
+                externalPlayer ->
+
+                // Given
+                dataStoreFlow.value = dataStoreFlow.value.copy(
+                    playerRewindValue = rewindValue,
+                    playerForwardValue = forwardValue,
+                    prefetchHdImages = prefetchHdImages,
+                    pipIsEnabled = pipIsEnabled,
+                    autoKeyboard = autoKeyboard,
+                    externalPlayer = externalPlayer
+                )
+                privateFolderFlow.value = privateFolderFlow.value.copy(
+                    enabled = privateFolderEnabled,
+                    includeNsfw = privateFolderIncludeNsfw
+                )
+
+                viewModel.uiState.test {
+
+                    // When
+                    val initialState = awaitItem()
+
+                    // Then
+                    initialState.rewindValue shouldBe rewindValue
+                    initialState.forwardValue shouldBe forwardValue
+                    initialState.prefetchHdImages shouldBe prefetchHdImages
+                    initialState.privateFolderEnabled shouldBe privateFolderEnabled
+                    initialState.privateFolderIncludeNsfw shouldBe privateFolderIncludeNsfw
+                    initialState.pipIsEnabled shouldBe pipIsEnabled
+                    initialState.autoKeyboard shouldBe autoKeyboard
+                    initialState.useExternalPlayer shouldBe externalPlayer
+                }
+            }
+        }
+
     }
 
-    test("on back tap") {
-        viewModel.event.test {
-            viewModel.handleIntent(SettingsIntent.OnBackTap)
-            awaitItem() shouldBe SettingsEvent.BackToPreviousScreen
+    context("Navigation") {
+
+        test("OnBackTap should emits BackToPreviousScreen") {
+            viewModel.event.test {
+                viewModel.handleIntent(SettingsIntent.OnBackTap)
+                awaitItem() shouldBe SettingsEvent.BackToPreviousScreen
+            }
         }
+
+        test("OnTokenTap should emits NavigateToTokenScreen") {
+            viewModel.event.test {
+                viewModel.handleIntent(SettingsIntent.OnTokenTap)
+                awaitItem() shouldBe SettingsEvent.NavigateToTokenScreen
+            }
+        }
+
+        test("OnAboutTap should emits NavigateToAboutScreen") {
+            viewModel.event.test {
+                viewModel.handleIntent(SettingsIntent.OnAboutTap)
+                awaitItem() shouldBe SettingsEvent.NavigateToAboutScreen
+            }
+        }
+
+        test("OnHowToTap should emits NavigateToHowToScreen") {
+            viewModel.event.test {
+                viewModel.handleIntent(SettingsIntent.OnHowToTap)
+                awaitItem() shouldBe SettingsEvent.NavigateToHowToScreen
+            }
+        }
+
+        test("OnCustomizationClick should emits NavigateToCustomizationScreen") {
+            viewModel.event.test {
+                viewModel.handleIntent(SettingsIntent.OnCustomizationClick)
+                awaitItem() shouldBe SettingsEvent.NavigateToCustomizationScreen
+            }
+        }
+
+
     }
 
-    test("on token tap") {
-        viewModel.event.test {
-            viewModel.handleIntent(SettingsIntent.OnTokenTap)
-            awaitItem() shouldBe SettingsEvent.NavigateToTokenScreen
+    context("Sync catalog") {
+
+        test("ShowSettingsDialog with SYNC_CATALOG value should show dialog") {
+
+            // Given
+            viewModel.uiState.test {
+                awaitItem()
+
+                // When
+                viewModel.handleIntent(SettingsIntent.ShowSettingsDialog(dialog = SettingsDialog.SYNC_CATALOG))
+
+                // Then
+                awaitItem().settingsDialog shouldBe SettingsDialog.SYNC_CATALOG
+
+            }
         }
+
+        test("ShowSettingsDialog with null value should hide dialog") {
+
+            // Given
+            viewModel.uiState.test {
+                awaitItem()
+                viewModel.handleIntent(SettingsIntent.ShowSettingsDialog(dialog = SettingsDialog.SYNC_CATALOG))
+
+                // When
+                viewModel.handleIntent(SettingsIntent.ShowSettingsDialog(dialog = null))
+
+                // Then
+                val state = expectMostRecentItem()
+                state.settingsDialog shouldBe null
+            }
+        }
+
+        test("ProceedFullSync should hide dialog and call syncCatalogUseCase") {
+
+            // Given
+            viewModel.uiState.test {
+                viewModel.handleIntent(SettingsIntent.ShowSettingsDialog(dialog = SettingsDialog.SYNC_CATALOG))
+                awaitItem()
+
+                // When
+                viewModel.handleIntent(SettingsIntent.ProceedFullSync)
+
+                // Then
+                val state = expectMostRecentItem()
+                state.settingsDialog shouldBe null
+                coVerify { syncCatalogUseCase(onlyNew = false) }
+            }
+        }
+
     }
 
-    test("on about tap") {
-        viewModel.event.test {
-            viewModel.handleIntent(SettingsIntent.OnAboutTap)
-            awaitItem() shouldBe SettingsEvent.NavigateToAboutScreen
-        }
-    }
+    context("Dialog") {
 
-    test("on how to tap") {
-        viewModel.event.test {
-            viewModel.handleIntent(SettingsIntent.OnHowToTap)
-            awaitItem() shouldBe SettingsEvent.NavigateToHowToScreen
-        }
-    }
+        test("ShowRewindDialog should show a FluxOptionsDialogState<Int, SettingsIntent>") {
 
-    test("on customization tap") {
-        viewModel.event.test {
-            viewModel.handleIntent(SettingsIntent.OnCustomizationClick)
-            awaitItem() shouldBe SettingsEvent.NavigateToCustomizationScreen
-        }
-    }
+            // Given
+            viewModel.uiState.test {
+                awaitItem()
 
-    test("ShowSettingsDialog - should show and hide settings dialog") {
+                // When
+                viewModel.handleIntent(SettingsIntent.ShowRewindDialog)
 
-        // Given
-        viewModel.uiState.test {
-            awaitItem()
-
-            // When & Then
-            viewModel.handleIntent(SettingsIntent.ShowSettingsDialog(dialog = SettingsDialog.SYNC_CATALOG))
-            awaitItem().settingsDialog shouldBe SettingsDialog.SYNC_CATALOG
-
-            viewModel.handleIntent(SettingsIntent.ShowSettingsDialog(dialog = null))
-            awaitItem().settingsDialog shouldBe null
-        }
-    }
-
-    test("ShowSettingsDialog & ProceedFullSync - show dialog then proceed full sync") {
-
-        // Given
-        viewModel.uiState.test {
-            awaitItem()
-
-            // When & Then
-            viewModel.handleIntent(SettingsIntent.ShowSettingsDialog(dialog = SettingsDialog.SYNC_CATALOG))
-            awaitItem().settingsDialog shouldBe SettingsDialog.SYNC_CATALOG
-
-            viewModel.handleIntent(SettingsIntent.ProceedFullSync)
-            awaitItem().settingsDialog shouldBe null
-
-            coVerify { syncCatalogUseCase(onlyNew = false) }
-        }
-    }
-
-    test("hide dialog") {
-        viewModel.uiState.test {
-            awaitItem()
-            viewModel.handleIntent(SettingsIntent.ShowRewindDialog)
-            awaitItem().optionsDialog shouldNotBe null
-
-            viewModel.handleIntent(SettingsIntent.HideDialog)
-            awaitItem().optionsDialog shouldBe null
-        }
-    }
-
-    test("show rewind dialog") {
-        viewModel.uiState.test {
-
-            awaitItem()
-            viewModel.handleIntent(SettingsIntent.ShowRewindDialog)
-
-            val state = awaitItem()
-            state.optionsDialog shouldNotBe null
-            val dialogState = state.optionsDialog
-            dialogState.shouldBeInstanceOf<FluxOptionsDialogState<Int, SettingsIntent>>()
-            dialogState.currentValue shouldBe 10
+                // Then
+                val dialogState = awaitItem().optionsDialog
+                dialogState shouldNotBe null
+                dialogState.shouldBeInstanceOf<FluxOptionsDialogState<Int, SettingsIntent>>()
+            }
 
         }
-    }
 
-    test("show forward dialog") {
-        viewModel.uiState.test {
+        test("ShowForwardDialog should show a FluxOptionsDialogState<Int, SettingsIntent>") {
 
-            awaitItem()
-            viewModel.handleIntent(SettingsIntent.ShowForwardDialog)
+            // Given
+            viewModel.uiState.test {
+                awaitItem()
 
-            val state = awaitItem()
-            state.optionsDialog shouldNotBe null
-            val dialogState = state.optionsDialog
-            dialogState.shouldBeInstanceOf<FluxOptionsDialogState<Int, SettingsIntent>>()
-            dialogState.currentValue shouldBe 10
+                // When
+                viewModel.handleIntent(SettingsIntent.ShowForwardDialog)
 
-        }
-    }
-
-    test("set rewind value") {
-        viewModel.uiState.test {
-            awaitItem()
-
-            viewModel.handleIntent(SettingsIntent.SetRewindValue(20))
-            dataStoreFlow.value = dataStoreFlow.value.copy(playerRewindValue = 20)
-
-            val state = awaitItem()
-
-            coVerify { settingsDataStore.setPlayerRewindValue(20) }
-            state.rewindValue shouldBe 20
-            state.optionsDialog shouldBe null
-
-            cancelAndConsumeRemainingEvents()
+                // Then
+                val dialogState = awaitItem().optionsDialog
+                dialogState shouldNotBe null
+                dialogState.shouldBeInstanceOf<FluxOptionsDialogState<Int, SettingsIntent>>()
+            }
 
         }
-    }
 
-    test("set_forward_value") {
-        viewModel.uiState.test {
-            awaitItem()
+        test("ShowLanguageDialog should show a FluxOptionsDialogState<Locale?, SettingsIntent>") {
 
-            viewModel.handleIntent(SettingsIntent.SetForwardValue(20))
-            dataStoreFlow.value = dataStoreFlow.value.copy(playerForwardValue = 20)
+            // Given
+            viewModel.uiState.test {
+                awaitItem()
 
-            val state = awaitItem()
+                // When
+                viewModel.handleIntent(SettingsIntent.ShowForwardDialog)
 
-            coVerify { settingsDataStore.setPlayerForwardValue(20) }
-            state.forwardValue shouldBe 20
-            state.optionsDialog shouldBe null
-
-            cancelAndConsumeRemainingEvents()
-
-        }
-    }
-
-    test("show data language dialog") {
-        viewModel.uiState.test {
-
-            awaitItem()
-            viewModel.handleIntent(SettingsIntent.ShowLanguageDialog)
-
-            val state = awaitItem()
-            state.optionsDialog shouldNotBe null
-            val dialogState = state.optionsDialog
-            dialogState.shouldBeInstanceOf<FluxOptionsDialogState<Locale?, SettingsIntent>>()
-            dialogState.currentValue shouldBe null
-        }
-    }
-
-    test("set data language value") {
-        viewModel.uiState.test {
-            awaitItem()
-
-            viewModel.handleIntent(SettingsIntent.SetLanguageValue(Locale.FRENCH))
-            dataStoreFlow.value = dataStoreFlow.value.copy(dataLanguage = Locale.FRENCH)
-
-            val state = awaitItem()
-
-            coVerify { settingsDataStore.setDataLanguage(Locale.FRENCH) }
-            state.languageValue shouldBe Locale.FRENCH
-            state.optionsDialog shouldBe null
-
-            cancelAndConsumeRemainingEvents()
+                // Then
+                val dialogState = awaitItem().optionsDialog
+                dialogState shouldNotBe null
+                dialogState.shouldBeInstanceOf<FluxOptionsDialogState<Int, SettingsIntent>>()
+            }
 
         }
-    }
 
-    test("set system data language value") {
-        viewModel.uiState.test {
-            awaitItem()
+        test("HideDialog should hide dialog") {
 
-            viewModel.handleIntent(SettingsIntent.SetLanguageValue(null))
-            dataStoreFlow.value = dataStoreFlow.value.copy(dataLanguage = null)
+            // Given
+            viewModel.uiState.test {
+                viewModel.handleIntent(SettingsIntent.ShowRewindDialog)
+                awaitItem()
 
-            val state = awaitItem()
+                // When
+                viewModel.handleIntent(SettingsIntent.HideDialog)
 
-            coVerify { settingsDataStore.setDataLanguage(null) }
-            state.languageValue shouldBe null
-            state.optionsDialog shouldBe null
+                // Then
+                val state = expectMostRecentItem()
+                state.optionsDialog shouldBe null
 
-            cancelAndConsumeRemainingEvents()
-
-        }
-    }
-
-    test("set auto keyboard") {
-        viewModel.uiState.test {
-            awaitItem()
-
-            viewModel.handleIntent(SettingsIntent.OnAutoKeyboardCheck(false))
-            dataStoreFlow.value = dataStoreFlow.value.copy(autoKeyboard = false)
-
-            val state = awaitItem()
-
-            coVerify { settingsDataStore.setAutoKeyboard(false) }
-            state.autoKeyboard shouldBe false
-
-            cancelAndConsumeRemainingEvents()
+            }
 
         }
+
     }
 
-    test("set external player") {
-        viewModel.uiState.test {
-            awaitItem()
+    context("Setters") {
 
-            viewModel.handleIntent(SettingsIntent.OnExternalPlayerCheck(true))
-            dataStoreFlow.value = dataStoreFlow.value.copy(externalPlayer = true)
+        test("SetRewindValue should set value in datastore and then close dialog") {
 
-            val state = awaitItem()
+            // Given
+            viewModel.uiState.test {
+                awaitItem()
 
-            coVerify { settingsDataStore.setExternalPlayer(true) }
-            state.useExternalPlayer shouldBe true
+                // When
+                viewModel.handleIntent(SettingsIntent.SetRewindValue(20))
+                dataStoreFlow.value = dataStoreFlow.value.copy(playerRewindValue = 20)
 
-            cancelAndConsumeRemainingEvents()
+                // Then
+                val state = awaitItem()
+                coVerify { settingsDataStore.setPlayerRewindValue(20) }
+                state.rewindValue shouldBe 20
+                state.optionsDialog shouldBe null
+
+                cancelAndConsumeRemainingEvents()
+
+            }
 
         }
-    }
 
-    test("set external player - request permission when checked is true") {
-        viewModel.event.test {
-            viewModel.handleIntent(SettingsIntent.OnExternalPlayerCheck(true))
-            awaitItem() shouldBe SettingsEvent.RequestExternalPlayerPermission
-        }
-    }
+        test("SetForwardValue should set value in datastore and then close dialog") {
 
-    test("set external player - does not request permission when checked is false") {
-        viewModel.event.test {
-            viewModel.handleIntent(SettingsIntent.OnExternalPlayerCheck(false))
-            expectNoEvents()
-        }
-    }
+            // Given
+            viewModel.uiState.test {
+                awaitItem()
 
-    test("set pip") {
-        viewModel.uiState.test {
-            awaitItem()
+                // When
+                viewModel.handleIntent(SettingsIntent.SetForwardValue(20))
+                dataStoreFlow.value = dataStoreFlow.value.copy(playerForwardValue = 20)
 
-            viewModel.handleIntent(SettingsIntent.OnEnablePipCheck(false))
-            dataStoreFlow.value = dataStoreFlow.value.copy(pipIsEnabled = false)
+                // Then
+                val state = awaitItem()
+                coVerify { settingsDataStore.setPlayerForwardValue(20) }
+                state.forwardValue shouldBe 20
+                state.optionsDialog shouldBe null
 
-            val state = awaitItem()
+                cancelAndConsumeRemainingEvents()
 
-            coVerify { settingsDataStore.setEnablePip(false) }
-            state.pipIsEnabled shouldBe false
-
-            cancelAndConsumeRemainingEvents()
+            }
 
         }
-    }
 
-    test("set prefetch images") {
-        viewModel.uiState.test {
-            awaitItem()
+        test("SetLanguageValue should set value in datastore and then close dialog") {
 
-            viewModel.handleIntent(SettingsIntent.OnPrefetchHdImagesCheck(true))
-            dataStoreFlow.value = dataStoreFlow.value.copy(prefetchHdImages = true)
+            // Given
+            viewModel.uiState.test {
+                awaitItem()
 
-            val state = awaitItem()
+                // When
+                viewModel.handleIntent(SettingsIntent.SetLanguageValue(Locale.FRENCH))
+                dataStoreFlow.value = dataStoreFlow.value.copy(dataLanguage = Locale.FRENCH)
 
-            coVerify { settingsDataStore.setPrefetchHdImages(true) }
-            state.prefetchHdImages shouldBe true
+                // Then
+                val state = awaitItem()
+                coVerify { settingsDataStore.setDataLanguage(Locale.FRENCH) }
+                state.languageValue shouldBe Locale.FRENCH
+                state.optionsDialog shouldBe null
 
-            cancelAndConsumeRemainingEvents()
+                cancelAndConsumeRemainingEvents()
+
+            }
+        }
+
+        test("SetLanguageValue should set value in datastore and then close dialog") {
+
+            // Given
+            viewModel.uiState.test {
+                awaitItem()
+
+                // When
+                viewModel.handleIntent(SettingsIntent.SetLanguageValue(null))
+                dataStoreFlow.value = dataStoreFlow.value.copy(dataLanguage = null)
+
+                // Then
+                val state = awaitItem()
+                coVerify { settingsDataStore.setDataLanguage(null) }
+                state.languageValue shouldBe null
+                state.optionsDialog shouldBe null
+
+                cancelAndConsumeRemainingEvents()
+
+            }
+        }
+
+        test("OnAutoKeyboardCheck should set value in datastore and then close dialog") {
+
+            // Given
+            dataStoreFlow.value = dataStoreFlow.value.copy(autoKeyboard = true)
+            viewModel.uiState.test {
+                val initialState = awaitItem()
+                initialState.autoKeyboard shouldBe true
+
+                // When
+                viewModel.handleIntent(SettingsIntent.OnAutoKeyboardCheck(false))
+                dataStoreFlow.value = dataStoreFlow.value.copy(autoKeyboard = false)
+
+                // Then
+                val state = awaitItem()
+                coVerify { settingsDataStore.setAutoKeyboard(false) }
+                state.autoKeyboard shouldBe false
+
+                cancelAndConsumeRemainingEvents()
+
+            }
+        }
+
+        test("OnExternalPlayerCheck should set value in datastore and then close dialog") {
+
+            // Given
+            viewModel.uiState.test {
+                awaitItem()
+
+                // When
+                viewModel.handleIntent(SettingsIntent.OnExternalPlayerCheck(true))
+                dataStoreFlow.value = dataStoreFlow.value.copy(externalPlayer = true)
+
+                // Then
+                val state = awaitItem()
+                coVerify { settingsDataStore.setExternalPlayer(true) }
+                state.useExternalPlayer shouldBe true
+
+                cancelAndConsumeRemainingEvents()
+
+            }
+        }
+
+        test("OnExternalPlayerCheck(true) should emit RequestExternalPlayerPermission event") {
+
+            // Given
+            viewModel.event.test {
+
+                // When
+                viewModel.handleIntent(SettingsIntent.OnExternalPlayerCheck(true))
+
+                // Then
+                awaitItem() shouldBe SettingsEvent.RequestExternalPlayerPermission
+            }
 
         }
-    }
 
-    test("set prefetch images - triggers prefetch when checked is true") {
-        viewModel.uiState.test {
-            awaitItem()
+        test("OnExternalPlayerCheck(false) should do nothing") {
 
-            viewModel.handleIntent(SettingsIntent.OnPrefetchHdImagesCheck(true))
-            coVerify { imagesPrefetchManager.prefetchImages() }
+            // Given
+            viewModel.event.test {
+
+                // When
+                viewModel.handleIntent(SettingsIntent.OnExternalPlayerCheck(false))
+
+                // Then
+                expectNoEvents()
+            }
+
         }
-    }
 
-    test("set prefetch images - does not trigger prefetch when checked is false") {
-        viewModel.uiState.test {
-            awaitItem()
+        test("OnEnablePipCheck should set value in datastore") {
 
-            viewModel.handleIntent(SettingsIntent.OnPrefetchHdImagesCheck(false))
-            coVerify(exactly = 0) { imagesPrefetchManager.prefetchImages() }
+            checkAll(
+                Exhaustive.boolean()
+            ) { check ->
+
+                // Given
+                viewModel.uiState.test {
+                    awaitItem()
+
+                    // When
+                    viewModel.handleIntent(SettingsIntent.OnEnablePipCheck(check))
+
+                    // Then
+                    coVerify { settingsDataStore.setEnablePip(check) }
+                    cancelAndConsumeRemainingEvents()
+
+                }
+
+            }
+
         }
+
+        test("OnPrefetchHdImagesCheck should set value in datastore and prefetch images if needed") {
+
+            checkAll(
+                Exhaustive.boolean()
+            ) { check ->
+
+                clearMocks(settingsDataStore, imagesPrefetchManager)
+
+                // Given
+                viewModel.uiState.test {
+                    awaitItem()
+
+                    // When
+                    viewModel.handleIntent(SettingsIntent.OnPrefetchHdImagesCheck(check))
+
+                    // Then
+                    coVerify { settingsDataStore.setPrefetchHdImages(check) }
+                    coVerify(exactly = if (check) 1 else 0) { imagesPrefetchManager.prefetchImages() }
+                    cancelAndConsumeRemainingEvents()
+
+                }
+
+            }
+
+        }
+
     }
 
-    test("private folder - checking shows pin creation dialog") {
-        viewModel.uiState.test {
-            awaitItem()
+    context("Private folder") {
 
+        test("enable should show pin creation dialog") {
+
+            // Given
+            viewModel.uiState.test {
+                awaitItem()
+
+                // When
+                viewModel.handleIntent(SettingsIntent.OnPrivateFolderCheck(true))
+
+                //Then
+                val state = awaitItem()
+                state.privateFolderPinDialog shouldBe PrivateFolderPinDialog.CREATE
+            }
+        }
+
+        test("disable should show pin verification dialog") {
+
+            // Given
+            privateFolderFlow.value = PrivateFolderDataStore.State(enabled = true)
+            viewModel.uiState.test {
+                awaitItem()
+
+                // When
+                viewModel.handleIntent(SettingsIntent.OnPrivateFolderCheck(false))
+
+                // Then
+                val state = awaitItem()
+                state.privateFolderPinDialog shouldBe PrivateFolderPinDialog.VERIFY_TO_DISABLE
+            }
+        }
+
+        test("submit pin when uncheck should enable folder") {
+
+            // Given
             viewModel.handleIntent(SettingsIntent.OnPrivateFolderCheck(true))
+            viewModel.event.test {
 
-            val state = awaitItem()
-            state.privateFolderPinDialog shouldBe PrivateFolderPinDialog.CREATE
+                // When
+                viewModel.handleIntent(SettingsIntent.SubmitPrivateFolderPin(pin = "1234"))
+
+                // Then
+                awaitItem() shouldBe SettingsEvent.PrivateFolderPinUpdated
+            }
+
+            coVerify { enablePrivateFolderUseCase("1234") }
         }
-    }
 
-    test("private folder - unchecking shows pin verification dialog") {
-        privateFolderFlow.value = PrivateFolderDataStore.State(enabled = true)
 
-        viewModel.uiState.test {
-            awaitItem()
+        test("submit valid pin when check should disable folder") {
 
+            // Given
+            coEvery { disablePrivateFolderUseCase(any()) } returns true
             viewModel.handleIntent(SettingsIntent.OnPrivateFolderCheck(false))
+            viewModel.event.test {
 
-            val state = awaitItem()
-            state.privateFolderPinDialog shouldBe PrivateFolderPinDialog.VERIFY_TO_DISABLE
-        }
-    }
+                // When
+                viewModel.handleIntent(SettingsIntent.SubmitPrivateFolderPin(pin = "1234"))
 
-    test("private folder - submit pin enables folder") {
-        viewModel.handleIntent(SettingsIntent.OnPrivateFolderCheck(true))
+                // Then
+                awaitItem() shouldBe SettingsEvent.PrivateFolderPinUpdated
+            }
 
-        viewModel.event.test {
-            viewModel.handleIntent(SettingsIntent.SubmitPrivateFolderPin(pin = "1234"))
-            awaitItem() shouldBe SettingsEvent.PrivateFolderPinUpdated
+            coVerify { disablePrivateFolderUseCase("1234") }
         }
 
-        coVerify { enablePrivateFolderUseCase("1234") }
-    }
+        test("submit wrong pin when uncheck should show error and keep dialog") {
 
-    test("private folder - submit valid pin disables folder") {
-        coEvery { disablePrivateFolderUseCase("1234") } returns true
+            // Given
+            coEvery { disablePrivateFolderUseCase("0000") } returns false
+            viewModel.handleIntent(SettingsIntent.OnPrivateFolderCheck(false))
+            viewModel.event.test {
 
-        viewModel.handleIntent(SettingsIntent.OnPrivateFolderCheck(false))
+                // When
+                viewModel.handleIntent(SettingsIntent.SubmitPrivateFolderPin(pin = "0000"))
 
-        viewModel.event.test {
-            viewModel.handleIntent(SettingsIntent.SubmitPrivateFolderPin(pin = "1234"))
-            awaitItem() shouldBe SettingsEvent.PrivateFolderPinUpdated
+                // Then
+                expectNoEvents()
+            }
+
+            viewModel.uiState.test {
+                val state = awaitItem()
+                state.privateFolderPinError shouldBe true
+                state.privateFolderPinDialog shouldBe PrivateFolderPinDialog.VERIFY_TO_DISABLE
+            }
+
+            coVerify(exactly = 1) { disablePrivateFolderUseCase("0000") }
         }
 
-        coVerify { disablePrivateFolderUseCase("1234") }
-    }
+        test("non valid pin is not submitted") {
 
-    test("private folder - submit wrong pin shows error and keeps dialog") {
-        coEvery { disablePrivateFolderUseCase("0000") } returns false
+            // Given
+            viewModel.handleIntent(SettingsIntent.OnPrivateFolderCheck(true))
+            viewModel.event.test {
 
-        viewModel.handleIntent(SettingsIntent.OnPrivateFolderCheck(false))
+                // When
+                viewModel.handleIntent(SettingsIntent.SubmitPrivateFolderPin(pin = "12"))
 
-        viewModel.event.test {
+                // Then
+                expectNoEvents()
+            }
+
+            coVerify(exactly = 0) { enablePrivateFolderUseCase(any<String>()) }
+        }
+
+        test("clear pin error should remove the error") {
+
+            // Given
+            coEvery { disablePrivateFolderUseCase(any()) } returns false
+            viewModel.handleIntent(SettingsIntent.OnPrivateFolderCheck(false))
             viewModel.handleIntent(SettingsIntent.SubmitPrivateFolderPin(pin = "0000"))
-            expectNoEvents()
+            viewModel.uiState.test {
+                awaitItem()
+
+                // When
+                viewModel.handleIntent(SettingsIntent.ClearPrivateFolderPinError)
+
+                // Then
+                awaitItem().privateFolderPinError shouldBe false
+            }
         }
 
-        viewModel.uiState.test {
-            val state = awaitItem()
-            state.privateFolderPinError shouldBe true
-            state.privateFolderPinDialog shouldBe PrivateFolderPinDialog.VERIFY_TO_DISABLE
+        test("OnPrivateFolderIncludeNsfwCheck should call setIncludeNsfwUseCase if needed") {
+
+            // Given
+            checkAll(
+                Exhaustive.boolean()
+            ) { enable ->
+
+                // When
+                viewModel.handleIntent(SettingsIntent.OnPrivateFolderIncludeNsfwCheck(enable))
+
+                // Then
+                coVerify(exactly = 1) { setIncludeNsfwUseCase(includeNsfw = enable) }
+
+            }
         }
 
-        coVerify(exactly = 1) { disablePrivateFolderUseCase("0000") }
-    }
+        test("UI state should reflect include nsfw") {
 
-    test("private folder - short pin is not submitted") {
-        viewModel.handleIntent(SettingsIntent.OnPrivateFolderCheck(true))
+            // Given
+            viewModel.uiState.test {
+                awaitItem()
 
-        viewModel.event.test {
-            viewModel.handleIntent(SettingsIntent.SubmitPrivateFolderPin(pin = "12"))
-            expectNoEvents()
+                // When
+                privateFolderFlow.value = PrivateFolderDataStore.State(enabled = true, includeNsfw = false)
+
+                // Then
+                val state = awaitItem()
+                state.privateFolderIncludeNsfw shouldBe false
+            }
         }
 
-        coVerify(exactly = 0) { enablePrivateFolderUseCase(any<String>()) }
-    }
-
-    test("private folder - clear pin error removes the error") {
-        coEvery { disablePrivateFolderUseCase("0000") } returns false
-
-        viewModel.handleIntent(SettingsIntent.OnPrivateFolderCheck(false))
-        viewModel.handleIntent(SettingsIntent.SubmitPrivateFolderPin(pin = "0000"))
-
-        viewModel.uiState.test {
-            val errorState = awaitItem()
-            errorState.privateFolderPinError shouldBe true
-            errorState.privateFolderPinDialog shouldBe PrivateFolderPinDialog.VERIFY_TO_DISABLE
-
-            viewModel.handleIntent(SettingsIntent.ClearPrivateFolderPinError)
-
-            val clearedState = awaitItem()
-            clearedState.privateFolderPinError shouldBe false
-        }
-    }
-
-    test("private folder - include nsfw call the use case") {
-
-        checkAll(
-            Exhaustive.boolean()
-        ) { enable ->
-
-            // When
-            viewModel.handleIntent(SettingsIntent.OnPrivateFolderIncludeNsfwCheck(enable))
-
-            // Then
-            coVerify(exactly = 1) { setIncludeNsfwUseCase(includeNsfw = enable) }
-
-        }
-    }
-
-    test("private folder - ui state reflects include nsfw") {
-
-        // Given
-        viewModel.uiState.test {
-            awaitItem()
-
-            // When
-            privateFolderFlow.value = PrivateFolderDataStore.State(enabled = true, includeNsfw = false)
-
-            // Then
-            val state = awaitItem()
-            state.privateFolderIncludeNsfw shouldBe false
-        }
     }
 
 })

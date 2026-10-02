@@ -32,6 +32,9 @@ sealed class CatalogState {
         val tokenIsMissing: Boolean = false,
         val privateFolderEnabled: Boolean = false,
 
+        // Message
+        val message: CatalogMessageState = CatalogMessageState(),
+
         // Sort
         val sortingMode: CatalogSortingMode = CatalogSortingMode.LAST_MODIFICATION,
         val showSortingSheet: Boolean = false,
@@ -39,6 +42,7 @@ sealed class CatalogState {
         // View
         val viewMode: CatalogViewMode = CatalogViewMode.BY_TYPE,
         val showViewSheet: Boolean = false,
+
     ): CatalogState()
 
 }
@@ -46,16 +50,16 @@ sealed class CatalogState {
 sealed interface CatalogIntent {
 
     // Navigation
-    data class OnArtworkTap(val artwork: Artwork, val rgb: Int? = null): CatalogIntent
-    data class OnGenreTap(val genre: Genre): CatalogIntent
-    data class OnCategoryTap(val category: ContentType): CatalogIntent
+    data class OnArtworkClick(val artwork: Artwork, val rgb: Int? = null): CatalogIntent
+    data class OnGenreClick(val genre: Genre): CatalogIntent
+    data class OnCategoryClick(val category: ContentType): CatalogIntent
     data object SyncCatalog: CatalogIntent
-    data object OnSearchTap: CatalogIntent
-    data object OnSettingsTap: CatalogIntent
-    data object OnHowToTap: CatalogIntent
-    data object OnSourcesTap: CatalogIntent
-    data object OnTokenTap: CatalogIntent
-    data object OnPrivateFolderTap: CatalogIntent
+    data object OnSearchClick: CatalogIntent
+    data object OnSettingsClick: CatalogIntent
+    data object OnHowToClick: CatalogIntent
+    data object OnSourcesClick: CatalogIntent
+    data object OnTokenClick: CatalogIntent
+    data object OnPrivateFolderClick: CatalogIntent
 
     // Private folder
     data class AddArtworkToPrivateFolder(val artwork: Artwork): CatalogIntent
@@ -75,6 +79,10 @@ sealed interface CatalogIntent {
     // Player
     data class PlayMedia(val media: Media, val forceInternal: Boolean = false): CatalogIntent
     data class OnExternalPlayerResult(val progress: Long) : CatalogIntent
+
+    // Message
+    data object OnMessageTap: CatalogIntent
+    data object HideMessage: CatalogIntent
 }
 
 sealed interface CatalogEvent {
@@ -89,6 +97,7 @@ sealed interface CatalogEvent {
     data object NavigateToHowTo: CatalogEvent
     data object NavigateToSources: CatalogEvent
     data object NavigateToPrivateFolder: CatalogEvent
+    data object NavigateToMessage: CatalogEvent
 
     // Player
     data class PlayMedia(val media: Media, val externalPlayer: Boolean) : CatalogEvent

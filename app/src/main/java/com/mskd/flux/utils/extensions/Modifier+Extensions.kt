@@ -1,6 +1,5 @@
 package com.mskd.flux.utils.extensions
 
-import androidx.annotation.FloatRange
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
@@ -10,8 +9,6 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.displayCutoutPadding
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -29,7 +26,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.utils.rememberScreenDimensions
 
 fun Modifier.grayScale() : Modifier {
@@ -113,16 +110,6 @@ fun Modifier.groupedShape(
         else -> RoundedCornerShape(4.dp)
     }
     return this.clip(shape)
-}
-
-@Composable
-fun Modifier.fillMaxWidthWithLimit(
-    max: Dp = 500.dp,
-    @FloatRange fraction: Float = 1f
-) : Modifier {
-    return this
-        .widthIn(max = max)
-        .fillMaxWidth(fraction = fraction)
 }
 
 fun Modifier.bleedHorizontal(amount: Dp = FluxUI.Space.medium) = layout { measurable, constraints ->

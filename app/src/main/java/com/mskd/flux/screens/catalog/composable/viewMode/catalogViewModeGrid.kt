@@ -7,8 +7,8 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.ui.Modifier
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
+import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.screens.catalog.composable.CatalogArtworkItem
-import com.mskd.flux.ui.theme.FluxUI
 
 fun LazyGridScope.catalogViewModeGrid(
     artworks: List<Artwork>,

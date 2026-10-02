@@ -67,7 +67,8 @@
     <string name="which_technologies_desc">이 앱은 Jetpack Compose와 Kotlin으로 완전 개발되었습니다. 데이터베이스는 Room, 네트워크 통신은 Ktor, 의존성 주입은 Koin을 사용합니다. GitHub도 활용하고 있습니다. UI/UX는 Material 3를 적용하여 최선을 다했습니다. 제법 괜찮죠?</string>
     <string name="how_to_suggest">문의 및 개선 요청</string>
     <string name="how_to_suggest_desc">긍정적인 피드백이라면 %1$s(으)로 연락해 주세요! 그렇지 않은 경우에도 피드백만큼이나 따뜻한 마음으로 %2$s에 직접 남겨주세요.</string>
-    
+    <string name="contact_me">문의하기</string>
+    <string name="contact_me_desc">하시고 싶은 말씀이 있다면 이곳으로 보내주세요</string>
     
     <string name="what_is_next">향후 계획</string>
     <string name="what_is_next_desc">목표는 UI, UX, 성능을 지속적으로 개선하는 것입니다. 더 많은 데이터(장르, 출연진 등)를 가져올 예정이며, 기기의 파일뿐만 아니라 새로운 데이터 소스도 추가할 계획입니다.</string>
@@ -165,8 +166,6 @@
     <string name="confirm_source_deletion">이 폴더를 삭제하면 포함된 파일의 시청 진행 상황이 손실됩니다.\n정말로 삭제하시겠습니까?</string>
     <string name="add_source">소스 추가</string>
     <string name="got_it">확인</string>
-    <string name="dialog_sources_title">나만의 폴더, 나만의 규칙!</string>
-    <string name="dialog_sources_description">더 많은 제어권을 제공하기 위해 앱이 이제 %1$s 및 %2$s 폴더에 집중합니다.\n\n동영상이 보이지 않나요? 걱정 마세요! 설정에서 언제든지 폴더를 빠르게 추가할 수 있습니다.</string>
     <string name="content_unavailable">콘텐츠를 이용할 수 없음</string>
     <string name="open_in_file_explorer">파일 탐색기에서 열기</string>
     <string name="next">다음</string>
@@ -216,4 +215,18 @@
     <string name="pin_change_old">현재 코드</string>
     <string name="pin_change_new">새 코드</string>
     <string name="pin_error">PIN 코드가 올바르지 않습니다</string>
+
+    <string name="learn_more">자세히 보기</string>
+    <string name="participate">참여하기</string>
+
+    <string name="catalog_message">Play Store 버전 출시 임박! 여러분의 도움이 필요합니다!</string>
+    <string name="message_title">Play Store에서의 Flux!</string>
+    <string-array name="message_details">
+        <item>먼저 이 앱을 개선하기 위해 함께해 주시고 피드백을 남겨주신 모든 분들께 감사드립니다. 이렇게 많은 분들이 참여해 주실 줄은 몰랐습니다!</item>
+        <item>조금 더 많은 사람들에게 알리기 위해 Flux를 Play Store에 출시하고 싶습니다. 앱 개발에 드는 수수료와 하드웨어 비용을 충당하기 위한 후원자용 에디션(단 1유로)이 될 예정입니다.</item>
+        <item>물론 Flux는 항상 GitHub와 F-Droid에서 무료로 이용할 수 있으며, 동일한 기능을 제공할 것입니다(두 가지 버전을 따로 관리하고 싶지는 않거든요 ㅎㅎ).</item>
+        <item>하지만 앱을 게시하려면 Google의 검수를 통과하기 위한 소수의 테스터 분들이 필요하여 이렇게 여러분께 도움을 요청하게 되었습니다. 참여를 원하신다면 테스터 목록에 등록할 수 있도록 이메일 주소를 보내주시기만 하면 됩니다. 이후 앱을 (normally 무료로) 다운로드할 수 있는 Play Store 링크를 받으시게 되며, 그거면 끝입니다.</item>
+        <item>여러분들의 도움과 응원에 감사드리며, 곧 다시 뵙겠습니다!</item>
+    </string-array>
+
 </resources>

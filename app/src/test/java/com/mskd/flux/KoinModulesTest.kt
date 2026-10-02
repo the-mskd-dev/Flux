@@ -22,7 +22,7 @@ class KoinModulesTest : FunSpec({
     test("verify modules") {
 
         val allModules = module {
-            includes(moduleAndroidApp, modulePlatform)
+            includes(moduleAndroidApp, modulePlatform, moduleFlavor)
         }
 
         allModules.verify(

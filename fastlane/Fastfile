@@ -143,9 +143,8 @@ platform :android do
     # Publish on the Play Store
     upload_to_play_store(
       track: 'internal',
-      aab: "app/build/outputs/bundle/release/app-release.aab",
       skip_upload_apk: true,
-      skip_upload_metadata: false, # Mettre true si tu ne veux pas synchro les textes/captures
+      skip_upload_metadata: false,
       skip_upload_images: true,
       skip_upload_screenshots: true
     )

@@ -36,8 +36,8 @@ import com.mskd.flux.screens.about.AboutScreen
 import com.mskd.flux.screens.artwork.ArtworkScreen
 import com.mskd.flux.screens.catalog.CatalogScreen
 import com.mskd.flux.features.customization.ui.CustomizationScreen
-import com.mskd.flux.screens.howTo.HowToScreen
-import com.mskd.flux.screens.message.MessageScreen
+import com.mskd.flux.features.howTo.ui.HowToScreen
+import com.mskd.flux.features.message.ui.MessageScreen
 import com.mskd.flux.screens.player.PlayerScreen
 import com.mskd.flux.features.privateFolder.ui.PrivateScreen
 import com.mskd.flux.screens.search.SearchScreen

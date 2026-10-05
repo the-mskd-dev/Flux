@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.message
+package com.mskd.flux.features.message.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.settings.composables
+package com.mskd.flux.features.settings.ui.composables
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Box
@@ -7,6 +7,7 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,18 +19,19 @@ import com.mskd.flux.utils.extensions.uppercaseFirstLetter
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun SettingsItem(
+fun SettingsSwitch(
     text: String,
     subText: String? = null,
+    checked: Boolean,
     painter: Painter? = null,
     iconColor: Color = MaterialTheme.colorScheme.onTertiaryContainer,
     iconBackgroundColor: Color = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 1f),
-    valueColor: Color = MaterialTheme.colorScheme.onBackground.copy(alpha = .8f),
-    onClick: () -> Unit
+    subTextColor: Color = MaterialTheme.colorScheme.onBackground.copy(alpha = .8f),
+    onCheckedChange: (Boolean) -> Unit
 ) {
 
     ListItem(
-        onClick = onClick,
+        onClick = { onCheckedChange(!checked) },
         colors = ListItemDefaults.colors(
             containerColor = MaterialTheme.colorScheme.surfaceContainer,
             contentColor = MaterialTheme.colorScheme.onSurface,
@@ -44,7 +46,7 @@ fun SettingsItem(
             ) { text ->
                 Text.List.Body(
                     text = text,
-                    color = valueColor,
+                    color = subTextColor,
                 )
             }
         },
@@ -63,8 +65,13 @@ fun SettingsItem(
                 }
 
             }
+        },
+        trailingContent = {
+            Switch(
+                checked = checked,
+                onCheckedChange = onCheckedChange,
+            )
         }
     )
-
 
 }

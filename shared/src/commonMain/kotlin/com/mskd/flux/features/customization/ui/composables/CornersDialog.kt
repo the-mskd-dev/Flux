@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.customization.composables
+package com.mskd.flux.features.customization.ui.composables
 
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.foundation.border

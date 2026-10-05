@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.artwork.composables
+package com.mskd.flux.features.artwork.ui
 
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Arrangement
@@ -21,12 +21,12 @@ import androidx.compose.ui.Modifier
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.features.artwork.presentation.ArtworkIntent
+import com.mskd.flux.features.artwork.ui.composables.ArtworkButtons
+import com.mskd.flux.features.artwork.ui.composables.ArtworkDescriptionsPager
+import com.mskd.flux.features.artwork.ui.composables.ArtworkImage
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.screens.artwork.composables.common.ArtworkButtons
-import com.mskd.flux.screens.artwork.composables.common.ArtworkDescriptionsPager
-import com.mskd.flux.screens.artwork.composables.common.ArtworkImage
 import com.mskd.flux.ui.media.EpisodeDropDownMenu
 import com.mskd.flux.ui.media.EpisodeItem
 import com.mskd.flux.ui.theme.FluxTheme

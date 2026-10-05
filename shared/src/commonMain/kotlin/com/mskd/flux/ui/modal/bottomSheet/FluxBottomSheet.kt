@@ -1,6 +1,5 @@
 package com.mskd.flux.ui.modal.bottomSheet
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -35,6 +34,7 @@ import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.blurForeground
 import com.mskd.flux.ui.fillMaxWidthWithLimit
+import com.mskd.flux.ui.global.BackGesture
 import com.mskd.flux.ui.modal.LocalModalHost
 import com.mskd.flux.ui.modal.ModalEntry
 import com.mskd.flux.ui.modal.ModalHostState
@@ -55,7 +55,7 @@ fun FluxBottomSheetHost(
 
     val visible = host.visible && current != null
 
-    BackHandler(enabled = host.visible, onBack = { entry?.onDismiss?.invoke() })
+    BackGesture(enabled = host.visible, onBack = { entry?.onDismiss?.invoke() })
 
     Box(modifier = Modifier.fillMaxSize()) {
 

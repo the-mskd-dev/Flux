@@ -35,11 +35,11 @@ import com.mskd.flux.report.CrashLogger
 import com.mskd.flux.screens.about.AboutScreen
 import com.mskd.flux.screens.artwork.ArtworkScreen
 import com.mskd.flux.screens.catalog.CatalogScreen
-import com.mskd.flux.screens.customization.CustomizationScreen
+import com.mskd.flux.features.customization.ui.CustomizationScreen
 import com.mskd.flux.screens.howTo.HowToScreen
 import com.mskd.flux.screens.message.MessageScreen
 import com.mskd.flux.screens.player.PlayerScreen
-import com.mskd.flux.screens.privateFolder.PrivateScreen
+import com.mskd.flux.features.privateFolder.ui.PrivateScreen
 import com.mskd.flux.screens.search.SearchScreen
 import com.mskd.flux.screens.settings.SettingsScreen
 import com.mskd.flux.screens.setup.SetupScreen

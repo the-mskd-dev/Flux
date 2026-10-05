@@ -1,7 +1,6 @@
 package com.mskd.flux.screens.sources
 
 import android.os.Environment
-import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -61,6 +60,7 @@ import com.mskd.flux.ui.components.ErrorScreen
 import com.mskd.flux.ui.components.FluxScaffold
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.FluxThemePreview
+import com.mskd.flux.ui.global.BackGesture
 import com.mskd.flux.utils.storagePermissionState
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.add_source
@@ -98,7 +98,7 @@ fun SourcesScreen(
         viewModel.handleIntent(SourcesIntent.SaveFolder(uri.toString()))
     }
 
-    BackHandler(true) {
+    BackGesture {
         viewModel.handleIntent(SourcesIntent.OnBackTap)
     }
 

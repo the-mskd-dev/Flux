@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.customization
+package com.mskd.flux.features.customization.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -22,12 +22,12 @@ import com.mskd.flux.features.customization.presentation.CustomizationIntent
 import com.mskd.flux.features.customization.presentation.CustomizationUiState
 import com.mskd.flux.features.customization.presentation.CustomizationViewModel
 import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.screens.customization.composables.CornersDialog
-import com.mskd.flux.screens.customization.composables.CustomizationArtworkSection
-import com.mskd.flux.screens.customization.composables.CustomizationGlobalSection
-import com.mskd.flux.screens.customization.composables.CustomizationPlayerSection
-import com.mskd.flux.screens.customization.composables.CustomizationThemeSection
-import com.mskd.flux.screens.customization.composables.ItemsPerRowDialog
+import com.mskd.flux.features.customization.ui.composables.CornersDialog
+import com.mskd.flux.features.customization.ui.composables.CustomizationArtworkSection
+import com.mskd.flux.features.customization.ui.composables.CustomizationGlobalSection
+import com.mskd.flux.features.customization.ui.composables.CustomizationPlayerSection
+import com.mskd.flux.features.customization.ui.composables.CustomizationThemeSection
+import com.mskd.flux.features.customization.ui.composables.ItemsPerRowDialog
 import com.mskd.flux.ui.components.FluxOptionsDialog
 import com.mskd.flux.ui.components.FluxScaffold
 import com.mskd.flux.ui.FluxPreview
@@ -72,7 +72,7 @@ fun CustomizationScreen(
                 value = state.itemsPerRow,
                 title = dialog.title.resolve(),
                 description = dialog.desc.resolve(),
-                onValidate = { viewModel.handleIntent(CustomizationIntent.SetItemsPerRowValue(it))},
+                onValidate = { viewModel.handleIntent(CustomizationIntent.SetItemsPerRowValue(it)) },
                 onDismiss = { viewModel.handleIntent(CustomizationIntent.HideDialog) }
             )
         }
@@ -81,7 +81,7 @@ fun CustomizationScreen(
                 value = state.seasonsPerRow,
                 title = dialog.title.resolve(),
                 description = dialog.desc.resolve(),
-                onValidate = { viewModel.handleIntent(CustomizationIntent.SetSeasonsPerRowValue(it))},
+                onValidate = { viewModel.handleIntent(CustomizationIntent.SetSeasonsPerRowValue(it)) },
                 onDismiss = { viewModel.handleIntent(CustomizationIntent.HideDialog) }
             )
         }

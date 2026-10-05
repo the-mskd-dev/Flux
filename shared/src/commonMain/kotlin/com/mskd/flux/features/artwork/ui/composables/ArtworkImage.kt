@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.artwork.composables.common
+package com.mskd.flux.features.artwork.ui.composables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
@@ -22,9 +22,9 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.mskd.flux.core.model.artwork.Episode
@@ -133,7 +133,7 @@ fun ArtworkImageBlurred(
     }
 
     var imageHeight by remember { mutableIntStateOf(0) }
-    val imageRequest = ImageRequest.Builder(LocalContext.current)
+    val imageRequest = ImageRequest.Builder(LocalPlatformContext.current)
         .data(imageUrl)
         .crossfade(true)
         .build()

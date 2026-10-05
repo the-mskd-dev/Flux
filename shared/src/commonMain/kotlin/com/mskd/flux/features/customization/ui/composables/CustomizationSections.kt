@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.customization.composables
+package com.mskd.flux.features.customization.ui.composables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -11,9 +11,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.features.customization.presentation.CustomizationIntent
 import com.mskd.flux.features.customization.presentation.CustomizationUiState
-import com.mskd.flux.screens.settings.composables.SettingsItem
-import com.mskd.flux.screens.settings.composables.SettingsSection
-import com.mskd.flux.screens.settings.composables.SettingsSwitch
+import com.mskd.flux.features.settings.ui.composables.SettingsItem
+import com.mskd.flux.features.settings.ui.composables.SettingsSection
+import com.mskd.flux.features.settings.ui.composables.SettingsSwitch
 import com.mskd.flux.utils.UiCommon
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.accent_color

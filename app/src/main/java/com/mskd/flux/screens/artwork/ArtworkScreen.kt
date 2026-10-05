@@ -32,9 +32,9 @@ import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.navigation.domain.Route.Player
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.modal.dialog.FluxDialog
-import com.mskd.flux.screens.artwork.composables.ArtworkContentLarge
-import com.mskd.flux.screens.artwork.composables.ArtworkContentRegular
-import com.mskd.flux.screens.artwork.composables.common.ArtworkDropDownMenu
+import com.mskd.flux.features.artwork.ui.ArtworkContentLarge
+import com.mskd.flux.features.artwork.ui.ArtworkContentRegular
+import com.mskd.flux.features.artwork.ui.composables.ArtworkDropDownMenu
 import com.mskd.flux.ui.components.LoadingScreen
 import com.mskd.flux.ui.components.ErrorScreen
 import com.mskd.flux.ui.components.FluxScaffold

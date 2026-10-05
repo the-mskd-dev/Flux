@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.privateFolder
+package com.mskd.flux.features.privateFolder.ui
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Box

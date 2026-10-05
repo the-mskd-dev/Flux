@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.settings.composables
+package com.mskd.flux.features.settings.ui.composables
 
 import androidx.compose.runtime.Composable
 import com.mskd.flux.features.settings.domain.model.SettingsDialog

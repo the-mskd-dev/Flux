@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.artwork.composables.common
+package com.mskd.flux.features.artwork.ui.composables
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info

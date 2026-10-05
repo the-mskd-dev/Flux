@@ -1,7 +1,6 @@
 package com.mskd.flux.screens.player
 
 import android.content.res.Configuration
-import androidx.activity.compose.BackHandler
 import androidx.annotation.OptIn
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.Spring
@@ -66,6 +65,7 @@ import com.mskd.flux.screens.player.composables.playerInterface.PlayerSubtitles
 import com.mskd.flux.screens.player.composables.settings.PlayerSettings
 import com.mskd.flux.ui.components.LoadingScreen
 import com.mskd.flux.ui.components.ErrorScreen
+import com.mskd.flux.ui.global.BackGesture
 import com.mskd.flux.utils.extensions.description
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.oups_an_error_occured
@@ -110,7 +110,7 @@ fun PlayerScreen(
         }
     }
 
-    BackHandler(enabled = true) {
+    BackGesture {
         interfaceVisibilityCountdown = 3
         viewModel.handleIntent(PlayerIntent.OnBackTap)
     }

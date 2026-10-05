@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.privateFolder.composables
+package com.mskd.flux.features.privateFolder.ui.composables
 
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement

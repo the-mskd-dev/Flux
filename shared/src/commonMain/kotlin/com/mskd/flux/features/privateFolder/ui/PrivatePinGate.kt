@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.privateFolder
+package com.mskd.flux.features.privateFolder.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,9 +17,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.features.privateFolder.presentation.PrivateFolderIntent
 import com.mskd.flux.features.privateFolder.presentation.PrivateFolderUiState
+import com.mskd.flux.features.privateFolder.ui.composables.PinTextField
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.screens.privateFolder.composables.PinTextField
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.FluxPreview
 import flux.shared.generated.resources.Res

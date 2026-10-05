@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.settings.composables
+package com.mskd.flux.features.settings.ui.composables
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

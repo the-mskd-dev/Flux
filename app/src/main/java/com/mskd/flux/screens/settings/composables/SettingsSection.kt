@@ -16,7 +16,7 @@ import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import com.mskd.flux.features.settings.domain.model.SettingsDialog
 import com.mskd.flux.features.settings.presentation.SettingsIntent
 import com.mskd.flux.features.settings.presentation.SettingsUiState
-import com.mskd.flux.ui.FluxUI
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.ui.fillMaxWidthWithLimit
 import com.mskd.flux.utils.Constants
 import flux.shared.generated.resources.Res

@@ -8,7 +8,7 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.mskd.flux.ui.FluxUI
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.ui.text.Text
 
 @Composable

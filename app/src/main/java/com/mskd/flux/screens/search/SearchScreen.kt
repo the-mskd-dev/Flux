@@ -37,13 +37,13 @@ import com.mskd.flux.features.search.presentation.SearchViewModel
 import com.mskd.flux.mockups.DetailsMockup
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.navigation.domain.Route
-import com.mskd.flux.ui.FluxUI
-import com.mskd.flux.ui.LocalUiGlobal
+import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.theme.LocalUiGlobal
 import com.mskd.flux.screens.search.components.SearchContentGrid
 import com.mskd.flux.screens.search.components.SearchFilters
 import com.mskd.flux.screens.search.components.SearchGenresSheet
-import com.mskd.flux.ui.global.FluxScaffold
-import com.mskd.flux.ui.global.FluxSearchField
+import com.mskd.flux.ui.components.FluxScaffold
+import com.mskd.flux.ui.components.FluxSearchField
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.dimensions.itemWidthFor

@@ -1,4 +1,4 @@
-package com.mskd.flux.ui.global
+package com.mskd.flux.ui.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.core.model.core.FluxOptionsDialogState
-import com.mskd.flux.ui.FluxUI
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.modal.dialog.FluxDialog
 import com.mskd.flux.utils.extensions.uppercaseFirstLetter

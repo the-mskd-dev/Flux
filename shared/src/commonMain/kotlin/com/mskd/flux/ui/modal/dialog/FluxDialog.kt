@@ -34,7 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.mskd.flux.ui.FluxUI
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.blurForeground
 import com.mskd.flux.ui.fillMaxWidthWithLimit

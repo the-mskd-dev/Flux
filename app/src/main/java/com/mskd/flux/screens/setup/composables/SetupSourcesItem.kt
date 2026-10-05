@@ -11,7 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
-import com.mskd.flux.ui.FluxUI
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.screens.sources.composables.sourcesAnnotatedString
 import com.mskd.flux.ui.FluxThemePreview

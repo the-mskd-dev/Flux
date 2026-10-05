@@ -8,8 +8,8 @@ import androidx.compose.runtime.Composable
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.features.artwork.presentation.ArtworkIntent
-import com.mskd.flux.ui.global.FluxDropDownMenu
-import com.mskd.flux.ui.global.FluxDropDownMenuItem
+import com.mskd.flux.ui.components.FluxDropDownMenu
+import com.mskd.flux.ui.components.FluxDropDownMenuItem
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_file_explorer
 import flux.shared.generated.resources.ic_play

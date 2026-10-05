@@ -2,7 +2,7 @@ package com.mskd.flux.ui.dimensions
 
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.min
-import com.mskd.flux.ui.FluxUI
+import com.mskd.flux.ui.theme.FluxUI
 
 fun itemWidthFor(
     screenWidthDp: Dp,

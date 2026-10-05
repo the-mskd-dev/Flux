@@ -3,7 +3,7 @@ package com.mskd.flux.navigation.ui
 import androidx.compose.runtime.Composable
 import com.mskd.flux.features.customization.domain.model.NavigationStyle
 import com.mskd.flux.navigation.domain.Route
-import com.mskd.flux.ui.LocalUiGlobal
+import com.mskd.flux.ui.theme.LocalUiGlobal
 
 @Composable
 fun FluxNavigationBar(

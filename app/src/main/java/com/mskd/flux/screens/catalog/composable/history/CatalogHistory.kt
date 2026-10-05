@@ -34,12 +34,12 @@ import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.features.history.data.mapper.toHistoryEntry
 import com.mskd.flux.features.history.domain.model.HistoryEntry
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.ui.FluxUI
-import com.mskd.flux.ui.LocalUiShapes
+import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.theme.LocalUiShapes
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.fillMaxWidthWithLimit
 import com.mskd.flux.ui.image.FluxImage
-import com.mskd.flux.ui.global.ProgressStatusBar
+import com.mskd.flux.ui.components.ProgressStatusBar
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.bleedHorizontal

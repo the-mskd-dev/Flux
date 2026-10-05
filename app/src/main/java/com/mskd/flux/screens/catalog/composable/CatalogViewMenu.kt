@@ -13,7 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.domain.model.CatalogViewMode
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
-import com.mskd.flux.ui.FluxUI
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.ui.FluxThemePreview
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_sort

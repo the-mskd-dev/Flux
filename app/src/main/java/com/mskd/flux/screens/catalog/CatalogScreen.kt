@@ -54,8 +54,8 @@ import com.mskd.flux.mockups.DetailsMockup
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.navigation.domain.Route.Player
-import com.mskd.flux.ui.FluxUI
-import com.mskd.flux.ui.animateAlphaState
+import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.global.animateAlphaState
 import com.mskd.flux.ui.blurBackground
 import com.mskd.flux.ui.blurForeground
 import com.mskd.flux.screens.catalog.composable.CatalogEmptyContent
@@ -69,7 +69,7 @@ import com.mskd.flux.screens.catalog.composable.viewMode.CatalogViewModeSheet
 import com.mskd.flux.screens.catalog.composable.viewMode.catalogViewModeGenre
 import com.mskd.flux.screens.catalog.composable.viewMode.catalogViewModeGrid
 import com.mskd.flux.screens.catalog.composable.viewMode.catalogViewModeType
-import com.mskd.flux.ui.global.LoadingScreen
+import com.mskd.flux.ui.components.LoadingScreen
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.utils.rememberExternalPlayerAction

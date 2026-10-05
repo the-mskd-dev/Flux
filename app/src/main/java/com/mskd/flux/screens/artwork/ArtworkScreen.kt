@@ -35,10 +35,10 @@ import com.mskd.flux.ui.modal.dialog.FluxDialog
 import com.mskd.flux.screens.artwork.composables.ArtworkContentLarge
 import com.mskd.flux.screens.artwork.composables.ArtworkContentRegular
 import com.mskd.flux.screens.artwork.composables.common.ArtworkDropDownMenu
-import com.mskd.flux.ui.global.LoadingScreen
-import com.mskd.flux.ui.global.ErrorScreen
-import com.mskd.flux.ui.global.FluxScaffold
-import com.mskd.flux.ui.global.ResetProgressDialog
+import com.mskd.flux.ui.components.LoadingScreen
+import com.mskd.flux.ui.components.ErrorScreen
+import com.mskd.flux.ui.components.FluxScaffold
+import com.mskd.flux.ui.components.ResetProgressDialog
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.utils.rememberExternalPlayerAction

@@ -200,7 +200,9 @@ shared-network = [
 ]
 shared-di = [
     "koin-core",
-    "koin-annotations"
+    "koin-annotations",
+    "koin-compose",
+    "koin-compose-viewmodel",
 ]
 shared-image = [
     "coil-network-ktor",
@@ -281,8 +283,6 @@ android-player = [
 
 android-di = [
     "koin-android",
-    "koin-compose",
-    "koin-compose-viewmodel",
 ]
 
 android-acra = [

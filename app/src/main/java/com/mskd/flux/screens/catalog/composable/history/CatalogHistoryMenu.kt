@@ -4,8 +4,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.features.history.domain.model.HistoryEntry
-import com.mskd.flux.ui.global.FluxDropDownMenu
-import com.mskd.flux.ui.global.FluxDropDownMenuItem
+import com.mskd.flux.ui.components.FluxDropDownMenu
+import com.mskd.flux.ui.components.FluxDropDownMenuItem
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.delete
 import flux.shared.generated.resources.ic_delete

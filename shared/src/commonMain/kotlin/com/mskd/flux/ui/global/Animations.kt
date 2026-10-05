@@ -1,4 +1,4 @@
-package com.mskd.flux.ui
+package com.mskd.flux.ui.global
 
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState

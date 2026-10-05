@@ -27,11 +27,11 @@ import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.ui.FluxUI
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.image.FluxImage
-import com.mskd.flux.ui.global.ProgressStatusBar
-import com.mskd.flux.ui.global.ProgressStatusChip
+import com.mskd.flux.ui.components.ProgressStatusBar
+import com.mskd.flux.ui.components.ProgressStatusChip
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.grayScale
 import com.mskd.flux.ui.image.seedRgb

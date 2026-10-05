@@ -19,7 +19,7 @@ import com.mskd.flux.features.privateFolder.presentation.PrivateFolderUiState
 import com.mskd.flux.features.privateFolder.presentation.PrivateFolderViewModel
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.global.FluxScaffold
+import com.mskd.flux.ui.components.FluxScaffold
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.private_folder
 import flux.shared.generated.resources.private_folder_empty

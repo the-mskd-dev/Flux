@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.features.search.presentation.SearchIntent
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.ui.FluxUI
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.ui.media.MediaItem
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.displayCutoutPaddingInLandscape

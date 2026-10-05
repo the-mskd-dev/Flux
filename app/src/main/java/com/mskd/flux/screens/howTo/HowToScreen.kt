@@ -16,9 +16,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import com.mskd.flux.ui.FluxUI
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.global.FluxScaffold
+import com.mskd.flux.ui.components.FluxScaffold
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.FluxPreview
 import flux.shared.generated.resources.Res

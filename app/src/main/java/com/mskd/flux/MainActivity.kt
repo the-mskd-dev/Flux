@@ -45,7 +45,7 @@ import com.mskd.flux.screens.settings.SettingsScreen
 import com.mskd.flux.screens.setup.SetupScreen
 import com.mskd.flux.screens.show.ShowScreen
 import com.mskd.flux.screens.sources.SourcesScreen
-import com.mskd.flux.screens.token.TokenScreen
+import com.mskd.flux.features.token.ui.TokenScreen
 import com.mskd.flux.screens.unknown.UnknownScreen
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.createColorScheme

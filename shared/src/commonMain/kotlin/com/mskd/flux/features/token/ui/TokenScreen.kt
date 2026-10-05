@@ -1,6 +1,5 @@
-package com.mskd.flux.screens.token
+package com.mskd.flux.features.token.ui
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
@@ -51,14 +50,15 @@ import com.mskd.flux.features.token.presentation.TokenIntent
 import com.mskd.flux.features.token.presentation.TokenUiState
 import com.mskd.flux.features.token.presentation.TokenViewModel
 import com.mskd.flux.navigation.domain.Route
-import com.mskd.flux.ui.FluxUI
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.global.FluxIconButton
-import com.mskd.flux.ui.global.FluxScaffold
-import com.mskd.flux.ui.global.FluxTextButton
+import com.mskd.flux.ui.components.FluxIconButton
+import com.mskd.flux.ui.components.FluxScaffold
+import com.mskd.flux.ui.components.FluxTextButton
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.ui.FluxPreview
+import com.mskd.flux.ui.global.BackGesture
 import com.mskd.flux.utils.buildLinkedString
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.api_token
@@ -99,7 +99,7 @@ fun TokenScreen(
         }
     }
 
-    BackHandler(true) {
+    BackGesture {
         if (!fromSetup) onBack()
     }
 

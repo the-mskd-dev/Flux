@@ -1,4 +1,4 @@
-package com.mskd.flux.ui
+package com.mskd.flux.ui.global
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect

@@ -16,7 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.mskd.flux.core.model.artwork.Genre
 import com.mskd.flux.features.search.presentation.SearchIntent
 import com.mskd.flux.mockups.DetailsMockup
-import com.mskd.flux.ui.FluxUI
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.modal.bottomSheet.FluxBottomSheet
 import com.mskd.flux.ui.modal.bottomSheet.FluxBottomSheetItem

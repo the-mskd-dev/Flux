@@ -33,8 +33,8 @@ import androidx.compose.ui.unit.dp
 import com.mskd.flux.features.player.presentation.PlayerIntent
 import com.mskd.flux.features.player.presentation.PlayerUiContent
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.ui.FluxUI
-import com.mskd.flux.ui.global.CountDownButton
+import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.components.CountDownButton
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.FluxPreview
 import flux.shared.generated.resources.Res

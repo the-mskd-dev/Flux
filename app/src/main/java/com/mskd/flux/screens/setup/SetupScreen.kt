@@ -30,7 +30,7 @@ import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.navigation.domain.Route.Catalog
 import com.mskd.flux.navigation.domain.Route.Sources
 import com.mskd.flux.navigation.domain.Route.Token
-import com.mskd.flux.ui.FluxUI
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.fillMaxWidthWithLimit
 import com.mskd.flux.screens.setup.composables.SetupSourcesContent

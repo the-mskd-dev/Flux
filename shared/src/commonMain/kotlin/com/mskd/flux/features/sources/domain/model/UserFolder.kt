@@ -7,3 +7,6 @@ data class UserFolder(
     val source: FileSource = FileSource.LOCAL,
     val isAvailable: Boolean = true
 )
+
+expect fun UserFolder.name(): String
+expect fun UserFolder.cleanPath(): String

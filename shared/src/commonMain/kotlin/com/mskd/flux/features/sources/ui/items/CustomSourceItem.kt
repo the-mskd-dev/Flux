@@ -95,14 +95,14 @@ fun LazyItemScope.CustomSourceItem(
                 ),
                 headlineContent = {
                     Text.List.Title(
-                        text = folder.name,
+                        text = folder.name(),
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 1,
                     )
                 },
                 supportingContent = {
                     Text.List.Body(
-                        text = folder.cleanPath,
+                        text = folder.cleanPath(),
                         overflow = TextOverflow.StartEllipsis,
                         fontStyle = FontStyle.Italic,
                         maxLines = 1,
@@ -113,7 +113,7 @@ fun LazyItemScope.CustomSourceItem(
                         Icon(
                             tint = contentColor,
                             painter = painterResource(Res.drawable.ic_error),
-                            contentDescription = folder.name
+                            contentDescription = folder.name()
                         )
                     }
                 }

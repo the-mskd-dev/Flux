@@ -4,7 +4,7 @@ import androidx.core.net.toUri
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 
-val UserFolder.name: String get() {
+actual fun UserFolder.name(): String {
     return try {
 
         val decodedName = URLDecoder.decode(this.path, StandardCharsets.UTF_8.name())
@@ -17,7 +17,7 @@ val UserFolder.name: String get() {
     }
 }
 
-val UserFolder.cleanPath : String  get() {
+actual fun UserFolder.cleanPath(): String {
     return try {
 
         val decodedUri = URLDecoder.decode(this.path, StandardCharsets.UTF_8.name())

@@ -1,5 +1,6 @@
 package com.mskd.flux.features.catalog.domain.coordinator
 
+import androidx.room.concurrent.AtomicInt
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.ui.text.TextProvider
 import com.mskd.flux.utils.Trace
@@ -13,7 +14,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.concurrent.atomic.AtomicInteger
 import kotlin.math.roundToInt
 
 interface CatalogSyncCoordinator {
@@ -36,7 +36,7 @@ class CatalogSyncCoordinatorImpl(
     override val state: StateFlow<SyncState> = _state.asStateFlow()
 
     private var activeJob: Job? = null
-    private val completedSteps = AtomicInteger(0)
+    private val completedSteps = AtomicInt(0)
     private var totalSteps = 1
 
     override val isBusy: Boolean get() = _state.value is SyncState.Syncing

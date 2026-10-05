@@ -1,4 +1,4 @@
-package com.mskd.flux.ui.component
+package com.mskd.flux.ui.global
 
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState

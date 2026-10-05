@@ -1,4 +1,4 @@
-package com.mskd.flux.ui.component
+package com.mskd.flux.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -14,6 +14,7 @@ fun LifecycleComponent(
     onForeground: () -> Unit = {},
     onStop: () -> Unit = {}
 ) {
+
     val lifecycleOwner = LocalLifecycleOwner.current
 
     DisposableEffect (lifecycleOwner) {

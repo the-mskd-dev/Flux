@@ -40,7 +40,7 @@ import com.mskd.flux.navigation.domain.Route.Player
 import com.mskd.flux.ui.FluxUI
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.screens.unknown.composables.UnknownDropDownMenu
-import com.mskd.flux.ui.component.LoadingScreen
+import com.mskd.flux.ui.global.LoadingScreen
 import com.mskd.flux.ui.global.ErrorScreen
 import com.mskd.flux.ui.global.FluxScaffold
 import com.mskd.flux.ui.global.FluxSearchField

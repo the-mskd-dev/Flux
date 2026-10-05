@@ -56,7 +56,7 @@ import com.mskd.flux.ui.components.rememberSafFolderPicker
 import com.mskd.flux.screens.sources.composables.items.CustomSourceItem
 import com.mskd.flux.screens.sources.composables.items.SystemSourceItem
 import com.mskd.flux.screens.sources.composables.sourcesAnnotatedString
-import com.mskd.flux.ui.component.LoadingScreen
+import com.mskd.flux.ui.global.LoadingScreen
 import com.mskd.flux.ui.global.ErrorScreen
 import com.mskd.flux.ui.global.FluxScaffold
 import com.mskd.flux.ui.FluxPreview

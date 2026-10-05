@@ -32,7 +32,7 @@ import com.mskd.flux.navigation.domain.Route.Artwork
 import com.mskd.flux.screens.show.composables.SeasonDialog
 import com.mskd.flux.screens.show.composables.ShowContentLarge
 import com.mskd.flux.screens.show.composables.ShowContentRegular
-import com.mskd.flux.ui.component.LoadingScreen
+import com.mskd.flux.ui.global.LoadingScreen
 import com.mskd.flux.ui.global.ErrorScreen
 import com.mskd.flux.ui.global.FluxDropDownMenu
 import com.mskd.flux.ui.global.FluxDropDownMenuItem

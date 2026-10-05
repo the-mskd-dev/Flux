@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.setup.composables
+package com.mskd.flux.features.setup.ui.composables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -13,7 +13,6 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.screens.sources.composables.sourcesAnnotatedString
 import com.mskd.flux.ui.FluxThemePreview
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.setup_sources_default_desc

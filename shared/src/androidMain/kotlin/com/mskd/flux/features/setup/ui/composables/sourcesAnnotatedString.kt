@@ -1,5 +1,4 @@
-package com.mskd.flux.screens.sources.composables
-
+package com.mskd.flux.features.setup.ui.composables
 
 import android.annotation.SuppressLint
 import android.os.Environment
@@ -14,7 +13,7 @@ import org.jetbrains.compose.resources.stringResource
 
 @SuppressLint("ComposableNaming")
 @Composable
-fun sourcesAnnotatedString(stringRes: StringResource) : AnnotatedString {
+actual fun sourcesAnnotatedString(stringRes: StringResource) : AnnotatedString {
 
     val desc = stringResource(stringRes, Environment.DIRECTORY_MOVIES, Environment.DIRECTORY_DOWNLOADS)
     return buildAnnotatedString {

@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.setup
+package com.mskd.flux.features.setup.ui
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.Image
@@ -19,13 +19,13 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
 import com.mskd.flux.features.setup.domain.model.SetupScreen
 import com.mskd.flux.features.setup.presentation.SetupEvent
 import com.mskd.flux.features.setup.presentation.SetupIntent
 import com.mskd.flux.features.setup.presentation.SetupUiState
 import com.mskd.flux.features.setup.presentation.SetupViewModel
+import com.mskd.flux.features.setup.ui.composables.SetupSourcesContent
+import com.mskd.flux.features.setup.ui.composables.SetupWelcomeContent
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.navigation.domain.Route.Catalog
 import com.mskd.flux.navigation.domain.Route.Sources
@@ -33,11 +33,9 @@ import com.mskd.flux.navigation.domain.Route.Token
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.fillMaxWidthWithLimit
-import com.mskd.flux.screens.setup.composables.SetupSourcesContent
-import com.mskd.flux.screens.setup.composables.SetupWelcomeContent
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.FluxThemePreview
-import com.mskd.flux.utils.storagePermissionState
+import com.mskd.flux.utils.rememberStoragePermission
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_flux
 import flux.shared.generated.resources.next
@@ -45,7 +43,6 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun SetupScreen(
     navigate: (Route) -> Unit,
@@ -53,7 +50,7 @@ fun SetupScreen(
 ) {
 
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    val permissions = storagePermissionState { isGranted ->
+    val permissions = rememberStoragePermission { isGranted ->
         if (isGranted)
             viewModel.handleIntent(SetupIntent.OnPermissionGranted)
     }
@@ -65,8 +62,8 @@ fun SetupScreen(
                 SetupEvent.NavigateToToken -> navigate(Token(fromSetup = true))
                 SetupEvent.NavigateToCatalog -> navigate(Catalog)
                 SetupEvent.ShowPermissionDialog -> {
-                    if (permissions.status.isGranted) viewModel.handleIntent(SetupIntent.OnPermissionGranted)
-                    else permissions.launchPermissionRequest()
+                    if (permissions.isGranted) viewModel.handleIntent(SetupIntent.OnPermissionGranted)
+                    else permissions.request()
                 }
             }
         }

@@ -52,9 +52,9 @@ import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.components.rememberSafFolderPicker
-import com.mskd.flux.screens.sources.composables.items.CustomSourceItem
-import com.mskd.flux.screens.sources.composables.items.SystemSourceItem
-import com.mskd.flux.screens.sources.composables.sourcesAnnotatedString
+import com.mskd.flux.features.sources.ui.items.CustomSourceItem
+import com.mskd.flux.features.sources.ui.items.SystemSourceItem
+import com.mskd.flux.features.sources.ui.sourcesAnnotatedString
 import com.mskd.flux.ui.components.LoadingScreen
 import com.mskd.flux.ui.components.ErrorScreen
 import com.mskd.flux.ui.components.FluxScaffold

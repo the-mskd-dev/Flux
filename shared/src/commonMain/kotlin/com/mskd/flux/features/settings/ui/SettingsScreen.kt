@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.settings
+package com.mskd.flux.features.settings.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -22,36 +22,27 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.mskd.flux.features.customization.domain.model.NavigationStyle
 import com.mskd.flux.features.settings.presentation.SettingsEvent
 import com.mskd.flux.features.settings.presentation.SettingsIntent
 import com.mskd.flux.features.settings.presentation.SettingsUiState
 import com.mskd.flux.features.settings.presentation.SettingsViewModel
+import com.mskd.flux.features.settings.ui.composables.SettingsCustomizationSection
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.navigation.domain.Route.Token
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.ui.theme.LocalUiGlobal
-import com.mskd.flux.screens.settings.composables.SettingsAppInfoSection
-import com.mskd.flux.screens.settings.composables.SettingsCustomizationSection
-import com.mskd.flux.features.settings.ui.composables.SettingsDialogs
-import com.mskd.flux.screens.settings.composables.SettingsOtherSection
-import com.mskd.flux.screens.settings.composables.SettingsPlayerSection
-import com.mskd.flux.screens.settings.composables.SettingsPrivateFolderDialogs
-import com.mskd.flux.screens.settings.composables.SettingsPrivateFolderSection
-import com.mskd.flux.screens.settings.composables.SettingsSyncSection
-import com.mskd.flux.screens.settings.composables.SettingsTmdbSection
+import com.mskd.flux.features.settings.ui.composables.*
 import com.mskd.flux.ui.components.FluxOptionsDialog
 import com.mskd.flux.ui.components.FluxScaffold
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.FluxPreview
-import com.mskd.flux.utils.notificationsPermissionState
+import com.mskd.flux.utils.rememberNotificationsPermission
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.settings
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun SettingsScreen(
     onBack: () -> Unit,
@@ -60,7 +51,7 @@ fun SettingsScreen(
 ) {
 
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    val notificationsPermission = notificationsPermissionState()
+    val notificationsPermission = rememberNotificationsPermission()
 
 
     LaunchedEffect(Unit) {
@@ -72,7 +63,7 @@ fun SettingsScreen(
                 SettingsEvent.NavigateToHowToScreen -> navigate(Route.HowTo)
                 SettingsEvent.NavigateToCustomizationScreen -> navigate(Route.Customization)
                 SettingsEvent.NavigateToSourcesScreen -> navigate(Route.Sources())
-                SettingsEvent.RequestExternalPlayerPermission -> notificationsPermission?.launchPermissionRequest()
+                SettingsEvent.RequestExternalPlayerPermission -> notificationsPermission?.request()
                 SettingsEvent.PrivateFolderPinUpdated -> {}
             }
         }
@@ -165,26 +156,6 @@ fun SettingsContent(
         }
 
     }
-
-}
-
-@Composable
-fun SettingIcon(
-    painter: Painter,
-    backgroundColor: Color,
-    iconColor: Color,
-    contentDescription: String
-) {
-
-    Icon(
-        modifier = Modifier
-            .clip(CircleShape)
-            .background(backgroundColor)
-            .padding(all = FluxUI.Space.small),
-        painter = painter,
-        tint = iconColor,
-        contentDescription = contentDescription
-    )
 
 }
 

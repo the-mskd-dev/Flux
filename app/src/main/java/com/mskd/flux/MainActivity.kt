@@ -41,8 +41,8 @@ import com.mskd.flux.features.message.ui.MessageScreen
 import com.mskd.flux.screens.player.PlayerScreen
 import com.mskd.flux.features.privateFolder.ui.PrivateScreen
 import com.mskd.flux.screens.search.SearchScreen
-import com.mskd.flux.screens.settings.SettingsScreen
-import com.mskd.flux.screens.setup.SetupScreen
+import com.mskd.flux.features.settings.ui.SettingsScreen
+import com.mskd.flux.features.setup.ui.SetupScreen
 import com.mskd.flux.features.show.ui.ShowScreen
 import com.mskd.flux.screens.sources.SourcesScreen
 import com.mskd.flux.features.token.ui.TokenScreen

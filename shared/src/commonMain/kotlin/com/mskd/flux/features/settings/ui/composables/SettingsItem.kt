@@ -1,19 +1,24 @@
 package com.mskd.flux.features.settings.ui.composables
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.screens.settings.SettingIcon
+import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.extensions.uppercaseFirstLetter
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -66,5 +71,24 @@ fun SettingsItem(
         }
     )
 
+}
+
+@Composable
+fun SettingIcon(
+    painter: Painter,
+    backgroundColor: Color,
+    iconColor: Color,
+    contentDescription: String
+) {
+
+    Icon(
+        modifier = Modifier
+            .clip(CircleShape)
+            .background(backgroundColor)
+            .padding(all = FluxUI.Space.small),
+        painter = painter,
+        tint = iconColor,
+        contentDescription = contentDescription
+    )
 
 }

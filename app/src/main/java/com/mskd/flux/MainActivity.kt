@@ -27,9 +27,9 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.mskd.flux.features.connectivity.domain.ConnectivityRepository
 import com.mskd.flux.features.customization.domain.model.NavigationStyle
-import com.mskd.flux.navigation.component.FluxNavigationBar
+import com.mskd.flux.navigation.ui.FluxNavigationBar
 import com.mskd.flux.navigation.domain.Route
-import com.mskd.flux.navigation.domain.Transition
+import com.mskd.flux.navigation.ui.Transition
 import com.mskd.flux.navigation.domain.navigateToTab
 import com.mskd.flux.report.CrashLogger
 import com.mskd.flux.screens.about.AboutScreen

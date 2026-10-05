@@ -1,4 +1,4 @@
-package com.mskd.flux.navigation.component
+package com.mskd.flux.navigation.ui
 
 import androidx.compose.runtime.Composable
 import com.mskd.flux.features.customization.domain.model.NavigationStyle

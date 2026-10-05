@@ -29,7 +29,7 @@ import androidx.constraintlayout.compose.Dimension
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.features.player.presentation.PlayerIntent
 import com.mskd.flux.features.player.presentation.PlayerUiContent
-import com.mskd.flux.presentation.FluxUI
+import com.mskd.flux.ui.theme.FluxUI
 
 @Composable
 fun PlayerInterface(

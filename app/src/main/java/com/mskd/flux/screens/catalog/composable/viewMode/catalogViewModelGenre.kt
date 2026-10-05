@@ -16,10 +16,10 @@ import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.mockups.DetailsMockup
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.screens.catalog.composable.CatalogCategory
-import com.mskd.flux.utils.FluxThemePreview
-import com.mskd.flux.utils.extensions.bleedHorizontal
+import com.mskd.flux.ui.FluxThemePreview
+import com.mskd.flux.ui.bleedHorizontal
+import com.mskd.flux.ui.theme.FluxUI
 
 fun LazyGridScope.catalogViewModeGenre(
     artworks: List<Artwork>,

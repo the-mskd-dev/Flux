@@ -53,9 +53,9 @@ import com.mskd.flux.features.token.presentation.TokenViewModel
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.presentation.text.Text
-import com.mskd.flux.ui.component.global.FluxIconButton
+import com.mskd.flux.presentation.global.FluxIconButton
 import com.mskd.flux.presentation.global.FluxScaffold
-import com.mskd.flux.ui.component.global.FluxTextButton
+import com.mskd.flux.presentation.global.FluxTextButton
 import com.mskd.flux.ui.FluxTheme
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.FluxPreview

@@ -33,9 +33,9 @@ import com.mskd.flux.screens.show.composables.SeasonDialog
 import com.mskd.flux.screens.show.composables.ShowContentLarge
 import com.mskd.flux.screens.show.composables.ShowContentRegular
 import com.mskd.flux.ui.component.LoadingScreen
-import com.mskd.flux.ui.component.global.ErrorScreen
-import com.mskd.flux.ui.component.global.FluxDropDownMenu
-import com.mskd.flux.ui.component.global.FluxDropDownMenuItem
+import com.mskd.flux.presentation.global.ErrorScreen
+import com.mskd.flux.presentation.global.FluxDropDownMenu
+import com.mskd.flux.presentation.global.FluxDropDownMenuItem
 import com.mskd.flux.presentation.global.FluxScaffold
 import com.mskd.flux.presentation.global.ResetProgressDialog
 import com.mskd.flux.utils.FluxPreview

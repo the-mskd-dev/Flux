@@ -4,8 +4,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.features.unknown.presentation.UnknownIntent
-import com.mskd.flux.ui.component.global.FluxDropDownMenu
-import com.mskd.flux.ui.component.global.FluxDropDownMenuItem
+import com.mskd.flux.presentation.global.FluxDropDownMenu
+import com.mskd.flux.presentation.global.FluxDropDownMenuItem
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_file_explorer
 import flux.shared.generated.resources.open_in_file_explorer

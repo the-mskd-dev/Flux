@@ -1,4 +1,4 @@
-package com.mskd.flux.ui.component.global
+package com.mskd.flux.presentation.global
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -34,7 +34,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.presentation.text.Text
-import com.mskd.flux.ui.FluxTheme
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_arrow_down
 import flux.shared.generated.resources.next_episode
@@ -174,38 +173,34 @@ fun ReadMoreButton(
 @Preview
 @Composable
 fun CountDownButton_Preview() {
-    FluxTheme {
-        Column(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.background)
-                .padding(FluxUI.Space.large)
-        ) {
-            CountDownButton(
-                onClick = {  },
-                text = { stringResource(Res.string.next_episode, it) }
-            )
-        }
+    Column(
+        modifier = Modifier
+            .background(MaterialTheme.colorScheme.background)
+            .padding(FluxUI.Space.large)
+    ) {
+        CountDownButton(
+            onClick = {  },
+            text = { stringResource(Res.string.next_episode, it) }
+        )
     }
 }
 
 @Preview
 @Composable
 fun ReadMoreButton_Preview() {
-    FluxTheme {
-        Column(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.background)
-                .padding(FluxUI.Space.large),
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large)
-        ) {
-            ReadMoreButton(
-                onClick = {  },
-                isExpanded = true
-            )
-            ReadMoreButton(
-                onClick = {  },
-                isExpanded = false
-            )
-        }
+    Column(
+        modifier = Modifier
+            .background(MaterialTheme.colorScheme.background)
+            .padding(FluxUI.Space.large),
+        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large)
+    ) {
+        ReadMoreButton(
+            onClick = {  },
+            isExpanded = true
+        )
+        ReadMoreButton(
+            onClick = {  },
+            isExpanded = false
+        )
     }
 }

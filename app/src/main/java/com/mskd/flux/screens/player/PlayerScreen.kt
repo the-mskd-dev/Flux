@@ -65,7 +65,7 @@ import com.mskd.flux.screens.player.composables.playerInterface.PlayerSeekOverla
 import com.mskd.flux.screens.player.composables.playerInterface.PlayerSubtitles
 import com.mskd.flux.screens.player.composables.settings.PlayerSettings
 import com.mskd.flux.ui.component.LoadingScreen
-import com.mskd.flux.ui.component.global.ErrorScreen
+import com.mskd.flux.presentation.global.ErrorScreen
 import com.mskd.flux.utils.extensions.description
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.oups_an_error_occured

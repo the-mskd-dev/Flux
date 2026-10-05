@@ -36,7 +36,7 @@ import com.mskd.flux.screens.artwork.composables.ArtworkContentLarge
 import com.mskd.flux.screens.artwork.composables.ArtworkContentRegular
 import com.mskd.flux.screens.artwork.composables.common.ArtworkDropDownMenu
 import com.mskd.flux.ui.component.LoadingScreen
-import com.mskd.flux.ui.component.global.ErrorScreen
+import com.mskd.flux.presentation.global.ErrorScreen
 import com.mskd.flux.presentation.global.FluxScaffold
 import com.mskd.flux.presentation.global.ResetProgressDialog
 import com.mskd.flux.ui.FluxTheme

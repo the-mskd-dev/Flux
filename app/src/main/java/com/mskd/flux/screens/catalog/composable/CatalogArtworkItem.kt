@@ -11,8 +11,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
-import com.mskd.flux.ui.component.global.FluxDropDownMenu
-import com.mskd.flux.ui.component.global.FluxDropDownMenuItem
+import com.mskd.flux.presentation.global.FluxDropDownMenu
+import com.mskd.flux.presentation.global.FluxDropDownMenuItem
 import com.mskd.flux.ui.component.media.MediaItem
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.add_to_private_folder

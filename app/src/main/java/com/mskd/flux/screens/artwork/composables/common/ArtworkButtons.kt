@@ -27,7 +27,7 @@ import com.mskd.flux.features.artwork.presentation.ArtworkIntent
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.presentation.text.Text
-import com.mskd.flux.ui.component.global.FluxTextButton
+import com.mskd.flux.presentation.global.FluxTextButton
 import com.mskd.flux.presentation.global.ProgressStatusBar
 import com.mskd.flux.ui.FluxTheme
 import com.mskd.flux.utils.FluxPreview

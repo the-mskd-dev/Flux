@@ -1,4 +1,4 @@
-package com.mskd.flux.ui.component.global
+package com.mskd.flux.presentation.global
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -13,11 +13,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import com.mskd.flux.presentation.FluxUI
-import com.mskd.flux.presentation.global.FluxScaffold
 import com.mskd.flux.presentation.text.Text
-import com.mskd.flux.ui.FluxTheme
-import com.mskd.flux.utils.FluxPreview
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.oups_an_error_occured
 import org.jetbrains.compose.resources.stringResource
@@ -71,14 +69,12 @@ fun ErrorScreen(
 
 }
 
-@FluxPreview
+@Preview
 @Composable
 fun ErrorScreen_preview() {
-    FluxTheme {
-        ErrorScreen(
-            message = stringResource(Res.string.oups_an_error_occured),
-            description = "Error description",
-            onBackButtonClick = {}
-        )
-    }
+    ErrorScreen(
+        message = stringResource(Res.string.oups_an_error_occured),
+        description = "Error description",
+        onBackButtonClick = {}
+    )
 }

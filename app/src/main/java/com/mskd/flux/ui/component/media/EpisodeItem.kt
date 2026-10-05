@@ -30,8 +30,8 @@ import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.presentation.text.Text
-import com.mskd.flux.ui.component.global.FixedChip
-import com.mskd.flux.ui.component.global.ReadMoreButton
+import com.mskd.flux.presentation.global.FixedChip
+import com.mskd.flux.presentation.global.ReadMoreButton
 import com.mskd.flux.utils.FluxThemePreview
 import com.mskd.flux.utils.PortraitPreview
 import com.mskd.flux.utils.extensions.grayScale

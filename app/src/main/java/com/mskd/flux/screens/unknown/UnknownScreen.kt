@@ -41,7 +41,7 @@ import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.presentation.text.Text
 import com.mskd.flux.screens.unknown.composables.UnknownDropDownMenu
 import com.mskd.flux.ui.component.LoadingScreen
-import com.mskd.flux.ui.component.global.ErrorScreen
+import com.mskd.flux.presentation.global.ErrorScreen
 import com.mskd.flux.presentation.global.FluxScaffold
 import com.mskd.flux.presentation.global.FluxSearchField
 import com.mskd.flux.ui.component.media.EpisodeItem

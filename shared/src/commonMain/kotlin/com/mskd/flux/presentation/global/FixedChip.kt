@@ -1,4 +1,4 @@
-package com.mskd.flux.ui.component.global
+package com.mskd.flux.presentation.global
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -10,11 +10,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.presentation.text.Text
-import com.mskd.flux.ui.FluxTheme
-import com.mskd.flux.utils.FluxPreview
 
 @Composable
 fun FixedChip(
@@ -37,12 +36,10 @@ fun FixedChip(
     }
 }
 
-@FluxPreview
+@Preview
 @Composable
 fun FixedChip_Preview() {
-    FluxTheme {
-        Box(modifier = Modifier.padding(all = FluxUI.Space.large)) {
-            FixedChip(text = "FixedChip")
-        }
+    Box(modifier = Modifier.padding(all = FluxUI.Space.large)) {
+        FixedChip(text = "FixedChip")
     }
 }

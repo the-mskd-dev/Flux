@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.show.composables
+package com.mskd.flux.features.show.ui.composables
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

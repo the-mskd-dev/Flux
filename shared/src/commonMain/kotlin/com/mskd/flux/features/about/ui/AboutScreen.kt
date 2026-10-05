@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.about
+package com.mskd.flux.features.about.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

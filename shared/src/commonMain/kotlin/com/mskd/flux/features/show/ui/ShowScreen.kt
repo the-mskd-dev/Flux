@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.show
+package com.mskd.flux.features.show.ui
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
@@ -26,12 +26,12 @@ import com.mskd.flux.features.show.presentation.ShowDialog
 import com.mskd.flux.features.show.presentation.ShowEvent
 import com.mskd.flux.features.show.presentation.ShowIntent
 import com.mskd.flux.features.show.presentation.ShowViewModel
+import com.mskd.flux.features.show.ui.composables.SeasonDialog
+import com.mskd.flux.features.show.ui.composables.ShowContentLarge
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.navigation.domain.Route.Artwork
-import com.mskd.flux.screens.show.composables.SeasonDialog
-import com.mskd.flux.screens.show.composables.ShowContentLarge
-import com.mskd.flux.screens.show.composables.ShowContentRegular
+import com.mskd.flux.features.show.ui.composables.ShowContentRegular
 import com.mskd.flux.ui.components.LoadingScreen
 import com.mskd.flux.ui.components.ErrorScreen
 import com.mskd.flux.ui.components.FluxDropDownMenu

@@ -16,11 +16,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.mskd.flux.core.model.artwork.Genre
 import com.mskd.flux.features.search.presentation.SearchIntent
 import com.mskd.flux.mockups.DetailsMockup
-import com.mskd.flux.presentation.FluxUI
-import com.mskd.flux.presentation.text.Text
-import com.mskd.flux.presentation.modal.bottomSheet.FluxBottomSheet
-import com.mskd.flux.presentation.modal.bottomSheet.FluxBottomSheetItem
-import com.mskd.flux.presentation.FluxThemePreview
+import com.mskd.flux.ui.FluxUI
+import com.mskd.flux.ui.text.Text
+import com.mskd.flux.ui.modal.bottomSheet.FluxBottomSheet
+import com.mskd.flux.ui.modal.bottomSheet.FluxBottomSheetItem
+import com.mskd.flux.ui.FluxThemePreview
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.clear
 import flux.shared.generated.resources.genres

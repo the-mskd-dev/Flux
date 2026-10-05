@@ -30,8 +30,8 @@ import com.mskd.flux.features.settings.presentation.SettingsUiState
 import com.mskd.flux.features.settings.presentation.SettingsViewModel
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.navigation.domain.Route.Token
-import com.mskd.flux.presentation.FluxUI
-import com.mskd.flux.presentation.LocalUiGlobal
+import com.mskd.flux.ui.FluxUI
+import com.mskd.flux.ui.LocalUiGlobal
 import com.mskd.flux.screens.settings.composables.SettingsAppInfoSection
 import com.mskd.flux.screens.settings.composables.SettingsCustomizationSection
 import com.mskd.flux.screens.settings.composables.SettingsDialogs
@@ -41,10 +41,10 @@ import com.mskd.flux.screens.settings.composables.SettingsPrivateFolderDialogs
 import com.mskd.flux.screens.settings.composables.SettingsPrivateFolderSection
 import com.mskd.flux.screens.settings.composables.SettingsSyncSection
 import com.mskd.flux.screens.settings.composables.SettingsTmdbSection
-import com.mskd.flux.presentation.global.FluxOptionsDialog
-import com.mskd.flux.presentation.global.FluxScaffold
-import com.mskd.flux.presentation.theme.FluxTheme
-import com.mskd.flux.presentation.FluxPreview
+import com.mskd.flux.ui.global.FluxOptionsDialog
+import com.mskd.flux.ui.global.FluxScaffold
+import com.mskd.flux.ui.theme.FluxTheme
+import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.utils.notificationsPermissionState
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.settings

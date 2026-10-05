@@ -31,8 +31,8 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.features.settings.presentation.PrivateFolderPinDialog
-import com.mskd.flux.presentation.FluxUI
-import com.mskd.flux.presentation.text.Text
+import com.mskd.flux.ui.FluxUI
+import com.mskd.flux.ui.text.Text
 
 @Composable
 fun PinTextField(

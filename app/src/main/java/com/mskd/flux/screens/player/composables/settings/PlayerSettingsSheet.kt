@@ -26,10 +26,10 @@ import com.mskd.flux.core.model.player.PlayerTrack
 import com.mskd.flux.features.player.presentation.PlayerIntent
 import com.mskd.flux.features.player.presentation.PlayerUiContent
 import com.mskd.flux.mockups.PlayerMockups
-import com.mskd.flux.presentation.FluxUI
-import com.mskd.flux.presentation.text.Text
-import com.mskd.flux.presentation.theme.FluxTheme
-import com.mskd.flux.presentation.FluxPreview
+import com.mskd.flux.ui.FluxUI
+import com.mskd.flux.ui.text.Text
+import com.mskd.flux.ui.theme.FluxTheme
+import com.mskd.flux.ui.FluxPreview
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.by_default
 import org.jetbrains.compose.resources.stringResource

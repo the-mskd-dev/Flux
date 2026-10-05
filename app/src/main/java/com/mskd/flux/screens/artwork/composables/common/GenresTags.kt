@@ -14,9 +14,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.core.model.artwork.Genre
 import com.mskd.flux.mockups.DetailsMockup
-import com.mskd.flux.presentation.FluxUI
-import com.mskd.flux.presentation.text.Text
-import com.mskd.flux.presentation.FluxThemePreview
+import com.mskd.flux.ui.FluxUI
+import com.mskd.flux.ui.text.Text
+import com.mskd.flux.ui.FluxThemePreview
 
 @Composable
 fun GenresTags(genres: List<Genre>) {

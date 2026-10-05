@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.mskd.flux.core.model.core.AppInfo
 import com.mskd.flux.core.model.core.FluxOptionsDialogItem
 import com.mskd.flux.core.model.core.FluxOptionsDialogState
-import com.mskd.flux.presentation.text.TextProvider
+import com.mskd.flux.ui.text.TextProvider
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase

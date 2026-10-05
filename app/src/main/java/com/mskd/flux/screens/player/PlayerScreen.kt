@@ -57,7 +57,7 @@ import com.mskd.flux.features.player.presentation.PlayerUiContent
 import com.mskd.flux.features.player.presentation.PlayerViewModel
 import com.mskd.flux.features.player.presentation.rememberPlayerScaleEffects
 import com.mskd.flux.features.player.presentation.rememberWindowStateHolder
-import com.mskd.flux.presentation.FluxUI
+import com.mskd.flux.ui.FluxUI
 import com.mskd.flux.screens.player.composables.PlayerSideEffects
 import com.mskd.flux.screens.player.composables.playerInterface.PlayerAmbientOverlay
 import com.mskd.flux.screens.player.composables.playerInterface.PlayerInterface
@@ -65,7 +65,7 @@ import com.mskd.flux.screens.player.composables.playerInterface.PlayerSeekOverla
 import com.mskd.flux.screens.player.composables.playerInterface.PlayerSubtitles
 import com.mskd.flux.screens.player.composables.settings.PlayerSettings
 import com.mskd.flux.ui.component.LoadingScreen
-import com.mskd.flux.presentation.global.ErrorScreen
+import com.mskd.flux.ui.global.ErrorScreen
 import com.mskd.flux.utils.extensions.description
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.oups_an_error_occured

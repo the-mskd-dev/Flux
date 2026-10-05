@@ -34,10 +34,10 @@ import androidx.compose.ui.unit.dp
 import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.features.sources.domain.model.cleanPath
 import com.mskd.flux.features.sources.domain.model.name
-import com.mskd.flux.presentation.FluxUI
-import com.mskd.flux.presentation.text.Text
-import com.mskd.flux.presentation.FluxThemePreview
-import com.mskd.flux.presentation.groupedShape
+import com.mskd.flux.ui.FluxUI
+import com.mskd.flux.ui.text.Text
+import com.mskd.flux.ui.FluxThemePreview
+import com.mskd.flux.ui.groupedShape
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_error
 import kotlinx.coroutines.launch

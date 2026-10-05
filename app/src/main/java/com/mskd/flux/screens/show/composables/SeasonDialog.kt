@@ -13,11 +13,11 @@ import androidx.compose.ui.Modifier
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.features.show.presentation.ShowIntent
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.presentation.FluxUI
-import com.mskd.flux.presentation.text.Text
-import com.mskd.flux.presentation.modal.dialog.FluxDialog
-import com.mskd.flux.presentation.theme.FluxTheme
-import com.mskd.flux.presentation.FluxPreview
+import com.mskd.flux.ui.FluxUI
+import com.mskd.flux.ui.text.Text
+import com.mskd.flux.ui.modal.dialog.FluxDialog
+import com.mskd.flux.ui.theme.FluxTheme
+import com.mskd.flux.ui.FluxPreview
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.close
 import flux.shared.generated.resources.no_summary

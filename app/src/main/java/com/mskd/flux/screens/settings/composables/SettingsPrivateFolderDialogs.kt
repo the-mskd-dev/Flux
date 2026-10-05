@@ -14,9 +14,9 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import com.mskd.flux.features.settings.presentation.PrivateFolderPinDialog
 import com.mskd.flux.features.settings.presentation.SettingsIntent
 import com.mskd.flux.features.settings.presentation.SettingsUiState
-import com.mskd.flux.presentation.FluxUI
-import com.mskd.flux.presentation.text.Text
-import com.mskd.flux.presentation.modal.dialog.FluxDialog
+import com.mskd.flux.ui.FluxUI
+import com.mskd.flux.ui.text.Text
+import com.mskd.flux.ui.modal.dialog.FluxDialog
 import com.mskd.flux.screens.privateFolder.composables.PinTextField
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.pin_create_subtitle

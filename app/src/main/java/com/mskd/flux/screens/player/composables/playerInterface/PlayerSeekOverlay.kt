@@ -28,10 +28,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.constraintlayout.compose.layoutId
 import com.mskd.flux.features.player.presentation.PlayerUiContent
-import com.mskd.flux.presentation.FluxUI
-import com.mskd.flux.presentation.text.Text
-import com.mskd.flux.presentation.theme.FluxTheme
-import com.mskd.flux.presentation.LandscapePreview
+import com.mskd.flux.ui.FluxUI
+import com.mskd.flux.ui.text.Text
+import com.mskd.flux.ui.theme.FluxTheme
+import com.mskd.flux.ui.LandscapePreview
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_forward
 import flux.shared.generated.resources.ic_rewind

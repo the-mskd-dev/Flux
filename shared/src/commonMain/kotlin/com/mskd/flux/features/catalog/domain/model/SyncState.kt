@@ -1,6 +1,6 @@
 package com.mskd.flux.features.catalog.domain.model
 
-import com.mskd.flux.presentation.text.TextProvider
+import com.mskd.flux.ui.text.TextProvider
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.loading_your_catalog
 

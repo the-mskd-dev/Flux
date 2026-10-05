@@ -16,11 +16,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import com.mskd.flux.presentation.FluxUI
-import com.mskd.flux.presentation.text.Text
-import com.mskd.flux.presentation.global.FluxScaffold
-import com.mskd.flux.presentation.theme.FluxTheme
-import com.mskd.flux.presentation.FluxPreview
+import com.mskd.flux.ui.FluxUI
+import com.mskd.flux.ui.text.Text
+import com.mskd.flux.ui.global.FluxScaffold
+import com.mskd.flux.ui.theme.FluxTheme
+import com.mskd.flux.ui.FluxPreview
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.how_to_name_files
 import flux.shared.generated.resources.how_to_name_files_desc

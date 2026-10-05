@@ -33,10 +33,10 @@ import androidx.compose.ui.unit.dp
 import com.mskd.flux.features.player.presentation.PlayerIntent
 import com.mskd.flux.features.player.presentation.PlayerUiContent
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.presentation.FluxUI
-import com.mskd.flux.presentation.global.CountDownButton
-import com.mskd.flux.presentation.theme.FluxTheme
-import com.mskd.flux.presentation.FluxPreview
+import com.mskd.flux.ui.FluxUI
+import com.mskd.flux.ui.global.CountDownButton
+import com.mskd.flux.ui.theme.FluxTheme
+import com.mskd.flux.ui.FluxPreview
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.next_episode
 import org.jetbrains.compose.resources.stringResource

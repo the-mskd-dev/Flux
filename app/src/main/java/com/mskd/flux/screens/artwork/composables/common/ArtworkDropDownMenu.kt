@@ -6,8 +6,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.features.artwork.presentation.ArtworkIntent
-import com.mskd.flux.presentation.global.FluxDropDownMenu
-import com.mskd.flux.presentation.global.FluxDropDownMenuItem
+import com.mskd.flux.ui.global.FluxDropDownMenu
+import com.mskd.flux.ui.global.FluxDropDownMenuItem
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_eraser
 import flux.shared.generated.resources.ic_file_explorer

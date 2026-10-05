@@ -6,7 +6,7 @@ import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.core.State
-import com.mskd.flux.presentation.text.TextProvider
+import com.mskd.flux.ui.text.TextProvider
 import com.mskd.flux.core.model.player.PlayerTrack
 import com.mskd.flux.core.model.player.PlayerTrack.Type
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase

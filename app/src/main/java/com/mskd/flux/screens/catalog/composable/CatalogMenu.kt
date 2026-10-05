@@ -23,10 +23,10 @@ import androidx.compose.ui.unit.dp
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.presentation.FluxUI
-import com.mskd.flux.presentation.text.Text
-import com.mskd.flux.presentation.FluxPreview
-import com.mskd.flux.presentation.FluxThemePreview
+import com.mskd.flux.ui.FluxUI
+import com.mskd.flux.ui.text.Text
+import com.mskd.flux.ui.FluxPreview
+import com.mskd.flux.ui.FluxThemePreview
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.add_source
 import flux.shared.generated.resources.add_token

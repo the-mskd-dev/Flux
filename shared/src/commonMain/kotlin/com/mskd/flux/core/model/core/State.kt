@@ -1,6 +1,6 @@
 package com.mskd.flux.core.model.core
 
-import com.mskd.flux.presentation.text.TextProvider
+import com.mskd.flux.ui.text.TextProvider
 
 sealed class State<out T> {
     data class Content<T>(val content: T) : State<T>()

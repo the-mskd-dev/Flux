@@ -1,7 +1,7 @@
 package com.mskd.flux.core.model.core
 
 import androidx.compose.ui.graphics.Color
-import com.mskd.flux.presentation.text.TextProvider
+import com.mskd.flux.ui.text.TextProvider
 import org.jetbrains.compose.resources.StringResource
 
 data class FluxOptionsDialogState<T, out R>(

@@ -25,10 +25,10 @@ import androidx.compose.ui.platform.LocalDensity
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
-import com.mskd.flux.presentation.FluxUI
-import com.mskd.flux.presentation.text.Text
-import com.mskd.flux.presentation.dimensions.itemWidthFor
-import com.mskd.flux.presentation.dimensions.rememberScreenDimensions
+import com.mskd.flux.ui.FluxUI
+import com.mskd.flux.ui.text.Text
+import com.mskd.flux.ui.dimensions.itemWidthFor
+import com.mskd.flux.ui.dimensions.rememberScreenDimensions
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable

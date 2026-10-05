@@ -16,8 +16,9 @@ import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.screens.catalog.composable.CatalogCategory
-import com.mskd.flux.utils.FluxThemePreview
-import com.mskd.flux.utils.extensions.bleedHorizontal
+import com.mskd.flux.presentation.FluxThemePreview
+import com.mskd.flux.presentation.bleedHorizontal
+import com.mskd.flux.presentation.bleedHorizontal
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.movies
 import flux.shared.generated.resources.shows

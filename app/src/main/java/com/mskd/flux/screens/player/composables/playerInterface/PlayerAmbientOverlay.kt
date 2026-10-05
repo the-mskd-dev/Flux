@@ -29,8 +29,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.features.player.presentation.PlayerUiContent
 import com.mskd.flux.presentation.FluxUI
-import com.mskd.flux.ui.FluxTheme
-import com.mskd.flux.utils.LandscapePreview
+import com.mskd.flux.presentation.theme.FluxTheme
+import com.mskd.flux.presentation.LandscapePreview
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_brightness
 import flux.shared.generated.resources.ic_volume

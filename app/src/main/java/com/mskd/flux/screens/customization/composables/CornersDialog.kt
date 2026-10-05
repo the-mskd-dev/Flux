@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.presentation.text.Text
 import com.mskd.flux.presentation.modal.dialog.FluxDialog
-import com.mskd.flux.ui.FluxTheme
+import com.mskd.flux.presentation.theme.FluxTheme
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.corners
 import flux.shared.generated.resources.corners_desc

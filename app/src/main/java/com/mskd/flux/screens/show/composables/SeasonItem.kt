@@ -16,28 +16,30 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.palette.graphics.Palette
-import coil3.toBitmap
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.presentation.text.Text
-import com.mskd.flux.presentation.global.FluxImage
+import com.mskd.flux.presentation.image.FluxImage
 import com.mskd.flux.presentation.global.ProgressStatusBar
 import com.mskd.flux.presentation.global.ProgressStatusChip
-import com.mskd.flux.utils.FluxThemePreview
-import com.mskd.flux.utils.extensions.grayScale
+import com.mskd.flux.presentation.FluxThemePreview
+import com.mskd.flux.presentation.grayScale
+import com.mskd.flux.presentation.image.seedRgb
+import com.mskd.flux.presentation.image.toComposeImageBitmap
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.episodes_count
 import flux.shared.generated.resources.season
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -51,6 +53,7 @@ fun SeasonItem(
 ) {
 
     var seedRgb by remember { mutableStateOf<Int?>(null) }
+    val scope = rememberCoroutineScope()
 
     Column(
         modifier = modifier,
@@ -81,10 +84,8 @@ fun SeasonItem(
                     path = season.imagePath.orEmpty(),
                     contentDescription = season.title,
                     onSuccess = { state ->
-                        val bitmap = state.result.image.toBitmap()
-                        Palette.from(bitmap).generate { palette ->
-                            seedRgb = palette?.dominantSwatch?.rgb
-                        }
+                        val image = state.result.image
+                        scope.launch { seedRgb = image.toComposeImageBitmap().seedRgb() }
                     }
                 )
 

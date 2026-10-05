@@ -1,4 +1,4 @@
-package com.mskd.flux.ui.component.media
+package com.mskd.flux.presentation.media
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,7 +19,7 @@ import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.presentation.text.Text
-import com.mskd.flux.ui.FluxTheme
+import com.mskd.flux.presentation.theme.FluxTheme
 import com.mskd.flux.utils.extensions.formattedText
 import com.mskd.flux.utils.extensions.minToMs
 import com.mskd.flux.utils.extensions.releaseDate

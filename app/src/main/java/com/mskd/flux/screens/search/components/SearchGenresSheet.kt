@@ -20,7 +20,7 @@ import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.presentation.text.Text
 import com.mskd.flux.presentation.modal.bottomSheet.FluxBottomSheet
 import com.mskd.flux.presentation.modal.bottomSheet.FluxBottomSheetItem
-import com.mskd.flux.utils.FluxThemePreview
+import com.mskd.flux.presentation.FluxThemePreview
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.clear
 import flux.shared.generated.resources.genres

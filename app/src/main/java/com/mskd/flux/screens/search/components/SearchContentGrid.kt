@@ -23,9 +23,9 @@ import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.features.search.presentation.SearchIntent
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.presentation.FluxUI
-import com.mskd.flux.ui.component.media.MediaItem
-import com.mskd.flux.utils.FluxThemePreview
-import com.mskd.flux.utils.extensions.displayCutoutPaddingInLandscape
+import com.mskd.flux.presentation.media.MediaItem
+import com.mskd.flux.presentation.FluxThemePreview
+import com.mskd.flux.presentation.displayCutoutPaddingInLandscape
 
 @Composable
 fun SearchContentGrid(

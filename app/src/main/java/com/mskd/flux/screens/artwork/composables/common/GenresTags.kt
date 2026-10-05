@@ -16,7 +16,7 @@ import com.mskd.flux.core.model.artwork.Genre
 import com.mskd.flux.mockups.DetailsMockup
 import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.presentation.text.Text
-import com.mskd.flux.utils.FluxThemePreview
+import com.mskd.flux.presentation.FluxThemePreview
 
 @Composable
 fun GenresTags(genres: List<Genre>) {

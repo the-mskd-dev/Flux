@@ -25,11 +25,11 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.presentation.global.FluxDropDownMenu
 import com.mskd.flux.presentation.global.FluxDropDownMenuItem
-import com.mskd.flux.ui.component.media.MediaItem
-import com.mskd.flux.ui.FluxTheme
-import com.mskd.flux.utils.FluxPreview
-import com.mskd.flux.utils.extensions.displayCutoutPaddingInLandscape
-import com.mskd.flux.utils.rememberScreenDimensions
+import com.mskd.flux.presentation.media.MediaItem
+import com.mskd.flux.presentation.theme.FluxTheme
+import com.mskd.flux.presentation.FluxPreview
+import com.mskd.flux.presentation.dimensions.rememberScreenDimensions
+import com.mskd.flux.presentation.displayCutoutPaddingInLandscape
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_delete
 import flux.shared.generated.resources.remove_from_private_folder

@@ -20,8 +20,8 @@ import com.mskd.flux.features.privateFolder.presentation.PrivateFolderUiState
 import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.presentation.text.Text
 import com.mskd.flux.screens.privateFolder.composables.PinTextField
-import com.mskd.flux.ui.FluxTheme
-import com.mskd.flux.utils.FluxPreview
+import com.mskd.flux.presentation.theme.FluxTheme
+import com.mskd.flux.presentation.FluxPreview
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_lock
 import flux.shared.generated.resources.pin_gate_title

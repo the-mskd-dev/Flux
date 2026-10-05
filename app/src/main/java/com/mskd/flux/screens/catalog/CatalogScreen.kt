@@ -70,10 +70,10 @@ import com.mskd.flux.screens.catalog.composable.viewMode.catalogViewModeGenre
 import com.mskd.flux.screens.catalog.composable.viewMode.catalogViewModeGrid
 import com.mskd.flux.screens.catalog.composable.viewMode.catalogViewModeType
 import com.mskd.flux.ui.component.LoadingScreen
-import com.mskd.flux.utils.FluxPreview
-import com.mskd.flux.utils.FluxThemePreview
+import com.mskd.flux.presentation.FluxPreview
+import com.mskd.flux.presentation.FluxThemePreview
 import com.mskd.flux.utils.rememberExternalPlayerAction
-import com.mskd.flux.utils.rememberScreenDimensions
+import com.mskd.flux.presentation.dimensions.rememberScreenDimensions
 import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList

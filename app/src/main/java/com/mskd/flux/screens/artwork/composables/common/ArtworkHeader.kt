@@ -18,8 +18,8 @@ import com.mskd.flux.features.artwork.presentation.ArtworkIntent
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.presentation.text.Text
-import com.mskd.flux.utils.FluxPreview
-import com.mskd.flux.utils.FluxThemePreview
+import com.mskd.flux.presentation.FluxPreview
+import com.mskd.flux.presentation.FluxThemePreview
 
 @Composable
 fun ArtworkHeader(

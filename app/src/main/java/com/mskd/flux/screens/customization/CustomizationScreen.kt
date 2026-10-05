@@ -30,8 +30,8 @@ import com.mskd.flux.screens.customization.composables.CustomizationThemeSection
 import com.mskd.flux.screens.customization.composables.ItemsPerRowDialog
 import com.mskd.flux.presentation.global.FluxOptionsDialog
 import com.mskd.flux.presentation.global.FluxScaffold
-import com.mskd.flux.utils.FluxPreview
-import com.mskd.flux.utils.FluxThemePreview
+import com.mskd.flux.presentation.FluxPreview
+import com.mskd.flux.presentation.FluxThemePreview
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.customization
 import org.jetbrains.compose.resources.stringResource

@@ -1,4 +1,4 @@
-package com.mskd.flux.ui.component.media
+package com.mskd.flux.presentation.media
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
@@ -28,13 +28,13 @@ import androidx.compose.ui.unit.dp
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.presentation.FluxThemePreview
 import com.mskd.flux.presentation.FluxUI
+import com.mskd.flux.presentation.PortraitPreview
 import com.mskd.flux.presentation.text.Text
 import com.mskd.flux.presentation.global.FixedChip
 import com.mskd.flux.presentation.global.ReadMoreButton
-import com.mskd.flux.utils.FluxThemePreview
-import com.mskd.flux.utils.PortraitPreview
-import com.mskd.flux.utils.extensions.grayScale
+import com.mskd.flux.presentation.grayScale
 import com.mskd.flux.utils.extensions.minToMs
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.content_unavailable

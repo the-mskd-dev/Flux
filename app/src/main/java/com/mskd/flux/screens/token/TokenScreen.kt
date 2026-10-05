@@ -56,9 +56,9 @@ import com.mskd.flux.presentation.text.Text
 import com.mskd.flux.presentation.global.FluxIconButton
 import com.mskd.flux.presentation.global.FluxScaffold
 import com.mskd.flux.presentation.global.FluxTextButton
-import com.mskd.flux.ui.FluxTheme
+import com.mskd.flux.presentation.theme.FluxTheme
 import com.mskd.flux.utils.Constants
-import com.mskd.flux.utils.FluxPreview
+import com.mskd.flux.presentation.FluxPreview
 import com.mskd.flux.utils.buildLinkedString
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.api_token

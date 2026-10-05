@@ -1,4 +1,4 @@
-package com.mskd.flux.ui.component.media
+package com.mskd.flux.presentation.media
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
@@ -11,10 +11,10 @@ import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.presentation.FluxUI
-import com.mskd.flux.presentation.global.FluxImage
+import com.mskd.flux.presentation.image.FluxImage
 import com.mskd.flux.presentation.global.ProgressStatusBar
 import com.mskd.flux.presentation.global.ProgressStatusChip
-import com.mskd.flux.utils.extensions.grayScale
+import com.mskd.flux.presentation.grayScale
 
 @Composable
 fun MediaThumbnail(

@@ -88,7 +88,6 @@ kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime",
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
 
 # -- UI --
-androidx-palette = { group = "androidx.palette", name = "palette-ktx", version = "1.0.0" }
 haze-core = { group = "dev.chrisbanes.haze", name = "haze", version.ref = "haze" }
 haze-blur = { group = "dev.chrisbanes.haze", name = "haze-blur", version.ref = "haze" }
 haze-blur-materials = { group = "dev.chrisbanes.haze", name = "haze-blur-material3", version.ref = "haze" }
@@ -224,7 +223,6 @@ shared-ui = [
     "haze-core",
     "haze-blur",
     "haze-blur-materials",
-    "androidx-palette",
     "material-kolor",
     "compose-material3",
     "compose-ui",

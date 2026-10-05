@@ -19,8 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.features.player.presentation.PlayerIntent
 import com.mskd.flux.presentation.FluxUI
-import com.mskd.flux.ui.FluxTheme
-import com.mskd.flux.utils.FluxPreview
+import com.mskd.flux.presentation.theme.FluxTheme
+import com.mskd.flux.presentation.FluxPreview
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_forward_10
 import flux.shared.generated.resources.ic_forward_30

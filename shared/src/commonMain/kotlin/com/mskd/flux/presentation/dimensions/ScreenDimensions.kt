@@ -1,4 +1,4 @@
-package com.mskd.flux.utils
+package com.mskd.flux.presentation.dimensions
 
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
 import androidx.compose.runtime.Composable
@@ -27,14 +27,4 @@ fun rememberScreenDimensions(): ScreenDimensions {
         widthDp = widthDp,
         isLarge =  isLarge
     )
-}
-
-fun itemWidthFor(
-    screenWidthDp: Dp,
-    columns: Int,
-    horizontalPadding: Dp  = FluxUI.Space.medium,
-    spaceBy: Dp = FluxUI.Space.small
-) : Dp {
-    val itemWidth = (screenWidthDp - horizontalPadding.times(2) - spaceBy.times(columns - 1)) / columns
-    return min(itemWidth, FluxUI.Dimension.itemWidth)
 }

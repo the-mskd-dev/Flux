@@ -1,4 +1,4 @@
-package com.mskd.flux.presentations.components
+package com.mskd.flux.presentation.components
 
 import android.content.Intent
 import android.net.Uri

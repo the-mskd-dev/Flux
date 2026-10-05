@@ -21,7 +21,7 @@ import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.features.customization.domain.model.NavigationStyle
 import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.presentation.LocalUiGlobal
-import com.mskd.flux.utils.FluxThemePreview
+import com.mskd.flux.presentation.FluxThemePreview
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_flux
 import org.jetbrains.compose.resources.painterResource

@@ -35,8 +35,8 @@ import com.mskd.flux.presentation.text.Text
 import com.mskd.flux.presentation.fillMaxWidthWithLimit
 import com.mskd.flux.screens.setup.composables.SetupSourcesContent
 import com.mskd.flux.screens.setup.composables.SetupWelcomeContent
-import com.mskd.flux.utils.FluxPreview
-import com.mskd.flux.utils.FluxThemePreview
+import com.mskd.flux.presentation.FluxPreview
+import com.mskd.flux.presentation.FluxThemePreview
 import com.mskd.flux.utils.storagePermissionState
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_flux

@@ -23,10 +23,10 @@ import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.presentation.text.Text
 import com.mskd.flux.screens.artwork.composables.common.ArtworkDescriptionsPager
 import com.mskd.flux.screens.artwork.composables.common.ArtworkHeader
-import com.mskd.flux.ui.component.media.EpisodeDropDownMenu
-import com.mskd.flux.ui.component.media.EpisodeItem
-import com.mskd.flux.ui.FluxTheme
-import com.mskd.flux.utils.PortraitPreview
+import com.mskd.flux.presentation.media.EpisodeDropDownMenu
+import com.mskd.flux.presentation.media.EpisodeItem
+import com.mskd.flux.presentation.theme.FluxTheme
+import com.mskd.flux.presentation.PortraitPreview
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.episodes
 import org.jetbrains.compose.resources.stringResource

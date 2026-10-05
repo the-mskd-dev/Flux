@@ -38,9 +38,9 @@ import com.mskd.flux.presentation.global.FluxDropDownMenu
 import com.mskd.flux.presentation.global.FluxDropDownMenuItem
 import com.mskd.flux.presentation.global.FluxScaffold
 import com.mskd.flux.presentation.global.ResetProgressDialog
-import com.mskd.flux.utils.FluxPreview
-import com.mskd.flux.utils.FluxThemePreview
-import com.mskd.flux.utils.rememberScreenDimensions
+import com.mskd.flux.presentation.FluxPreview
+import com.mskd.flux.presentation.FluxThemePreview
+import com.mskd.flux.presentation.dimensions.rememberScreenDimensions
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_eraser
 import flux.shared.generated.resources.more_info

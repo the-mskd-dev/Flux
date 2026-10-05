@@ -38,11 +38,11 @@ import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.presentation.LocalUiShapes
 import com.mskd.flux.presentation.text.Text
 import com.mskd.flux.presentation.fillMaxWidthWithLimit
-import com.mskd.flux.presentation.global.FluxImage
+import com.mskd.flux.presentation.image.FluxImage
 import com.mskd.flux.presentation.global.ProgressStatusBar
-import com.mskd.flux.utils.FluxPreview
-import com.mskd.flux.utils.FluxThemePreview
-import com.mskd.flux.utils.extensions.bleedHorizontal
+import com.mskd.flux.presentation.FluxPreview
+import com.mskd.flux.presentation.FluxThemePreview
+import com.mskd.flux.presentation.bleedHorizontal
 import com.mskd.flux.utils.extensions.minToMs
 import com.mskd.flux.utils.extensions.timeDescription
 import flux.shared.generated.resources.Res

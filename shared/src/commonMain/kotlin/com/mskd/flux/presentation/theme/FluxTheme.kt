@@ -1,21 +1,13 @@
-package com.mskd.flux.ui
+package com.mskd.flux.presentation.theme
 
-import android.os.Build
-import androidx.compose.foundation.isSystemInDarkTheme
-import com.materialkolor.rememberDynamicColorScheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialExpressiveTheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.features.connectivity.domain.LocalConnectivity
 import com.mskd.flux.features.customization.domain.datastore.CustomizationDataStore
@@ -33,9 +25,6 @@ import com.mskd.flux.presentation.modal.dialog.FluxDialogHost
 import com.mskd.flux.presentation.text.LocalEmphasizedTypography
 import com.mskd.flux.presentation.text.fluxEmphasizedTypography
 import com.mskd.flux.presentation.text.fluxTypography
-import com.mskd.flux.presentation.colors.fluxDarkScheme
-import com.mskd.flux.presentation.colors.fluxLightScheme
-import com.mskd.flux.utils.UiCommon
 import dev.chrisbanes.haze.rememberHazeState
 
 @Composable
@@ -103,38 +92,5 @@ fun FluxTheme(
         }
         
     }
-
-}
-
-@Composable
-fun createColorScheme(
-    theme: UiCommon.THEME = UiCommon.THEME.SYSTEM,
-    color: Int? = null,
-) : ColorScheme {
-
-    val darkTheme: Boolean = when (theme) {
-        UiCommon.THEME.DARK -> true
-        UiCommon.THEME.LIGHT -> false
-        else -> isSystemInDarkTheme()
-    }
-
-    val colorScheme = when (color) {
-        null -> {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                val context = LocalContext.current
-                if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-            } else {
-                if (darkTheme) fluxDarkScheme else fluxLightScheme
-            }
-        }
-        else -> {
-            rememberDynamicColorScheme(
-                seedColor = Color(color),
-                isDark = darkTheme
-            )
-        }
-    }
-
-    return colorScheme
 
 }

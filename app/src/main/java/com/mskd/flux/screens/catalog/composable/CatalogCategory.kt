@@ -27,8 +27,8 @@ import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.presentation.text.Text
-import com.mskd.flux.utils.itemWidthFor
-import com.mskd.flux.utils.rememberScreenDimensions
+import com.mskd.flux.presentation.dimensions.itemWidthFor
+import com.mskd.flux.presentation.dimensions.rememberScreenDimensions
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable

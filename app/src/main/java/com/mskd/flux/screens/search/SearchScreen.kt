@@ -44,10 +44,10 @@ import com.mskd.flux.screens.search.components.SearchFilters
 import com.mskd.flux.screens.search.components.SearchGenresSheet
 import com.mskd.flux.presentation.global.FluxScaffold
 import com.mskd.flux.presentation.global.FluxSearchField
-import com.mskd.flux.utils.FluxPreview
-import com.mskd.flux.utils.FluxThemePreview
-import com.mskd.flux.utils.itemWidthFor
-import com.mskd.flux.utils.rememberScreenDimensions
+import com.mskd.flux.presentation.FluxPreview
+import com.mskd.flux.presentation.FluxThemePreview
+import com.mskd.flux.presentation.dimensions.itemWidthFor
+import com.mskd.flux.presentation.dimensions.rememberScreenDimensions
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.collectLatest

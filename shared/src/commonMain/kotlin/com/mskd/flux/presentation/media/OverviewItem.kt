@@ -1,4 +1,4 @@
-package com.mskd.flux.ui.component.media
+package com.mskd.flux.presentation.media
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
@@ -26,7 +26,7 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.presentation.text.Text
 import com.mskd.flux.presentation.global.ReadMoreButton
-import com.mskd.flux.ui.FluxTheme
+import com.mskd.flux.presentation.theme.FluxTheme
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.episode
 import flux.shared.generated.resources.season

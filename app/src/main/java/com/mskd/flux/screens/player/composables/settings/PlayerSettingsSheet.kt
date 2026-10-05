@@ -28,8 +28,8 @@ import com.mskd.flux.features.player.presentation.PlayerUiContent
 import com.mskd.flux.mockups.PlayerMockups
 import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.presentation.text.Text
-import com.mskd.flux.ui.FluxTheme
-import com.mskd.flux.utils.FluxPreview
+import com.mskd.flux.presentation.theme.FluxTheme
+import com.mskd.flux.presentation.FluxPreview
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.by_default
 import org.jetbrains.compose.resources.stringResource

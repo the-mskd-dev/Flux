@@ -29,8 +29,8 @@ import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.presentation.text.Text
 import com.mskd.flux.presentation.global.FluxTextButton
 import com.mskd.flux.presentation.global.ProgressStatusBar
-import com.mskd.flux.ui.FluxTheme
-import com.mskd.flux.utils.FluxPreview
+import com.mskd.flux.presentation.theme.FluxTheme
+import com.mskd.flux.presentation.FluxPreview
 import com.mskd.flux.utils.extensions.minToMs
 import com.mskd.flux.utils.extensions.timeDescription
 import flux.shared.generated.resources.Res

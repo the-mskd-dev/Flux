@@ -16,8 +16,8 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.presentation.FluxUI
 import com.mskd.flux.presentation.text.Text
 import com.mskd.flux.presentation.modal.dialog.FluxDialog
-import com.mskd.flux.ui.FluxTheme
-import com.mskd.flux.utils.FluxPreview
+import com.mskd.flux.presentation.theme.FluxTheme
+import com.mskd.flux.presentation.FluxPreview
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.close
 import flux.shared.generated.resources.no_summary

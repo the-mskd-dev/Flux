@@ -1,4 +1,4 @@
-package com.mskd.flux.ui.component.media
+package com.mskd.flux.presentation.media
 
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -7,14 +7,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
-import androidx.palette.graphics.Palette
-import coil3.toBitmap
 import com.mskd.flux.presentation.FluxUI
-import com.mskd.flux.presentation.global.FluxImage
-import com.mskd.flux.utils.extensions.combinedClickableWithBounce
+import com.mskd.flux.presentation.combinedClickableWithBounce
+import com.mskd.flux.presentation.image.FluxImage
+import com.mskd.flux.presentation.image.seedRgb
+import com.mskd.flux.presentation.image.toComposeImageBitmap
+import kotlinx.coroutines.launch
 
 @Composable
 fun MediaItem(
@@ -28,6 +30,7 @@ fun MediaItem(
 ) {
 
     var seedRgb by remember { mutableStateOf<Int?>(null) }
+    val scope = rememberCoroutineScope()
 
     Surface(
         modifier = modifier
@@ -45,10 +48,8 @@ fun MediaItem(
             path = path,
             contentDescription = description,
             onSuccess = { state ->
-                val bitmap = state.result.image.toBitmap()
-                Palette.from(bitmap).generate { palette ->
-                    seedRgb = palette?.dominantSwatch?.rgb
-                }
+                val image = state.result.image
+                scope.launch { seedRgb = image.toComposeImageBitmap().seedRgb() }
             }
         )
 

@@ -1,4 +1,4 @@
-package com.mskd.flux.presentation.global
+package com.mskd.flux.presentation.image
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn

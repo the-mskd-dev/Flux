@@ -1,0 +1,3 @@
+- Core: Préparation CMP et KMP
+- Core: Amélioration de la compatibilité du lecteur
+- Feature: Ajout de nouvelles langues pour les données (Arabe, Chinois, Hollandais)

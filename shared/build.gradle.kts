@@ -25,32 +25,17 @@ kotlin {
         androidResources.enable = true
     }
 
-    // For iOS targets, this is also where you should
-    // configure native binary output. For more information, see:
-    // https://kotlinlang.org/docs/multiplatform-build-native-binaries.html#build-xcframeworks
+    val xcfName = "shared"
 
-    // A step-by-step guide on how to include this library in an XCode
-    // project can be found here:
-    // https://developer.android.com/kotlin/multiplatform/migrate
-    /*val xcfName = "sharedKit"
-
-    iosX64 {
-        binaries.framework {
+    listOf(
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach { iosTarget ->
+        iosTarget.binaries.framework {
             baseName = xcfName
+            isStatic = true
         }
     }
-
-    iosArm64 {
-        binaries.framework {
-            baseName = xcfName
-        }
-    }
-
-    iosSimulatorArm64 {
-        binaries.framework {
-            baseName = xcfName
-        }
-    }*/
 
     // Source set declarations.
     // Declaring a target automatically creates a source set with the same name. By default, the
@@ -85,9 +70,9 @@ kotlin {
                 api(libs.bundles.android.core)
                 api(libs.bundles.android.network)
                 api(libs.bundles.android.di)
-                api(libs.bundles.android.image)
                 api(libs.bundles.android.player)
                 api(libs.bundles.android.acra)
+                api(libs.bundles.android.accompanist)
             }
         }
         

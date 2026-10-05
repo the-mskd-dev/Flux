@@ -4,11 +4,9 @@ import androidx.compose.runtime.Immutable
 import com.mskd.flux.core.model.core.FluxOptionsDialogState
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import com.mskd.flux.features.settings.domain.model.SettingsDialog
-import java.util.Locale
-
 @Immutable
 data class SettingsUiState(
-    val languageValue: Locale? = null,
+    val languageValue: String? = null,
     val rewindValue: Int = 10,
     val forwardValue: Int = 10,
     val autoKeyboard: Boolean = false,
@@ -59,7 +57,7 @@ sealed interface SettingsIntent {
     data object HidePrivateFolderPinDialog: SettingsIntent
 
     // Setters
-    data class SetLanguageValue(val value: Locale?): SettingsIntent
+    data class SetLanguageValue(val value: String?): SettingsIntent
 
     data class SetRewindValue(val value: Int): SettingsIntent
     data class SetForwardValue(val value: Int): SettingsIntent

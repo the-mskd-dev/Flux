@@ -3,6 +3,7 @@ package com.mskd.flux.features.settings.data.datastore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import app.cash.turbine.test
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
+import com.mskd.flux.utils.Language
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -10,7 +11,6 @@ import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import okio.Path.Companion.toPath
 import java.io.File
-import java.util.Locale
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SettingsDataStoreImplTest : FunSpec({
@@ -93,7 +93,7 @@ class SettingsDataStoreImplTest : FunSpec({
     test("setSubtitlesLanguage should update value in flow") {
 
         // Given
-        val newValue = Locale.JAPANESE
+        val newValue = Language.JAPANESE.code
         settingsDataStore.flow.test {
             awaitItem()
 
@@ -111,7 +111,7 @@ class SettingsDataStoreImplTest : FunSpec({
     test("setAudioLanguage should update value in flow") {
 
         // Given
-        val newValue = Locale.JAPANESE
+        val newValue = Language.JAPANESE.code
         settingsDataStore.flow.test {
             awaitItem()
 
@@ -186,7 +186,7 @@ class SettingsDataStoreImplTest : FunSpec({
     test("setDataLanguage should update value in flow") {
 
         // Given
-        val newValue = Locale.KOREAN
+        val newValue = Language.KOREAN.code
         settingsDataStore.flow.test {
             awaitItem()
 

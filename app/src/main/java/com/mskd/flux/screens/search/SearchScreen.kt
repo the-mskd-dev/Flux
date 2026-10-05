@@ -1,5 +1,6 @@
 package com.mskd.flux.screens.search
 
+import android.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -36,17 +37,17 @@ import com.mskd.flux.features.search.presentation.SearchViewModel
 import com.mskd.flux.mockups.DetailsMockup
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.navigation.domain.Route
-import com.mskd.flux.presentation.FluxUI
-import com.mskd.flux.presentation.LocalUiGlobal
 import com.mskd.flux.screens.search.components.SearchContentGrid
 import com.mskd.flux.screens.search.components.SearchFilters
 import com.mskd.flux.screens.search.components.SearchGenresSheet
-import com.mskd.flux.ui.component.global.FluxScaffold
-import com.mskd.flux.ui.component.global.FluxSearchField
-import com.mskd.flux.utils.FluxPreview
-import com.mskd.flux.utils.FluxThemePreview
-import com.mskd.flux.utils.itemWidthFor
-import com.mskd.flux.utils.rememberScreenDimensions
+import com.mskd.flux.ui.FluxPreview
+import com.mskd.flux.ui.FluxThemePreview
+import com.mskd.flux.ui.components.FluxScaffold
+import com.mskd.flux.ui.components.FluxSearchField
+import com.mskd.flux.ui.dimensions.itemWidthFor
+import com.mskd.flux.ui.dimensions.rememberScreenDimensions
+import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.theme.LocalUiGlobal
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.collectLatest
@@ -115,7 +116,7 @@ fun SearchContent(
     }
 
     FluxScaffold(
-        title = stringResource(android.R.string.search_go),
+        title = stringResource(R.string.search_go),
         onBackTap = { sendIntent(SearchIntent.OnBackTap) },
         showBackButton = LocalUiGlobal.current.navigationStyle == NavigationStyle.TOP_BAR
     ) { innerPadding ->

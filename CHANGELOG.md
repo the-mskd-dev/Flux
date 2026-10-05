@@ -1,8 +1,5 @@
-## Version 1.8.2
+## Version 1.8.3
 
-- Core: Play Store version
-- Fix: Save tracks languages
-- Fix: Search in Other files
-- UI: Speed up home screen loading
-- UI: UI enhancement
-- Core: Beginning of CMP
+- Core: Prepare CMP and KMP step by step
+- Core: Improve player compatibility 
+- Feature: Add new languages for metadata (Arabic, Chinese, Dutch)

@@ -23,7 +23,7 @@ import com.mskd.flux.features.player.presentation.PlayerIntent.UpdateAmbientOver
 import com.mskd.flux.features.player.presentation.PlayerUiContent
 import com.mskd.flux.features.player.presentation.PlayerViewModel
 import com.mskd.flux.features.player.presentation.WindowStateHolder
-import com.mskd.flux.ui.component.LifecycleComponent
+import com.mskd.flux.ui.global.LifecycleComponent
 import com.mskd.flux.utils.extensions.findActivity
 import kotlinx.coroutines.launch
 

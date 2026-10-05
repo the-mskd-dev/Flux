@@ -8,9 +8,8 @@ plugins {
     alias(libs.plugins.parcelize)
     alias(libs.plugins.kotlin.compose)
 
-    // Play Store version
-    alias(libs.plugins.google.services)
-    alias(libs.plugins.firebase.crashlytics)
+    alias(libs.plugins.google.services) // PLAY_STORE
+    alias(libs.plugins.firebase.crashlytics) // PLAY_STORE
 }
 
 // Local properties
@@ -38,8 +37,8 @@ configure<ApplicationExtension> {
         applicationId = "com.mskd.flux"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 36
-        versionName = "1.8.2"
+        versionCode = 37
+        versionName = "1.8.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }
@@ -151,15 +150,6 @@ configure<ApplicationExtension> {
 
 kotlin { jvmToolchain(21) }
 
-androidComponents {
-    // Disable Crashlytics for FOSS flavor
-    onVariants(selector().withFlavor("distribution" to "foss")) { variant ->
-        variant.getExtension(com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension::class.java)?.let { crashlytics ->
-            crashlytics.mappingFileUploadEnabled = false
-        }
-    }
-}
-
 dependencies {
 
     // KMP
@@ -169,14 +159,8 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.bundles.android.compose)
 
-    // UI
-    implementation(libs.bundles.android.ui)
-
     // Navigation 3
     implementation(libs.bundles.android.navigation)
-
-    // Accompanist
-    implementation(libs.bundles.android.accompanist)
 
     // Unit Testing
     testImplementation(libs.bundles.android.unit.test)
@@ -185,8 +169,8 @@ dependencies {
     androidTestImplementation(libs.bundles.android.test)
 
     // Firebase
-    "playstoreImplementation"(platform(libs.firebase.bom))
-    "playstoreImplementation"(libs.bundles.android.firebase)
+    "playstoreImplementation"(platform(libs.firebase.bom)) // PLAY_STORE
+    "playstoreImplementation"(libs.bundles.android.firebase) // PLAY_STORE
 
     // UI Testing
     androidTestImplementation(platform(libs.androidx.compose.bom))

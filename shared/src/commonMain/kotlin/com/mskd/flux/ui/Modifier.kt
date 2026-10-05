@@ -1,0 +1,186 @@
+package com.mskd.flux.ui
+
+import androidx.annotation.FloatRange
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.foundation.layout.displayCutoutPadding
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ColorMatrix
+import androidx.compose.ui.graphics.Paint
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.layout
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import com.mskd.flux.ui.dimensions.rememberScreenDimensions
+import com.mskd.flux.ui.theme.FluxUI
+import dev.chrisbanes.haze.HazeInput
+import dev.chrisbanes.haze.HazePerformanceMode
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.blur.HazeBlurDefaults
+import dev.chrisbanes.haze.blur.HazeBlurStyle
+import dev.chrisbanes.haze.blur.hazeBlur
+import dev.chrisbanes.haze.blur.material3.Material3
+import dev.chrisbanes.haze.hazeSource
+
+@Composable
+fun Modifier.blurBackground(
+    state: HazeState,
+    zIndex: Float = 0f,
+    key: Any? = null
+) = this.hazeSource(
+    state = state,
+    zIndex = zIndex,
+    key = key
+)
+
+@Composable
+fun Modifier.blurForeground(
+    state: HazeState,
+    alpha: Float = 1f,
+    radius: Dp = HazeBlurDefaults.blurRadius,
+    performanceMode: HazePerformanceMode? = null,
+    expandLayerBounds: Boolean = true
+) = this.hazeBlur(
+    input = HazeInput.Sources(state),
+    style = HazeBlurStyle.Material3 {
+        alpha(alpha)
+        blurRadius(radius)
+    },
+    performanceMode = performanceMode,
+    expandLayerBounds = expandLayerBounds
+)
+
+@Composable
+fun Modifier.fillMaxWidthWithLimit(
+    max: Dp = 500.dp,
+    @FloatRange fraction: Float = 1f
+) : Modifier {
+    return this
+        .widthIn(max = max)
+        .fillMaxWidth(fraction = fraction)
+}
+
+fun Modifier.grayScale() : Modifier {
+    val saturationMatrix = ColorMatrix().apply { setToSaturation(0f) }
+    val saturationFilter = ColorFilter.colorMatrix(saturationMatrix)
+    val paint = Paint().apply { colorFilter = saturationFilter }
+
+    return drawWithCache {
+        val canvasBounds = Rect(Offset.Zero, size)
+        onDrawWithContent {
+            drawIntoCanvas {
+                it.saveLayer(canvasBounds, paint)
+                drawContent()
+                it.restore()
+            }
+        }
+    }
+}
+
+@Composable
+fun Modifier.clickableWithBounce(
+    onClick: () -> Unit
+): Modifier {
+
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+
+    val animatedScale by animateFloatAsState(
+        targetValue = if (isPressed) .92f else 1f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessMedium
+        ),
+        label = "press_scale"
+    )
+
+    return this
+        .graphicsLayer { scaleX = animatedScale; scaleY = animatedScale }
+        .clickable(interactionSource = interactionSource, indication = null, onClick = onClick)
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun Modifier.combinedClickableWithBounce(
+    onClick: () -> Unit,
+    onLongClick: (() -> Unit)? = null
+): Modifier {
+
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+
+    val animatedScale by animateFloatAsState(
+        targetValue = if (isPressed) .92f else 1f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessMedium
+        ),
+        label = "press_scale"
+    )
+
+    return this
+        .graphicsLayer { scaleX = animatedScale; scaleY = animatedScale }
+        .combinedClickable(
+            interactionSource = interactionSource,
+            indication = null,
+            onClick = onClick,
+            onLongClick = onLongClick
+        )
+}
+
+@Composable
+fun Modifier.groupedShape(
+    index: Int,
+    lastIndex: Int,
+    cornerRadius: Dp = FluxUI.shapes.listItem
+): Modifier {
+    val shape = when {
+        lastIndex == 0 -> RoundedCornerShape(size = cornerRadius)
+        index == 0 -> RoundedCornerShape(topStart = cornerRadius, topEnd = cornerRadius, bottomStart = 4.dp, bottomEnd = 4.dp)
+        index == lastIndex -> RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp, bottomStart = cornerRadius, bottomEnd = cornerRadius)
+        else -> RoundedCornerShape(4.dp)
+    }
+    return this.clip(shape)
+}
+
+fun Modifier.bleedHorizontal(amount: Dp = FluxUI.Space.medium) = layout { measurable, constraints ->
+    val expandPx = amount.roundToPx()
+
+    val expandedConstraints = constraints.copy(
+        minWidth = (constraints.minWidth + expandPx * 2).coerceAtLeast(0),
+        maxWidth = constraints.maxWidth + expandPx * 2
+    )
+
+    val placeable = measurable.measure(expandedConstraints)
+
+    layout(placeable.width - expandPx * 2, placeable.height) {
+        placeable.placeRelative(x = -expandPx, y = 0)
+    }
+}
+
+@Composable
+fun Modifier.displayCutoutPaddingInLandscape() : Modifier {
+    val screenDimensions = rememberScreenDimensions()
+
+    return this.then(
+        if (screenDimensions.isLarge) Modifier.displayCutoutPadding() else Modifier
+    )
+}

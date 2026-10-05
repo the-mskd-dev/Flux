@@ -16,7 +16,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.features.search.presentation.SearchIntent
-import com.mskd.flux.presentation.FluxUI
+import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.genres
 import flux.shared.generated.resources.movies

@@ -2,6 +2,7 @@ package com.mskd.flux.tmdb
 
 import com.mskd.flux.configs.ApiConfig
 import com.mskd.flux.mockups.TMDBResponseMockups
+import com.mskd.flux.utils.Language
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.comparables.shouldBeGreaterThan
@@ -100,7 +101,7 @@ class TMDBServiceTest : FunSpec({
         val result = apiConfig.api.getMovieTranslations(372058L)
 
         result.translations.isNotEmpty() shouldBe true
-        result.translations.any { it.language == "en" } shouldBe true
+        result.translations.any { it.language == Language.ENGLISH.code } shouldBe true
 
     }
 
@@ -153,7 +154,7 @@ class TMDBServiceTest : FunSpec({
         val result = apiConfig.api.getShowTranslations(31910L)
 
         result.translations.isNotEmpty() shouldBe true
-        result.translations.any { it.language == "en" } shouldBe true
+        result.translations.any { it.language == Language.ENGLISH.code } shouldBe true
 
     }
 
@@ -204,7 +205,7 @@ class TMDBServiceTest : FunSpec({
         val result = apiConfig.api.getEpisodeTranslations(31910L, 1, 1)
 
         result.translations.isNotEmpty() shouldBe true
-        result.translations.any { it.language == "en" } shouldBe true
+        result.translations.any { it.language == Language.ENGLISH.code } shouldBe true
 
     }
 

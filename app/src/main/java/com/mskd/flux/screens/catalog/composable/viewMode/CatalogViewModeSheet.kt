@@ -8,10 +8,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.mskd.flux.features.catalog.domain.model.CatalogViewMode
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
-import com.mskd.flux.presentation.modal.bottomSheet.FluxBottomSheet
-import com.mskd.flux.presentation.modal.bottomSheet.FluxBottomSheetItem
-import com.mskd.flux.utils.FluxThemePreview
-import com.mskd.flux.utils.extensions.resolve
+import com.mskd.flux.ui.FluxThemePreview
+import com.mskd.flux.ui.modal.bottomSheet.FluxBottomSheet
+import com.mskd.flux.ui.modal.bottomSheet.FluxBottomSheetItem
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.view
 import org.jetbrains.compose.resources.stringResource

@@ -18,6 +18,7 @@ import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.PlayerMockups
 import com.mskd.flux.utils.Constants
+import com.mskd.flux.utils.Language
 import com.mskd.flux.utils.extensions.lastEpisode
 import com.mskd.flux.utils.extensions.minToMs
 import io.kotest.core.spec.style.FunSpec
@@ -30,7 +31,6 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
-import java.util.Locale
 
 class PlayerViewModelTest : FunSpec({
 
@@ -86,8 +86,8 @@ class PlayerViewModelTest : FunSpec({
         getSubtitlesUseCase = mockk(relaxed = true)
         recordProgress = mockk(relaxed = true)
         saveTrackLanguageUseCase = mockk(relaxed = true) {
-            coEvery { getAudioLanguage() } returns Locale.ENGLISH
-            coEvery { getSubtitlesLanguage() } returns Locale.ENGLISH
+            coEvery { getAudioLanguage() } returns Language.ENGLISH.code
+            coEvery { getSubtitlesLanguage() } returns Language.ENGLISH.code
         }
         observeArtworkUseCase = FakeObserveArtworkUseCase()
 
@@ -526,7 +526,7 @@ class PlayerViewModelTest : FunSpec({
 
         viewModel.uiState.test {
             awaitItem()
-            val track = PlayerTrack(id = "1", label = "English", language = "en", type = PlayerTrack.Type.AUDIO)
+            val track = PlayerTrack(id = "1", label = "English", language = Language.ENGLISH.code, type = PlayerTrack.Type.AUDIO)
 
             // Should catch and not crash
             viewModel.handleIntent(PlayerIntent.SelectTrack(track))

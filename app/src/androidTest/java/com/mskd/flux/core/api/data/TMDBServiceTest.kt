@@ -8,7 +8,7 @@ import com.mskd.flux.core.network.tmdb.data.service.TMDBService
 import com.mskd.flux.di.moduleAndroidApp
 import com.mskd.flux.di.modulePlatform
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
-import com.mskd.flux.utils.extensions.toTmdbFormat
+import com.mskd.flux.utils.Language
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -22,7 +22,6 @@ import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
 import org.koin.test.get
 import org.koin.test.inject
-import java.util.Locale
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -35,7 +34,7 @@ class TMDBServiceTest : KoinTest {
 
     private companion object {
 
-        val dataLanguage: String = Locale.US.toTmdbFormat()
+        val dataLanguage: String = Language.ENGLISH.tmdbFormat
 
         val movieFile = UserFile(
             name = "Spider-man Homecoming",

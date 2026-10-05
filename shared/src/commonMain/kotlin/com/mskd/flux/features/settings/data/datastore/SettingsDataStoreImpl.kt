@@ -9,11 +9,11 @@ import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
+import com.mskd.flux.utils.systemLanguage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
-import java.util.Locale
 
 class SettingsDataStoreImpl(val settingsDataStore: DataStore<Preferences>) : SettingsDataStore {
 
@@ -36,12 +36,12 @@ class SettingsDataStoreImpl(val settingsDataStore: DataStore<Preferences>) : Set
 
             val playerRewindValue = preferences[Keys.PLAYER_REWIND] ?: 10
             val playerForwardValue = preferences[Keys.PLAYER_FORWARD] ?: 10
-            val subtitlesLanguage = preferences[Keys.SUBTITLES_LANGUAGE]?.let { Locale.forLanguageTag(it) } ?: Locale.getDefault()
-            val audioLanguage = preferences[Keys.AUDIO_LANGUAGE]?.let { Locale.forLanguageTag(it) } ?: Locale.getDefault()
+            val subtitlesLanguage = preferences[Keys.SUBTITLES_LANGUAGE] ?: systemLanguage()
+            val audioLanguage = preferences[Keys.AUDIO_LANGUAGE] ?: systemLanguage()
             val externalPlayer = preferences[Keys.EXTERNAL_PLAYER] ?: false
             val pipIsEnabled = preferences[Keys.PIP_IS_ENABLED] ?: true
             val autoKeyboard = preferences[Keys.AUTO_KEYBOARD] ?: true
-            val dataLanguage = preferences[Keys.DATA_LANGUAGE]?.let { Locale.forLanguageTag(it) }
+            val dataLanguage = preferences[Keys.DATA_LANGUAGE]
             val prefetchImages = preferences[Keys.PREFETCH_IMAGES] ?: false
             val systemFoldersEnabled = preferences[Keys.SYSTEM_FOLDERS_ENABLED] ?: true
 
@@ -72,17 +72,17 @@ class SettingsDataStoreImpl(val settingsDataStore: DataStore<Preferences>) : Set
         }
     }
 
-    override suspend fun setDataLanguage(locale: Locale?) {
+    override suspend fun setDataLanguage(language: String?) {
         settingsDataStore.edit { preferences ->
-            if (locale != null)
-                preferences[Keys.DATA_LANGUAGE] = locale.language
+            if (language != null)
+                preferences[Keys.DATA_LANGUAGE] = language
             else
                 preferences.remove(Keys.DATA_LANGUAGE)
         }
     }
 
-    override suspend fun getDataLanguage(): Locale {
-        return flow.firstOrNull()?.dataLanguage ?: Locale.getDefault()
+    override suspend fun getDataLanguage(): String {
+        return flow.firstOrNull()?.dataLanguage ?: systemLanguage()
     }
 
     override suspend fun setSystemFolders(enabled: Boolean) {
@@ -91,15 +91,15 @@ class SettingsDataStoreImpl(val settingsDataStore: DataStore<Preferences>) : Set
         }
     }
 
-    override suspend fun setSubtitlesLanguage(locale: Locale) {
+    override suspend fun setSubtitlesLanguage(language: String) {
         settingsDataStore.edit { preferences ->
-            preferences[Keys.SUBTITLES_LANGUAGE] = locale.language
+            preferences[Keys.SUBTITLES_LANGUAGE] = language
         }
     }
 
-    override suspend fun setAudioLanguage(locale: Locale) {
+    override suspend fun setAudioLanguage(language: String) {
         settingsDataStore.edit { preferences ->
-            preferences[Keys.AUDIO_LANGUAGE] = locale.language
+            preferences[Keys.AUDIO_LANGUAGE] = language
         }
     }
 

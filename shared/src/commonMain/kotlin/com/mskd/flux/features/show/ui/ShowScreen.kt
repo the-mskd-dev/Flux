@@ -1,0 +1,222 @@
+package com.mskd.flux.features.show.ui
+
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.mskd.flux.core.model.artwork.FullArtwork
+import com.mskd.flux.core.model.core.State
+import com.mskd.flux.features.show.presentation.ShowDialog
+import com.mskd.flux.features.show.presentation.ShowEvent
+import com.mskd.flux.features.show.presentation.ShowIntent
+import com.mskd.flux.features.show.presentation.ShowViewModel
+import com.mskd.flux.features.show.ui.composables.SeasonDialog
+import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.navigation.domain.Route
+import com.mskd.flux.navigation.domain.Route.Artwork
+import com.mskd.flux.ui.FluxPreview
+import com.mskd.flux.ui.FluxThemePreview
+import com.mskd.flux.ui.components.ErrorScreen
+import com.mskd.flux.ui.components.FluxDropDownMenu
+import com.mskd.flux.ui.components.FluxDropDownMenuItem
+import com.mskd.flux.ui.components.FluxScaffold
+import com.mskd.flux.ui.components.LoadingScreen
+import com.mskd.flux.ui.components.ResetProgressDialog
+import com.mskd.flux.ui.dimensions.rememberScreenDimensions
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.ic_eraser
+import flux.shared.generated.resources.more_info
+import flux.shared.generated.resources.oups_an_error_occured
+import flux.shared.generated.resources.reset_progress
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
+
+@Composable
+fun ShowScreen(
+    artworkId: Long,
+    colorScheme: ColorScheme,
+    navigate: (Route) -> Unit,
+    onBack: () -> Unit,
+    viewModel: ShowViewModel = koinViewModel(parameters = { parametersOf(artworkId) })
+) {
+
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.event.collect { event ->
+            when (event) {
+                ShowEvent.BackToPreviousScreen -> onBack()
+                is ShowEvent.NavigateToSeason -> navigate(Artwork(artworkId = event.artworkId, season = event.season, rgb = event.rgb))
+            }
+        }
+    }
+
+    AnimatedContent(
+        targetState = uiState.state,
+        label = "ShowScreenState",
+        transitionSpec = { fadeIn() togetherWith fadeOut() },
+        contentKey = { state ->
+            when (state) {
+                is State.Loading -> "loading"
+                is State.Error -> "error"
+                is State.Content -> "content_${state.content.fullShow.artwork.id}"
+            }
+        }
+    ) { state ->
+
+        when (state) {
+            State.Loading -> LoadingScreen()
+            is State.Error -> {
+                ErrorScreen(
+                    message = stringResource(Res.string.oups_an_error_occured),
+                    onBackButtonClick = { viewModel.handleIntent(ShowIntent.OnBackTap) }
+                )
+            }
+            is State.Content -> {
+                val content = state.content
+                MaterialTheme(colorScheme = colorScheme) {
+                    ShowScreenContent(
+                        fullShow = content.fullShow,
+                        dialog = content.dialog,
+                        sendIntent = viewModel::handleIntent
+                    )
+                }
+            }
+
+        }
+
+    }
+
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ShowScreenContent(
+    fullShow: FullArtwork.FullShow,
+    dialog: ShowDialog?,
+    sendIntent: (ShowIntent) -> Unit
+) {
+
+    val isLargeScreen = rememberScreenDimensions().isLarge
+    var showMenu by remember { mutableStateOf(false) }
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+
+    FluxScaffold(
+        title = fullShow.artwork.title,
+        animatedTitle = true,
+        onBackTap = { sendIntent(ShowIntent.OnBackTap) },
+        scrollBehavior = scrollBehavior,
+        actions = {
+
+            IconButton(
+                onClick = { showMenu = true },
+                content = {
+                    Icon(
+                        imageVector = Icons.Default.MoreVert,
+                        tint = MaterialTheme.colorScheme.onBackground,
+                        contentDescription = "menu button"
+                    )
+                }
+            )
+
+            if (showMenu) {
+                ShowDropDownMenu(
+                    onDismissRequest = { showMenu = false },
+                    sendIntent = sendIntent
+                )
+            }
+
+        }
+    ) { innerPadding ->
+
+        if (isLargeScreen) {
+            ShowContentLarge(
+                fullShow = fullShow,
+                scaffoldInnerPadding = innerPadding,
+                sendIntent = sendIntent,
+            )
+        } else {
+            ShowContentRegular(
+                fullShow = fullShow,
+                scaffoldInnerPadding = innerPadding,
+                sendIntent = sendIntent,
+            )
+        }
+
+        (dialog as? ShowDialog.SeasonPreview)?.let {
+            SeasonDialog(
+                season = it.season,
+                sendIntent = sendIntent,
+            )
+        }
+
+        if (dialog is ShowDialog.ResetProgress) {
+            ResetProgressDialog(
+                onValidate = { sendIntent(ShowIntent.ResetProgress) },
+                onDismiss = { sendIntent(ShowIntent.CloseDialog) }
+            )
+        }
+
+    }
+
+}
+
+@Composable
+fun ShowDropDownMenu(
+    onDismissRequest: () -> Unit,
+    sendIntent: (ShowIntent) -> Unit
+) {
+
+    FluxDropDownMenu(
+        onDismissRequest = onDismissRequest,
+        items = listOf(
+            FluxDropDownMenuItem(
+                text = stringResource(Res.string.more_info),
+                onClick = {
+                    sendIntent(ShowIntent.OpenShowInfo)
+                    onDismissRequest()
+                },
+                leadingIcon = { Icon(imageVector = Icons.Outlined.Info, contentDescription = stringResource(Res.string.more_info)) },
+            ),
+            FluxDropDownMenuItem(
+                text = stringResource(Res.string.reset_progress),
+                onClick = {
+                    sendIntent(ShowIntent.ShowResetProgressDialog)
+                    onDismissRequest()
+                },
+                leadingIcon = { Icon(painter = painterResource(Res.drawable.ic_eraser), contentDescription = stringResource(Res.string.reset_progress)) },
+            )
+        )
+    )
+
+}
+
+@FluxPreview
+@Composable
+fun ShowScreen_Preview() {
+    FluxThemePreview {
+        ShowScreenContent(
+            fullShow = MediaMockups.fullShow,
+            dialog = null,
+            sendIntent = {}
+        )
+    }
+}

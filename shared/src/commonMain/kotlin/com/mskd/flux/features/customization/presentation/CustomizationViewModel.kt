@@ -5,10 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.core.model.core.FluxOptionsDialogItem
 import com.mskd.flux.core.model.core.FluxOptionsDialogState
-import com.mskd.flux.core.model.core.StringProvider
 import com.mskd.flux.features.customization.domain.datastore.CustomizationDataStore
 import com.mskd.flux.features.customization.domain.model.CustomizationDialog
 import com.mskd.flux.features.customization.domain.model.NavigationStyle
+import com.mskd.flux.ui.text.TextProvider
 import com.mskd.flux.utils.UiCommon
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.accent_color
@@ -106,9 +106,9 @@ class CustomizationViewModel(
             titleResId = Res.string.app_theme,
             currentValue = currentValue,
             options = listOf(
-                FluxOptionsDialogItem(value = UiCommon.THEME.LIGHT, label = StringProvider.Resource(UiCommon.THEME.LIGHT.stringResource)),
-                FluxOptionsDialogItem(value = UiCommon.THEME.DARK, label = StringProvider.Resource(UiCommon.THEME.DARK.stringResource)),
-                FluxOptionsDialogItem(value = UiCommon.THEME.SYSTEM, label = StringProvider.Resource(UiCommon.THEME.SYSTEM.stringResource))
+                FluxOptionsDialogItem(value = UiCommon.THEME.LIGHT, label = TextProvider.Resource(UiCommon.THEME.LIGHT.stringResource)),
+                FluxOptionsDialogItem(value = UiCommon.THEME.DARK, label = TextProvider.Resource(UiCommon.THEME.DARK.stringResource)),
+                FluxOptionsDialogItem(value = UiCommon.THEME.SYSTEM, label = TextProvider.Resource(UiCommon.THEME.SYSTEM.stringResource))
             ),
             applyValue = { value -> CustomizationIntent.SetThemeValue(value) }
         )
@@ -127,13 +127,13 @@ class CustomizationViewModel(
             titleResId = Res.string.accent_color,
             currentValue = currentValue,
             options = listOf(
-                UiCommon.AccentColors.System.let { FluxOptionsDialogItem(value = it.color?.toArgb(), label = StringProvider.Resource(it.stringResId), color = it.color) },
-                UiCommon.AccentColors.Red.let { FluxOptionsDialogItem(value = it.color?.toArgb(), label = StringProvider.Resource(it.stringResId), color = it.color) },
-                UiCommon.AccentColors.Blue.let { FluxOptionsDialogItem(value = it.color?.toArgb(), label = StringProvider.Resource(it.stringResId), color = it.color) },
-                UiCommon.AccentColors.Green.let { FluxOptionsDialogItem(value = it.color?.toArgb(), label = StringProvider.Resource(it.stringResId), color = it.color) },
-                UiCommon.AccentColors.Yellow.let { FluxOptionsDialogItem(value = it.color?.toArgb(), label = StringProvider.Resource(it.stringResId), color = it.color) },
-                UiCommon.AccentColors.Magenta.let { FluxOptionsDialogItem(value = it.color?.toArgb(), label = StringProvider.Resource(it.stringResId), color = it.color) },
-                UiCommon.AccentColors.Gray.let { FluxOptionsDialogItem(value = it.color?.toArgb(), label = StringProvider.Resource(it.stringResId), color = it.color) },
+                UiCommon.AccentColors.System.let { FluxOptionsDialogItem(value = it.color?.toArgb(), label = TextProvider.Resource(it.stringResId), color = it.color) },
+                UiCommon.AccentColors.Red.let { FluxOptionsDialogItem(value = it.color?.toArgb(), label = TextProvider.Resource(it.stringResId), color = it.color) },
+                UiCommon.AccentColors.Blue.let { FluxOptionsDialogItem(value = it.color?.toArgb(), label = TextProvider.Resource(it.stringResId), color = it.color) },
+                UiCommon.AccentColors.Green.let { FluxOptionsDialogItem(value = it.color?.toArgb(), label = TextProvider.Resource(it.stringResId), color = it.color) },
+                UiCommon.AccentColors.Yellow.let { FluxOptionsDialogItem(value = it.color?.toArgb(), label = TextProvider.Resource(it.stringResId), color = it.color) },
+                UiCommon.AccentColors.Magenta.let { FluxOptionsDialogItem(value = it.color?.toArgb(), label = TextProvider.Resource(it.stringResId), color = it.color) },
+                UiCommon.AccentColors.Gray.let { FluxOptionsDialogItem(value = it.color?.toArgb(), label = TextProvider.Resource(it.stringResId), color = it.color) },
             ),
             applyValue = { value -> CustomizationIntent.SetColorValue(value) }
         )
@@ -165,8 +165,8 @@ class CustomizationViewModel(
     private fun showItemsPerRowDialog() {
         _dialogState.update {
             CustomizationDialog.ItemsPerRowDialog(
-                title = StringProvider.Resource(Res.string.items_per_row),
-                desc = StringProvider.Resource(Res.string.items_per_row_desc),
+                title = TextProvider.Resource(Res.string.items_per_row),
+                desc = TextProvider.Resource(Res.string.items_per_row_desc),
             )
         }
     }
@@ -174,8 +174,8 @@ class CustomizationViewModel(
     private fun showItemsCornersDialog() {
         _dialogState.update {
             CustomizationDialog.ItemsCornersDialog(
-                title = StringProvider.Resource(Res.string.items_per_row),
-                desc = StringProvider.Resource(Res.string.items_per_row_desc),
+                title = TextProvider.Resource(Res.string.items_per_row),
+                desc = TextProvider.Resource(Res.string.items_per_row_desc),
             )
         }
     }
@@ -183,8 +183,8 @@ class CustomizationViewModel(
     private fun showSeasonsPerRowDialog() {
         _dialogState.update {
             CustomizationDialog.SeasonsPerRowDialog(
-                title = StringProvider.Resource(Res.string.seasons_per_row),
-                desc = StringProvider.Resource(Res.string.seasons_per_row_desc),
+                title = TextProvider.Resource(Res.string.seasons_per_row),
+                desc = TextProvider.Resource(Res.string.seasons_per_row_desc),
             )
         }
     }

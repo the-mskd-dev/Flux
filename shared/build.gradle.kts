@@ -72,6 +72,7 @@ kotlin {
                 api(libs.bundles.android.di)
                 api(libs.bundles.android.player)
                 api(libs.bundles.android.acra)
+                api(libs.bundles.android.accompanist)
             }
         }
         

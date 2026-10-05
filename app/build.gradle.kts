@@ -162,9 +162,6 @@ dependencies {
     // Navigation 3
     implementation(libs.bundles.android.navigation)
 
-    // Accompanist
-    implementation(libs.bundles.android.accompanist)
-
     // Unit Testing
     testImplementation(libs.bundles.android.unit.test)
 

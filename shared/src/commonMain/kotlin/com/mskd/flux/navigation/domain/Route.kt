@@ -57,3 +57,10 @@ sealed class Route : NavKey {
     data object Message: Route()
 
 }
+
+fun Route?.isSameTabAs(target: Route): Boolean = when (target) {
+    is Route.Catalog -> this is Route.Catalog
+    is Route.Search -> this is Route.Search
+    is Route.Settings -> this is Route.Settings
+    else -> false
+}

@@ -125,7 +125,7 @@ class MainActivity : ComponentActivity() {
                                     currentTab = currentRoute,
                                     onTabSelected = { target ->
                                         transitions = Transition.Fade to Transition.Fade
-                                        navigateToTab(backStack, target)
+                                        backStack.navigateToTab(target)
                                     },
                                 )
                             }

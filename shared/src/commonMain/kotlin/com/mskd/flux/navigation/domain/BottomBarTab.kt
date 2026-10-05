@@ -16,25 +16,3 @@ enum class BottomBarTab(val route: Route, val iconRes: DrawableResource, val lab
     SEARCH(Route.Search(), Res.drawable.ic_search, TextProvider.Resource(Res.string.search)),
     SETTINGS(Route.Settings, Res.drawable.ic_settings, TextProvider.Resource(Res.string.settings)),
 }
-
-fun Route?.isSameTabAs(target: Route): Boolean = when (target) {
-    is Route.Catalog -> this is Route.Catalog
-    is Route.Search -> this is Route.Search
-    is Route.Settings -> this is Route.Settings
-    else -> false
-}
-
-fun navigateToTab(
-    backStack: MutableList<NavKey>,
-    target: Route,
-) {
-    val current = backStack.lastOrNull() as? Route
-    if (current.isSameTabAs(target)) return
-
-    val existingIndex = backStack.indexOfFirst { (it as? Route).isSameTabAs(target) }
-    if (existingIndex != -1) {
-        while (backStack.size > existingIndex + 1) backStack.removeAt(backStack.lastIndex)
-    } else {
-        backStack.add(target)
-    }
-}

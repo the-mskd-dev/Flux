@@ -8,9 +8,8 @@ plugins {
     alias(libs.plugins.parcelize)
     alias(libs.plugins.kotlin.compose)
 
-    // Play Store version
-    alias(libs.plugins.google.services)
-    alias(libs.plugins.firebase.crashlytics)
+    alias(libs.plugins.google.services) // PLAY_STORE
+    alias(libs.plugins.firebase.crashlytics) // PLAY_STORE
 }
 
 // Local properties
@@ -151,15 +150,6 @@ configure<ApplicationExtension> {
 
 kotlin { jvmToolchain(21) }
 
-androidComponents {
-    // Disable Crashlytics for FOSS flavor
-    onVariants(selector().withFlavor("distribution" to "foss")) { variant ->
-        variant.getExtension(com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension::class.java)?.let { crashlytics ->
-            crashlytics.mappingFileUploadEnabled = false
-        }
-    }
-}
-
 dependencies {
 
     // KMP
@@ -182,8 +172,8 @@ dependencies {
     androidTestImplementation(libs.bundles.android.test)
 
     // Firebase
-    "playstoreImplementation"(platform(libs.firebase.bom))
-    "playstoreImplementation"(libs.bundles.android.firebase)
+    "playstoreImplementation"(platform(libs.firebase.bom)) // PLAY_STORE
+    "playstoreImplementation"(libs.bundles.android.firebase) // PLAY_STORE
 
     // UI Testing
     androidTestImplementation(platform(libs.androidx.compose.bom))

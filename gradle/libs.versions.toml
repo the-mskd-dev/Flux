@@ -293,10 +293,7 @@ android-acra = [
     "acra-dialog"
 ]
 
-android-firebase = [
-    "firebase-crashlytics",
-    "firebase-analytics"
-]
+android-firebase = ["firebase-crashlytics", "firebase-analytics"] # PLAY_STORE
 
 android-unit-test = [
     "junit",

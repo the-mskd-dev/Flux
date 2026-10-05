@@ -25,6 +25,7 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
+import com.mskd.flux.features.about.ui.AboutScreen
 import com.mskd.flux.features.connectivity.domain.ConnectivityRepository
 import com.mskd.flux.features.customization.domain.model.NavigationStyle
 import com.mskd.flux.navigation.ui.FluxNavigationBar
@@ -32,7 +33,6 @@ import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.navigation.ui.Transition
 import com.mskd.flux.navigation.domain.navigateToTab
 import com.mskd.flux.report.CrashLogger
-import com.mskd.flux.screens.about.AboutScreen
 import com.mskd.flux.screens.artwork.ArtworkScreen
 import com.mskd.flux.screens.catalog.CatalogScreen
 import com.mskd.flux.features.customization.ui.CustomizationScreen

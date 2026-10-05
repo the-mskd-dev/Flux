@@ -18,10 +18,10 @@ import androidx.compose.ui.unit.dp
 import com.mskd.flux.features.privateFolder.presentation.PrivateFolderIntent
 import com.mskd.flux.features.privateFolder.presentation.PrivateFolderUiState
 import com.mskd.flux.features.privateFolder.ui.composables.PinTextField
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.FluxPreview
+import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_lock
 import flux.shared.generated.resources.pin_gate_title

@@ -12,9 +12,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.FluxThemePreview
+import com.mskd.flux.ui.text.Text
+import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.downloads
 import flux.shared.generated.resources.movies

@@ -10,11 +10,11 @@ import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.artwork.Status
-import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.ui.image.FluxImage
 import com.mskd.flux.ui.components.ProgressStatusBar
 import com.mskd.flux.ui.components.ProgressStatusChip
 import com.mskd.flux.ui.grayScale
+import com.mskd.flux.ui.image.FluxImage
+import com.mskd.flux.ui.theme.FluxUI
 
 @Composable
 fun MediaThumbnail(

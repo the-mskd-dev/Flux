@@ -19,9 +19,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.features.customization.domain.model.NavigationStyle
+import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.ui.theme.LocalUiGlobal
-import com.mskd.flux.ui.FluxThemePreview
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_flux
 import org.jetbrains.compose.resources.painterResource

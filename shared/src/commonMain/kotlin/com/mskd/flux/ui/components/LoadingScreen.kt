@@ -18,9 +18,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.text.TextProvider
 import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.ui.text.Text
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)

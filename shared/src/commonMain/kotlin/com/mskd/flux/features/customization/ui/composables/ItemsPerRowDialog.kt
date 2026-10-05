@@ -13,9 +13,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.modal.dialog.FluxDialog
+import com.mskd.flux.ui.text.Text
+import com.mskd.flux.ui.theme.FluxUI
 
 @Composable
 fun ItemsPerRowDialog(

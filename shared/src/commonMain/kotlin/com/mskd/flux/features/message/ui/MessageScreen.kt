@@ -17,11 +17,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.mskd.flux.features.message.presentation.MessageIntent
 import com.mskd.flux.features.message.presentation.MessageViewModel
-import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.components.FluxScaffold
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.FluxThemePreview
+import com.mskd.flux.ui.components.FluxScaffold
+import com.mskd.flux.ui.text.Text
+import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.message_details
 import flux.shared.generated.resources.message_title

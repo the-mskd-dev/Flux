@@ -1,7 +1,7 @@
 package com.mskd.flux.features.catalog.domain.coordinator
 
-import com.mskd.flux.ui.text.TextProvider
 import com.mskd.flux.features.catalog.domain.model.SyncState
+import com.mskd.flux.ui.text.TextProvider
 import com.mskd.flux.utils.Trace
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.sync_in_progress

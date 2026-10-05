@@ -25,12 +25,12 @@ import com.mskd.flux.features.artwork.ui.composables.ArtworkButtons
 import com.mskd.flux.features.artwork.ui.composables.ArtworkDescriptionsPager
 import com.mskd.flux.features.artwork.ui.composables.ArtworkImage
 import com.mskd.flux.mockups.MediaMockups
-import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.ui.text.Text
+import com.mskd.flux.ui.LandscapePreview
 import com.mskd.flux.ui.media.EpisodeDropDownMenu
 import com.mskd.flux.ui.media.EpisodeItem
+import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.LandscapePreview
+import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.episodes
 import org.jetbrains.compose.resources.stringResource

@@ -23,10 +23,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.modal.dialog.FluxDialog
+import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
+import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.corners
 import flux.shared.generated.resources.corners_desc

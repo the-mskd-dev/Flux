@@ -24,34 +24,33 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
 import com.mskd.flux.features.about.ui.AboutScreen
 import com.mskd.flux.features.connectivity.domain.ConnectivityRepository
 import com.mskd.flux.features.customization.domain.model.NavigationStyle
-import com.mskd.flux.navigation.ui.FluxNavigationBar
-import com.mskd.flux.navigation.domain.Route
-import com.mskd.flux.navigation.ui.Transition
-import com.mskd.flux.navigation.domain.navigateToTab
-import com.mskd.flux.report.CrashLogger
-import com.mskd.flux.screens.artwork.ArtworkScreen
-import com.mskd.flux.screens.catalog.CatalogScreen
 import com.mskd.flux.features.customization.ui.CustomizationScreen
 import com.mskd.flux.features.howTo.ui.HowToScreen
 import com.mskd.flux.features.message.ui.MessageScreen
-import com.mskd.flux.screens.player.PlayerScreen
 import com.mskd.flux.features.privateFolder.ui.PrivateScreen
-import com.mskd.flux.screens.search.SearchScreen
 import com.mskd.flux.features.settings.ui.SettingsScreen
 import com.mskd.flux.features.setup.ui.SetupScreen
 import com.mskd.flux.features.show.ui.ShowScreen
-import com.mskd.flux.screens.sources.SourcesScreen
 import com.mskd.flux.features.token.ui.TokenScreen
+import com.mskd.flux.navigation.domain.Route
+import com.mskd.flux.navigation.domain.navigateToTab
+import com.mskd.flux.navigation.ui.FluxNavigationBar
+import com.mskd.flux.navigation.ui.Transition
+import com.mskd.flux.report.CrashLogger
+import com.mskd.flux.screens.artwork.ArtworkScreen
+import com.mskd.flux.screens.catalog.CatalogScreen
+import com.mskd.flux.screens.player.PlayerScreen
+import com.mskd.flux.screens.search.SearchScreen
+import com.mskd.flux.screens.sources.SourcesScreen
 import com.mskd.flux.screens.unknown.UnknownScreen
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.createColorScheme
 import com.mskd.flux.utils.extensions.popScreen
-import com.mskd.flux.utils.notificationsPermissionState
-import com.mskd.flux.utils.storagePermissionState
+import com.mskd.flux.utils.rememberNotificationsPermission
+import com.mskd.flux.utils.rememberStoragePermission
 import org.koin.android.ext.android.inject
 
 class MainActivity : ComponentActivity() {
@@ -73,17 +72,17 @@ class MainActivity : ComponentActivity() {
 
             val settings by viewModel.settings.collectAsState()
             val customization by viewModel.customization.collectAsState()
-            val storagePermission = storagePermissionState()
-            val notificationsPermission = notificationsPermissionState()
+            val storagePermission = rememberStoragePermission()
+            val notificationsPermission = rememberNotificationsPermission()
             val isOnline by connectivityRepository.isOnline.collectAsState(false)
 
             LaunchedEffect(Unit) {
-                if (notificationsPermission?.status?.isGranted == false && settings.externalPlayer) {
-                    notificationsPermission.launchPermissionRequest()
+                if (notificationsPermission?.isGranted == false && settings.externalPlayer) {
+                    notificationsPermission.request()
                 }
             }
 
-            viewModel.disableSystemFoldersIfNeeded(permissionsGranted = storagePermission.status.isGranted)
+            viewModel.disableSystemFoldersIfNeeded(permissionsGranted = storagePermission.isGranted)
 
             val startingScreen = viewModel.getStartingScreen()
 

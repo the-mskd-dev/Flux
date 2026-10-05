@@ -33,14 +33,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.blurForeground
 import com.mskd.flux.ui.fillMaxWidthWithLimit
 import com.mskd.flux.ui.global.BackGesture
 import com.mskd.flux.ui.modal.LocalModalHost
 import com.mskd.flux.ui.modal.ModalEntry
 import com.mskd.flux.ui.modal.ModalHostState
+import com.mskd.flux.ui.text.Text
+import com.mskd.flux.ui.theme.FluxUI
 import dev.chrisbanes.haze.HazeState
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.cancel

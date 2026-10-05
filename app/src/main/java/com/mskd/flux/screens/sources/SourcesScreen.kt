@@ -41,27 +41,26 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
 import com.mskd.flux.core.model.core.State
+import com.mskd.flux.features.setup.ui.composables.sourcesAnnotatedString
 import com.mskd.flux.features.sources.presentation.SourcesContent
 import com.mskd.flux.features.sources.presentation.SourcesEvent
 import com.mskd.flux.features.sources.presentation.SourcesIntent
 import com.mskd.flux.features.sources.presentation.SourcesViewModel
-import com.mskd.flux.mockups.FilesMockups
-import com.mskd.flux.navigation.domain.Route
-import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.components.rememberSafFolderPicker
 import com.mskd.flux.features.sources.ui.items.CustomSourceItem
 import com.mskd.flux.features.sources.ui.items.SystemSourceItem
-import com.mskd.flux.features.sources.ui.sourcesAnnotatedString
-import com.mskd.flux.ui.components.LoadingScreen
-import com.mskd.flux.ui.components.ErrorScreen
-import com.mskd.flux.ui.components.FluxScaffold
+import com.mskd.flux.mockups.FilesMockups
+import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.FluxThemePreview
+import com.mskd.flux.ui.components.ErrorScreen
+import com.mskd.flux.ui.components.FluxScaffold
+import com.mskd.flux.ui.components.LoadingScreen
+import com.mskd.flux.ui.components.rememberSafFolderPicker
 import com.mskd.flux.ui.global.BackGesture
-import com.mskd.flux.utils.storagePermissionState
+import com.mskd.flux.ui.text.Text
+import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.utils.rememberStoragePermission
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.add_source
 import flux.shared.generated.resources.folder_deleted
@@ -88,7 +87,7 @@ fun SourcesScreen(
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
-    val permissions = storagePermissionState { isGranted ->
+    val permissions = rememberStoragePermission { isGranted ->
         if (isGranted)
             viewModel.handleIntent(SourcesIntent.OnPermissionGranted)
     }
@@ -110,10 +109,10 @@ fun SourcesScreen(
                 SourcesEvent.NavigateToCatalog -> navigate(Route.Catalog)
                 SourcesEvent.NavigateToToken -> navigate(Route.Token(fromSetup = true))
                 SourcesEvent.ShowPermissionDialog -> {
-                    if (permissions.status.isGranted) {
+                    if (permissions.isGranted) {
                         viewModel.handleIntent(SourcesIntent.OnPermissionGranted)
                     } else {
-                        permissions.launchPermissionRequest()
+                        permissions.request()
                     }
                 }
             }

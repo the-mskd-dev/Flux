@@ -17,9 +17,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.features.setup.presentation.SetupIntent
-import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.FluxThemePreview
+import com.mskd.flux.ui.text.Text
+import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.setup_sources_custom_desc
 import flux.shared.generated.resources.setup_sources_custom_title

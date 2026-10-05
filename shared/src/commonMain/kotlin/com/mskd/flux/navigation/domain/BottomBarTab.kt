@@ -1,6 +1,5 @@
 package com.mskd.flux.navigation.domain
 
-import androidx.navigation3.runtime.NavKey
 import com.mskd.flux.ui.text.TextProvider
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.home

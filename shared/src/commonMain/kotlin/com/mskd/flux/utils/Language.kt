@@ -8,7 +8,6 @@ enum class Language(val code: String) {
     SPANISH("es"),
     PORTUGUESE("pt"),
     DUTCH("nl"),
-    HINDI("hi"),
     KOREAN("ko"),
     JAPANESE("ja");
 

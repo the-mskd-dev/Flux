@@ -123,7 +123,9 @@ fun FluxDialogHost(
                         text = entry?.title,
                     )
 
-                    entry?.content(this)
+                    Column(modifier = Modifier.weight(1f)) {
+                        entry?.content(this)
+                    }
 
                     Row(
                         modifier = Modifier

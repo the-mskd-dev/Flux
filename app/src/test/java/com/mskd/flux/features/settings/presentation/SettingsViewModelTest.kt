@@ -388,17 +388,18 @@ class SettingsViewModelTest : FunSpec({
         test("SetLanguageValue should set value in datastore and then close dialog") {
 
             // Given
+            val language = "fr"
             viewModel.uiState.test {
                 awaitItem()
 
                 // When
-                viewModel.handleIntent(SettingsIntent.SetLanguageValue(Locale.FRENCH))
-                dataStoreFlow.value = dataStoreFlow.value.copy(dataLanguage = Locale.FRENCH)
+                viewModel.handleIntent(SettingsIntent.SetLanguageValue(language))
+                dataStoreFlow.value = dataStoreFlow.value.copy(dataLanguage = language)
 
                 // Then
                 val state = awaitItem()
-                coVerify { settingsDataStore.setDataLanguage(Locale.FRENCH) }
-                state.languageValue shouldBe Locale.FRENCH
+                coVerify { settingsDataStore.setDataLanguage(language) }
+                state.languageValue shouldBe language
                 state.optionsDialog shouldBe null
 
                 cancelAndConsumeRemainingEvents()

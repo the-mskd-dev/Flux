@@ -86,8 +86,8 @@ class PlayerViewModelTest : FunSpec({
         getSubtitlesUseCase = mockk(relaxed = true)
         recordProgress = mockk(relaxed = true)
         saveTrackLanguageUseCase = mockk(relaxed = true) {
-            coEvery { getAudioLanguage() } returns Locale.ENGLISH
-            coEvery { getSubtitlesLanguage() } returns Locale.ENGLISH
+            coEvery { getAudioLanguage() } returns "en"
+            coEvery { getSubtitlesLanguage() } returns "en"
         }
         observeArtworkUseCase = FakeObserveArtworkUseCase()
 

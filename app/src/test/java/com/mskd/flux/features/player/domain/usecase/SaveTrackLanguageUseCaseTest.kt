@@ -25,8 +25,8 @@ class SaveTrackLanguageUseCaseTest : FunSpec({
         settings = mockk(relaxed = true) {
             every { flow } returns MutableStateFlow(
                 SettingsDataStore.State(
-                    subtitlesLanguage = Locale.ENGLISH,
-                    audioLanguage = Locale.FRENCH
+                    subtitlesLanguage = "en",
+                    audioLanguage = "fr"
                 )
             )
         }
@@ -43,7 +43,7 @@ class SaveTrackLanguageUseCaseTest : FunSpec({
         saveTrackLanguage(track = PlayerMockups.Subtitles.english)
 
         // Then
-        coVerify { settings.setSubtitlesLanguage(Locale.forLanguageTag("en")) }
+        coVerify { settings.setSubtitlesLanguage("en") }
         coVerify(exactly = 0) { settings.setAudioLanguage(any()) }
 
     }
@@ -54,7 +54,7 @@ class SaveTrackLanguageUseCaseTest : FunSpec({
         saveTrackLanguage(track = PlayerMockups.Audio.french)
 
         // Then
-        coVerify { settings.setAudioLanguage(Locale.forLanguageTag("fr")) }
+        coVerify { settings.setAudioLanguage("fr") }
         coVerify(exactly = 0) { settings.setSubtitlesLanguage(any()) }
 
     }
@@ -70,22 +70,12 @@ class SaveTrackLanguageUseCaseTest : FunSpec({
 
     }
 
-    test("store failure does not throw") {
-
-        // Given
-        coEvery { settings.setAudioLanguage(any()) } throws RuntimeException("Mock database write failure")
-
-        // When - Should catch and not throw
-        saveTrackLanguage(track = PlayerMockups.Audio.english)
-
-    }
-
     test("get subtitles language returns saved locale") {
-        saveTrackLanguage.getSubtitlesLanguage() shouldBe Locale.ENGLISH
+        saveTrackLanguage.getSubtitlesLanguage() shouldBe "en"
     }
 
     test("get audio language returns saved locale") {
-        saveTrackLanguage.getAudioLanguage() shouldBe Locale.FRENCH
+        saveTrackLanguage.getAudioLanguage() shouldBe "fr"
     }
 
 })

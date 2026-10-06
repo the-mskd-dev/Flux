@@ -93,7 +93,7 @@ class SettingsDataStoreImplTest : FunSpec({
     test("setSubtitlesLanguage should update value in flow") {
 
         // Given
-        val newValue = Locale.JAPANESE
+        val newValue = "ja"
         settingsDataStore.flow.test {
             awaitItem()
 
@@ -111,7 +111,7 @@ class SettingsDataStoreImplTest : FunSpec({
     test("setAudioLanguage should update value in flow") {
 
         // Given
-        val newValue = Locale.JAPANESE
+        val newValue = "ja"
         settingsDataStore.flow.test {
             awaitItem()
 
@@ -186,7 +186,7 @@ class SettingsDataStoreImplTest : FunSpec({
     test("setDataLanguage should update value in flow") {
 
         // Given
-        val newValue = Locale.KOREAN
+        val newValue = "kr"
         settingsDataStore.flow.test {
             awaitItem()
 

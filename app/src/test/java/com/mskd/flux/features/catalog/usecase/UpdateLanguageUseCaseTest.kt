@@ -89,7 +89,7 @@ class UpdateLanguageUseCaseTest : FunSpec({
         syncGenresUseCase = mockk(relaxed = true)
         coordinator = FakeCatalogSyncCoordinator(scope = testScope)
 
-        coEvery { settings.getDataLanguage() } returns Locale.FRENCH
+        coEvery { settings.getDataLanguage() } returns "fr"
         coEvery { database.getMedias() } returns listOf(movie) + listOf(episode)
         coEvery { database.getArtworks(includePrivates = true) } returns listOf(showArtwork)
         coEvery { database.getSeasons() } returns listOf(season)

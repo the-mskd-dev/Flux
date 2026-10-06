@@ -30,7 +30,6 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
-import java.util.Locale
 
 class PlayerViewModelTest : FunSpec({
 

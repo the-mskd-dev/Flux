@@ -32,7 +32,6 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
-import java.util.Locale
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SettingsViewModelTest : FunSpec({

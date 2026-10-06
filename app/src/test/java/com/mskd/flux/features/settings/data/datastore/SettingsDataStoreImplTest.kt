@@ -10,7 +10,6 @@ import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import okio.Path.Companion.toPath
 import java.io.File
-import java.util.Locale
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SettingsDataStoreImplTest : FunSpec({

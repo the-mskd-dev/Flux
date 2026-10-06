@@ -22,7 +22,6 @@ import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
-import java.util.Locale
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class UpdateLanguageUseCaseTest : FunSpec({

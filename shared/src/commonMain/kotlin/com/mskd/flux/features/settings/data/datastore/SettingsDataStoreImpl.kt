@@ -41,7 +41,7 @@ class SettingsDataStoreImpl(val settingsDataStore: DataStore<Preferences>) : Set
             val externalPlayer = preferences[Keys.EXTERNAL_PLAYER] ?: false
             val pipIsEnabled = preferences[Keys.PIP_IS_ENABLED] ?: true
             val autoKeyboard = preferences[Keys.AUTO_KEYBOARD] ?: true
-            val dataLanguage = preferences[Keys.DATA_LANGUAGE] ?: systemLanguage()
+            val dataLanguage = preferences[Keys.DATA_LANGUAGE]
             val prefetchImages = preferences[Keys.PREFETCH_IMAGES] ?: false
             val systemFoldersEnabled = preferences[Keys.SYSTEM_FOLDERS_ENABLED] ?: true
 

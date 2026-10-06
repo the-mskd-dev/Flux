@@ -11,6 +11,7 @@ import com.mskd.flux.features.catalog.domain.usecase.syncGenres.SyncGenresUseCas
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
@@ -48,8 +49,8 @@ class UpdateLanguageUseCase(
                                     request = TranslationRequest.Movie(artworkId = movie.artworkId, language = language)
                                 )?.let { translation ->
                                     movie.copy(
-                                        title = translation.title ?: movie.title,
-                                        description = translation.description ?: movie.description
+                                        title = translation.title.orEmpty().ifBlank { movie.title },
+                                        description = translation.description.orEmpty().ifBlank { movie.description }
                                     )
                                 }
                             }
@@ -68,8 +69,8 @@ class UpdateLanguageUseCase(
                                     request = TranslationRequest.Show(artworkId = show.id, language = language)
                                 )?.let { translation ->
                                     show.copy(
-                                        title = translation.title ?: show.title,
-                                        description = translation.description ?: show.description
+                                        title = translation.title.orEmpty().ifBlank { show.title },
+                                        description = translation.description.orEmpty().ifBlank { show.description }
                                     )
                                 }
                             }
@@ -88,8 +89,8 @@ class UpdateLanguageUseCase(
                                     request = TranslationRequest.Season(artworkId = season.artworkId, season = season.season, language = language)
                                 )?.let { translation ->
                                     season.copy(
-                                        title = translation.title ?: season.title,
-                                        description = translation.description ?: season.description
+                                        title = translation.title.orEmpty().ifBlank { season.title },
+                                        description = translation.description.orEmpty().ifBlank { season.description }
                                     )
                                 }
                             }
@@ -108,8 +109,8 @@ class UpdateLanguageUseCase(
                                     request = TranslationRequest.Episode(artworkId = episode.artworkId, season = episode.season, number = episode.number, language = language)
                                 )?.let { translation ->
                                     episode.copy(
-                                        title = translation.title ?: episode.title,
-                                        description = translation.description ?: episode.description
+                                        title = translation.title.orEmpty().ifBlank { episode.title },
+                                        description = translation.description.orEmpty().ifBlank { episode.description }
                                     )
                                 }
                             }

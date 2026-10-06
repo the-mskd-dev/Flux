@@ -4,7 +4,6 @@ import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.core.network.tmdb.data.dto.ArtworkDto
 import com.mskd.flux.core.network.tmdb.data.dto.MediaTypeDto
 import com.mskd.flux.core.network.tmdb.data.dto.TranslationsDto
-import com.mskd.flux.core.network.tmdb.data.dto.findWithLanguage
 import com.mskd.flux.core.network.tmdb.data.dto.genre.GenreDto
 import com.mskd.flux.core.network.tmdb.data.dto.movie.MovieDto
 import com.mskd.flux.core.network.tmdb.data.dto.show.EpisodeDto
@@ -294,7 +293,30 @@ class TmdbDataSourceImpl(
                 is TranslationRequest.Episode -> tmdbService.getEpisodeTranslations(artworkId = request.artworkId, season = request.season, number = request.number)
             }
 
-            result.translations.findWithLanguage(request.language)
+            val requestedTranslation = result.translations.find { it.language.equals(request.language, true) && !it.data.overview.isNullOrBlank() }
+            val fallbackTranslation = result.translations.find { it.language.equals("en", true) && !it.data.overview.isNullOrBlank() }
+
+            val translation = when {
+                requestedTranslation != null -> {
+
+                    val data = TranslationsDto.Data(
+                        name = requestedTranslation.data.name?.ifBlank { fallbackTranslation?.data?.name } ?: "",
+                        overview = requestedTranslation.data.overview?.ifBlank { fallbackTranslation?.data?.overview } ?: ""
+                    )
+
+                    requestedTranslation.copy(data = data)
+
+                }
+                fallbackTranslation != null -> fallbackTranslation
+                else -> null
+            }
+
+            if (request.artworkId == 94245L && request is TranslationRequest.Show) {
+                Trace.debug("$requestedTranslation")
+                Trace.debug("$fallbackTranslation")
+            }
+
+            return translation
 
         } catch (e: Exception) {
             Napier.e(tag = TAG, message = "getTmdbTranslations - Fail to get translations for $request", throwable = e)

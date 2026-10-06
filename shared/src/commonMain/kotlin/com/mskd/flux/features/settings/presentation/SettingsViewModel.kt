@@ -182,7 +182,7 @@ class SettingsViewModel(
         _optionsDialogState.update { null }
     }
 
-    private suspend fun showLanguageDialog() {
+    private fun showLanguageDialog() {
         val currentValue = uiState.value.languageValue
 
         val languages = listOf("en", "fr", "de", "it", "ja", "ko", "es")

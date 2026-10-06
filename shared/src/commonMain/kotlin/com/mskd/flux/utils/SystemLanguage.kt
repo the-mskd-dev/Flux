@@ -9,7 +9,7 @@ expect fun languageDisplayName(tag: String): String
 /** "fr-FR" -> "fr", "zh-Hant-TW" -> "zh" */
 fun String.languageCode(): String = substringBefore('-')
 
-/** "fr-FR" -> "FR", "zh-Hant-TW" -> "TW", "fr" -> null (ignore le script, ex. "Hant") */
+/** "fr-FR" -> "FR", "zh-Hant-TW" -> "TW", "fr" -> null */
 fun String.regionCode(): String? = split('-')
     .drop(1)
     .firstOrNull { it.length == 2 && it.all(Char::isLetter) }

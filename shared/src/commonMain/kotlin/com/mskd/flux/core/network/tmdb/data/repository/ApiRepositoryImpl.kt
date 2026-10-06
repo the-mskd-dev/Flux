@@ -72,8 +72,7 @@ internal class ApiRepositoryImpl(
     //region Global
 
     override suspend fun getTranslation(request: TranslationRequest): Translation? {
-        return tmdb.getTranslation(request = request)
-            ?.let {
+        return tmdb.getTranslation(request = request)?.let {
                 Translation(
                     title = it.data.name,
                     description = it.data.overview

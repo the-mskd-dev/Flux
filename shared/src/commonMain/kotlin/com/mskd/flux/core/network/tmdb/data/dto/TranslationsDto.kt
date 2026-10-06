@@ -37,8 +37,3 @@ data class TranslationsDto(
     )
 
 }
-
-fun Collection<TranslationsDto.Translation>.findWithLanguage(language: String) : TranslationsDto.Translation? {
-    return this.find { it.language.equals(language, true) && !it.data.overview.isNullOrBlank() }
-        ?: this.find { it.language.equals("en", true) && !it.data.overview.isNullOrBlank() }
-}

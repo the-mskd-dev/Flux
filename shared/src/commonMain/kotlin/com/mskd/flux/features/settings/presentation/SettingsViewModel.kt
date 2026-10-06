@@ -18,6 +18,7 @@ import com.mskd.flux.features.settings.domain.model.SettingsDialog
 import com.mskd.flux.system.EmailLauncher
 import com.mskd.flux.system.UrlLauncher
 import com.mskd.flux.ui.text.TextProvider
+import com.mskd.flux.utils.languageDisplayName
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.button_forward
 import flux.shared.generated.resources.button_rewind
@@ -32,7 +33,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.Locale
 
 class SettingsViewModel(
     private val appInfo: AppInfo,
@@ -185,19 +185,21 @@ class SettingsViewModel(
     private suspend fun showLanguageDialog() {
         val currentValue = uiState.value.languageValue
 
+        val languages = listOf("en", "fr", "de", "it", "ja", "ko", "es")
+
+
         val dialogState = FluxOptionsDialogState(
             titleResId = Res.string.information_language,
             currentValue = currentValue,
-            options = listOf(
-                FluxOptionsDialogItem(value = null, label = TextProvider.Resource(Res.string.system)),
-                FluxOptionsDialogItem(value = Locale.ENGLISH, label = TextProvider.Static(Locale.ENGLISH.displayLanguage)),
-                FluxOptionsDialogItem(value = Locale.FRENCH, label = TextProvider.Static(Locale.FRENCH.displayLanguage)),
-                FluxOptionsDialogItem(value = Locale.GERMAN , TextProvider.Static(label = Locale.GERMAN.displayLanguage)),
-                FluxOptionsDialogItem(value = Locale.ITALIAN, TextProvider.Static(label = Locale.ITALIAN.displayLanguage)),
-                FluxOptionsDialogItem(value = Locale.JAPANESE, TextProvider.Static(label = Locale.JAPANESE.displayLanguage)),
-                FluxOptionsDialogItem(value = Locale.KOREAN, TextProvider.Static(label = Locale.KOREAN.displayLanguage)),
-                Locale.forLanguageTag("es").let { FluxOptionsDialogItem(value = it, TextProvider.Static(label = it.displayLanguage)) }
-            ),
+            options = buildList {
+
+                add(FluxOptionsDialogItem(value = null, label = TextProvider.Resource(Res.string.system)))
+
+                languages.forEach {
+                    add(FluxOptionsDialogItem(value = it, label = TextProvider.Static(languageDisplayName(it))))
+                }
+
+            },
             applyValue = { value -> SettingsIntent.SetLanguageValue(value) }
         )
 
@@ -205,7 +207,7 @@ class SettingsViewModel(
 
     }
 
-    private suspend fun setLanguageValue(value: Locale?) {
+    private suspend fun setLanguageValue(value: String?) {
         settingsDataStore.setDataLanguage(value)
         updateLanguageUseCase()
         hideDialog()

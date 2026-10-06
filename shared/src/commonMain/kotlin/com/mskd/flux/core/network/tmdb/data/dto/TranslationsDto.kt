@@ -2,7 +2,6 @@ package com.mskd.flux.core.network.tmdb.data.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import java.util.Locale
 
 @Serializable
 data class TranslationsDto(
@@ -39,7 +38,7 @@ data class TranslationsDto(
 
 }
 
-fun Collection<TranslationsDto.Translation>.findWithLocale(locale: Locale) : TranslationsDto.Translation? {
-    return this.find { it.language == locale.language && !it.data.overview.isNullOrBlank() }
-        ?: this.find { it.language == Locale.ENGLISH.language && !it.data.overview.isNullOrBlank() }
+fun Collection<TranslationsDto.Translation>.findWithLanguage(language: String) : TranslationsDto.Translation? {
+    return this.find { it.language.equals(language, true) && !it.data.overview.isNullOrBlank() }
+        ?: this.find { it.language.equals("en", true) && !it.data.overview.isNullOrBlank() }
 }

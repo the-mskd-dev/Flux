@@ -1,7 +1,7 @@
 package com.mskd.flux.features.settings.domain.datastore
 
+import com.mskd.flux.utils.systemLanguage
 import kotlinx.coroutines.flow.Flow
-import java.util.Locale
 
 interface SettingsDataStore {
 
@@ -11,11 +11,11 @@ interface SettingsDataStore {
 
     suspend fun setPlayerForwardValue(value: Int)
 
-    suspend fun setDataLanguage(locale: Locale?)
+    suspend fun setDataLanguage(language: String?)
 
-    suspend fun setSubtitlesLanguage(locale: Locale)
+    suspend fun setSubtitlesLanguage(language: String)
 
-    suspend fun setAudioLanguage(locale: Locale)
+    suspend fun setAudioLanguage(language: String)
 
     suspend fun setExternalPlayer(useExternalPlayer: Boolean)
     suspend fun externalPlayerIsEnabled() : Boolean
@@ -26,7 +26,7 @@ interface SettingsDataStore {
 
     suspend fun setAutoKeyboard(autoKeyboard: Boolean)
 
-    suspend fun getDataLanguage() : Locale
+    suspend fun getDataLanguage() : String
 
     suspend fun setSystemFolders(enabled: Boolean)
 
@@ -34,12 +34,12 @@ interface SettingsDataStore {
     data class State(
         val playerRewindValue: Int = 10,
         val playerForwardValue: Int = 10,
-        val subtitlesLanguage: Locale = Locale.getDefault(),
-        val audioLanguage: Locale = Locale.getDefault(),
+        val subtitlesLanguage: String = systemLanguage(),
+        val audioLanguage: String = systemLanguage(),
         val externalPlayer: Boolean = false,
         val pipIsEnabled: Boolean = true,
         val autoKeyboard: Boolean = true,
-        val dataLanguage: Locale? = null,
+        val dataLanguage: String? = null,
         val prefetchHdImages: Boolean = false,
         val systemFoldersEnabled: Boolean = true,
     )

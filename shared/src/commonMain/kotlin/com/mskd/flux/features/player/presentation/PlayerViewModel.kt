@@ -22,7 +22,7 @@ import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.ui.text.TextProvider
 import com.mskd.flux.utils.extensions.getNextEpisodeFor
-import com.mskd.flux.utils.extensions.toPlayerTrack
+import com.mskd.flux.utils.toPlayerTrack
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -40,8 +40,8 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.UUID
 import kotlin.time.Duration.Companion.seconds
+import kotlin.uuid.Uuid
 
 
 class PlayerViewModel<out T>(
@@ -57,7 +57,7 @@ class PlayerViewModel<out T>(
 
     //region Variables
 
-    private val sessionId: String = UUID.randomUUID().toString()
+    private val sessionId: String = Uuid.random().toString()
 
     private var seekResetJob: Job? = null
     private var ambientResetJob: Job? = null

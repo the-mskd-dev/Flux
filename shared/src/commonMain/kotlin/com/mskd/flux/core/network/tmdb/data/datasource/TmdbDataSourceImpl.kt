@@ -4,7 +4,7 @@ import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.core.network.tmdb.data.dto.ArtworkDto
 import com.mskd.flux.core.network.tmdb.data.dto.MediaTypeDto
 import com.mskd.flux.core.network.tmdb.data.dto.TranslationsDto
-import com.mskd.flux.core.network.tmdb.data.dto.findWithLocale
+import com.mskd.flux.core.network.tmdb.data.dto.findWithLanguage
 import com.mskd.flux.core.network.tmdb.data.dto.genre.GenreDto
 import com.mskd.flux.core.network.tmdb.data.dto.movie.MovieDto
 import com.mskd.flux.core.network.tmdb.data.dto.show.EpisodeDto
@@ -15,7 +15,7 @@ import com.mskd.flux.core.network.tmdb.domain.model.TranslationRequest
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.utils.Trace
-import com.mskd.flux.utils.extensions.toTmdbFormat
+import com.mskd.flux.utils.toTmdbFormat
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -294,7 +294,7 @@ class TmdbDataSourceImpl(
                 is TranslationRequest.Episode -> tmdbService.getEpisodeTranslations(artworkId = request.artworkId, season = request.season, number = request.number)
             }
 
-            result.translations.findWithLocale(request.language)
+            result.translations.findWithLanguage(request.language)
 
         } catch (e: Exception) {
             Napier.e(tag = TAG, message = "getTmdbTranslations - Fail to get translations for $request", throwable = e)

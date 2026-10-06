@@ -1,8 +1,5 @@
 package com.mskd.flux.utils
 
-import com.mskd.flux.utils.extensions.toTmdbFormat
-import java.util.Locale
-
 object Constants {
 
     object Behaviour {
@@ -10,7 +7,7 @@ object Constants {
     }
 
     object Global {
-        val LANGUAGE get() = Locale.forLanguageTag(Locale.getDefault().language).toTmdbFormat()
+        val LANGUAGE get() = systemLanguage().toTmdbFormat()
     }
 
     object TMDB {

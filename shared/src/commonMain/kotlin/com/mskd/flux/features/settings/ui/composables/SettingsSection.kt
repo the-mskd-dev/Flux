@@ -19,6 +19,7 @@ import com.mskd.flux.features.settings.presentation.SettingsUiState
 import com.mskd.flux.ui.fillMaxWidthWithLimit
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.Constants
+import com.mskd.flux.utils.languageDisplayName
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.about
 import flux.shared.generated.resources.about_desc
@@ -127,7 +128,7 @@ fun SettingsCustomizationSection(
             iconBackgroundColor = bgColor,
         )
 
-        val displayedLanguage = state.languageValue?.displayLanguage ?: stringResource(Res.string.system)
+        val displayedLanguage = state.languageValue?.let { languageDisplayName(it) } ?: stringResource(Res.string.system)
         SettingsItem(
             text = stringResource(Res.string.information_language),
             subText = displayedLanguage,

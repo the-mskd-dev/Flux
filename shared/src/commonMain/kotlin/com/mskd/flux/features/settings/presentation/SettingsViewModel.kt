@@ -18,6 +18,7 @@ import com.mskd.flux.features.settings.domain.model.SettingsDialog
 import com.mskd.flux.system.EmailLauncher
 import com.mskd.flux.system.UrlLauncher
 import com.mskd.flux.ui.text.TextProvider
+import com.mskd.flux.utils.Language
 import com.mskd.flux.utils.languageDisplayName
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.button_forward
@@ -185,7 +186,10 @@ class SettingsViewModel(
     private fun showLanguageDialog() {
         val currentValue = uiState.value.languageValue
 
-        val languages = listOf("en", "fr", "de", "it", "ja", "ko", "es")
+
+        val languages = Language.entries
+            .map { it.code to languageDisplayName(it.code) }
+            .sortedBy { it.second }
 
 
         val dialogState = FluxOptionsDialogState(
@@ -196,7 +200,7 @@ class SettingsViewModel(
                 add(FluxOptionsDialogItem(value = null, label = TextProvider.Resource(Res.string.system)))
 
                 languages.forEach {
-                    add(FluxOptionsDialogItem(value = it, label = TextProvider.Static(languageDisplayName(it))))
+                    add(FluxOptionsDialogItem(value = it.first, label = TextProvider.Static(it.second)))
                 }
 
             },

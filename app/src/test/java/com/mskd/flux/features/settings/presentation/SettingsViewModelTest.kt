@@ -16,6 +16,7 @@ import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.settings.domain.model.SettingsDialog
 import com.mskd.flux.system.EmailLauncher
 import com.mskd.flux.system.UrlLauncher
+import com.mskd.flux.utils.Language
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -387,7 +388,7 @@ class SettingsViewModelTest : FunSpec({
         test("SetLanguageValue should set value in datastore and then close dialog") {
 
             // Given
-            val language = "fr"
+            val language = Language.FRENCH.code
             viewModel.uiState.test {
                 awaitItem()
 

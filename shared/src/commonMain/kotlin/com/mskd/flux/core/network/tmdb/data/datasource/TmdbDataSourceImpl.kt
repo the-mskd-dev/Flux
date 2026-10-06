@@ -13,6 +13,7 @@ import com.mskd.flux.core.network.tmdb.data.service.TMDBService
 import com.mskd.flux.core.network.tmdb.domain.model.TranslationRequest
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
+import com.mskd.flux.utils.Language
 import com.mskd.flux.utils.Trace
 import com.mskd.flux.utils.toTmdbFormat
 import io.github.aakira.napier.Napier
@@ -294,7 +295,7 @@ class TmdbDataSourceImpl(
             }
 
             val requestedTranslation = result.translations.find { it.language.equals(request.language, true) && !it.data.overview.isNullOrBlank() }
-            val fallbackTranslation = result.translations.find { it.language.equals("en", true) && !it.data.overview.isNullOrBlank() }
+            val fallbackTranslation = result.translations.find { it.language.equals(Language.ENGLISH.code, true) && !it.data.overview.isNullOrBlank() }
 
             val translation = when {
                 requestedTranslation != null -> {

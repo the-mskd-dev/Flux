@@ -15,6 +15,7 @@ import com.mskd.flux.features.catalog.domain.usecase.syncGenres.SyncGenresUseCas
 import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
 import com.mskd.flux.features.catalog.fake.FakeCatalogSyncCoordinator
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
+import com.mskd.flux.utils.Language
 import io.kotest.core.spec.style.FunSpec
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -88,7 +89,7 @@ class UpdateLanguageUseCaseTest : FunSpec({
         syncGenresUseCase = mockk(relaxed = true)
         coordinator = FakeCatalogSyncCoordinator(scope = testScope)
 
-        coEvery { settings.getDataLanguage() } returns "fr"
+        coEvery { settings.getDataLanguage() } returns Language.FRENCH.code
         coEvery { database.getMedias() } returns listOf(movie) + listOf(episode)
         coEvery { database.getArtworks(includePrivates = true) } returns listOf(showArtwork)
         coEvery { database.getSeasons() } returns listOf(season)

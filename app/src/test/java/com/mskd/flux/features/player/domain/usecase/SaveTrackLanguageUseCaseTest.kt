@@ -4,6 +4,7 @@ import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.model.player.PlayerTrack
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.mockups.PlayerMockups
+import com.mskd.flux.utils.Language
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.coVerify
@@ -23,8 +24,8 @@ class SaveTrackLanguageUseCaseTest : FunSpec({
         settings = mockk(relaxed = true) {
             every { flow } returns MutableStateFlow(
                 SettingsDataStore.State(
-                    subtitlesLanguage = "en",
-                    audioLanguage = "fr"
+                    subtitlesLanguage = Language.ENGLISH.code,
+                    audioLanguage = Language.FRENCH.code
                 )
             )
         }
@@ -41,7 +42,7 @@ class SaveTrackLanguageUseCaseTest : FunSpec({
         saveTrackLanguage(track = PlayerMockups.Subtitles.english)
 
         // Then
-        coVerify { settings.setSubtitlesLanguage("en") }
+        coVerify { settings.setSubtitlesLanguage(Language.ENGLISH.code) }
         coVerify(exactly = 0) { settings.setAudioLanguage(any()) }
 
     }
@@ -52,7 +53,7 @@ class SaveTrackLanguageUseCaseTest : FunSpec({
         saveTrackLanguage(track = PlayerMockups.Audio.french)
 
         // Then
-        coVerify { settings.setAudioLanguage("fr") }
+        coVerify { settings.setAudioLanguage(Language.FRENCH.code) }
         coVerify(exactly = 0) { settings.setSubtitlesLanguage(any()) }
 
     }
@@ -69,11 +70,11 @@ class SaveTrackLanguageUseCaseTest : FunSpec({
     }
 
     test("get subtitles language returns saved locale") {
-        saveTrackLanguage.getSubtitlesLanguage() shouldBe "en"
+        saveTrackLanguage.getSubtitlesLanguage() shouldBe Language.ENGLISH.code
     }
 
     test("get audio language returns saved locale") {
-        saveTrackLanguage.getAudioLanguage() shouldBe "fr"
+        saveTrackLanguage.getAudioLanguage() shouldBe Language.FRENCH.code
     }
 
 })

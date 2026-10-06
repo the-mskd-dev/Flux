@@ -11,6 +11,7 @@ import com.mskd.flux.di.moduleAndroidApp
 import com.mskd.flux.di.modulePlatform
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
+import com.mskd.flux.utils.Language
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
@@ -26,7 +27,6 @@ import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
 import org.koin.test.get
 import org.koin.test.inject
-import java.util.Locale
 import kotlin.test.assertTrue
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -40,7 +40,7 @@ class TmdbDataSourceImplTest : KoinTest {
 
     private companion object {
 
-        val dataLanguage: Locale = Locale.US
+        val dataLanguage: String = Language.ENGLISH.code
 
         val movieFile = UserFile(
             name = "Spider-man Homecoming",

@@ -157,7 +157,6 @@ fun FluxDialogHost(
 /**
  * Simple AlertDialog with Cancel and Validate buttons
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FluxDialog(
     isVisible: Boolean = true,

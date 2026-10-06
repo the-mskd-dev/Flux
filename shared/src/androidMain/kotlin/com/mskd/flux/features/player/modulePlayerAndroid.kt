@@ -16,6 +16,7 @@ import com.mskd.flux.features.player.data.manager.AndroidPlayerManager
 import com.mskd.flux.features.player.data.usecase.AndroidPipIsEnabledUseCase
 import com.mskd.flux.features.player.domain.manager.PlayerManager
 import com.mskd.flux.features.player.presentation.PlayerViewModel
+import io.github.anilbeesetti.nextlib.media3ext.ffdecoder.NextRenderersFactory
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
@@ -37,11 +38,14 @@ val modulePlayerAndroid = module {
                 .setHandleAudioBecomingNoisy(true)
                 .setMediaSourceFactory(mediaSourceFactory)
                 .setRenderersFactory(
-                    DefaultRenderersFactory(context)
-                        .setExtensionRendererMode(
-                            DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER
+                    NextRenderersFactory(context).apply {
+                        // FFmpeg software decoders (video: H.264/HEVC/VP8/VP9/AV1, audio: ...)
+                        // are used as fallback when the hardware MediaCodec cannot handle a format.
+                        setExtensionRendererMode(
+                            DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON
                         )
-                        .setEnableDecoderFallback(true)
+                        setEnableDecoderFallback(true)
+                    }
                 )
                 .build()
                 .apply {

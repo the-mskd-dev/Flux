@@ -40,7 +40,8 @@ room = "2.8.4"
 ktor = "3.5.2"
 
 # -- Media --
-media3 = "1.11.0"
+media3 = "1.11.1"
+nextlib = "1.11.1-0.16.0"
 
 # -- Image --
 coil = "3.5.0"
@@ -107,7 +108,8 @@ androidx-media3-exoplayer = { group = "androidx.media3", name = "media3-exoplaye
 androidx-media3-ui = { group = "androidx.media3", name = "media3-ui", version.ref = "media3" }
 androidx-media3-session = { group = "androidx.media3", name = "media3-session", version.ref = "media3" }
 androidx-media3-ui-compose = { group = "androidx.media3", name = "media3-ui-compose-material3", version.ref = "media3" }
-jellyfin-ffmpeg = { group = "org.jellyfin.media3", name = "media3-ffmpeg-decoder", version = "1.9.0+1" }
+nextlib-media3ext = { group = "io.github.anilbeesetti", name = "nextlib-media3ext", version.ref = "nextlib" }
+nextlib-mediainfo = { group = "io.github.anilbeesetti", name = "nextlib-mediainfo", version.ref = "nextlib" }
 
 # -- Image --
 coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
@@ -278,7 +280,8 @@ android-player = [
     "androidx-media3-ui",
     "androidx-media3-ui-compose",
     "androidx-media3-session",
-    "jellyfin-ffmpeg",
+    "nextlib-media3ext",
+    "nextlib-mediainfo"
 ]
 
 android-di = [

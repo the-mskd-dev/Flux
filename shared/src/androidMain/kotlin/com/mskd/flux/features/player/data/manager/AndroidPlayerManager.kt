@@ -3,6 +3,7 @@ package com.mskd.flux.features.player.data.manager
 import android.content.ComponentName
 import android.content.Context
 import android.net.Uri
+import androidx.annotation.OptIn
 import androidx.core.net.toUri
 import androidx.media3.common.C
 import androidx.media3.common.Format
@@ -15,6 +16,7 @@ import androidx.media3.common.TrackSelectionOverride
 import androidx.media3.common.TrackSelectionParameters
 import androidx.media3.common.Tracks
 import androidx.media3.common.text.CueGroup
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.google.common.util.concurrent.ListenableFuture
@@ -32,6 +34,8 @@ import com.mskd.flux.utils.extensions.uppercaseFirstLetter
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.season_and_episode
 import flux.shared.generated.resources.track
+import io.github.anilbeesetti.nextlib.media3ext.ffdecoder.DecoderManager
+import io.github.anilbeesetti.nextlib.media3ext.ffdecoder.DecoderMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -49,13 +53,27 @@ import java.util.Locale
 import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.milliseconds
 
+@OptIn(UnstableApi::class)
 class AndroidPlayerManager(
     private val context: Context,
-    private val saveTrackLanguageUseCase: SaveTrackLanguageUseCase
+    private val saveTrackLanguageUseCase: SaveTrackLanguageUseCase,
+    private val decoderManager: DecoderManager
 ) : Player.Listener, PlayerManager<Player> {
 
     private companion object {
         const val TAG = "AndroidPlayerManager"
+
+        /** Video SOFTWARE, then audio FFMPEG, then video FFMPEG (the failing track is unknown client side). */
+        const val MAX_DECODER_RECOVERY_ATTEMPTS = 3
+
+        val DECODER_ERROR_CODES = setOf(
+            PlaybackException.ERROR_CODE_DECODER_INIT_FAILED,
+            PlaybackException.ERROR_CODE_DECODER_QUERY_FAILED,
+            PlaybackException.ERROR_CODE_DECODING_FAILED,
+            PlaybackException.ERROR_CODE_DECODING_FORMAT_EXCEEDS_CAPABILITIES,
+            PlaybackException.ERROR_CODE_DECODING_FORMAT_UNSUPPORTED,
+            PlaybackException.ERROR_CODE_DECODING_RESOURCES_RECLAIMED,
+        )
     }
 
     //region State
@@ -80,6 +98,8 @@ class AndroidPlayerManager(
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private var progressJob: Job? = null
+
+    private var decoderRecoveryAttempts = 0
 
     //endregion
 
@@ -118,6 +138,8 @@ class AndroidPlayerManager(
         if (currentSessionId != sessionId) return
 
         stopProgressMonitoring()
+        resetDecoderRecovery()
+        resetDecoderModes()
 
         val currentState = _state.value
         if (currentState is PlayerManager.State.Ready) {
@@ -202,6 +224,10 @@ class AndroidPlayerManager(
             player.stop()
             player.clearMediaItems()
 
+            // Fresh start for every media: hardware decoder first, recovery ladder disarmed
+            resetDecoderRecovery()
+            resetDecoderModes()
+
             currentMediaId = media.mediaId
             player.setMediaItem(mediaItem, media.currentTime)
 
@@ -209,8 +235,8 @@ class AndroidPlayerManager(
             // right audio and subtitles tracks are selected at startup
             player.trackSelectionParameters = player.trackSelectionParameters
                 .buildUpon()
-                .setPreferredAudioLanguage(saveTrackLanguageUseCase.getAudioLanguage().language)
-                .setPreferredTextLanguage(saveTrackLanguageUseCase.getSubtitlesLanguage().language)
+                .setPreferredAudioLanguage(saveTrackLanguageUseCase.getAudioLanguage())
+                .setPreferredTextLanguage(saveTrackLanguageUseCase.getSubtitlesLanguage())
                 .build()
 
             player.prepare()
@@ -276,6 +302,10 @@ class AndroidPlayerManager(
     }
 
     override fun onPlayerError(error: PlaybackException) {
+        // Transparent runtime decoder recovery: switch to FFmpeg and retry
+        // silently instead of surfacing the error right away.
+        if (tryRecoverFromDecoderError(error)) return
+
         super.onPlayerError(error)
         _state.update {
             PlayerManager.State.Error(
@@ -288,6 +318,66 @@ class AndroidPlayerManager(
     //endregion
 
     //region Private Methods
+
+    /**
+     * Automatic and transparent recovery from runtime decoder failures.
+     *
+     * Media3 does not retry with another renderer after a runtime decoder error:
+     * nextlib requires selecting a fallback mode and calling [Player.prepare].
+     * The failing track type is unknown client side, so the ladder tries FFmpeg
+     * for video first, then for audio ([MAX_DECODER_RECOVERY_ATTEMPTS] attempts).
+     *
+     * @return true when playback was retried, false to surface the error as usual.
+     */
+    private fun tryRecoverFromDecoderError(error: PlaybackException): Boolean {
+        if (error.errorCode !in DECODER_ERROR_CODES) return false
+        if (decoderRecoveryAttempts >= MAX_DECODER_RECOVERY_ATTEMPTS) return false
+
+        val player = (_state.value as? PlayerManager.State.Ready)?.player ?: return false
+
+        return try {
+            val step = when (decoderRecoveryAttempts) {
+                0 -> {
+                    decoderManager.selectVideoDecoder(DecoderMode.SOFTWARE)
+                    "video SOFTWARE"
+                }
+                1 -> {
+                    decoderManager.selectAudioDecoder(DecoderMode.FFMPEG)
+                    "audio FFMPEG"
+                }
+                else -> {
+                    decoderManager.selectVideoDecoder(DecoderMode.FFMPEG)
+                    "video FFMPEG"
+                }
+            }
+            decoderRecoveryAttempts++
+
+            // Retry in place: same media item, same position, playWhenReady kept.
+            val position = player.currentPosition
+            player.prepare()
+            player.seekTo(position)
+
+            Trace.info(TAG, "Decoder error ${error.errorCodeName}: recovered with $step at $position ms")
+            true
+        } catch (e: Exception) {
+            Trace.error(TAG, "Decoder recovery failed", e)
+            false
+        }
+    }
+
+    private fun resetDecoderRecovery() {
+        decoderRecoveryAttempts = 0
+    }
+
+    /** Each new media starts from AUTO so the hardware decoder is tried first. */
+    private fun resetDecoderModes() {
+        try {
+            decoderManager.selectVideoDecoder(DecoderMode.AUTO)
+            decoderManager.selectAudioDecoder(DecoderMode.AUTO)
+        } catch (e: Exception) {
+            Trace.error(TAG, "Failed to reset decoder modes", e)
+        }
+    }
 
     private fun createSubtitlesFrom(subtitlesUri: Uri?) : MediaItem.SubtitleConfiguration? {
 

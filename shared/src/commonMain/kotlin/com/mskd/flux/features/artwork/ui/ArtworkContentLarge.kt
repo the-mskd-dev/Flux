@@ -160,8 +160,9 @@ fun ArtworkContentLarge(
                                     sendIntent(ArtworkIntent.CollapseEpisodeDescription)
                                 }
                             },
-                            dropDownMenu = { onDismissRequest ->
+                            dropDownMenu = { isVisible, onDismissRequest ->
                                 EpisodeDropDownMenu(
+                                    isVisible = isVisible,
                                     episode = episode,
                                     onDismissRequest = onDismissRequest,
                                     sendIntent = sendIntent

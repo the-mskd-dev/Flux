@@ -107,7 +107,6 @@ fun ShowScreen(
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShowScreenContent(
     fullShow: FullArtwork.FullShow,
@@ -137,12 +136,11 @@ fun ShowScreenContent(
                 }
             )
 
-            if (showMenu) {
-                ShowDropDownMenu(
-                    onDismissRequest = { showMenu = false },
-                    sendIntent = sendIntent
-                )
-            }
+            ShowDropDownMenu(
+                isVisible = showMenu,
+                onDismissRequest = { showMenu = false },
+                sendIntent = sendIntent
+            )
 
         }
     ) { innerPadding ->
@@ -181,11 +179,13 @@ fun ShowScreenContent(
 
 @Composable
 fun ShowDropDownMenu(
+    isVisible: Boolean,
     onDismissRequest: () -> Unit,
     sendIntent: (ShowIntent) -> Unit
 ) {
 
     FluxPopUpMenu(
+        isVisible = isVisible,
         onDismissRequest = onDismissRequest,
         items = listOf(
             FluxPopUpMenuItem(

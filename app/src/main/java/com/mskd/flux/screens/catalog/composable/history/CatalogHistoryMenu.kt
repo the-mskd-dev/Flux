@@ -19,12 +19,14 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun CatalogHistoryMenu(
+    isVisible: Boolean,
     entry: HistoryEntry,
     onDismissRequest: () -> Unit,
     sendIntent: (CatalogIntent) -> Unit
 ) {
 
     FluxPopUpMenu(
+        isVisible = isVisible,
         onDismissRequest = onDismissRequest,
         items = listOf(
 

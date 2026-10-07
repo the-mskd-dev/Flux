@@ -27,6 +27,7 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun EpisodeDropDownMenu(
+    isVisible: Boolean,
     episode: Episode,
     onDismissRequest: () -> Unit,
     sendIntent: (ArtworkIntent) -> Unit
@@ -106,6 +107,7 @@ fun EpisodeDropDownMenu(
     }
 
     FluxPopUpMenu(
+        isVisible = isVisible,
         onDismissRequest = onDismissRequest,
         items = items
     )

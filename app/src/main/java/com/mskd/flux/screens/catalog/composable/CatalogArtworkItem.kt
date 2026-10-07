@@ -42,28 +42,25 @@ fun CatalogArtworkItem(
             description = artwork.title
         )
 
-        if (menuExpanded && privateFolderEnabled) {
-
-            FluxPopUpMenu(
-                onDismissRequest = { menuExpanded = false },
-                items = listOf(
-                    FluxPopUpMenuItem(
-                        text = addToPrivateFolder,
-                        onClick = {
-                            sendIntent(CatalogIntent.AddArtworkToPrivateFolder(artwork = artwork))
-                            menuExpanded = false
-                        },
-                        leadingIcon = {
-                            Icon(
-                                painter = painterResource(Res.drawable.ic_lock),
-                                contentDescription = null
-                            )
-                        }
-                    )
+        FluxPopUpMenu(
+            isVisible = menuExpanded && privateFolderEnabled,
+            onDismissRequest = { menuExpanded = false },
+            items = listOf(
+                FluxPopUpMenuItem(
+                    text = addToPrivateFolder,
+                    onClick = {
+                        sendIntent(CatalogIntent.AddArtworkToPrivateFolder(artwork = artwork))
+                        menuExpanded = false
+                    },
+                    leadingIcon = {
+                        Icon(
+                            painter = painterResource(Res.drawable.ic_lock),
+                            contentDescription = null
+                        )
+                    }
                 )
             )
-
-        }
+        )
 
     }
 

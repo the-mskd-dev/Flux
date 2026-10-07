@@ -14,6 +14,7 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun UnknownDropDownMenu(
+    isVisible: Boolean,
     episode: Episode,
     onDismissRequest: () -> Unit,
     sendIntent: (UnknownIntent) -> Unit
@@ -38,6 +39,7 @@ fun UnknownDropDownMenu(
     }
 
     FluxPopUpMenu(
+        isVisible = isVisible,
         onDismissRequest = onDismissRequest,
         items = items
     )

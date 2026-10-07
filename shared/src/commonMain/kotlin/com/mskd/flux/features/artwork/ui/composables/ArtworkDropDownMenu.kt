@@ -19,12 +19,14 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun ArtworkDropDownMenu(
+    isVisible: Boolean,
     fullArtwork: FullArtwork,
     onDismissRequest: () -> Unit,
     sendIntent: (ArtworkIntent) -> Unit
 ) {
 
     FluxPopUpMenu(
+        isVisible = isVisible,
         onDismissRequest = onDismissRequest,
         items = buildList {
 

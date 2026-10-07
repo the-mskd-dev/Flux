@@ -20,20 +20,18 @@ import com.mskd.flux.ui.text.Text
 
 @Composable
 fun FluxPopUpMenu(
+    isVisible: Boolean,
     onDismissRequest: () -> Unit,
     items: List<FluxPopUpMenuItem>
 ) {
 
-    if (items.isEmpty())
-        return
-
     FluxScrim(
-        isVisible = true,
+        isVisible = isVisible,
         onDismiss = onDismissRequest
     )
 
     DropdownMenu(
-        expanded = true,
+        expanded = isVisible,
         onDismissRequest = onDismissRequest,
         containerColor = MaterialTheme.colorScheme.tertiaryContainer,
         shadowElevation = 0.dp,

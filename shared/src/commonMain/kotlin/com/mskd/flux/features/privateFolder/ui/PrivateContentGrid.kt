@@ -98,28 +98,25 @@ fun PrivateArtworkItem(
             description = artwork.title
         )
 
-        if (menuExpanded) {
-
-            FluxPopUpMenu(
-                onDismissRequest = { menuExpanded = false },
-                items = listOf(
-                    FluxPopUpMenuItem(
-                        text = stringResource(Res.string.remove_from_private_folder),
-                        onClick = {
-                            sendIntent(PrivateFolderIntent.RemoveFromPrivateFolder(artwork = artwork))
-                            menuExpanded = false
-                        },
-                        leadingIcon = {
-                            Icon(
-                                painter = painterResource(Res.drawable.ic_delete),
-                                contentDescription = null
-                            )
-                        }
-                    )
+        FluxPopUpMenu(
+            isVisible = menuExpanded,
+            onDismissRequest = { menuExpanded = false },
+            items = listOf(
+                FluxPopUpMenuItem(
+                    text = stringResource(Res.string.remove_from_private_folder),
+                    onClick = {
+                        sendIntent(PrivateFolderIntent.RemoveFromPrivateFolder(artwork = artwork))
+                        menuExpanded = false
+                    },
+                    leadingIcon = {
+                        Icon(
+                            painter = painterResource(Res.drawable.ic_delete),
+                            contentDescription = null
+                        )
+                    }
                 )
             )
-
-        }
+        )
 
     }
 

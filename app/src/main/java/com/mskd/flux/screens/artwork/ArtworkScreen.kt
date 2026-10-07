@@ -159,13 +159,12 @@ fun ArtworkScreenContent(
                 }
             )
 
-            if (showMenu) {
-                ArtworkDropDownMenu(
-                    fullArtwork = fullArtwork,
-                    onDismissRequest = { showMenu = false },
-                    sendIntent = sendIntent
-                )
-            }
+            ArtworkDropDownMenu(
+                isVisible = showMenu,
+                fullArtwork = fullArtwork,
+                onDismissRequest = { showMenu = false },
+                sendIntent = sendIntent
+            )
 
         },
         onBackTap = { sendIntent(ArtworkIntent.OnBackTap) },

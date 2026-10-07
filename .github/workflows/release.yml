@@ -39,6 +39,9 @@ jobs:
             echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" >> keystore.properties
             pwd
 
+      - name: Remove Google dependencies to keep code FOSS
+        run: sed -i '/PLAY_STORE/d' build.gradle.kts app/build.gradle.kts gradle/libs.versions.toml
+
       - name: Run Fastlane Release
         run: |
           bundle exec fastlane test_foss

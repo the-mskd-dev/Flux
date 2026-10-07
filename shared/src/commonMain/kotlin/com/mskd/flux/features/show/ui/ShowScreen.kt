@@ -33,12 +33,12 @@ import com.mskd.flux.navigation.domain.Route.Artwork
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.components.ErrorScreen
-import com.mskd.flux.ui.components.FluxDropDownMenu
-import com.mskd.flux.ui.components.FluxDropDownMenuItem
 import com.mskd.flux.ui.components.FluxScaffold
 import com.mskd.flux.ui.components.LoadingScreen
 import com.mskd.flux.ui.components.ResetProgressDialog
 import com.mskd.flux.ui.dimensions.rememberScreenDimensions
+import com.mskd.flux.ui.modal.menu.FluxPopUpMenu
+import com.mskd.flux.ui.modal.menu.FluxPopUpMenuItem
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_eraser
 import flux.shared.generated.resources.more_info
@@ -185,10 +185,10 @@ fun ShowDropDownMenu(
     sendIntent: (ShowIntent) -> Unit
 ) {
 
-    FluxDropDownMenu(
+    FluxPopUpMenu(
         onDismissRequest = onDismissRequest,
         items = listOf(
-            FluxDropDownMenuItem(
+            FluxPopUpMenuItem(
                 text = stringResource(Res.string.more_info),
                 onClick = {
                     sendIntent(ShowIntent.OpenShowInfo)
@@ -196,7 +196,7 @@ fun ShowDropDownMenu(
                 },
                 leadingIcon = { Icon(imageVector = Icons.Outlined.Info, contentDescription = stringResource(Res.string.more_info)) },
             ),
-            FluxDropDownMenuItem(
+            FluxPopUpMenuItem(
                 text = stringResource(Res.string.reset_progress),
                 onClick = {
                     sendIntent(ShowIntent.ShowResetProgressDialog)

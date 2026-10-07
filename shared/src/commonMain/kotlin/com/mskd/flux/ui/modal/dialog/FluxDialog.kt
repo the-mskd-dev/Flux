@@ -60,7 +60,9 @@ fun FluxDialogHost(
 
     val visible = host.visible && current != null
 
-    BackGesture(enabled = host.visible, onBack = { entry?.onDismiss?.invoke() })
+    if (visible) {
+        BackGesture(enabled = true, onBack = { entry?.onDismiss?.invoke() })
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
 

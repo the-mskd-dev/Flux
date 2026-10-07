@@ -23,11 +23,11 @@ import com.mskd.flux.features.privateFolder.presentation.PrivateFolderIntent
 import com.mskd.flux.features.privateFolder.presentation.PrivateFolderUiState
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.ui.FluxPreview
-import com.mskd.flux.ui.components.FluxDropDownMenu
-import com.mskd.flux.ui.components.FluxDropDownMenuItem
 import com.mskd.flux.ui.dimensions.rememberScreenDimensions
 import com.mskd.flux.ui.displayCutoutPaddingInLandscape
 import com.mskd.flux.ui.media.MediaItem
+import com.mskd.flux.ui.modal.menu.FluxPopUpMenu
+import com.mskd.flux.ui.modal.menu.FluxPopUpMenuItem
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
@@ -100,10 +100,10 @@ fun PrivateArtworkItem(
 
         if (menuExpanded) {
 
-            FluxDropDownMenu(
+            FluxPopUpMenu(
                 onDismissRequest = { menuExpanded = false },
                 items = listOf(
-                    FluxDropDownMenuItem(
+                    FluxPopUpMenuItem(
                         text = stringResource(Res.string.remove_from_private_folder),
                         onClick = {
                             sendIntent(PrivateFolderIntent.RemoveFromPrivateFolder(artwork = artwork))

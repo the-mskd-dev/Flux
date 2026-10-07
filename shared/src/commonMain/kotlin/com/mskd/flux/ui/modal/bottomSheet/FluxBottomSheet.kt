@@ -41,7 +41,6 @@ import com.mskd.flux.ui.theme.FluxUI
 import dev.chrisbanes.haze.HazeState
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FluxBottomSheetHost(
     host: ModalHostState,
@@ -55,7 +54,9 @@ fun FluxBottomSheetHost(
 
     val visible = host.visible && current != null
 
-    BackGesture(enabled = host.visible, onBack = { entry?.onDismiss?.invoke() })
+    if (visible) {
+        BackGesture(enabled = true, onBack = { entry?.onDismiss?.invoke() })
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
 

@@ -8,8 +8,8 @@ import androidx.compose.runtime.Composable
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.features.artwork.presentation.ArtworkIntent
-import com.mskd.flux.ui.components.FluxDropDownMenu
-import com.mskd.flux.ui.components.FluxDropDownMenuItem
+import com.mskd.flux.ui.modal.menu.FluxPopUpMenu
+import com.mskd.flux.ui.modal.menu.FluxPopUpMenuItem
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_file_explorer
 import flux.shared.generated.resources.ic_play
@@ -44,7 +44,7 @@ fun EpisodeDropDownMenu(
 
             // Play
             add(
-                FluxDropDownMenuItem(
+                FluxPopUpMenuItem(
                     text = text,
                     onClick = {
                         sendIntent(ArtworkIntent.PlayMedia(media = episode))
@@ -60,7 +60,7 @@ fun EpisodeDropDownMenu(
 
         // Status
         add(
-            FluxDropDownMenuItem(
+            FluxPopUpMenuItem(
                 text = if (episode.status == Status.WATCHED) stringResource(Res.string.mark_as_not_watched) else stringResource(Res.string.mark_as_watched),
                 onClick = {
                     sendIntent(ArtworkIntent.ChangeWatchStatus(media = episode))
@@ -77,7 +77,7 @@ fun EpisodeDropDownMenu(
 
         // More info
         add(
-            FluxDropDownMenuItem(
+            FluxPopUpMenuItem(
                 text = stringResource(Res.string.more_info),
                 onClick = {
                     sendIntent(ArtworkIntent.OpenEpisodeInfo(episode = episode))
@@ -91,7 +91,7 @@ fun EpisodeDropDownMenu(
 
         // Open in file explorer
         add(
-            FluxDropDownMenuItem(
+            FluxPopUpMenuItem(
                 text = stringResource(Res.string.open_in_file_explorer),
                 onClick = {
                     sendIntent(ArtworkIntent.OpenFileExplorer(media = episode))
@@ -105,7 +105,7 @@ fun EpisodeDropDownMenu(
 
     }
 
-    FluxDropDownMenu(
+    FluxPopUpMenu(
         onDismissRequest = onDismissRequest,
         items = items
     )

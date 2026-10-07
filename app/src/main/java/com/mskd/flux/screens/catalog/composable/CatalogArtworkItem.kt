@@ -14,6 +14,7 @@ import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.ui.components.FluxDropDownMenu
 import com.mskd.flux.ui.components.FluxDropDownMenuItem
 import com.mskd.flux.ui.media.MediaItem
+import com.mskd.flux.ui.modal.menu.FluxMenu
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.add_to_private_folder
 import flux.shared.generated.resources.ic_lock
@@ -44,7 +45,7 @@ fun CatalogArtworkItem(
 
         if (menuExpanded && privateFolderEnabled) {
 
-            FluxDropDownMenu(
+            FluxMenu(
                 onDismissRequest = { menuExpanded = false },
                 items = listOf(
                     FluxDropDownMenuItem(
@@ -62,6 +63,26 @@ fun CatalogArtworkItem(
                     )
                 )
             )
+
+
+            /*FluxDropDownMenu(
+                onDismissRequest = { menuExpanded = false },
+                items = listOf(
+                    FluxDropDownMenuItem(
+                        text = addToPrivateFolder,
+                        onClick = {
+                            sendIntent(CatalogIntent.AddArtworkToPrivateFolder(artwork = artwork))
+                            menuExpanded = false
+                        },
+                        leadingIcon = {
+                            Icon(
+                                painter = painterResource(Res.drawable.ic_lock),
+                                contentDescription = null
+                            )
+                        }
+                    )
+                )
+            )*/
 
         }
 

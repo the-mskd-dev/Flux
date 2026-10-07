@@ -7,6 +7,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
+import com.mskd.flux.ui.components.FluxDropDownMenuItem
 
 @Stable
 class ModalHostState {
@@ -31,6 +32,8 @@ internal sealed class ModalEntry(
         val onValidate: (() -> Unit)? = null,
         val onValidateLabel: String,
     ) : ModalEntry(title, onDismiss, content)
+
+    class Scrim(onDismiss: () -> Unit) : ModalEntry(null, onDismiss, {})
 
 }
 

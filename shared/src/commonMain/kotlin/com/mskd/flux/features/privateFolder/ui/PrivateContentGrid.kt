@@ -23,11 +23,11 @@ import com.mskd.flux.features.privateFolder.presentation.PrivateFolderIntent
 import com.mskd.flux.features.privateFolder.presentation.PrivateFolderUiState
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.ui.FluxPreview
-import com.mskd.flux.ui.components.FluxDropDownMenu
-import com.mskd.flux.ui.components.FluxDropDownMenuItem
 import com.mskd.flux.ui.dimensions.rememberScreenDimensions
 import com.mskd.flux.ui.displayCutoutPaddingInLandscape
 import com.mskd.flux.ui.media.MediaItem
+import com.mskd.flux.ui.modal.menu.FluxPopUpMenu
+import com.mskd.flux.ui.modal.menu.FluxPopUpMenuItem
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
@@ -98,28 +98,25 @@ fun PrivateArtworkItem(
             description = artwork.title
         )
 
-        if (menuExpanded) {
-
-            FluxDropDownMenu(
-                onDismissRequest = { menuExpanded = false },
-                items = listOf(
-                    FluxDropDownMenuItem(
-                        text = stringResource(Res.string.remove_from_private_folder),
-                        onClick = {
-                            sendIntent(PrivateFolderIntent.RemoveFromPrivateFolder(artwork = artwork))
-                            menuExpanded = false
-                        },
-                        leadingIcon = {
-                            Icon(
-                                painter = painterResource(Res.drawable.ic_delete),
-                                contentDescription = null
-                            )
-                        }
-                    )
+        FluxPopUpMenu(
+            isVisible = menuExpanded,
+            onDismissRequest = { menuExpanded = false },
+            items = listOf(
+                FluxPopUpMenuItem(
+                    text = stringResource(Res.string.remove_from_private_folder),
+                    onClick = {
+                        sendIntent(PrivateFolderIntent.RemoveFromPrivateFolder(artwork = artwork))
+                        menuExpanded = false
+                    },
+                    leadingIcon = {
+                        Icon(
+                            painter = painterResource(Res.drawable.ic_delete),
+                            contentDescription = null
+                        )
+                    }
                 )
             )
-
-        }
+        )
 
     }
 

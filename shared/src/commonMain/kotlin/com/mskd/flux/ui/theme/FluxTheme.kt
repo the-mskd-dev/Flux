@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import com.mskd.flux.features.connectivity.domain.LocalConnectivity
 import com.mskd.flux.features.customization.domain.datastore.CustomizationDataStore
 import com.mskd.flux.ui.blurBackground
+import com.mskd.flux.ui.modal.FluxScrimHost
 import com.mskd.flux.ui.modal.LocalModalHost
 import com.mskd.flux.ui.modal.ModalHostState
 import com.mskd.flux.ui.modal.bottomSheet.FluxBottomSheetHost
@@ -81,6 +82,12 @@ fun FluxTheme(
                     host = modalHost,
                     hazeState = modalHazeState
                 )
+
+                FluxScrimHost(
+                    host = modalHost,
+                    hazeState = modalHazeState
+                )
+
             }
 
         }

@@ -32,6 +32,8 @@ internal sealed class ModalEntry(
         val onValidateLabel: String,
     ) : ModalEntry(title, onDismiss, content)
 
+    class Scrim(onDismiss: () -> Unit) : ModalEntry(null, onDismiss, {})
+
 }
 
 val LocalModalHost = staticCompositionLocalOf<ModalHostState> {

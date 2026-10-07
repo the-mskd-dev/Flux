@@ -199,8 +199,9 @@ fun UnknownScreenContent(
                         episode = media,
                         isSelected = false,
                         onClick = { sendIntent(UnknownIntent.PlayMedia(media = media)) },
-                        dropDownMenu = { onDismissRequest ->
+                        dropDownMenu = { isVisible, onDismissRequest ->
                             UnknownDropDownMenu(
+                                isVisible = isVisible,
                                 episode = media,
                                 onDismissRequest = onDismissRequest,
                                 sendIntent = sendIntent

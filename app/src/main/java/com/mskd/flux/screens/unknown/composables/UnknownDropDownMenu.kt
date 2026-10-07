@@ -4,8 +4,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.features.unknown.presentation.UnknownIntent
-import com.mskd.flux.ui.components.FluxDropDownMenu
-import com.mskd.flux.ui.components.FluxDropDownMenuItem
+import com.mskd.flux.ui.modal.menu.FluxPopUpMenu
+import com.mskd.flux.ui.modal.menu.FluxPopUpMenuItem
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_file_explorer
 import flux.shared.generated.resources.open_in_file_explorer
@@ -14,6 +14,7 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun UnknownDropDownMenu(
+    isVisible: Boolean,
     episode: Episode,
     onDismissRequest: () -> Unit,
     sendIntent: (UnknownIntent) -> Unit
@@ -23,7 +24,7 @@ fun UnknownDropDownMenu(
 
         // Open in file explorer
         add(
-            FluxDropDownMenuItem(
+            FluxPopUpMenuItem(
                 text = stringResource(Res.string.open_in_file_explorer),
                 onClick = {
                     sendIntent(UnknownIntent.OpenFileExplorer(media = episode))
@@ -37,7 +38,8 @@ fun UnknownDropDownMenu(
 
     }
 
-    FluxDropDownMenu(
+    FluxPopUpMenu(
+        isVisible = isVisible,
         onDismissRequest = onDismissRequest,
         items = items
     )

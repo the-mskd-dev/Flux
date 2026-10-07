@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.TextButton
@@ -60,7 +59,9 @@ fun FluxDialogHost(
 
     val visible = host.visible && current != null
 
-    BackGesture(enabled = host.visible, onBack = { entry?.onDismiss?.invoke() })
+    if (visible) {
+        BackGesture(enabled = true, onBack = { entry?.onDismiss?.invoke() })
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -75,7 +76,7 @@ fun FluxDialogHost(
                 Modifier
                     .fillMaxSize()
                     .blurForeground(state = hazeState, radius = 3.dp)
-                    .background(MaterialTheme.colorScheme.scrim.copy(alpha = .3f))
+                    .background(MaterialTheme.colorScheme.scrim.copy(alpha = .4f))
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,

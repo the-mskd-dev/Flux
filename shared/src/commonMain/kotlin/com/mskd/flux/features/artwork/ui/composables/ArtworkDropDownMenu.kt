@@ -6,8 +6,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.features.artwork.presentation.ArtworkIntent
-import com.mskd.flux.ui.components.FluxDropDownMenu
-import com.mskd.flux.ui.components.FluxDropDownMenuItem
+import com.mskd.flux.ui.modal.menu.FluxPopUpMenu
+import com.mskd.flux.ui.modal.menu.FluxPopUpMenuItem
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_eraser
 import flux.shared.generated.resources.ic_file_explorer
@@ -19,18 +19,20 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun ArtworkDropDownMenu(
+    isVisible: Boolean,
     fullArtwork: FullArtwork,
     onDismissRequest: () -> Unit,
     sendIntent: (ArtworkIntent) -> Unit
 ) {
 
-    FluxDropDownMenu(
+    FluxPopUpMenu(
+        isVisible = isVisible,
         onDismissRequest = onDismissRequest,
         items = buildList {
 
             // More Info
             add(
-                FluxDropDownMenuItem(
+                FluxPopUpMenuItem(
                     text = stringResource(Res.string.more_info),
                     onClick = {
                         sendIntent(ArtworkIntent.OpenArtworkInfo)
@@ -47,7 +49,7 @@ fun ArtworkDropDownMenu(
 
             // Reset progress
             add(
-                FluxDropDownMenuItem(
+                FluxPopUpMenuItem(
                     text = stringResource(Res.string.reset_progress),
                     onClick = {
                         sendIntent(ArtworkIntent.ShowResetProgressDialog)
@@ -65,7 +67,7 @@ fun ArtworkDropDownMenu(
             // Open in file explorer (only for movies)
             if (fullArtwork is FullArtwork.FullMovie) {
                 add(
-                    FluxDropDownMenuItem(
+                    FluxPopUpMenuItem(
                         text = stringResource(Res.string.open_in_file_explorer),
                         onClick = {
                             sendIntent(ArtworkIntent.OpenFileExplorer(media = fullArtwork.movie))

@@ -12,11 +12,11 @@ import androidx.compose.ui.unit.dp
 import com.mskd.flux.features.connectivity.domain.LocalConnectivity
 import com.mskd.flux.features.customization.domain.datastore.CustomizationDataStore
 import com.mskd.flux.ui.blurBackground
+import com.mskd.flux.ui.modal.FluxScrimHost
 import com.mskd.flux.ui.modal.LocalModalHost
 import com.mskd.flux.ui.modal.ModalHostState
 import com.mskd.flux.ui.modal.bottomSheet.FluxBottomSheetHost
 import com.mskd.flux.ui.modal.dialog.FluxDialogHost
-import com.mskd.flux.ui.modal.FluxScrimHost
 import com.mskd.flux.ui.text.LocalEmphasizedTypography
 import com.mskd.flux.ui.text.fluxEmphasizedTypography
 import com.mskd.flux.ui.text.fluxTypography

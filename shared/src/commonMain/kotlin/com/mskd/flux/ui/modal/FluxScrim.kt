@@ -49,7 +49,7 @@ fun FluxScrimHost(
                 Modifier
                     .fillMaxSize()
                     .blurForeground(state = hazeState, radius = 3.dp)
-                    .background(MaterialTheme.colorScheme.scrim.copy(alpha = .3f))
+                    .background(MaterialTheme.colorScheme.scrim.copy(alpha = .4f))
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,

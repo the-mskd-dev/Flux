@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -71,7 +70,7 @@ fun FluxBottomSheetHost(
                 Modifier
                     .fillMaxSize()
                     .blurForeground(state = hazeState, radius = 3.dp)
-                    .background(MaterialTheme.colorScheme.scrim.copy(alpha = .3f))
+                    .background(MaterialTheme.colorScheme.scrim.copy(alpha = .4f))
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,

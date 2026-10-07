@@ -148,9 +148,9 @@ acra-mail = { group = "ch.acra", name = "acra-mail", version.ref = "acra" }
 acra-dialog = { group = "ch.acra", name = "acra-dialog", version.ref = "acra" }
 
 # -- Firebase --
-firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version = "34.19.0" }
-firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
-firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version = "34.19.0" } # PLAY_STORE
+firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" } # PLAY_STORE
+firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" } # PLAY_STORE
 
 # -- Testing --
 junit = { group = "junit", name = "junit", version = "4.13.2" }
@@ -183,7 +183,7 @@ android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.
 koin-compiler = { id = "io.insert-koin.compiler.plugin", version.ref = "koinPlugin" }
 android-lint = { id = "com.android.lint", version.ref = "agp" }
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlyticsPlugin" }
-google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" } # PLAY_STORE
 
 [bundles]
 

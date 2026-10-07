@@ -15,7 +15,7 @@ plugins {
     alias(libs.plugins.android.kotlin.multiplatform.library) apply false
     alias(libs.plugins.android.lint) apply false
 
-    alias(libs.plugins.google.services) apply false
-    alias(libs.plugins.firebase.crashlytics) apply false
+    alias(libs.plugins.google.services) apply false // PLAY_STORE
+    alias(libs.plugins.firebase.crashlytics) apply false // PLAY_STORE
 
 }

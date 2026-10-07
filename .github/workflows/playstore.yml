@@ -21,7 +21,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: '21'
-          distribution: 'temurin'
+          distribution: 'jetbrains'
           cache: gradle
 
       - name: Set up Ruby
@@ -69,8 +69,9 @@ jobs:
       - name: Clean sensitive files
         if: always()
         run: |
-          rm -f app/google-services.json
+          rm -f app/src/playstore/google-services.json
           rm -f firebase-distribution.json
           rm -f keystore.jks
           rm -f keystore.properties
           rm -f local.properties
+          rm -f play-console-api-key.json

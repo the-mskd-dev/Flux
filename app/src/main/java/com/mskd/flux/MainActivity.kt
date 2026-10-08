@@ -8,6 +8,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import com.mskd.flux.app.AppViewModel
 import com.mskd.flux.features.connectivity.domain.ConnectivityRepository
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.navigation.ui.FluxNavigation
@@ -25,7 +26,7 @@ import org.koin.android.ext.android.inject
 
 class MainActivity : ComponentActivity() {
 
-    val viewModel: MainViewModel by inject()
+    val viewModel: AppViewModel by inject()
     val connectivityRepository: ConnectivityRepository by inject()
 
     private var onUserLeaveHintCallback: (() -> Unit)? = null

@@ -11,7 +11,7 @@ import com.mskd.flux.di.moduleAndroidApp
 import com.mskd.flux.di.modulePlatform
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
-import com.mskd.flux.utils.Language
+import com.mskd.flux.core.model.language.Language
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking

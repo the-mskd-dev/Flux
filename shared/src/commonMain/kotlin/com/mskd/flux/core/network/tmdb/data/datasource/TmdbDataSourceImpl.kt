@@ -13,9 +13,11 @@ import com.mskd.flux.core.network.tmdb.data.service.TMDBService
 import com.mskd.flux.core.network.tmdb.domain.model.TranslationRequest
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
-import com.mskd.flux.utils.Language
-import com.mskd.flux.utils.Trace
-import com.mskd.flux.utils.toTmdbFormat
+import com.mskd.flux.core.model.language.Language
+import com.mskd.flux.core.model.language.languageCode
+import com.mskd.flux.core.model.language.toTmdbFormat
+import com.mskd.flux.report.Trace
+import com.mskd.flux.system.systemLanguage
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -30,6 +32,8 @@ class TmdbDataSourceImpl(
         const val TAG = "TmdbRepositoryImpl"
     }
 
+    private suspend fun tmdbLanguage(): String = settings.getDataLanguage()
+
     override suspend fun getArtwork(
         file: UserFile
     ): ArtworkDto? {
@@ -37,7 +41,7 @@ class TmdbDataSourceImpl(
         if (!tokenDataStore.tokenIsAvailable())
             return null
 
-        val language = settings.getDataLanguage()
+        val language = tmdbLanguage()
 
         return try {
 
@@ -90,7 +94,7 @@ class TmdbDataSourceImpl(
         if (!tokenDataStore.tokenIsAvailable())
             return emptyList()
 
-        val language = settings.getDataLanguage()
+        val language = tmdbLanguage()
 
         return coroutineScope {
 
@@ -117,7 +121,7 @@ class TmdbDataSourceImpl(
         if (!tokenDataStore.tokenIsAvailable())
             return null
 
-        val language = settings.getDataLanguage()
+        val language = tmdbLanguage()
 
         return try {
 
@@ -158,7 +162,7 @@ class TmdbDataSourceImpl(
         if (!tokenDataStore.tokenIsAvailable())
             return null
 
-        val language = settings.getDataLanguage()
+        val language = tmdbLanguage()
 
         return try {
 
@@ -201,7 +205,7 @@ class TmdbDataSourceImpl(
         if (!tokenDataStore.tokenIsAvailable())
             return null
 
-        val language = settings.getDataLanguage()
+        val language = tmdbLanguage()
 
         return try {
 
@@ -244,7 +248,7 @@ class TmdbDataSourceImpl(
         if (!tokenDataStore.tokenIsAvailable())
             return null
 
-        val language = settings.getDataLanguage()
+        val language = tmdbLanguage()
 
         return try {
 
@@ -294,7 +298,7 @@ class TmdbDataSourceImpl(
                 is TranslationRequest.Episode -> tmdbService.getEpisodeTranslations(artworkId = request.artworkId, season = request.season, number = request.number)
             }
 
-            val requestedTranslation = result.translations.find { it.language.equals(request.language, true) && !it.data.overview.isNullOrBlank() }
+            val requestedTranslation = result.translations.find { it.language.equals(request.language.languageCode(), true) && !it.data.overview.isNullOrBlank() }
             val fallbackTranslation = result.translations.find { it.language.equals(Language.ENGLISH.code, true) && !it.data.overview.isNullOrBlank() }
 
             val translation = when {

@@ -6,7 +6,7 @@ import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.core.model.catalog.Catalog
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase.Companion.TAG
-import com.mskd.flux.utils.Trace
+import com.mskd.flux.report.Trace
 
 /**
  * Copies watch status and current time from existing database media to matched new items.

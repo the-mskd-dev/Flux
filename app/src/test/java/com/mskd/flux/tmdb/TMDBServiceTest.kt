@@ -2,7 +2,7 @@ package com.mskd.flux.tmdb
 
 import com.mskd.flux.configs.ApiConfig
 import com.mskd.flux.mockups.TMDBResponseMockups
-import com.mskd.flux.utils.Language
+import com.mskd.flux.core.model.language.Language
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.comparables.shouldBeGreaterThan

@@ -15,7 +15,7 @@ import com.mskd.flux.features.catalog.domain.usecase.syncGenres.SyncGenresUseCas
 import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
 import com.mskd.flux.features.catalog.fake.FakeCatalogSyncCoordinator
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
-import com.mskd.flux.utils.Language
+import com.mskd.flux.core.model.language.Language
 import io.kotest.core.spec.style.FunSpec
 import io.mockk.coEvery
 import io.mockk.coVerify

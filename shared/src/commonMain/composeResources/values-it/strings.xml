@@ -99,9 +99,7 @@
     <string name="other_files">Altri file</string>
     <string name="no_item">Non ci sono elementi da mostrare</string>
     <string name="skip">Salta</string>
-    <string name="snackbar_add_api_key">Aggiungi la tua chiave per un'esperienza migliore</string>
     <string name="add">Aggiungi</string>
-    <string name="snackbar_see_tuto">Per organizzare la tua libreria, controlla la nomenclatura dei tuoi file</string>
     <string name="see">Vedi</string>
     <string name="more_info">Maggiori informazioni</string>
     <string name="external_player">Player esterno</string>

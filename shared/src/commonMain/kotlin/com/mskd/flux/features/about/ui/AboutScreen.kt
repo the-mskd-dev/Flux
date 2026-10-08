@@ -23,7 +23,7 @@ import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.Constants
-import com.mskd.flux.utils.buildLinkedString
+import com.mskd.flux.ui.text.buildLinkedString
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.about
 import flux.shared.generated.resources.github

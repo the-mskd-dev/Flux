@@ -99,9 +99,7 @@
     <string name="other_files">기타 파일</string>
     <string name="no_item">표시할 항목이 없습니다</string>
     <string name="skip">건너뛰기</string>
-    <string name="snackbar_add_api_key">키를 추가하여 더 나은 환경을 경험해보세요</string>
     <string name="add">추가</string>
-    <string name="snackbar_see_tuto">라이브러리를 정리하려면 파일 이름을 확인하세요</string>
     <string name="see">보기</string>
     <string name="more_info">자세한 정보</string>
     <string name="external_player">외부 플레이어</string>

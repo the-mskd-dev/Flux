@@ -28,7 +28,7 @@ import com.mskd.flux.features.player.domain.manager.PlayerManager
 import com.mskd.flux.features.player.domain.usecase.SaveTrackLanguageUseCase
 import com.mskd.flux.services.PlayerService
 import com.mskd.flux.utils.Constants
-import com.mskd.flux.utils.Trace
+import com.mskd.flux.report.Trace
 import com.mskd.flux.utils.extensions.tmdbImage
 import com.mskd.flux.utils.extensions.uppercaseFirstLetter
 import flux.shared.generated.resources.Res

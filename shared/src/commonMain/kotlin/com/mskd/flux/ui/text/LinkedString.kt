@@ -1,4 +1,4 @@
-package com.mskd.flux.utils
+package com.mskd.flux.ui.text
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable

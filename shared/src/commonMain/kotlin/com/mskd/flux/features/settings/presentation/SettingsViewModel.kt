@@ -18,8 +18,8 @@ import com.mskd.flux.features.settings.domain.model.SettingsDialog
 import com.mskd.flux.system.EmailLauncher
 import com.mskd.flux.system.UrlLauncher
 import com.mskd.flux.ui.text.TextProvider
-import com.mskd.flux.utils.Language
-import com.mskd.flux.utils.languageDisplayName
+import com.mskd.flux.core.model.language.Language
+import com.mskd.flux.system.languageDisplayName
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.button_forward
 import flux.shared.generated.resources.button_rewind
@@ -91,7 +91,7 @@ class SettingsViewModel(
         privateFolderState
     ) { base, privateFolder ->
         SettingsUiState(
-            languageValue = base.settings.dataLanguage,
+            languageValue = base.settings.dataLanguage?.code,
             rewindValue = base.settings.playerRewindValue,
             forwardValue = base.settings.playerForwardValue,
             useExternalPlayer = base.settings.externalPlayer,
@@ -212,7 +212,7 @@ class SettingsViewModel(
     }
 
     private suspend fun setLanguageValue(value: String?) {
-        settingsDataStore.setDataLanguage(value)
+        settingsDataStore.setDataLanguage(value?.let { Language.fromCode(it) })
         updateLanguageUseCase()
         hideDialog()
     }

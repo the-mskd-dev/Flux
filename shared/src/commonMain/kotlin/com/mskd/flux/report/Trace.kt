@@ -1,4 +1,4 @@
-package com.mskd.flux.utils
+package com.mskd.flux.report
 
 import io.github.aakira.napier.Napier
 

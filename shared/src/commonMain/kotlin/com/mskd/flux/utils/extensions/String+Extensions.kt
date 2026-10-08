@@ -3,7 +3,7 @@ package com.mskd.flux.utils.extensions
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.features.settings.presentation.PrivateFolderPinDialog
 import com.mskd.flux.utils.Constants
-import com.mskd.flux.utils.Trace
+import com.mskd.flux.report.Trace
 import kotlinx.datetime.LocalDate
 import java.util.Locale
 

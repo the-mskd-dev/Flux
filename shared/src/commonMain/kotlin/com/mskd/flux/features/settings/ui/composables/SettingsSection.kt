@@ -19,7 +19,7 @@ import com.mskd.flux.features.settings.presentation.SettingsUiState
 import com.mskd.flux.ui.fillMaxWidthWithLimit
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.Constants
-import com.mskd.flux.utils.languageDisplayName
+import com.mskd.flux.system.languageDisplayName
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.about
 import flux.shared.generated.resources.about_desc

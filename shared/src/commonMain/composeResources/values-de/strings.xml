@@ -99,9 +99,7 @@
     <string name="other_files">Andere Dateien</string>
     <string name="no_item">Keine Elemente zum Anzeigen vorhanden</string>
     <string name="skip">Überspringen</string>
-    <string name="snackbar_add_api_key">Füge deinen Schlüssel hinzu für ein besseres Erlebnis</string>
     <string name="add">Hinzufügen</string>
-    <string name="snackbar_see_tuto">Prüfe die Benennung deiner Dateien, um deine Mediathek zu strukturieren</string>
     <string name="see">Ansehen</string>
     <string name="more_info">Weitere Informationen</string>
     <string name="external_player">Externer Player</string>

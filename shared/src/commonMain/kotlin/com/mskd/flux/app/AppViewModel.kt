@@ -9,7 +9,7 @@ import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.report.CrashKey
 import com.mskd.flux.report.CrashLogger
-import com.mskd.flux.utils.systemLanguage
+import com.mskd.flux.system.systemLanguage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
@@ -39,7 +39,7 @@ class AppViewModel(
 
                 // Change report values
                 crashLogger.addCustomData(key = CrashKey.SYSTEM_FOLDERS, value = preferences.systemFoldersEnabled.toString())
-                crashLogger.addCustomData(key = CrashKey.DATA_LANGUAGE, value = (preferences.dataLanguage ?: systemLanguage()))
+                crashLogger.addCustomData(key = CrashKey.DATA_LANGUAGE, value = (preferences.dataLanguage?.toString() ?: systemLanguage()))
                 crashLogger.addCustomData(key = CrashKey.EXTERNAL_PLAYER, value = preferences.externalPlayer.toString())
 
             }

@@ -16,7 +16,7 @@ import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.settings.domain.model.SettingsDialog
 import com.mskd.flux.system.EmailLauncher
 import com.mskd.flux.system.UrlLauncher
-import com.mskd.flux.utils.Language
+import com.mskd.flux.core.model.language.Language
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe

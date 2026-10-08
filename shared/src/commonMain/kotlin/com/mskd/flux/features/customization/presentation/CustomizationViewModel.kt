@@ -9,7 +9,7 @@ import com.mskd.flux.features.customization.domain.datastore.CustomizationDataSt
 import com.mskd.flux.features.customization.domain.model.CustomizationDialog
 import com.mskd.flux.features.customization.domain.model.NavigationStyle
 import com.mskd.flux.ui.text.TextProvider
-import com.mskd.flux.utils.UiCommon
+import com.mskd.flux.ui.UiCommon
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.accent_color
 import flux.shared.generated.resources.app_theme

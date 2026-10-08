@@ -12,6 +12,7 @@ import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtwo
 import com.mskd.flux.features.files.domain.usecase.GetSubtitlesUseCase
 import com.mskd.flux.features.player.data.PipIsEnabledUseCase
 import com.mskd.flux.features.player.domain.manager.PlayerManager
+import com.mskd.flux.features.player.domain.mapper.toPlayerTrack
 import com.mskd.flux.features.player.domain.model.PlayerParams
 import com.mskd.flux.features.player.domain.usecase.SaveTrackLanguageUseCase
 import com.mskd.flux.features.player.presentation.PlayerUiContent.AmbientOverlay
@@ -22,7 +23,6 @@ import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.ui.text.TextProvider
 import com.mskd.flux.utils.extensions.getNextEpisodeFor
-import com.mskd.flux.utils.toPlayerTrack
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay

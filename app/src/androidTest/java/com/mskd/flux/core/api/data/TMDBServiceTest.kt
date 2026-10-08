@@ -8,7 +8,7 @@ import com.mskd.flux.core.network.tmdb.data.service.TMDBService
 import com.mskd.flux.di.moduleAndroidApp
 import com.mskd.flux.di.modulePlatform
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
-import com.mskd.flux.utils.Language
+import com.mskd.flux.core.model.language.Language
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -34,7 +34,7 @@ class TMDBServiceTest : KoinTest {
 
     private companion object {
 
-        val dataLanguage: String = Language.ENGLISH.tmdbFormat
+        val dataLanguage: String = Language.ENGLISH.toString()
 
         val movieFile = UserFile(
             name = "Spider-man Homecoming",

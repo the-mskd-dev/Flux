@@ -1,10 +1,8 @@
 package com.mskd.flux.di
 
 import com.mskd.flux.BuildConfig
-import com.mskd.flux.app.AppViewModel
 import com.mskd.flux.core.model.core.AppInfo
 import com.mskd.flux.core.model.core.Flavor
-import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 val moduleAndroidApp = module {
@@ -18,5 +16,5 @@ val moduleAndroidApp = module {
             flavor = Flavor.fromString(BuildConfig.FLAVOR)
         )
     }
-    
+
 }

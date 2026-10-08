@@ -1,10 +1,14 @@
 package com.mskd.flux.navigation.domain
 
 import androidx.navigation3.runtime.NavKey
+import androidx.savedstate.serialization.SavedStateConfiguration
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Genre
 import com.mskd.flux.features.player.domain.model.PlayerParams
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.polymorphic
+import kotlinx.serialization.modules.subclass
 
 sealed class Route : NavKey {
 
@@ -56,6 +60,28 @@ sealed class Route : NavKey {
     @Serializable
     data object Message: Route()
 
+}
+
+val navConfig = SavedStateConfiguration {
+    serializersModule = SerializersModule {
+        polymorphic(NavKey::class) {
+            subclass(Route.Setup::class)
+            subclass(Route.Catalog::class)
+            subclass(Route.Show::class)
+            subclass(Route.Artwork::class)
+            subclass(Route.UnknownArtworks::class)
+            subclass(Route.PrivateFolder::class)
+            subclass(Route.Search::class)
+            subclass(Route.Player::class)
+            subclass(Route.Settings::class)
+            subclass(Route.Customization::class)
+            subclass(Route.HowTo::class)
+            subclass(Route.About::class)
+            subclass(Route.Token::class)
+            subclass(Route.Sources::class)
+            subclass(Route.Message::class)
+        }
+    }
 }
 
 fun Route?.isSameTabAs(target: Route): Boolean = when (target) {

@@ -36,8 +36,11 @@ import com.mskd.flux.features.setup.ui.SetupScreen
 import com.mskd.flux.features.show.ui.ShowScreen
 import com.mskd.flux.features.token.ui.TokenScreen
 import com.mskd.flux.navigation.domain.Route
+import com.mskd.flux.navigation.domain.navConfig
 import com.mskd.flux.navigation.domain.navigateToTab
-import com.mskd.flux.navigation.ui.FluxNavigationBar
+import com.mskd.flux.navigation.domain.popScreen
+import com.mskd.flux.navigation.ui.FluxNavigation
+import com.mskd.flux.navigation.ui.navigationBar.FluxNavigationBar
 import com.mskd.flux.navigation.ui.Transition
 import com.mskd.flux.report.CrashLogger
 import com.mskd.flux.screens.artwork.ArtworkScreen
@@ -48,7 +51,6 @@ import com.mskd.flux.screens.sources.SourcesScreen
 import com.mskd.flux.screens.unknown.UnknownScreen
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.createColorScheme
-import com.mskd.flux.utils.extensions.popScreen
 import com.mskd.flux.utils.rememberNotificationsPermission
 import com.mskd.flux.utils.rememberStoragePermission
 import org.koin.android.ext.android.inject
@@ -57,11 +59,9 @@ class MainActivity : ComponentActivity() {
 
     val viewModel: MainViewModel by inject()
     val connectivityRepository: ConnectivityRepository by inject()
-    val crashLogger: CrashLogger by inject()
 
     private var onUserLeaveHintCallback: (() -> Unit)? = null
 
-    @OptIn(ExperimentalPermissionsApi::class)
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,24 +86,13 @@ class MainActivity : ComponentActivity() {
 
             val startingScreen = viewModel.getStartingScreen()
 
-            val backStack = rememberNavBackStack(startingScreen)
+            val backStack = rememberNavBackStack(navConfig, startingScreen)
             val currentRoute = backStack.lastOrNull() as? Route
             val showBottomBar = currentRoute.let {
                 it is Route.Catalog || it is Route.Search || it is Route.Settings
             }
 
             var transitions by remember { mutableStateOf(Transition.Forward to Transition.Backward) }
-
-            val navigate: (Route) -> Unit = { route ->
-                transitions = Transition.Forward to Transition.Backward
-                crashLogger.addBreadcrumb(message = "navigate to $route")
-                backStack.add(route)
-            }
-            val onBack: () -> Unit = {
-                transitions = Transition.Forward to Transition.Backward
-                crashLogger.addBreadcrumb(message = "pop to ${backStack.getOrNull(backStack.lastIndex - 1) as? Route}")
-                backStack.popScreen()
-            }
 
             FluxTheme(
                 isOnline = isOnline,
@@ -132,47 +121,19 @@ class MainActivity : ComponentActivity() {
                     }
                 ) { _ ->
 
-                    NavDisplay(
-                        modifier = Modifier
-                            .fillMaxSize(),
+                    FluxNavigation(
                         backStack = backStack,
-                        onBack = { backStack.removeLastOrNull() },
-                        entryDecorators = listOf(
-                            rememberSaveableStateHolderNavEntryDecorator(),
-                            rememberViewModelStoreNavEntryDecorator()
-                        ),
-                        transitionSpec = { transitions.first },
-                        popTransitionSpec = { transitions.second },
-                        predictivePopTransitionSpec = { transitions.second },
-                        entryProvider = entryProvider {
-                            entry<Route.Setup> {
-                                SetupScreen(
-                                    navigate = { route ->
-                                        backStack.clear()
-                                        navigate(route)
-                                    },
-                                )
-                            }
+                        customization = customization,
+                        platformEntries = { nav ->
                             entry<Route.Catalog> {
                                 CatalogScreen(
-                                    navigate = { route -> navigate(route) },
-                                )
-                            }
-                            entry<Route.Show> { entry ->
-                                ShowScreen(
-                                    navigate = { route -> navigate(route) },
-                                    onBack = { onBack() },
-                                    artworkId = entry.artworkId,
-                                    colorScheme = createColorScheme(
-                                        theme = customization.uiTheme,
-                                        color = customization.color ?: entry.rgb
-                                    )
+                                    navigate = { route -> nav.navigate(route) },
                                 )
                             }
                             entry<Route.Artwork> { entry ->
                                 ArtworkScreen(
-                                    navigate = { route -> navigate(route) },
-                                    onBack = { onBack() },
+                                    navigate = { route -> nav.navigate(route) },
+                                    onBack = { nav.onBack() },
                                     artworkId = entry.artworkId,
                                     season = entry.season,
                                     colorScheme = createColorScheme(
@@ -183,20 +144,14 @@ class MainActivity : ComponentActivity() {
                             }
                             entry<Route.UnknownArtworks> {
                                 UnknownScreen(
-                                    navigate = { route -> navigate(route) },
-                                    onBack = { onBack() },
-                                )
-                            }
-                            entry<Route.PrivateFolder> {
-                                PrivateScreen(
-                                    navigate = { route -> navigate(route) },
-                                    onBack = { onBack() },
+                                    navigate = { route -> nav.navigate(route) },
+                                    onBack = { nav.onBack() },
                                 )
                             }
                             entry<Route.Search> { entry ->
                                 SearchScreen(
-                                    navigate = { route -> navigate(route) },
-                                    onBack = { onBack() },
+                                    navigate = { route -> nav.navigate(route) },
+                                    onBack = { nav.onBack() },
                                     withType = entry.withType,
                                     withGenre = entry.withGenre
                                 )
@@ -204,56 +159,20 @@ class MainActivity : ComponentActivity() {
                             entry<Route.Player> { entry ->
                                 PlayerScreen(
                                     params = entry.params,
-                                    onBack = { onBack() },
-                                )
-                            }
-                            entry<Route.Settings> {
-                                SettingsScreen(
-                                    navigate = { route -> navigate(route) },
-                                    onBack = { onBack() },
-                                )
-                            }
-                            entry<Route.Customization> {
-                                CustomizationScreen(
-                                    onBack = { onBack() },
-                                )
-                            }
-                            entry<Route.HowTo> {
-                                HowToScreen(
-                                    onBack = { onBack() }
-                                )
-                            }
-                            entry<Route.About> {
-                                AboutScreen(
-                                    onBack = { onBack() }
-                                )
-                            }
-                            entry<Route.Token> { entry ->
-                                TokenScreen(
-                                    onBack = { onBack() },
-                                    navigate = { route ->
-                                        backStack.clear()
-                                        navigate(route)
-                                    },
-                                    fromSetup = entry.fromSetup
+                                    onBack = { nav.onBack() },
                                 )
                             }
                             entry<Route.Sources> { entry ->
                                 SourcesScreen(
                                     navigate = { route ->
                                         backStack.clear()
-                                        navigate(route)
+                                        nav.navigate(route)
                                     },
                                     fromSetup = entry.fromSetup,
-                                    onBack = { onBack() },
+                                    onBack = { nav.onBack() },
                                 )
                             }
-                            entry<Route.Message> {
-                                MessageScreen(
-                                    onBack = { onBack() }
-                                )
-                            }
-                        }
+                        },
                     )
 
                 }

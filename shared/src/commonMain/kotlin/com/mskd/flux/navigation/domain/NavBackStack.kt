@@ -1,4 +1,4 @@
-package com.mskd.flux.utils.extensions
+package com.mskd.flux.navigation.domain
 
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey

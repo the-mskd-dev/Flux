@@ -1,4 +1,4 @@
-package com.mskd.flux.navigation.ui
+package com.mskd.flux.navigation.ui.navigationBar
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState

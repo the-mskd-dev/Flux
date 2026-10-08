@@ -15,7 +15,7 @@ import com.mskd.flux.features.player.data.manager.AndroidPlayerManager
 import com.mskd.flux.features.player.data.usecase.AndroidPipIsEnabledUseCase
 import com.mskd.flux.features.player.domain.manager.PlayerManager
 import com.mskd.flux.features.player.presentation.PlayerViewModel
-import com.mskd.flux.utils.Trace
+import com.mskd.flux.report.Trace
 import io.github.anilbeesetti.nextlib.media3ext.ffdecoder.DecoderManager
 import io.github.anilbeesetti.nextlib.media3ext.ffdecoder.NextRenderersFactory
 import org.koin.android.ext.koin.androidContext

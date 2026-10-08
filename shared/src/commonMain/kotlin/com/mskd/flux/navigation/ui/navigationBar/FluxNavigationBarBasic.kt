@@ -1,4 +1,4 @@
-package com.mskd.flux.navigation.ui
+package com.mskd.flux.navigation.ui.navigationBar
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

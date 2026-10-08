@@ -12,7 +12,7 @@ import com.mskd.flux.core.model.files.FileSource
 import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.features.files.data.FileExtensions
 import com.mskd.flux.features.files.domain.datasource.FilesDataSource
-import com.mskd.flux.utils.Trace
+import com.mskd.flux.report.Trace
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext

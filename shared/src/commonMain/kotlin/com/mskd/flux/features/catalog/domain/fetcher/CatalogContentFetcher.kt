@@ -5,7 +5,7 @@ import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.catalog.Catalog
 import com.mskd.flux.core.model.catalog.CatalogFolder
 import com.mskd.flux.features.catalog.domain.resolver.MediaResolver
-import com.mskd.flux.utils.Trace
+import com.mskd.flux.report.Trace
 import kotlinx.coroutines.async
 import kotlinx.coroutines.supervisorScope
 

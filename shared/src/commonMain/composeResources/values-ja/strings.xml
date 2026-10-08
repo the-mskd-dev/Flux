@@ -99,9 +99,7 @@
     <string name="other_files">その他のファイル</string>
     <string name="no_item">表示する項目がありません</string>
     <string name="skip">スキップ</string>
-    <string name="snackbar_add_api_key">キーを追加してより快適に体験しよう</string>
     <string name="add">追加</string>
-    <string name="snackbar_see_tuto">ライブラリを整理するために、ファイル名の付け方を確認してください</string>
     <string name="see">確認</string>
     <string name="more_info">詳細情報</string>
     <string name="external_player">外部プレーヤー</string>

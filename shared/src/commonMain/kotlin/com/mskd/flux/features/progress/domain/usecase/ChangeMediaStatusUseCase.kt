@@ -6,7 +6,7 @@ import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.features.history.domain.repository.HistoryRepository
-import com.mskd.flux.utils.Trace
+import com.mskd.flux.report.Trace
 import com.mskd.flux.utils.extensions.getNextEpisodeFor
 
 class ChangeMediaStatusUseCase(

@@ -4,6 +4,7 @@ import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.model.core.AppInfo
 import com.mskd.flux.core.model.core.FluxOptionsDialogState
+import com.mskd.flux.core.model.language.Language
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
@@ -16,7 +17,6 @@ import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.settings.domain.model.SettingsDialog
 import com.mskd.flux.system.EmailLauncher
 import com.mskd.flux.system.UrlLauncher
-import com.mskd.flux.utils.Language
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe

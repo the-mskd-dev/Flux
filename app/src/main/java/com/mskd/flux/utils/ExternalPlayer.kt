@@ -12,6 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.net.toUri
 import com.mskd.flux.core.model.artwork.Media
+import com.mskd.flux.report.Trace
 import com.mskd.flux.services.ExternalPlayerService
 
 @Composable

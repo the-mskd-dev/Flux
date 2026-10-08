@@ -1,5 +1,6 @@
 package com.mskd.flux.di
 
+import com.mskd.flux.app.moduleApp
 import com.mskd.flux.core.moduleCore
 import com.mskd.flux.features.moduleFeatures
 import kotlinx.coroutines.CoroutineDispatcher
@@ -21,6 +22,7 @@ val moduleCommon = module {
     }
 
     includes(
+        moduleApp,
         moduleCore,
         moduleFeatures,
     )

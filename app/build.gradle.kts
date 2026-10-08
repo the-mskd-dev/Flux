@@ -159,9 +159,6 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.bundles.android.compose)
 
-    // Navigation 3
-    implementation(libs.bundles.android.navigation)
-
     // Unit Testing
     testImplementation(libs.bundles.android.unit.test)
 

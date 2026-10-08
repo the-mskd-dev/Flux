@@ -1,4 +1,4 @@
-package com.mskd.flux.utils
+package com.mskd.flux.ui
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb

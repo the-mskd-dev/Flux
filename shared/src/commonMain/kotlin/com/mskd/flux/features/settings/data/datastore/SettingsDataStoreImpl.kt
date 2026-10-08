@@ -8,8 +8,9 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.mskd.flux.core.model.language.Language
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
-import com.mskd.flux.utils.systemLanguage
+import com.mskd.flux.system.systemLanguage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.firstOrNull
@@ -41,7 +42,7 @@ class SettingsDataStoreImpl(val settingsDataStore: DataStore<Preferences>) : Set
             val externalPlayer = preferences[Keys.EXTERNAL_PLAYER] ?: false
             val pipIsEnabled = preferences[Keys.PIP_IS_ENABLED] ?: true
             val autoKeyboard = preferences[Keys.AUTO_KEYBOARD] ?: true
-            val dataLanguage = preferences[Keys.DATA_LANGUAGE]
+            val dataLanguage = preferences[Keys.DATA_LANGUAGE]?.let { Language.fromCode(it) }
             val prefetchImages = preferences[Keys.PREFETCH_IMAGES] ?: false
             val systemFoldersEnabled = preferences[Keys.SYSTEM_FOLDERS_ENABLED] ?: true
 
@@ -72,17 +73,17 @@ class SettingsDataStoreImpl(val settingsDataStore: DataStore<Preferences>) : Set
         }
     }
 
-    override suspend fun setDataLanguage(language: String?) {
+    override suspend fun setDataLanguage(language: Language?) {
         settingsDataStore.edit { preferences ->
             if (language != null)
-                preferences[Keys.DATA_LANGUAGE] = language
+                preferences[Keys.DATA_LANGUAGE] = language.code
             else
                 preferences.remove(Keys.DATA_LANGUAGE)
         }
     }
 
     override suspend fun getDataLanguage(): String {
-        return flow.firstOrNull()?.dataLanguage ?: systemLanguage()
+        return flow.firstOrNull()?.dataLanguage?.toString() ?: systemLanguage()
     }
 
     override suspend fun setSystemFolders(enabled: Boolean) {

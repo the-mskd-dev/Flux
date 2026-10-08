@@ -5,7 +5,7 @@ import android.media.MediaMetadataRetriever
 import androidx.core.net.toUri
 import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.features.files.domain.usecase.GetFileDurationUseCase
-import com.mskd.flux.utils.Trace
+import com.mskd.flux.report.Trace
 import com.mskd.flux.utils.extensions.msToMin
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

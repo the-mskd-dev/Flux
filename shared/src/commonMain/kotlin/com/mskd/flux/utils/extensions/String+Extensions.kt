@@ -1,11 +1,9 @@
 package com.mskd.flux.utils.extensions
 
 import com.mskd.flux.core.model.artwork.Media
-import com.mskd.flux.features.settings.presentation.PrivateFolderPinDialog
-import com.mskd.flux.utils.Constants
 import com.mskd.flux.report.Trace
+import com.mskd.flux.utils.Constants
 import kotlinx.datetime.LocalDate
-import java.util.Locale
 
 fun String.parseTMDBDate() : LocalDate? {
 
@@ -21,13 +19,9 @@ fun String.parseTMDBDate() : LocalDate? {
 val Media.releaseDate: LocalDate? get() = this.releaseDateString.parseTMDBDate()
 
 fun String?.uppercaseFirstLetter() : String? {
-    return this?.replaceFirstChar { if (it.isLowerCase()) it. titlecase(Locale.getDefault()) else it.toString() }
+    return this?.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
 }
 
 val String.tmdbImage : String get() = Constants.TMDB.IMAGE + this
 
 val String.tmdbImageLarge : String get() = Constants.TMDB.IMAGE_LARGE + this
-
-fun String.toPinInput(): String {
-    return filter { it.isDigit() }.take(PrivateFolderPinDialog.PIN_LENGTH)
-}

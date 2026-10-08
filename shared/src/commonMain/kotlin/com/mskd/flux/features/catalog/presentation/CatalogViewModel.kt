@@ -35,7 +35,7 @@ import com.mskd.flux.features.privateFolder.domain.usecase.setArtworkPrivacy.Set
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.report.Trace
-import com.mskd.flux.utils.UpdateManager
+import com.mskd.flux.system.UpdateManager
 import com.mskd.flux.utils.extensions.filterFor
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableSharedFlow

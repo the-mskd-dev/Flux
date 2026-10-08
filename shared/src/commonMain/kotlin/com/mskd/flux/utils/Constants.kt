@@ -1,8 +1,5 @@
 package com.mskd.flux.utils
 
-import com.mskd.flux.core.model.language.toTmdbFormat
-import com.mskd.flux.system.systemLanguage
-
 object Constants {
 
     object TMDB {

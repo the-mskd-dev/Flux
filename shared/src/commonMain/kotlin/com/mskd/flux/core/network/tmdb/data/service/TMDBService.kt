@@ -8,8 +8,6 @@ import com.mskd.flux.core.network.tmdb.data.dto.movie.MovieDto
 import com.mskd.flux.core.network.tmdb.data.dto.show.EpisodeDto
 import com.mskd.flux.core.network.tmdb.data.dto.show.SeasonDto
 import com.mskd.flux.core.network.tmdb.data.dto.show.ShowDto
-import com.mskd.flux.system.systemLanguage
-import com.mskd.flux.utils.Constants
 
 interface TMDBService {
 

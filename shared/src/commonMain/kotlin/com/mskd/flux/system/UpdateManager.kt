@@ -1,4 +1,4 @@
-package com.mskd.flux.utils
+package com.mskd.flux.system
 
 object UpdateManager {
 

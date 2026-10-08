@@ -2,8 +2,8 @@ package com.mskd.flux.features.settings.data.datastore
 
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import app.cash.turbine.test
-import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.core.model.language.Language
+import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.ExperimentalCoroutinesApi

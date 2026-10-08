@@ -18,10 +18,10 @@ import com.mskd.flux.screens.player.PlayerScreen
 import com.mskd.flux.screens.search.SearchScreen
 import com.mskd.flux.screens.sources.SourcesScreen
 import com.mskd.flux.screens.unknown.UnknownScreen
+import com.mskd.flux.system.rememberNotificationsPermission
+import com.mskd.flux.system.rememberStoragePermission
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.createColorScheme
-import com.mskd.flux.utils.rememberNotificationsPermission
-import com.mskd.flux.utils.rememberStoragePermission
 import org.koin.android.ext.android.inject
 
 class MainActivity : ComponentActivity() {

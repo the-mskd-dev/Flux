@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.mskd.flux.core.model.core.AppInfo
 import com.mskd.flux.core.model.core.FluxOptionsDialogItem
 import com.mskd.flux.core.model.core.FluxOptionsDialogState
+import com.mskd.flux.core.model.language.Language
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
@@ -17,9 +18,8 @@ import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.settings.domain.model.SettingsDialog
 import com.mskd.flux.system.EmailLauncher
 import com.mskd.flux.system.UrlLauncher
-import com.mskd.flux.ui.text.TextProvider
-import com.mskd.flux.core.model.language.Language
 import com.mskd.flux.system.languageDisplayName
+import com.mskd.flux.ui.text.TextProvider
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.button_forward
 import flux.shared.generated.resources.button_rewind

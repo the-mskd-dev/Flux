@@ -2,8 +2,8 @@ package com.mskd.flux.features.catalog.domain.coordinator
 
 import androidx.room.concurrent.AtomicInt
 import com.mskd.flux.features.catalog.domain.model.SyncState
-import com.mskd.flux.ui.text.TextProvider
 import com.mskd.flux.report.Trace
+import com.mskd.flux.ui.text.TextProvider
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.sync_in_progress
 import kotlinx.coroutines.CoroutineScope

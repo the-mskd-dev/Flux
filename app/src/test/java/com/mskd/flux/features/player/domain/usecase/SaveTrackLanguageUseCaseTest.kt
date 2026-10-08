@@ -1,10 +1,10 @@
 package com.mskd.flux.features.player.domain.usecase
 
 import com.mskd.flux.configs.fluxExtensions
+import com.mskd.flux.core.model.language.Language
 import com.mskd.flux.core.model.player.PlayerTrack
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.mockups.PlayerMockups
-import com.mskd.flux.core.model.language.Language
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.coVerify

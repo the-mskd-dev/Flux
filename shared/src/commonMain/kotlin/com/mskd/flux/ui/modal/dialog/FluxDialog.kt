@@ -99,8 +99,7 @@ fun FluxDialogHost(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .blurForeground(hazeState)
-                        .background(MaterialTheme.colorScheme.surfaceContainer.copy(alpha = .9f))
+                        .background(MaterialTheme.colorScheme.surfaceContainer)
                         .padding(FluxUI.Space.large),
                     verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
                 ) {

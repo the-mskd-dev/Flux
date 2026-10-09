@@ -86,8 +86,7 @@ fun FluxBottomSheetHost(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .blurForeground(hazeState)
-                        .background(MaterialTheme.colorScheme.surfaceContainer.copy(alpha = .9f))
+                        .background(MaterialTheme.colorScheme.surfaceContainer)
                         .navigationBarsPadding()
                         .padding(vertical = FluxUI.Space.medium),
                     verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)

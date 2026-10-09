@@ -16,6 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.AnnotatedString
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.components.FluxScaffold
@@ -120,7 +121,14 @@ fun AboutSection(
     title: String,
     content: String
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)) {
+    Column(
+        modifier = Modifier
+            .clip(FluxUI.shapes.corners)
+            .background(MaterialTheme.colorScheme.surfaceContainer)
+            .fillMaxWidth()
+            .padding(all = FluxUI.Space.medium),
+        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
+    ) {
         Text.Content.Title(text = title)
         Text.Content.Body(text = content)
     }
@@ -131,7 +139,14 @@ fun AboutSectionWithLinks(
     title: String,
     content: AnnotatedString
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)) {
+    Column(
+        modifier = Modifier
+            .clip(FluxUI.shapes.corners)
+            .background(MaterialTheme.colorScheme.surfaceContainer)
+            .fillMaxWidth()
+            .padding(all = FluxUI.Space.medium),
+        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
+    ) {
         Text.Content.Title(text = title)
         Text.Annotated(
             text = content,

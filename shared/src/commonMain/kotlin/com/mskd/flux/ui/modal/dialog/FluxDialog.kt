@@ -8,8 +8,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,6 +36,7 @@ import com.mskd.flux.ui.global.BackGesture
 import com.mskd.flux.ui.modal.LocalModalHost
 import com.mskd.flux.ui.modal.ModalEntry
 import com.mskd.flux.ui.modal.ModalHostState
+import com.mskd.flux.ui.modal.scrim.ScrimBackground
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxUI
 import dev.chrisbanes.haze.HazeState
@@ -65,25 +64,11 @@ fun FluxDialogHost(
 
     Box(modifier = Modifier.fillMaxSize()) {
 
-        // Scrim
-        AnimatedVisibility(
-            visible = visible,
-            modifier = Modifier.matchParentSize(),
-            enter = fadeIn(),
-            exit = fadeOut()
-        ) {
-            Box(
-                Modifier
-                    .fillMaxSize()
-                    .blurForeground(state = hazeState, radius = 3.dp)
-                    .background(MaterialTheme.colorScheme.scrim.copy(alpha = .4f))
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                        onClick = { entry?.onDismiss() }
-                    )
-            )
-        }
+        ScrimBackground(
+            isVisible = visible,
+            hazeState = hazeState,
+            entry = entry
+        )
 
         // Sheet
         AnimatedVisibility(

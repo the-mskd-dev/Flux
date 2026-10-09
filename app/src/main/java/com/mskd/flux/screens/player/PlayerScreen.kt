@@ -117,7 +117,7 @@ fun PlayerScreen(
 
     AnimatedContent(
         targetState = uiState.state,
-        label = "PlayerScreenState",
+        label = "CatalogScreenState",
         transitionSpec = { fadeIn() togetherWith fadeOut() },
         contentKey = { state ->
             when (state) {

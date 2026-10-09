@@ -2,6 +2,7 @@ package com.mskd.flux.features.player.domain.manager
 
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.player.PlayerTrack
+import com.mskd.flux.features.player.domain.model.VideoChapter
 import kotlinx.coroutines.flow.Flow
 
 interface PlayerManager<out T> {

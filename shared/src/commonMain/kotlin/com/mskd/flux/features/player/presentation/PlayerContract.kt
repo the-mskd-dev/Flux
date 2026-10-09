@@ -1,12 +1,12 @@
 package com.mskd.flux.features.player.presentation
 
 import androidx.compose.runtime.Immutable
-import androidx.media3.common.Player
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.core.model.player.PlayerTrack
+import com.mskd.flux.features.player.domain.model.VideoChapter
 
 
 @Immutable
@@ -28,6 +28,7 @@ data class PlayerUiContent<out T>(
     val tracks: List<PlayerTrack> = emptyList(),
     val selectedAudio: PlayerTrack? = null,
     val selectedSubtitles: PlayerTrack? = null,
+    val skippableChapters: List<VideoChapter> = emptyList(),
 
     // UserState
     val showInterface: Boolean = false,
@@ -90,12 +91,6 @@ data class PlayerUserState(
     val settingsSheet: PlayerUiContent.SettingsSheet? = null,
     val nextButton: PlayerUiContent.NextButton = PlayerUiContent.NextButton.Hidden,
 )
-
-sealed class PlayerScreenState {
-    data object Loading : PlayerScreenState()
-    data object Error : PlayerScreenState()
-    data class Content(val player: Player, val media: Media) : PlayerScreenState()
-}
 
 sealed class PlayerIntent {
     data class PlayMedia(val media: Media) : PlayerIntent()

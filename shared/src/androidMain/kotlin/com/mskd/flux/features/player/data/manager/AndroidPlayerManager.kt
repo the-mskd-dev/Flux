@@ -25,6 +25,7 @@ import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.player.PlayerTrack
 import com.mskd.flux.features.player.domain.manager.PlayerManager
+import com.mskd.flux.features.player.domain.model.VideoChapter
 import com.mskd.flux.features.player.domain.usecase.SaveTrackLanguageUseCase
 import com.mskd.flux.report.Trace
 import com.mskd.flux.services.PlayerService
@@ -36,6 +37,7 @@ import flux.shared.generated.resources.season_and_episode
 import flux.shared.generated.resources.track
 import io.github.anilbeesetti.nextlib.media3ext.ffdecoder.DecoderManager
 import io.github.anilbeesetti.nextlib.media3ext.ffdecoder.DecoderMode
+import io.github.anilbeesetti.nextlib.mediainfo.MediaInfoBuilder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

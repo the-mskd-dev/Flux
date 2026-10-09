@@ -120,7 +120,7 @@ fun CatalogScreen(
     AnimatedContent(
         modifier = Modifier.fillMaxSize(),
         targetState = uiState.state,
-        label = "PlayerScreenState",
+        label = "CatalogScreenState",
         transitionSpec = { fadeIn() togetherWith fadeOut() },
         contentKey = { state ->
             when (state) {

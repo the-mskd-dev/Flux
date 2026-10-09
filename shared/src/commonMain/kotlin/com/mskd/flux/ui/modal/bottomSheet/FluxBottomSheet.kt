@@ -8,8 +8,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,6 +33,7 @@ import com.mskd.flux.ui.global.BackGesture
 import com.mskd.flux.ui.modal.LocalModalHost
 import com.mskd.flux.ui.modal.ModalEntry
 import com.mskd.flux.ui.modal.ModalHostState
+import com.mskd.flux.ui.modal.scrim.ScrimBackground
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxUI
 import dev.chrisbanes.haze.HazeState
@@ -59,25 +58,11 @@ fun FluxBottomSheetHost(
 
     Box(modifier = Modifier.fillMaxSize()) {
 
-        // Scrim
-        AnimatedVisibility(
-            visible = visible,
-            modifier = Modifier.matchParentSize(),
-            enter = fadeIn(),
-            exit = fadeOut()
-        ) {
-            Box(
-                Modifier
-                    .fillMaxSize()
-                    .blurForeground(state = hazeState, radius = 3.dp)
-                    .background(MaterialTheme.colorScheme.scrim.copy(alpha = .4f))
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                        onClick = { entry?.onDismiss() }
-                    )
-            )
-        }
+        ScrimBackground(
+            isVisible = visible,
+            hazeState = hazeState,
+            entry = entry
+        )
 
         // Sheet
         AnimatedVisibility(
@@ -101,8 +86,7 @@ fun FluxBottomSheetHost(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .blurForeground(hazeState)
-                        .background(MaterialTheme.colorScheme.surfaceContainer.copy(alpha = .9f))
+                        .background(MaterialTheme.colorScheme.surfaceContainer)
                         .navigationBarsPadding()
                         .padding(vertical = FluxUI.Space.medium),
                     verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)

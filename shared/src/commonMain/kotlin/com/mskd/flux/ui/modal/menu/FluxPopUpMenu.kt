@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
-import com.mskd.flux.ui.modal.FluxScrim
+import com.mskd.flux.ui.modal.scrim.FluxScrim
 import com.mskd.flux.ui.text.Text
 
 @Composable

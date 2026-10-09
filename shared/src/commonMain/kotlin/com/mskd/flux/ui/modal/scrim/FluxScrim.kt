@@ -1,4 +1,4 @@
-package com.mskd.flux.ui.modal
+package com.mskd.flux.ui.modal.scrim
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -7,6 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -17,6 +18,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.ui.blurForeground
 import com.mskd.flux.ui.global.BackGesture
+import com.mskd.flux.ui.modal.LocalModalHost
+import com.mskd.flux.ui.modal.ModalEntry
+import com.mskd.flux.ui.modal.ModalHostState
 import dev.chrisbanes.haze.HazeState
 
 @Composable
@@ -36,29 +40,11 @@ fun FluxScrimHost(
         BackGesture(enabled = true, onBack = { entry?.onDismiss?.invoke() })
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
-
-        // Scrim
-        AnimatedVisibility(
-            visible = visible,
-            modifier = Modifier.matchParentSize(),
-            enter = fadeIn(),
-            exit = fadeOut()
-        ) {
-            Box(
-                Modifier
-                    .fillMaxSize()
-                    .blurForeground(state = hazeState, radius = 3.dp)
-                    .background(MaterialTheme.colorScheme.scrim.copy(alpha = .4f))
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                        onClick = { entry?.onDismiss() }
-                    )
-            )
-        }
-
-    }
+    ScrimBackground(
+        isVisible = visible,
+        hazeState = hazeState,
+        entry = entry
+    )
 
 }
 

@@ -10,12 +10,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.components.FluxScaffold
 import com.mskd.flux.ui.text.Text
@@ -33,7 +33,6 @@ import flux.shared.generated.resources.shows_naming
 import org.jetbrains.compose.resources.stringArrayResource
 import org.jetbrains.compose.resources.stringResource
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HowToScreen(onBack: () -> Unit) {
 
@@ -84,7 +83,14 @@ fun HowToNameFiles() {
         horizontalAlignment = Alignment.Start
     ) {
 
-        Column(verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)) {
+        Column(
+            modifier = Modifier
+                .clip(FluxUI.shapes.corners)
+                .background(MaterialTheme.colorScheme.surfaceContainer)
+                .fillMaxWidth()
+                .padding(all = FluxUI.Space.medium),
+            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
+        ) {
 
             Text.Content.Title(text = stringResource(Res.string.movies))
             Text.Content.Body(text = stringResource(Res.string.how_to_name_files_movies_desc))
@@ -104,7 +110,14 @@ fun HowToNameFiles() {
 
         }
 
-        Column(verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)) {
+        Column(
+            modifier = Modifier
+                .clip(FluxUI.shapes.corners)
+                .background(MaterialTheme.colorScheme.surfaceContainer)
+                .fillMaxWidth()
+                .padding(all = FluxUI.Space.medium),
+            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
+        ) {
 
             Text.Content.Title(text = stringResource(Res.string.shows))
             Text.Content.Body(text = stringResource(Res.string.how_to_name_files_show_desc))

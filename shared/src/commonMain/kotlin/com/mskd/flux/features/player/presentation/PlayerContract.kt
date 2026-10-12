@@ -28,7 +28,6 @@ data class PlayerUiContent<out T>(
     val tracks: List<PlayerTrack> = emptyList(),
     val selectedAudio: PlayerTrack? = null,
     val selectedSubtitles: PlayerTrack? = null,
-    val skippableChapters: List<VideoChapter> = emptyList(),
 
     // UserState
     val showInterface: Boolean = false,
@@ -37,8 +36,7 @@ data class PlayerUiContent<out T>(
     val ambientOverlay: AmbientOverlay? = null,
     val settingsSheet: SettingsSheet? = null,
     val nextButton: NextButton = NextButton.Hidden,
-
-    ) {
+) {
 
     @Immutable
     data class SeekOverlay(

@@ -14,6 +14,8 @@ import com.mskd.flux.features.player.data.PipIsEnabledUseCase
 import com.mskd.flux.features.player.domain.manager.PlayerManager
 import com.mskd.flux.features.player.domain.mapper.toPlayerTrack
 import com.mskd.flux.features.player.domain.model.PlayerParams
+import com.mskd.flux.features.player.domain.model.VideoChapter
+import com.mskd.flux.features.player.domain.usecase.GetChaptersUseCase
 import com.mskd.flux.features.player.domain.usecase.SaveTrackLanguageUseCase
 import com.mskd.flux.features.player.presentation.PlayerUiContent.AmbientOverlay
 import com.mskd.flux.features.player.presentation.PlayerUiContent.NextButton
@@ -52,7 +54,8 @@ class PlayerViewModel<out T>(
     private val pipIsEnabledUseCase: PipIsEnabledUseCase,
     private val saveProgressUseCase: SaveProgressUseCase,
     private val getSubtitlesUseCase: GetSubtitlesUseCase,
-    private val saveTrackLanguageUseCase: SaveTrackLanguageUseCase
+    private val saveTrackLanguageUseCase: SaveTrackLanguageUseCase,
+    private val getChaptersUseCase: GetChaptersUseCase
 ) : ViewModel() {
 
     //region Variables
@@ -65,6 +68,8 @@ class PlayerViewModel<out T>(
     private var wasPlayingBeforeBackground = false
 
     private val content get() = (uiState.value.state as? State.Content<PlayerUiContent<T>>)?.content
+
+    private var chapters: List<VideoChapter> = emptyList()
 
     //endregion
 
@@ -272,6 +277,7 @@ class PlayerViewModel<out T>(
 
     private suspend fun playMedia(media: Media) {
         val subtitlesPath = getSubtitlesUseCase(file = media.file)
+        chapters = getChaptersUseCase(media = media)
         playerManager.playMedia(
             media = media,
             subtitlesPath = subtitlesPath

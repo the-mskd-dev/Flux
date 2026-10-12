@@ -6,7 +6,6 @@ import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.features.history.domain.repository.HistoryRepository
-import com.mskd.flux.utils.extensions.getNextEpisodeFor
 
 class SaveToHistoryUseCase(
     private val history: HistoryRepository,
@@ -28,8 +27,7 @@ class SaveToHistoryUseCase(
                 if (media.status == Status.IS_WATCHING) {
                     history.insert(media = media)
                 } else {
-                    val episodes = database.getEpisodes(artworkId = media.artworkId)
-                    val nextEpisode = episodes.getNextEpisodeFor(episode = media)
+                    val nextEpisode = database.getNextEpisodeFor(episode = media)
                     if (nextEpisode != null) {
                         history.insert(media = nextEpisode)
                     } else {

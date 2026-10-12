@@ -7,7 +7,6 @@ import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.features.history.domain.repository.HistoryRepository
 import com.mskd.flux.report.Trace
-import com.mskd.flux.utils.extensions.getNextEpisodeFor
 
 class ChangeMediaStatusUseCase(
     private val database: DatabaseRepository,
@@ -56,23 +55,16 @@ class ChangeMediaStatusUseCase(
         )
 
         // Remove from recently watched if last episode is watched
-        val episodes = database.getEpisodes(artworkId = episode.artworkId)
-        if (episodes.isNotEmpty()) {
+        database.getNextEpisodeFor(episode = episode)?.let {
 
-            val nextEpisode = episodes.getNextEpisodeFor(episode = episode)
-            if (status == Status.WATCHED) {
+            if (status == Status.WATCHED)
+                history.insert(media = it)
 
-                nextEpisode?.let {
-                    history.insert(media = it)
-                } ?: run {
-                    history.delete(artworkId = episode.artworkId)
-                }
-
-            }
-
-            database.saveMedias(listOf(updatedEpisode)) // Save status in DB
-
+        } ?: run {
+            history.delete(artworkId = episode.artworkId)
         }
+
+        database.saveMedias(listOf(updatedEpisode)) // Save status in DB
 
 
         Trace.info(TAG, "${episode.title} season ${episode.season} episode ${episode.number} is now ${episode.status}")

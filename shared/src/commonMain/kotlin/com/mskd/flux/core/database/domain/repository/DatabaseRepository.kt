@@ -37,6 +37,7 @@ interface DatabaseRepository {
     // Medias
     suspend fun getMedias() : List<Media>
     suspend fun getMediasNotInFiles(files: List<UserFile>) : List<Media>
+    suspend fun getNextEpisodeFor(episode: Episode) : Episode?
 
     // Movies
     suspend fun getMovie(artworkId: Long) : Movie?

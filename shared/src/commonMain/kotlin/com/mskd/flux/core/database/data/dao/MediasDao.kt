@@ -87,9 +87,22 @@ interface MediasDao {
     @Query("SELECT * FROM medias WHERE path IN (:paths)")
     suspend fun findByPaths(paths: List<String>): List<MediaEntity>
 
-
     @Query("SELECT imagePath FROM medias WHERE imagePath IS NOT NULL")
     suspend fun getMediasImages() : List<String>
+
+    @Query("""
+        SELECT * FROM medias
+        WHERE artworkId = :artworkId
+          AND season IS NOT NULL
+          AND number IS NOT NULL
+          AND (
+              (season = :season AND number > :number)
+              OR season > :season
+          )
+        ORDER BY season ASC, number ASC
+        LIMIT 1
+    """)
+    suspend fun getNextEpisodeFor(artworkId: Long, season: Int, number: Int): MediaEntity?
 
     //endregion
 

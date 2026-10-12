@@ -13,15 +13,26 @@ data class VideoChapter(
 }
 
 enum class VideoChapterType {
-    INTRO, OPENING, ENDING, CHAPTER;
+    OPENING, ENDING, CHAPTER;
 
     companion object {
 
+        private val openingRegex = Regex(
+            """^\W*(op|opening|ncop|intro(duction)?)(\d|\W|$)""",
+            RegexOption.IGNORE_CASE
+        )
+
+        private val endingRegex = Regex(
+            """^\W*(ed|ending|nced|outro|credits?|end\s+credits?)(\d|\W|$)|^\W*end\W*$""",
+            RegexOption.IGNORE_CASE
+        )
+
         fun fromString(value: String?): VideoChapterType {
-            return when (value) {
-                in listOf("intro") -> INTRO
-                in listOf("op", "opening") -> OPENING
-                in listOf("end", "ending, credits") -> ENDING
+            val title = value?.trim().orEmpty()
+            return when {
+                title.isEmpty() -> CHAPTER
+                openingRegex.containsMatchIn(title) -> OPENING
+                endingRegex.containsMatchIn(title) -> ENDING
                 else -> CHAPTER
             }
         }

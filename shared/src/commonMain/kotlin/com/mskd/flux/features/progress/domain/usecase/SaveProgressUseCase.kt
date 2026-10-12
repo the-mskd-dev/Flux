@@ -24,7 +24,7 @@ class SaveProgressUseCase(
         const val TAG = "RecordProgressUseCase"
     }
 
-    suspend operator fun invoke(media: Media, progress: Long): Media {
+    suspend operator fun invoke(media: Media, progress: Long, chapters: List<VideoChapter> = emptyList()): Media {
 
         val lastChapter = getChaptersUseCase(media).maxByOrNull { it.index }
 

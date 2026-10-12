@@ -119,7 +119,7 @@ fun PlayerChapterButton_Preview() {
         Box(modifier = Modifier.fillMaxWidth()) {
             PlayerChapterButton(
                 modifier = Modifier,
-                chapterButton = PlayerUiContent.ChapterButton.Skip(chapter = VideoChapter(0, 0L, 0L, type = VideoChapterType.INTRO)),
+                chapterButton = PlayerUiContent.ChapterButton.Skip(chapter = VideoChapter(0, 0L, 0L, type = VideoChapterType.OPENING)),
                 bottomMargin = { 0.dp },
                 sendIntent = {}
             )

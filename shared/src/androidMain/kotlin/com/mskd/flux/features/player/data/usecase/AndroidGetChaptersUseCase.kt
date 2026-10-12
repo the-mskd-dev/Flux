@@ -1,6 +1,7 @@
 package com.mskd.flux.features.player.data.usecase
 
 import android.content.Context
+import android.widget.Toast
 import androidx.core.net.toUri
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.features.player.domain.model.VideoChapter
@@ -35,6 +36,7 @@ class AndroidGetChaptersUseCase(private val context: Context) : GetChaptersUseCa
             }.orEmpty()
 
             Trace.info(TAG, "Found ${chapters.size} chapter(s)")
+
             
             chapters
 
@@ -46,7 +48,7 @@ class AndroidGetChaptersUseCase(private val context: Context) : GetChaptersUseCa
     }
 
     companion object {
-        const val TAG = "AndroidGetSkippableChapters"
+        const val TAG = "AndroidGetChaptersUseCase"
     }
 
 }

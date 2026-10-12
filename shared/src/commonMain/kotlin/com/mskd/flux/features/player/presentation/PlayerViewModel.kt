@@ -336,7 +336,7 @@ class PlayerViewModel<out T>(
 
         when {
             // If it's intro or opening
-            currentChapter?.type in listOf(VideoChapterType.INTRO, VideoChapterType.OPENING) -> {
+            currentChapter?.type == VideoChapterType.OPENING -> {
                 _userState.update { it.copy(chapterButton = PlayerUiContent.ChapterButton.Skip(chapter = currentChapter!!)) }
             }
 
@@ -355,7 +355,7 @@ class PlayerViewModel<out T>(
             }
 
             // If the media is ended
-            progress >= duration.minus(10.seconds.inWholeMilliseconds) -> {
+            progress >= duration.minus(15.seconds.inWholeMilliseconds) -> {
                 showNextEpisode()
             }
 
@@ -426,7 +426,7 @@ class PlayerViewModel<out T>(
         val media = content?.media ?: return
         val progress = _progress.value
 
-        saveProgressUseCase(media = media, progress = progress)
+        saveProgressUseCase(media = media, progress = progress, chapters = chapters)
     }
 
     private fun updateSeekOverlay(type: SeekOverlay.Type, value: Int) {

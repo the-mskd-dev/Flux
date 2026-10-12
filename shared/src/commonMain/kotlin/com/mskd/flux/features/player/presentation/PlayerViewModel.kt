@@ -170,20 +170,11 @@ class PlayerViewModel<out T>(
                     .collect { updateTracks() }
             }
 
-            // Show/hide next episode button
-            launch {
-                playerManager.progress
-                    .map { it.showNextEpisode }
-                    .distinctUntilChanged()
-                    .collect { showNextEpisode(show = it) }
-            }
-
             // Update progress
             launch {
                 playerManager.progress
-                    .map { it.progress }
                     .distinctUntilChanged()
-                    .collect { progress -> _progress.update { progress } }
+                    .collect { listenProgress(it) }
             }
 
             // Update subtitles
@@ -338,29 +329,8 @@ class PlayerViewModel<out T>(
         saveTrackLanguageUseCase(track = track)
     }
 
-    private suspend fun showNextEpisode(show: Boolean) {
-
-        val currentEpisode = content?.media as? Episode ?: return
-
-        // If button is canceled, don't show anymore
-        if (_userState.first().nextButton is NextButton.Canceled || currentEpisode.isUnknown)
-            return
-
-        if (show) {
-
-            val show = (observeArtworkUseCase.flow.first() as? State.Content)?.content as? FullArtwork.FullShow
-            val episodes = show?.episodes?.filter { it.season == currentEpisode.season }
-
-            val nextEpisode = episodes?.getNextEpisodeFor(currentEpisode) ?: return
-
-            _userState.update { it.copy(nextButton = NextButton.Showed(episode = nextEpisode)) }
-
-        } else {
-
-            _userState.update { it.copy(nextButton = NextButton.Hidden) }
-
-        }
-
+    private fun listenProgress(progress: Long) {
+        _progress.update { progress }
     }
 
     private suspend fun playNextEpisode(episode: Episode) {

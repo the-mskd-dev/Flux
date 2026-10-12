@@ -13,12 +13,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.collections.orEmpty
 
-class AndroidGetChaptersUseCase(private val context: Context) : GetChaptersUseCase {
+class AndroidGetChaptersUseCase(
+    private val context: Context,
+    private val createMediaInfoBuilder: () -> MediaInfoBuilder = { MediaInfoBuilder() }
+) : GetChaptersUseCase {
 
     override suspend fun invoke(media: Media): List<VideoChapter> = withContext(Dispatchers.IO) {
 
         val info = try {
-            MediaInfoBuilder().from(context, media.file.path.toUri()).build()
+            createMediaInfoBuilder().from(context, media.file.path.toUri()).build()
         } catch (e: Exception) {
             Trace.error(TAG, "Failed to read chapters", e)
             null

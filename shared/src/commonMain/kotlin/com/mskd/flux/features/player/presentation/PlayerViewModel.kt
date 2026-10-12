@@ -426,7 +426,7 @@ class PlayerViewModel<out T>(
         val media = content?.media ?: return
         val progress = _progress.value
 
-        saveProgressUseCase(media = media, progress = progress, chapters = chapters)
+        saveProgressUseCase(media = media, progress = progress)
     }
 
     private fun updateSeekOverlay(type: SeekOverlay.Type, value: Int) {

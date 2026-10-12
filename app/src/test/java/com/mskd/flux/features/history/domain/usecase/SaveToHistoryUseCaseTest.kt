@@ -64,7 +64,7 @@ class SaveToHistoryUseCaseTest : FunSpec({
             season = 1,
             number = 2
         )
-        coEvery { database.getEpisodes(artworkId = currentEpisode.artworkId) } returns listOf(currentEpisode, nextEpisode)
+        coEvery { database.getNextEpisodeFor(episode = currentEpisode) } returns nextEpisode
 
         // When
         useCase(media = currentEpisode)
@@ -81,7 +81,7 @@ class SaveToHistoryUseCaseTest : FunSpec({
             season = 1,
             number = 1
         )
-        coEvery { database.getEpisodes(artworkId = lastEpisode.artworkId) } returns listOf(lastEpisode)
+        coEvery { database.getNextEpisodeFor(episode = lastEpisode) } returns null
 
         // When
         useCase(media = lastEpisode)

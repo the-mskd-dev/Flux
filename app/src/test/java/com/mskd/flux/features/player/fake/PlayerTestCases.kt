@@ -1,9 +1,9 @@
 package com.mskd.flux.features.player.fake
 
 import com.mskd.flux.core.model.artwork.Artwork
-import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.player.PlayerTrack
+import com.mskd.flux.features.player.domain.model.VideoChapter
 import com.mskd.flux.features.player.presentation.PlayerUiContent
 
 object PlayerTestCases {
@@ -25,11 +25,11 @@ object PlayerTestCases {
         val interfaceShowed: Boolean,
     )
 
-    data class ShowNextEpisode(
+    data class ChapterButtonTest(
         val description: String,
-        val currentEpisode: Episode,
-        val show: Boolean,
-        val expectedNexTButton: PlayerUiContent.NextButton
+        val chapters: List<VideoChapter>,
+        val progress: Long,
+        val expectedChapterButton: PlayerUiContent.ChapterButton?
     )
 
     data class SelectTrack(

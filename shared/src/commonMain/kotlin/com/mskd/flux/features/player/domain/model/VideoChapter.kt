@@ -14,8 +14,8 @@ enum class VideoChapterType {
 
         fun fromString(value: String?): VideoChapterType {
             return when (value) {
-                "opening" -> OPENING
-                "ending" -> ENDING
+                in listOf("op", "opening") -> OPENING
+                in listOf("end", "ending, credits") -> ENDING
                 else -> CHAPTER
             }
         }

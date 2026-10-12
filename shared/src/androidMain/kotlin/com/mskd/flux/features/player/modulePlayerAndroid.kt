@@ -92,7 +92,8 @@ val modulePlayerAndroid = module {
             saveProgressUseCase = get(),
             getSubtitlesUseCase = get(),
             saveTrackLanguageUseCase = get(),
-            getChaptersUseCase = get()
+            getChaptersUseCase = get(),
+            getNextEpisodeUseCase = get()
         )
     }
 

@@ -15,16 +15,16 @@ import com.mskd.flux.features.player.domain.manager.PlayerManager
 import com.mskd.flux.features.player.domain.mapper.toPlayerTrack
 import com.mskd.flux.features.player.domain.model.PlayerParams
 import com.mskd.flux.features.player.domain.model.VideoChapter
+import com.mskd.flux.features.player.domain.model.VideoChapterType
 import com.mskd.flux.features.player.domain.usecase.GetChaptersUseCase
+import com.mskd.flux.features.player.domain.usecase.GetNextEpisodeUseCase
 import com.mskd.flux.features.player.domain.usecase.SaveTrackLanguageUseCase
 import com.mskd.flux.features.player.presentation.PlayerUiContent.AmbientOverlay
-import com.mskd.flux.features.player.presentation.PlayerUiContent.NextButton
 import com.mskd.flux.features.player.presentation.PlayerUiContent.SeekOverlay
 import com.mskd.flux.features.player.presentation.PlayerUiContent.SettingsSheet
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.ui.text.TextProvider
-import com.mskd.flux.utils.extensions.getNextEpisodeFor
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -36,7 +36,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.filterIsInstance
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
@@ -55,7 +54,8 @@ class PlayerViewModel<out T>(
     private val saveProgressUseCase: SaveProgressUseCase,
     private val getSubtitlesUseCase: GetSubtitlesUseCase,
     private val saveTrackLanguageUseCase: SaveTrackLanguageUseCase,
-    private val getChaptersUseCase: GetChaptersUseCase
+    private val getChaptersUseCase: GetChaptersUseCase,
+    private val getNextEpisodeUseCase: GetNextEpisodeUseCase
 ) : ViewModel() {
 
     //region Variables
@@ -237,7 +237,7 @@ class PlayerViewModel<out T>(
                 seekOverlay = userState.seekOverlay,
                 ambientOverlay = userState.ambientOverlay,
                 settingsSheet = userState.settingsSheet,
-                nextButton = userState.nextButton,
+                chapterButton = userState.chapterButton,
             )
         )
     }
@@ -254,11 +254,10 @@ class PlayerViewModel<out T>(
             PlayerIntent.OnFastForward -> onFastForward()
             is PlayerIntent.UpdateProgress -> updateProgress(progress = intent.progress)
             is PlayerIntent.SelectTrack -> selectTrack(track = intent.track)
-            is PlayerIntent.CancelNextEpisode -> cancelNextEpisode()
-            is PlayerIntent.PlayNextEpisode -> playNextEpisode(episode = intent.episode)
             is PlayerIntent.OnVolumeChange -> onVolumeChange(delta = intent.delta)
             is PlayerIntent.OnBrightnessChange -> onBrightnessChange(delta = intent.delta)
             is PlayerIntent.UpdateAmbientOverlay -> updateAmbientOverlay(type = intent.type, value = intent.value)
+            is PlayerIntent.OnChapterButtonTap -> onChapterButtonTap(button = intent.button)
             PlayerIntent.GoToBackground -> onBackground()
             PlayerIntent.GoToForeground -> onForeground()
             is PlayerIntent.OnPipChange -> onPipChange(isInPip = intent.isInPip)
@@ -329,23 +328,74 @@ class PlayerViewModel<out T>(
         saveTrackLanguageUseCase(track = track)
     }
 
-    private fun listenProgress(progress: Long) {
+    private suspend fun listenProgress(progress: Long) {
         _progress.update { progress }
-    }
 
-    private suspend fun playNextEpisode(episode: Episode) {
-        saveTime()
-        _userState.update {
-            it.copy(
-                nextButton = NextButton.Hidden,
-                mediaId = episode.mediaId
-            )
+        val currentChapter = chapters.find { progress in it.start..it.end }
+        val lastChapterIndex = chapters.maxOf { it.index }
+        val duration = content?.duration ?: 0L
+
+        when {
+            // If it's intro or opening
+            currentChapter?.type in listOf(VideoChapterType.INTRO, VideoChapterType.OPENING) -> {
+                _userState.update { it.copy(chapterButton = PlayerUiContent.ChapterButton.Skip(chapter = currentChapter!!)) }
+            }
+
+            // If it's ending, and there's a next chapter
+            currentChapter?.type == VideoChapterType.ENDING -> {
+
+                // If there's a chapter after
+                if (currentChapter.index != lastChapterIndex) {
+                    _userState.update { it.copy(chapterButton = PlayerUiContent.ChapterButton.Skip(chapter = currentChapter)) }
+                } else {
+                    showNextEpisode()
+                }
+
+            }
+
+            // If the media is ended
+            progress >= duration.minus(10.seconds.inWholeMilliseconds) -> {
+                showNextEpisode()
+            }
+
+            else -> {
+                _userState.update { it.copy(chapterButton = null) }
+            }
+
         }
 
     }
 
-    private fun cancelNextEpisode() {
-        _userState.update { it.copy(nextButton = NextButton.Canceled) }
+    private suspend fun showNextEpisode() {
+
+        val nextEpisode = getNextEpisodeUseCase(media = content?.media) ?: return
+
+        _userState.update { it.copy(chapterButton = PlayerUiContent.ChapterButton.NextEpisode(nextEpisode = nextEpisode)) }
+
+    }
+
+    private suspend fun onChapterButtonTap(button: PlayerUiContent.ChapterButton) {
+
+        when (button) {
+            is PlayerUiContent.ChapterButton.Skip -> {
+
+                val endPosition = button.chapter.end
+                updateProgress(progress = endPosition)
+
+            }
+            is PlayerUiContent.ChapterButton.NextEpisode -> {
+
+                saveTime()
+                _userState.update {
+                    it.copy(
+                        chapterButton = null,
+                        mediaId = button.nextEpisode.mediaId
+                    )
+                }
+
+            }
+        }
+
     }
 
     private suspend fun onBackTap() {

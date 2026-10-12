@@ -543,7 +543,7 @@ class AndroidPlayerManager(
 
                 }
 
-                delay(1500.milliseconds)
+                delay(1000.milliseconds)
 
             }
         }

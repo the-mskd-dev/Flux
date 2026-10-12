@@ -1,5 +1,6 @@
 package com.mskd.flux.screens.player.composables.playerInterface
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
@@ -42,12 +43,13 @@ import com.mskd.flux.features.player.presentation.PlayerIntent
 import com.mskd.flux.features.player.presentation.PlayerUiContent
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.ui.FluxPreview
-import com.mskd.flux.ui.components.CountDownButton
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.next_episode
+import flux.shared.generated.resources.skip
+import flux.shared.generated.resources.skip_ending
+import flux.shared.generated.resources.skip_opening
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -67,8 +69,12 @@ fun PlayerChapterButton(
     val backgroundColor: Color = MaterialTheme.colorScheme.primaryContainer
     val size = ButtonDefaults.MediumContainerHeight
     val text = when (chapterButton) {
-        is PlayerUiContent.ChapterButton.NextEpisode -> "Next episode"
-        is PlayerUiContent.ChapterButton.Skip -> "Passer"
+        is PlayerUiContent.ChapterButton.NextEpisode -> stringResource(Res.string.next_episode)
+        is PlayerUiContent.ChapterButton.Skip -> when (chapterButton.chapter.type) {
+            VideoChapterType.OPENING -> stringResource(Res.string.skip_opening)
+            VideoChapterType.ENDING -> stringResource(Res.string.skip_ending)
+            VideoChapterType.CHAPTER -> stringResource(Res.string.skip)
+        }
         null -> ""
     }
 
@@ -100,10 +106,14 @@ fun PlayerChapterButton(
             ),
             content = {
 
-                Text.Button.Default(
-                    text = text,
-                    color = contentColorFor(backgroundColor),
-                )
+                AnimatedContent(
+                    targetState = text
+                ) { t ->
+                    Text.Button.Default(
+                        text = t,
+                        color = contentColorFor(backgroundColor),
+                    )
+                }
 
             }
         )

@@ -5,12 +5,7 @@ data class VideoChapter(
     val start: Long,
     val end: Long,
     val type: VideoChapterType
-) {
-
-    val skippable: Boolean
-        get() = this.type != VideoChapterType.CHAPTER
-
-}
+)
 
 enum class VideoChapterType {
     OPENING, ENDING, CHAPTER;

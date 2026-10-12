@@ -26,19 +26,14 @@ class AndroidGetChaptersUseCase(private val context: Context) : GetChaptersUseCa
 
         try {
 
-            val chapters = info?.chapters?.map {
+            info?.chapters?.map {
                 VideoChapter(
                     index = it.index,
                     start = it.start,
                     end = it.end,
                     type = VideoChapterType.fromString(it.title)
                 )
-            }.orEmpty()
-
-            Trace.info(TAG, "Found ${chapters.size} chapter(s)")
-
-            
-            chapters
+            }.orEmpty().also { Trace.info(TAG, "Found ${it.size} chapter(s)") }
 
         } finally {
 

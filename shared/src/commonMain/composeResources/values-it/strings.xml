@@ -78,7 +78,9 @@
     <string name="track">Traccia</string>
     <string name="subtitles">Sottotitoli</string>
     <string name="audio_tracks">Tracce audio</string>
-    <string name="next_episode">Prossimo episodio (%1$ds)</string>
+    <string name="next_episode">Prossimo episodio</string>
+    <string name="skip_opening">Salta la sigla</string>
+    <string name="skip_ending">Salta la sigla finale</string>
     <string name="close">Chiudi</string>
     <string name="do_not_show_again">Non mostrare più</string>
     <string name="tmdb_api_token">Token API TMDB</string>

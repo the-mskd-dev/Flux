@@ -25,7 +25,7 @@ class AndroidGetChaptersUseCase(private val context: Context) : GetChaptersUseCa
 
         try {
 
-            info?.chapters?.map {
+            val chapters = info?.chapters?.map {
                 VideoChapter(
                     index = it.index,
                     start = it.start,
@@ -34,7 +34,12 @@ class AndroidGetChaptersUseCase(private val context: Context) : GetChaptersUseCa
                 )
             }.orEmpty()
 
+            Trace.info(TAG, "Found ${chapters.size} chapter(s)")
+            
+            chapters
+
         } finally {
+
             info?.release()
         }
 

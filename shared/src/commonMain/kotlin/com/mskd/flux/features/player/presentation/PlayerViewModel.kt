@@ -332,7 +332,6 @@ class PlayerViewModel<out T>(
         _progress.update { progress }
 
         val currentChapter = chapters.find { progress in it.start..it.end }
-        val lastChapterIndex = chapters.maxOf { it.index }
         val duration = content?.duration ?: 0L
 
         when {
@@ -343,6 +342,8 @@ class PlayerViewModel<out T>(
 
             // If it's ending, and there's a next chapter
             currentChapter?.type == VideoChapterType.ENDING -> {
+
+                val lastChapterIndex = chapters.maxOf { it.index }
 
                 // If there's a chapter after
                 if (currentChapter.index != lastChapterIndex) {

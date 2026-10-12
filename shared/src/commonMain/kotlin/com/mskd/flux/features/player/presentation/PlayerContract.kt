@@ -101,7 +101,7 @@ sealed class PlayerIntent {
     data class ShowSettings(val sheet: PlayerUiContent.SettingsSheet?) : PlayerIntent()
     data class SelectTrack(val track: PlayerTrack) : PlayerIntent()
 
-    data class OnChapterButtonTap(val button: PlayerUiContent.ChapterButton) : PlayerIntent()
+    data class OnChapterButtonTap(val button: PlayerUiContent.ChapterButton?) : PlayerIntent()
     data class OnVolumeChange(val delta: Float) : PlayerIntent()
     data class OnBrightnessChange(val delta: Float) : PlayerIntent()
     data class UpdateAmbientOverlay(val type: PlayerUiContent.AmbientOverlay.Type, val value: Int) : PlayerIntent()

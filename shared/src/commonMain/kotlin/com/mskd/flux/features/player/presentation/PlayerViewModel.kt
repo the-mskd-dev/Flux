@@ -374,7 +374,7 @@ class PlayerViewModel<out T>(
 
     }
 
-    private suspend fun onChapterButtonTap(button: PlayerUiContent.ChapterButton) {
+    private suspend fun onChapterButtonTap(button: PlayerUiContent.ChapterButton?) {
 
         when (button) {
             is PlayerUiContent.ChapterButton.Skip -> {
@@ -383,6 +383,7 @@ class PlayerViewModel<out T>(
                 updateProgress(progress = endPosition)
 
             }
+
             is PlayerUiContent.ChapterButton.NextEpisode -> {
 
                 saveTime()
@@ -394,6 +395,8 @@ class PlayerViewModel<out T>(
                 }
 
             }
+
+            null -> {}
         }
 
     }

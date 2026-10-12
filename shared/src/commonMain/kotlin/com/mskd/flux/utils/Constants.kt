@@ -25,4 +25,8 @@ object Constants {
         const val SPONSOR = "https://github.com/sponsors/the-mskd-dev/"
     }
 
+    object PLAYER {
+        const val PROGRESS_THRESHOLD = 0.92
+    }
+
 }

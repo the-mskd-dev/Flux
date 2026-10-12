@@ -15,42 +15,48 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.mskd.flux.features.player.domain.model.VideoChapter
+import com.mskd.flux.features.player.domain.model.VideoChapterType
 import com.mskd.flux.features.player.presentation.PlayerIntent
 import com.mskd.flux.features.player.presentation.PlayerUiContent
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.components.CountDownButton
+import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.next_episode
 import org.jetbrains.compose.resources.stringResource
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun PlayerNextEpisode(
+fun PlayerChapterButton(
     modifier: Modifier,
-    nextButton: PlayerUiContent.NextButton,
+    chapterButton: PlayerUiContent.ChapterButton?,
     bottomMargin: () -> Dp,
     sendIntent: (PlayerIntent) -> Unit
 ) {
-
-    val episode = (nextButton as? PlayerUiContent.NextButton.Showed)?.episode
 
     val animatedBottomMargin by animateDpAsState(
         targetValue = bottomMargin(),
@@ -58,11 +64,17 @@ fun PlayerNextEpisode(
         label = "NextEpisodeButtonPosition"
     )
 
+    val backgroundColor: Color = MaterialTheme.colorScheme.primaryContainer
+    val size = ButtonDefaults.MediumContainerHeight
+    val text = when (chapterButton) {
+        is PlayerUiContent.ChapterButton.NextEpisode -> "Next episode"
+        is PlayerUiContent.ChapterButton.Skip -> "Passer"
+        null -> ""
+    }
+
     AnimatedVisibility(
-        modifier = modifier
-            .padding(bottom = animatedBottomMargin)
-            .clickable { episode?.let { sendIntent(PlayerIntent.PlayNextEpisode(it)) } },
-        visible = nextButton is PlayerUiContent.NextButton.Showed,
+        modifier = modifier.padding(bottom = animatedBottomMargin),
+        visible = chapterButton != null,
         enter = scaleIn(
             animationSpec = spring(
                 dampingRatio = Spring.DampingRatioLowBouncy,
@@ -72,41 +84,29 @@ fun PlayerNextEpisode(
         exit = scaleOut() + fadeOut()
     ) {
 
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
-        ) {
+        Button(
+            modifier = Modifier.heightIn(size),
+            onClick = { sendIntent(PlayerIntent.OnChapterButtonTap(button = chapterButton)) },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = backgroundColor,
+                contentColor = contentColorFor(backgroundColor)
+            ),
+            contentPadding = ButtonDefaults.contentPaddingFor(size),
+            elevation = ButtonDefaults.buttonElevation(
+                defaultElevation = 6.dp,
+                pressedElevation = 6.dp,
+                hoveredElevation = 4.dp,
+                focusedElevation = 6.dp
+            ),
+            content = {
 
-            FloatingActionButton(
-                modifier = Modifier
-                    .padding(start = 20.dp)
-                    .animateEnterExit(
-                        enter = slideInHorizontally(
-                            initialOffsetX = { fullWidth -> fullWidth },
-                            animationSpec = spring(
-                                dampingRatio = Spring.DampingRatioMediumBouncy,
-                                stiffness = Spring.StiffnessLow
-                            )
-                        ) + scaleIn(),
-                        exit = slideOutHorizontally { fullWidth -> fullWidth } + scaleOut()
-                    ),
-                onClick = { sendIntent(PlayerIntent.CancelNextEpisode) },
-                shape = FloatingActionButtonDefaults.mediumShape,
-                containerColor = MaterialTheme.colorScheme.tertiaryContainer
-            ) {
-                Icon(
-                    modifier = Modifier.size(28.dp),
-                    imageVector = Icons.Default.Close,
-                    contentDescription = "play button"
+                Text.Button.Default(
+                    text = text,
+                    color = contentColorFor(backgroundColor),
                 )
+
             }
-
-            CountDownButton(
-                onClick = { episode?.let { sendIntent(PlayerIntent.PlayNextEpisode(it)) } },
-                text = { stringResource(Res.string.next_episode, it) }
-            )
-
-        }
+        )
 
     }
 
@@ -114,12 +114,12 @@ fun PlayerNextEpisode(
 
 @FluxPreview
 @Composable
-fun PlayerNextEpisode_Preview() {
+fun PlayerChapterButton_Preview() {
     FluxTheme {
         Box(modifier = Modifier.fillMaxWidth()) {
-            PlayerNextEpisode(
+            PlayerChapterButton(
                 modifier = Modifier,
-                nextButton = PlayerUiContent.NextButton.Showed(MediaMockups.episode1),
+                chapterButton = PlayerUiContent.ChapterButton.Skip(chapter = VideoChapter(0, 0L, 0L, type = VideoChapterType.INTRO)),
                 bottomMargin = { 0.dp },
                 sendIntent = {}
             )

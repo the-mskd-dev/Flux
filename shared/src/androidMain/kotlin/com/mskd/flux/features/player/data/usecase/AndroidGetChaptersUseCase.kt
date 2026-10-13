@@ -1,7 +1,6 @@
 package com.mskd.flux.features.player.data.usecase
 
 import android.content.Context
-import android.widget.Toast
 import androidx.core.net.toUri
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.features.player.domain.model.VideoChapter
@@ -11,7 +10,6 @@ import com.mskd.flux.report.Trace
 import io.github.anilbeesetti.nextlib.mediainfo.MediaInfoBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlin.collections.orEmpty
 
 class AndroidGetChaptersUseCase(
     private val context: Context,

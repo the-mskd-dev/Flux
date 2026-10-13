@@ -6,7 +6,6 @@ import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.features.history.domain.usecase.SaveToHistoryUseCase
-import com.mskd.flux.features.player.domain.model.VideoChapter
 import com.mskd.flux.features.player.domain.model.VideoChapterType
 import com.mskd.flux.features.player.domain.usecase.GetChaptersUseCase
 import com.mskd.flux.report.Trace

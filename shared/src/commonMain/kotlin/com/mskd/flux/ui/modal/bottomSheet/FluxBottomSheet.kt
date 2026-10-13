@@ -27,7 +27,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.mskd.flux.ui.blurForeground
 import com.mskd.flux.ui.fillMaxWidthWithLimit
 import com.mskd.flux.ui.global.BackGesture
 import com.mskd.flux.ui.modal.LocalModalHost

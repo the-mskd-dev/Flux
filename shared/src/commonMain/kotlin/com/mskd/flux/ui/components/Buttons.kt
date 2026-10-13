@@ -89,65 +89,6 @@ fun FluxIconButton(
 
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
-@Composable
-fun CountDownButton(
-    text: @Composable (Int) -> String,
-    duration: Int = 10,
-    onClick: () -> Unit,
-    backgroundColor: Color = MaterialTheme.colorScheme.primaryContainer,
-) {
-
-    var count by remember { mutableIntStateOf(duration) }
-    val size = ButtonDefaults.MediumContainerHeight
-    val shape = ButtonDefaults.shape
-
-    LaunchedEffect(Unit) {
-        while (count > 0) {
-            delay(1.seconds)
-            count -= 1
-        }
-        onClick()
-    }
-
-    Button(
-        modifier = Modifier.heightIn(size),
-        onClick = onClick,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = backgroundColor,
-            contentColor = contentColorFor(backgroundColor)
-        ),
-        shape = shape,
-        contentPadding = ButtonDefaults.contentPaddingFor(size),
-        elevation = ButtonDefaults.buttonElevation(
-            defaultElevation = 6.dp,
-            pressedElevation = 6.dp,
-            hoveredElevation = 4.dp,
-            focusedElevation = 6.dp
-        ),
-        content = {
-
-            Box {
-
-                // Invisible text to avoid button size change
-                Text.Button.Default(
-                    modifier = Modifier.clearAndSetSemantics { }, // To ignore TalkBack
-                    text = text(duration),
-                    color = Color.Transparent,
-                )
-
-                Text.Button.Default(
-                    text = text(count),
-                    color = contentColorFor(backgroundColor),
-                )
-
-            }
-
-        }
-    )
-
-}
-
 @Composable
 fun ReadMoreButton(
     modifier: Modifier = Modifier,
@@ -168,21 +109,6 @@ fun ReadMoreButton(
         )
     }
 
-}
-
-@Preview
-@Composable
-fun CountDownButton_Preview() {
-    Column(
-        modifier = Modifier
-            .background(MaterialTheme.colorScheme.background)
-            .padding(FluxUI.Space.large)
-    ) {
-        CountDownButton(
-            onClick = {  },
-            text = { stringResource(Res.string.next_episode, it) }
-        )
-    }
 }
 
 @Preview

@@ -34,7 +34,7 @@ class TMDBServiceTest : KoinTest {
 
     private companion object {
 
-        val dataLanguage: String = Language.ENGLISH.toString()
+        val language: String = Language.ENGLISH.toString()
 
         val movieFile = UserFile(
             name = "Spider-man Homecoming",
@@ -103,7 +103,7 @@ class TMDBServiceTest : KoinTest {
         val result = service.searchMovie(
             title = title,
             year = year,
-            language = dataLanguage
+            language = language
         )
 
         movieArtworkId = result.artworkFor(fileName = movieFile.nameProperties.title)?.id
@@ -123,7 +123,7 @@ class TMDBServiceTest : KoinTest {
         // When
         val result = service.getMovieDetails(
             id = id,
-            language = dataLanguage
+            language = language
         )
 
         println("id : ${result.id}")
@@ -158,7 +158,7 @@ class TMDBServiceTest : KoinTest {
     fun test_get_movie_genres() = runTest {
 
         // When
-        val result = service.getMovieGenres()
+        val result = service.getMovieGenres(language = language)
 
         // Then
         assertTrue(result.genres.isNotEmpty())
@@ -178,7 +178,7 @@ class TMDBServiceTest : KoinTest {
         val result = service.searchShow(
             title = title,
             year = year,
-            language = dataLanguage
+            language = language
         )
 
         showArtworkId = result.artworkFor(fileName = episodeFile.nameProperties.title)?.id
@@ -198,7 +198,7 @@ class TMDBServiceTest : KoinTest {
         // When
         val result = service.getShowDetails(
             artworkId = id,
-            language = dataLanguage
+            language = language
         )
 
         println("id : ${result.id}")
@@ -233,7 +233,7 @@ class TMDBServiceTest : KoinTest {
     fun test_get_show_genres() = runTest {
 
         // When
-        val result = service.getShowGenres()
+        val result = service.getShowGenres(language = language)
 
         // Then
         assertTrue(result.genres.isNotEmpty())
@@ -255,7 +255,7 @@ class TMDBServiceTest : KoinTest {
             id = id,
             season = season,
             number = episode,
-            language = dataLanguage
+            language = language
         )
 
         println("id : ${result.id}")
@@ -301,7 +301,7 @@ class TMDBServiceTest : KoinTest {
         val result = service.getSeason(
             id = id,
             season = season,
-            language = dataLanguage
+            language = language
         )
 
         println("id : ${result.id}")

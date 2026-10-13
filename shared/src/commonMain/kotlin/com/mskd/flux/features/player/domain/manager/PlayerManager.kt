@@ -2,6 +2,7 @@ package com.mskd.flux.features.player.domain.manager
 
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.player.PlayerTrack
+import com.mskd.flux.features.player.domain.model.VideoChapter
 import kotlinx.coroutines.flow.Flow
 
 interface PlayerManager<out T> {
@@ -20,16 +21,11 @@ interface PlayerManager<out T> {
         data class Error(val code: Int? = null, val name: String? = null) : State<Nothing>()
     }
 
-    data class Progress(
-        val progress: Long = 0L,
-        val showNextEpisode: Boolean = false
-    )
-
     val flow: Flow<State<T>>
 
     val subtitles: Flow<List<String?>>
 
-    val progress: Flow<Progress>
+    val progress: Flow<Long>
 
     fun connect(sessionId: String)
 

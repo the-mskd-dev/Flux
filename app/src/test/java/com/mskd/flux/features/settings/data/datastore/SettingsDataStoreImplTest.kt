@@ -186,7 +186,7 @@ class SettingsDataStoreImplTest : FunSpec({
     test("setDataLanguage should update value in flow") {
 
         // Given
-        val newValue = Language.KOREAN.code
+        val newValue = Language.KOREAN
         settingsDataStore.flow.test {
             awaitItem()
 

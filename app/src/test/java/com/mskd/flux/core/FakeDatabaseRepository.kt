@@ -71,6 +71,12 @@ class FakeDatabaseRepository : DatabaseRepository {
         return MediaMockups.allMedias.filter { e -> !files.contains(e.file) }
     }
 
+    override suspend fun getNextEpisodeFor(episode: Episode): Episode? {
+        val episodes = MediaMockups.episodes.filter { it.artworkId == episode.artworkId }
+        return episodes.sortedWith(compareBy({ it.season }, { it.number }))
+            .firstOrNull { it.season > episode.season || (it.season == episode.season && it.number > episode.number) }
+    }
+
     override suspend fun getMovie(artworkId: Long): Movie? {
         return MediaMockups.movies.find { it.artworkId == artworkId }
     }

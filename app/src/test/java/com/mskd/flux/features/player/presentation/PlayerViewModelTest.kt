@@ -12,6 +12,10 @@ import com.mskd.flux.features.files.domain.usecase.GetSubtitlesUseCase
 import com.mskd.flux.features.player.data.PipIsEnabledUseCase
 import com.mskd.flux.features.player.domain.manager.PlayerManager
 import com.mskd.flux.features.player.domain.model.PlayerParams
+import com.mskd.flux.features.player.domain.model.VideoChapter
+import com.mskd.flux.features.player.domain.model.VideoChapterType
+import com.mskd.flux.features.player.domain.usecase.GetChaptersUseCase
+import com.mskd.flux.features.player.domain.usecase.GetNextEpisodeUseCase
 import com.mskd.flux.features.player.domain.usecase.SaveTrackLanguageUseCase
 import com.mskd.flux.features.player.fake.PlayerTestCases
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
@@ -23,9 +27,7 @@ import com.mskd.flux.utils.extensions.lastEpisode
 import com.mskd.flux.utils.extensions.minToMs
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
-import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.types.shouldBeInstanceOf
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -45,6 +47,8 @@ class PlayerViewModelTest : FunSpec({
     lateinit var pipIsEnabledUseCase: PipIsEnabledUseCase
     lateinit var getSubtitlesUseCase: GetSubtitlesUseCase
     lateinit var saveTrackLanguageUseCase: SaveTrackLanguageUseCase
+    lateinit var getChaptersUseCase: GetChaptersUseCase
+    lateinit var getNextEpisodeUseCase: GetNextEpisodeUseCase
 
     fun updateVm(mediaId: Long = MediaMockups.episode1.mediaId) {
 
@@ -64,6 +68,8 @@ class PlayerViewModelTest : FunSpec({
             saveProgressUseCase = recordProgress,
             getSubtitlesUseCase = getSubtitlesUseCase,
             saveTrackLanguageUseCase = saveTrackLanguageUseCase,
+            getChaptersUseCase = getChaptersUseCase,
+            getNextEpisodeUseCase = getNextEpisodeUseCase,
         )
 
     }
@@ -85,6 +91,11 @@ class PlayerViewModelTest : FunSpec({
         pipIsEnabledUseCase = mockk(relaxed = true)
         getSubtitlesUseCase = mockk(relaxed = true)
         recordProgress = mockk(relaxed = true)
+        getChaptersUseCase = mockk(relaxed = true)
+        coEvery { getChaptersUseCase(any()) } returns emptyList()
+        getNextEpisodeUseCase = mockk(relaxed = true)
+        coEvery { getNextEpisodeUseCase(any()) } returns null
+        coEvery { getNextEpisodeUseCase(MediaMockups.episode1) } returns MediaMockups.episode2
         saveTrackLanguageUseCase = mockk(relaxed = true) {
             coEvery { getAudioLanguage() } returns Language.ENGLISH.code
             coEvery { getSubtitlesLanguage() } returns Language.ENGLISH.code
@@ -199,9 +210,7 @@ class PlayerViewModelTest : FunSpec({
                     player = player,
                     duration = testCase.media.duration.minToMs
                 ))
-                every { progress } returns MutableStateFlow(PlayerManager.Progress(
-                    progress = testCase.time
-                ))
+                every { progress } returns MutableStateFlow(testCase.time)
             }
 
             updateVm(mediaId = testCase.media.mediaId)
@@ -329,31 +338,166 @@ class PlayerViewModelTest : FunSpec({
 
     }
 
-    test("cancel next episode") {
+    context("chapter button tap") {
 
-        viewModel.uiState.test {
-            awaitItem()
+        test("skip seeks to the end of the chapter") {
 
-            viewModel.handleIntent(PlayerIntent.CancelNextEpisode)
+            // Given
+            val openingChapter = VideoChapter(index = 0, start = 0L, end = 90_000L, type = VideoChapterType.OPENING)
 
-            val state = awaitItem()
-            state.content.nextButton.shouldBeInstanceOf<PlayerUiContent.NextButton.Canceled>()
+            viewModel.uiState.test {
+                awaitItem()
+
+                // When
+                viewModel.handleIntent(
+                    PlayerIntent.OnChapterButtonTap(PlayerUiContent.ChapterButton.Skip(chapter = openingChapter))
+                )
+
+                // Then
+                coVerify { playerManager.seekTo(progress = openingChapter.end) }
+
+                cancelAndIgnoreRemainingEvents()
+            }
+
+        }
+
+        test("next episode saves the time and changes the media") {
+
+            viewModel.uiState.test {
+                awaitItem()
+
+                // When
+                viewModel.handleIntent(
+                    PlayerIntent.OnChapterButtonTap(
+                        PlayerUiContent.ChapterButton.NextEpisode(nextEpisode = MediaMockups.episode2)
+                    )
+                )
+
+                // Then
+                val state = awaitItem()
+                state.content.media.mediaId shouldBe MediaMockups.episode2.mediaId
+                state.content.chapterButton shouldBe null
+                coVerify { recordProgress(MediaMockups.episode1, any()) }
+
+                cancelAndIgnoreRemainingEvents()
+            }
+
+        }
+
+        test("null button does nothing") {
+
+            viewModel.uiState.test {
+                awaitItem()
+
+                // When
+                viewModel.handleIntent(PlayerIntent.OnChapterButtonTap(null))
+
+                // Then
+                expectNoEvents()
+                coVerify(exactly = 0) { playerManager.seekTo(any()) }
+                coVerify(exactly = 0) { recordProgress(any(), any()) }
+
+                cancelAndIgnoreRemainingEvents()
+            }
 
         }
 
     }
 
-    test("play next episode") {
-        viewModel.uiState.test {
-            awaitItem()
+    context("chapter button from progress") {
 
-            viewModel.handleIntent(PlayerIntent.PlayNextEpisode(MediaMockups.episode2))
+        withData(
+            nameFn = { it.description },
+            PlayerTestCases.ChapterButtonTest(
+                description = "progress in opening chapter shows the Skip button",
+                chapters = listOf(
+                    VideoChapter(index = 0, start = 0L, end = 90_000L, type = VideoChapterType.OPENING),
+                ),
+                progress = 30_000L,
+                expectedChapterButton = PlayerUiContent.ChapterButton.Skip(
+                    chapter = VideoChapter(index = 0, start = 0L, end = 90_000L, type = VideoChapterType.OPENING)
+                )
+            ),
+            PlayerTestCases.ChapterButtonTest(
+                description = "progress in a non-final ending chapter shows the Skip button",
+                chapters = listOf(
+                    VideoChapter(index = 0, start = 0L, end = 90_000L, type = VideoChapterType.OPENING),
+                    VideoChapter(index = 1, start = 90_000L, end = 1_200_000L, type = VideoChapterType.CHAPTER),
+                    VideoChapter(index = 2, start = 1_200_000L, end = 1_300_000L, type = VideoChapterType.ENDING),
+                    VideoChapter(index = 3, start = 1_300_000L, end = 1_380_000L, type = VideoChapterType.CHAPTER),
+                ),
+                progress = 1_250_000L,
+                expectedChapterButton = PlayerUiContent.ChapterButton.Skip(
+                    chapter = VideoChapter(index = 2, start = 1_200_000L, end = 1_300_000L, type = VideoChapterType.ENDING)
+                )
+            ),
+            PlayerTestCases.ChapterButtonTest(
+                description = "progress in the final ending chapter shows the NextEpisode button",
+                chapters = listOf(
+                    VideoChapter(index = 0, start = 0L, end = 90_000L, type = VideoChapterType.OPENING),
+                    VideoChapter(index = 1, start = 90_000L, end = 1_200_000L, type = VideoChapterType.CHAPTER),
+                    VideoChapter(index = 2, start = 1_200_000L, end = 1_380_000L, type = VideoChapterType.ENDING),
+                ),
+                progress = 1_300_000L,
+                expectedChapterButton = PlayerUiContent.ChapterButton.NextEpisode(nextEpisode = MediaMockups.episode2)
+            ),
+            PlayerTestCases.ChapterButtonTest(
+                description = "progress near the end of the media shows the NextEpisode button",
+                chapters = emptyList(),
+                progress = 1_370_000L,
+                expectedChapterButton = PlayerUiContent.ChapterButton.NextEpisode(nextEpisode = MediaMockups.episode2)
+            ),
+            PlayerTestCases.ChapterButtonTest(
+                description = "progress in a normal chapter hides the button",
+                chapters = listOf(
+                    VideoChapter(index = 0, start = 0L, end = 90_000L, type = VideoChapterType.OPENING),
+                    VideoChapter(index = 1, start = 90_000L, end = 1_380_000L, type = VideoChapterType.CHAPTER),
+                ),
+                progress = 100_000L,
+                expectedChapterButton = null
+            ),
+        ) { testCase ->
 
-            val state = awaitItem()
-            state.content.media.shouldNotBeNull {
-                mediaId shouldBe MediaMockups.episode2.mediaId
+            // Given
+            getChaptersUseCase = mockk(relaxed = true)
+            coEvery { getChaptersUseCase(any()) } returns testCase.chapters
+
+            val progressFlow = MutableStateFlow(0L)
+            playerManager = mockk(relaxed = true) {
+                every { flow } returns MutableStateFlow(
+                    PlayerManager.State.Ready(
+                        player = player,
+                        duration = MediaMockups.episode1.duration.minToMs
+                    )
+                )
+                every { progress } returns progressFlow
             }
+
+            updateVm()
+
+            viewModel.uiState.test {
+
+                // Skip initial state & ensure the media (and so the chapters) are loaded
+                awaitItem()
+                coVerify { playerManager.playMedia(any(), any()) }
+
+                // When
+                progressFlow.value = testCase.progress
+
+                // Then
+                if (testCase.expectedChapterButton == null) {
+                    // No new state is emitted when the button stays/becomes null
+                    viewModel.uiState.value.content.chapterButton shouldBe null
+                } else {
+                    val state = awaitItem()
+                    state.content.chapterButton shouldBe testCase.expectedChapterButton
+                }
+
+                cancelAndIgnoreRemainingEvents()
+            }
+
         }
+
     }
 
     test("on volume change") {
@@ -420,9 +564,7 @@ class PlayerViewModelTest : FunSpec({
                     duration = 10000L
                 )
             )
-            every { progress } returns MutableStateFlow(PlayerManager.Progress(
-                progress = 2000L
-            ))
+            every { progress } returns MutableStateFlow(2000L)
         }
         updateVm()
 
@@ -445,9 +587,7 @@ class PlayerViewModelTest : FunSpec({
                     duration = 10000L
                 )
             )
-            every { progress } returns MutableStateFlow(PlayerManager.Progress(
-                progress = 3000L
-            ))
+            every { progress } returns MutableStateFlow(3000L)
         }
         updateVm()
 
@@ -500,9 +640,7 @@ class PlayerViewModelTest : FunSpec({
                     duration = 10000L
                 )
             )
-            every { progress } returns MutableStateFlow(PlayerManager.Progress(
-                progress = 2000L
-            ))
+            every { progress } returns MutableStateFlow(2000L)
         }
         updateVm()
 

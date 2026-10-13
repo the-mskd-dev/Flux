@@ -78,7 +78,9 @@
     <string name="track">トラック</string>
     <string name="subtitles">字幕</string>
     <string name="audio_tracks">音声トラック</string>
-    <string name="next_episode">次のエピソード（%1$d秒後）</string>
+    <string name="next_episode">次のエピソード</string>
+    <string name="skip_opening">オープニングをスキップ</string>
+    <string name="skip_ending">エンディングをスキップ</string>
     <string name="close">閉じる</string>
     <string name="do_not_show_again">次回から表示しない</string>
     <string name="tmdb_api_token">TMDB API トークン</string>

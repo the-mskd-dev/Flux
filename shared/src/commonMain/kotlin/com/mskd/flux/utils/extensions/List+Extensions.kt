@@ -25,31 +25,6 @@ fun List<Episode>.firstEpisodeToWatch() : Episode? {
 val List<Episode>.firstEpisode get() = this.minWith(compareBy<Episode> { it.season }.thenBy { it.number })
 val List<Episode>.lastEpisode get() = this.maxWith(compareBy<Episode> { it.season }.thenBy { it.number })
 
-fun List<Episode>.getPreviousEpisodeFor(episode: Episode) : Episode? {
-    return this
-        .filter { it.season == episode.season }
-        .sortedBy { it.number }
-        .let {
-
-            val index = it.indexOf(episode)
-
-            when {
-                index < 0 || index == 0 -> null
-                else -> it[index - 1]
-            }
-        }
-}
-
-fun List<Episode>.getNextEpisodeFor(episode: Episode) : Episode? {
-    val sorted = sortedWith(compareBy(Episode::season, Episode::number))
-    val index = sorted.indexOfFirst { it.id == episode.id }
-
-    return when {
-        index < 0 || index == sorted.lastIndex -> null
-        else -> sorted.getOrNull(index + 1)
-    }
-}
-
 fun List<Genre>.filterFor(artworks: List<Artwork>) : List<Genre> {
     val genreIds = artworks.flatMap { it.genreIds }.distinct()
     return this.filter { genreIds.contains(it.id) }.distinctBy { it.id }

@@ -394,11 +394,11 @@ class SettingsViewModelTest : FunSpec({
 
                 // When
                 viewModel.handleIntent(SettingsIntent.SetLanguageValue(language))
-                dataStoreFlow.value = dataStoreFlow.value.copy(dataLanguage = language)
+                dataStoreFlow.value = dataStoreFlow.value.copy(dataLanguage = Language.FRENCH)
 
                 // Then
                 val state = awaitItem()
-                coVerify { settingsDataStore.setDataLanguage(language) }
+                coVerify { settingsDataStore.setDataLanguage(Language.FRENCH) }
                 state.languageValue shouldBe language
                 state.optionsDialog shouldBe null
 

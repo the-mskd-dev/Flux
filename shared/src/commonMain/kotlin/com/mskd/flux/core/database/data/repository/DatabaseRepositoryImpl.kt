@@ -106,6 +106,14 @@ class DatabaseRepositoryImpl(
         return mediasDao.getForArtwork(artworkId = artworkId).mapNotNull { it.toDomain() as? Episode }.sort()
     }
 
+    override suspend fun getNextEpisodeFor(episode: Episode): Episode? {
+        return mediasDao.getNextEpisodeFor(
+            artworkId = episode.artworkId,
+            season = episode.season,
+            number = episode.number
+        )?.toDomain() as? Episode
+    }
+
     override suspend fun getEpisodeCount(artworkId: Long): Int {
         return mediasDao.getEpisodeCountByArtworkId(artworkId = artworkId)
     }

@@ -78,7 +78,9 @@
     <string name="track">트랙</string>
     <string name="subtitles">자막</string>
     <string name="audio_tracks">오디오 트랙</string>
-    <string name="next_episode">다음 에피소드 (%1$d초)</string>
+    <string name="next_episode">다음 에피소드</string>
+    <string name="skip_opening">오프닝 건너뛰기</string>
+    <string name="skip_ending">엔딩 건너뛰기</string>
     <string name="close">닫기</string>
     <string name="do_not_show_again">다시 보지 않기</string>
     <string name="tmdb_api_token">TMDB API 토큰</string>

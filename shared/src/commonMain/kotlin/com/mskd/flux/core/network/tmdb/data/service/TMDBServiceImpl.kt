@@ -3,6 +3,7 @@ package com.mskd.flux.core.network.tmdb.data.service
 import com.mskd.flux.core.network.tmdb.data.dto.AuthenticationDto
 import com.mskd.flux.core.network.tmdb.data.dto.SearchResultsDto
 import com.mskd.flux.core.network.tmdb.data.dto.TranslationsDto
+import com.mskd.flux.core.network.tmdb.data.dto.cast.CreditsDto
 import com.mskd.flux.core.network.tmdb.data.dto.genre.GenresResultDto
 import com.mskd.flux.core.network.tmdb.data.dto.movie.MovieDto
 import com.mskd.flux.core.network.tmdb.data.dto.show.EpisodeDto
@@ -55,6 +56,14 @@ class TMDBServiceImpl(private val client: HttpClient) : TMDBService {
             parameter("language", language)
         }.body()
 
+    override suspend fun getMovieCredits(
+        artworkId: Long,
+        language: String
+    ): CreditsDto = client
+        .get("movie/$artworkId/credits") {
+            parameter("language", language)
+        }.body()
+
     //endregion
 
     //region Show
@@ -85,6 +94,14 @@ class TMDBServiceImpl(private val client: HttpClient) : TMDBService {
 
     override suspend fun getShowGenres(language: String): GenresResultDto = client
         .get("genre/tv/list") {
+            parameter("language", language)
+        }.body()
+
+    override suspend fun getShowCredits(
+        artworkId: Long,
+        language: String
+    ): CreditsDto = client
+        .get("tv/$artworkId/credits") {
             parameter("language", language)
         }.body()
 

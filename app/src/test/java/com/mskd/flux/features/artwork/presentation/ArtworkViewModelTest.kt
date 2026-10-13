@@ -4,10 +4,13 @@ import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.FullArtwork
+import com.mskd.flux.core.model.artwork.People
+import com.mskd.flux.core.model.artwork.PeopleType
 import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.features.artwork.fake.FakeObserveArtworkUseCase
+import com.mskd.flux.features.credits.domain.usecase.GetCreditsUseCase
 import com.mskd.flux.features.player.domain.model.PlaybackAction
 import com.mskd.flux.features.player.domain.usecase.ResolvePlaybackActionUseCase
 import com.mskd.flux.features.progress.domain.usecase.ChangeMediaStatusUseCase
@@ -34,6 +37,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.collections.immutable.toImmutableList
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ArtworkViewModelTest : FunSpec({
@@ -45,6 +49,7 @@ class ArtworkViewModelTest : FunSpec({
     lateinit var filesLauncher: FilesLauncher
     lateinit var urlLauncher: UrlLauncher
     lateinit var observeArtworkUseCase: ObserveArtworkUseCase
+    lateinit var getCreditsUseCase: GetCreditsUseCase
     lateinit var changeMediaStatus: ChangeMediaStatusUseCase
     lateinit var markPreviousAsWatched: MarkPreviousAsWatchedUseCase
     lateinit var resetProgress: ResetProgressUseCase
@@ -68,6 +73,7 @@ class ArtworkViewModelTest : FunSpec({
             artworkId = id,
             season = currentSeason,
             observeArtworkUseCase = observeArtworkUseCase,
+            getCreditsUseCase = getCreditsUseCase,
             settingsDataStore = settingsDataStore,
             changeMediaStatus = changeMediaStatus,
             markPreviousAsWatched = markPreviousAsWatched,
@@ -85,6 +91,8 @@ class ArtworkViewModelTest : FunSpec({
         currentSeason = 1
 
         observeArtworkUseCase = FakeObserveArtworkUseCase()
+        getCreditsUseCase = mockk()
+        every { getCreditsUseCase(any()) } returns MutableStateFlow(emptyList<People>().toImmutableList())
 
         settingsDataStore = mockk(relaxed = true) {
             every { flow } returns MutableStateFlow(SettingsDataStore.State())
@@ -108,6 +116,32 @@ class ArtworkViewModelTest : FunSpec({
             content.selectedSeason shouldBe MediaMockups.episode1.season
             content.dialog shouldBe null
 
+        }
+
+    }
+
+    test("exposes people in content") {
+
+        // Given
+        val people = listOf(
+            People(
+                id = 819,
+                creditId = "credit-819",
+                artworkId = MediaMockups.showArtwork.id,
+                name = "Edward Norton",
+                profilePath = "/profile.jpg",
+                role = "The Narrator",
+                type = PeopleType.CAST,
+                personOrder = 0
+            )
+        )
+        every { getCreditsUseCase(any()) } returns MutableStateFlow(people.toImmutableList())
+        updateVm(MediaMockups.showArtwork.id)
+
+        // When / Then
+        viewModel.uiState.test {
+            val content = (awaitItem().state as State.Content<ArtworkContent>).content
+            content.people shouldBe people.toImmutableList()
         }
 
     }

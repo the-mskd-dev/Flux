@@ -3,6 +3,7 @@ package com.mskd.flux.core.network.tmdb.data.service
 import com.mskd.flux.core.network.tmdb.data.dto.AuthenticationDto
 import com.mskd.flux.core.network.tmdb.data.dto.SearchResultsDto
 import com.mskd.flux.core.network.tmdb.data.dto.TranslationsDto
+import com.mskd.flux.core.network.tmdb.data.dto.cast.CreditsDto
 import com.mskd.flux.core.network.tmdb.data.dto.genre.GenresResultDto
 import com.mskd.flux.core.network.tmdb.data.dto.movie.MovieDto
 import com.mskd.flux.core.network.tmdb.data.dto.show.EpisodeDto
@@ -36,6 +37,11 @@ interface TMDBService {
 
     suspend fun getMovieGenres(language: String) : GenresResultDto
 
+    suspend fun getMovieCredits(
+        artworkId: Long,
+        language: String
+    ) : CreditsDto
+
     //endregion
 
     //region Show
@@ -56,6 +62,11 @@ interface TMDBService {
     ) : TranslationsDto
 
     suspend fun getShowGenres(language: String) : GenresResultDto
+
+    suspend fun getShowCredits(
+        artworkId: Long,
+        language: String
+    ) : CreditsDto
 
     //endregion
 

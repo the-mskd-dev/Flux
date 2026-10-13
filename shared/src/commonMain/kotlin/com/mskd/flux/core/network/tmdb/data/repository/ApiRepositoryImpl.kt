@@ -5,6 +5,7 @@ import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Genre
 import com.mskd.flux.core.model.artwork.Movie
+import com.mskd.flux.core.model.artwork.People
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.core.network.tmdb.data.datasource.TmdbDataSource
@@ -38,6 +39,10 @@ internal class ApiRepositoryImpl(
         )
     }
 
+    override suspend fun getMovieCredits(artworkId: Long): List<People> {
+        return tmdb.getMovieCredits(artworkId = artworkId)?.toDomain(artworkId = artworkId) ?: emptyList()
+    }
+
     //endregion
 
     //region Show
@@ -65,6 +70,10 @@ internal class ApiRepositoryImpl(
             }
 
         return season to episodes
+    }
+
+    override suspend fun getShowCredits(artworkId: Long): List<People> {
+        return tmdb.getShowCredits(artworkId = artworkId)?.toDomain(artworkId = artworkId) ?: emptyList()
     }
 
     //endregion

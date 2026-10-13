@@ -2,9 +2,12 @@ package com.mskd.flux.features.show.presentation
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
+import com.mskd.flux.core.model.artwork.People
+import com.mskd.flux.core.model.artwork.PeopleType
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.features.artwork.fake.FakeObserveArtworkUseCase
+import com.mskd.flux.features.credits.domain.usecase.GetCreditsUseCase
 import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.system.UrlLauncher
@@ -12,17 +15,20 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.flow.MutableStateFlow
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class ShowViewModelTest : FunSpec({
 
     fluxExtensions()
 
     lateinit var viewModel: ShowViewModel
     lateinit var observeArtworkUseCase: ObserveArtworkUseCase
+    lateinit var getCreditsUseCase: GetCreditsUseCase
     lateinit var resetProgress: ResetProgressUseCase
     lateinit var urlLauncher: UrlLauncher
 
@@ -34,6 +40,7 @@ class ShowViewModelTest : FunSpec({
         viewModel = ShowViewModel(
             artworkId = MediaMockups.showArtwork.id,
             observeArtworkUseCase = observeArtworkUseCase,
+            getCreditsUseCase = getCreditsUseCase,
             resetProgress = resetProgress,
             urlLauncher = urlLauncher
         )
@@ -43,6 +50,8 @@ class ShowViewModelTest : FunSpec({
     beforeTest {
 
         observeArtworkUseCase = FakeObserveArtworkUseCase()
+        getCreditsUseCase = mockk()
+        every { getCreditsUseCase(any()) } returns MutableStateFlow(persistentListOf<People>())
 
         updateVm()
 
@@ -58,6 +67,32 @@ class ShowViewModelTest : FunSpec({
             val content = (initialState.state as State.Content<ShowContent>).content
             content.dialog shouldBe null
 
+        }
+
+    }
+
+    test("exposes people in content") {
+
+        // Given
+        val people = listOf(
+            People(
+                id = 819,
+                creditId = "credit-819",
+                artworkId = MediaMockups.showArtwork.id,
+                name = "Edward Norton",
+                profilePath = "/profile.jpg",
+                role = "The Narrator",
+                type = PeopleType.CAST,
+                personOrder = 0
+            )
+        )
+        every { getCreditsUseCase(any()) } returns MutableStateFlow(people.toImmutableList())
+        updateVm()
+
+        // When / Then
+        viewModel.uiState.test {
+            val content = (awaitItem().state as State.Content<ShowContent>).content
+            content.credits shouldBe people.toImmutableList()
         }
 
     }
@@ -151,6 +186,7 @@ class ShowViewModelTest : FunSpec({
         viewModel = ShowViewModel(
             artworkId = -999L,
             observeArtworkUseCase = observeArtworkUseCase,
+            getCreditsUseCase = getCreditsUseCase,
             resetProgress = resetProgress,
             urlLauncher = urlLauncher
         )
@@ -166,6 +202,7 @@ class ShowViewModelTest : FunSpec({
         viewModel = ShowViewModel(
             artworkId = MediaMockups.movieArtwork.id,
             observeArtworkUseCase = observeArtworkUseCase,
+            getCreditsUseCase = getCreditsUseCase,
             resetProgress = resetProgress,
             urlLauncher = urlLauncher
         )

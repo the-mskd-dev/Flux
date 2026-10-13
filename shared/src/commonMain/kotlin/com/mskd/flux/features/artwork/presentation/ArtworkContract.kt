@@ -4,12 +4,16 @@ import androidx.compose.runtime.Immutable
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Media
+import com.mskd.flux.core.model.artwork.People
 import com.mskd.flux.core.model.core.State
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 @Immutable
 data class ArtworkDataState(
     val fullArtwork: FullArtwork,
-    val useExternalPlayer: Boolean
+    val useExternalPlayer: Boolean,
+    val credits: ImmutableList<People> = persistentListOf()
 )
 
 @Immutable
@@ -26,6 +30,7 @@ data class ArtworkContent(
     val selectedSeason: Int?,
     val expandedEpisodeId: Long? = null,
     val useExternalPlayer: Boolean,
+    val people: ImmutableList<People> = persistentListOf(),
     val dialog: ArtworkDialog?,
 )
 

@@ -8,6 +8,7 @@ import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
+import com.mskd.flux.features.credits.domain.usecase.GetCreditsUseCase
 import com.mskd.flux.features.player.domain.model.PlaybackAction
 import com.mskd.flux.features.player.domain.usecase.ResolvePlaybackActionUseCase
 import com.mskd.flux.features.progress.domain.usecase.ChangeMediaStatusUseCase
@@ -37,6 +38,7 @@ class ArtworkViewModel(
     private val urlLauncher: UrlLauncher,
     settingsDataStore: SettingsDataStore,
     observeArtworkUseCase: ObserveArtworkUseCase,
+    getCreditsUseCase: GetCreditsUseCase,
     private val changeMediaStatus: ChangeMediaStatusUseCase,
     private val markPreviousAsWatched: MarkPreviousAsWatchedUseCase,
     private val resetProgress: ResetProgressUseCase,
@@ -62,8 +64,9 @@ class ArtworkViewModel(
     val uiState: StateFlow<ArtworkUiState> = combine(
         observeArtworkUseCase.flow,
         settingsDataStore.flow,
+        getCreditsUseCase(artworkId = artworkId),
         _userState,
-    ) { artworkState, settings, userState ->
+    ) { artworkState, settings, people, userState ->
 
         when (artworkState) {
             is State.Loading -> ArtworkUiState(state = State.Loading)
@@ -73,6 +76,7 @@ class ArtworkViewModel(
                 val dataState = ArtworkDataState(
                     fullArtwork = artworkState.content,
                     useExternalPlayer = settings.externalPlayer,
+                    credits = people,
                 )
 
                 ArtworkUiState(state = mergeStates(dataState, userState))
@@ -145,6 +149,7 @@ class ArtworkViewModel(
                 selectedSeason = season,
                 expandedEpisodeId = userState.expandedEpisodeId,
                 useExternalPlayer = dataState.useExternalPlayer,
+                people = dataState.credits,
                 dialog = userState.dialog,
             )
         )

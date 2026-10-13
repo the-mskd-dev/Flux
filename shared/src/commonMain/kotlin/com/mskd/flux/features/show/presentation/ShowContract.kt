@@ -2,8 +2,11 @@ package com.mskd.flux.features.show.presentation
 
 import androidx.compose.runtime.Immutable
 import com.mskd.flux.core.model.artwork.FullArtwork
+import com.mskd.flux.core.model.artwork.People
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.core.State
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 @Immutable
 data class ShowUiState(
@@ -13,6 +16,7 @@ data class ShowUiState(
 @Immutable
 data class ShowContent(
     val fullShow: FullArtwork.FullShow,
+    val credits: ImmutableList<People> = persistentListOf(),
     val dialog: ShowDialog? = null,
 )
 

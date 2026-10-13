@@ -7,6 +7,7 @@ import com.mskd.flux.core.model.language.toTmdbFormat
 import com.mskd.flux.core.network.tmdb.data.dto.ArtworkDto
 import com.mskd.flux.core.network.tmdb.data.dto.MediaTypeDto
 import com.mskd.flux.core.network.tmdb.data.dto.TranslationsDto
+import com.mskd.flux.core.network.tmdb.data.dto.cast.CreditsDto
 import com.mskd.flux.core.network.tmdb.data.dto.genre.GenreDto
 import com.mskd.flux.core.network.tmdb.data.dto.movie.MovieDto
 import com.mskd.flux.core.network.tmdb.data.dto.show.EpisodeDto
@@ -154,6 +155,25 @@ class TmdbDataSourceImpl(
 
     }
 
+    override suspend fun getMovieCredits(artworkId: Long): CreditsDto? {
+
+        if (!tokenDataStore.tokenIsAvailable())
+            return null
+
+        val language = tmdbLanguage()
+
+        return try {
+            tmdbService.getMovieCredits(
+                artworkId = artworkId,
+                language = language.toTmdbFormat()
+            )
+        } catch (e: Exception) {
+            Napier.e(tag = TAG, message = "getMovieCredits - Fail to get credits for artworkId:$artworkId (${language.toTmdbFormat()})", throwable = e)
+            null
+        }
+
+    }
+
     override suspend fun getShow(
         artworkId: Long
     ): ShowDto? {
@@ -190,6 +210,25 @@ class TmdbDataSourceImpl(
 
         } catch (e: Exception) {
             Trace.error(tag = TAG, message = "getTmdbMovie - Fail to get TMDBShow for artworkId:$artworkId (${language.toTmdbFormat()})", throwable = e)
+            null
+        }
+
+    }
+
+    override suspend fun getShowCredits(artworkId: Long): CreditsDto? {
+
+        if (!tokenDataStore.tokenIsAvailable())
+            return null
+
+        val language = tmdbLanguage()
+
+        return try {
+            tmdbService.getShowCredits(
+                artworkId = artworkId,
+                language = language.toTmdbFormat()
+            )
+        } catch (e: Exception) {
+            Napier.e(tag = TAG, message = "getShowCredits - Fail to get credits for artworkId:$artworkId (${language.toTmdbFormat()})", throwable = e)
             null
         }
 

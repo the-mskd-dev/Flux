@@ -16,11 +16,14 @@ import com.mskd.flux.core.database.data.model.ArtworkEntity
 import com.mskd.flux.core.database.data.model.GenreEntity
 import com.mskd.flux.core.database.data.model.MediaEntity
 import com.mskd.flux.core.database.data.model.SeasonEntity
+import com.mskd.flux.features.credits.data.dao.PeopleDao
+import com.mskd.flux.features.credits.data.model.PeopleEntity
 import com.mskd.flux.features.history.data.dao.HistoryDao
 import com.mskd.flux.features.history.data.model.HistoryEntity
 import com.mskd.flux.features.sources.data.local.SourcesDao
 import com.mskd.flux.features.sources.data.local.UserFolderEntity
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 
 @Database(
     entities = [
@@ -29,9 +32,10 @@ import kotlinx.coroutines.Dispatchers
         MediaEntity::class,
         UserFolderEntity::class,
         GenreEntity::class,
-        HistoryEntity::class
+        HistoryEntity::class,
+        PeopleEntity::class
     ],
-    version = 11,
+    version = 12,
     autoMigrations = [
         AutoMigration(from = 1, to = 2),
         AutoMigration(from = 2, to = 3),
@@ -42,6 +46,7 @@ import kotlinx.coroutines.Dispatchers
         AutoMigration(from = 8, to = 9),
         AutoMigration(from = 9, to = 10),
         AutoMigration(from = 10, to = 11),
+        AutoMigration(from = 11, to = 12),
     ]
 )
 @TypeConverters(Converters::class)
@@ -53,6 +58,7 @@ abstract class FluxDatabase : RoomDatabase() {
     abstract fun sourcesDao(): SourcesDao
     abstract fun detailsDao(): DetailsDao
     abstract fun historyDao(): HistoryDao
+    abstract fun peopleDao(): PeopleDao
 }
 
 expect object FluxDatabaseConstructor : RoomDatabaseConstructor<FluxDatabase> {

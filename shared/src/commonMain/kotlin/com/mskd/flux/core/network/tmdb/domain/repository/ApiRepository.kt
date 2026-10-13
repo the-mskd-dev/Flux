@@ -4,6 +4,7 @@ import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Genre
 import com.mskd.flux.core.model.artwork.Movie
+import com.mskd.flux.core.model.artwork.People
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.core.network.tmdb.domain.model.Translation
@@ -16,6 +17,10 @@ interface ApiRepository {
     suspend fun getGenres() : List<Genre>
 
     suspend fun getMovie(artworkId: Long, file: UserFile): Movie?
+
+    suspend fun getMovieCredits(artworkId: Long): List<People>
+
+    suspend fun getShowCredits(artworkId: Long): List<People>
 
     suspend fun getSeasonAndEpisodes(artworkId: Long, season: Int, files: List<UserFile>): Pair<Season, List<Episode>>?
 

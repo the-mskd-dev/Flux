@@ -3,6 +3,7 @@ package com.mskd.flux.core.network.tmdb.data.datasource
 import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.core.network.tmdb.data.dto.ArtworkDto
 import com.mskd.flux.core.network.tmdb.data.dto.TranslationsDto
+import com.mskd.flux.core.network.tmdb.data.dto.cast.CreditsDto
 import com.mskd.flux.core.network.tmdb.data.dto.genre.GenreDto
 import com.mskd.flux.core.network.tmdb.data.dto.movie.MovieDto
 import com.mskd.flux.core.network.tmdb.data.dto.show.EpisodeDto
@@ -18,7 +19,11 @@ interface TmdbDataSource {
 
     suspend fun getMovie(artworkId: Long) : MovieDto?
 
+    suspend fun getMovieCredits(artworkId: Long) : CreditsDto?
+
     suspend fun getShow(artworkId: Long) : ShowDto?
+
+    suspend fun getShowCredits(artworkId: Long) : CreditsDto?
 
     suspend fun getEpisode(
         artworkId: Long,

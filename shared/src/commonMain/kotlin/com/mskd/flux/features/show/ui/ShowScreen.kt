@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.core.model.artwork.FullArtwork
+import com.mskd.flux.core.model.artwork.People
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.show.presentation.ShowDialog
 import com.mskd.flux.features.show.presentation.ShowEvent
@@ -94,6 +95,7 @@ fun ShowScreen(
                 MaterialTheme(colorScheme = colorScheme) {
                     ShowScreenContent(
                         fullShow = content.fullShow,
+                        peoples = content.credits,
                         dialog = content.dialog,
                         sendIntent = viewModel::handleIntent
                     )
@@ -109,6 +111,7 @@ fun ShowScreen(
 @Composable
 fun ShowScreenContent(
     fullShow: FullArtwork.FullShow,
+    peoples: List<People>,
     dialog: ShowDialog?,
     sendIntent: (ShowIntent) -> Unit
 ) {
@@ -153,6 +156,7 @@ fun ShowScreenContent(
         } else {
             ShowContentRegular(
                 fullShow = fullShow,
+                peoples = peoples,
                 scaffoldInnerPadding = innerPadding,
                 sendIntent = sendIntent,
             )
@@ -214,6 +218,7 @@ fun ShowScreen_Preview() {
     FluxThemePreview {
         ShowScreenContent(
             fullShow = MediaMockups.fullShow,
+            peoples = emptyList(),
             dialog = null,
             sendIntent = {}
         )

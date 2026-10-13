@@ -38,7 +38,14 @@ fun FluxImage(
     val urlLow = path.tmdbImage
     val urlHigh = path.tmdbImageLarge
 
-    val hdPainter = rememberAsyncImagePainter(urlHigh)
+    val hdPainter = rememberAsyncImagePainter(
+        model = ImageRequest.Builder(context)
+            .data(urlHigh)
+            .memoryCacheKey(urlHigh)
+            .diskCacheKey(urlHigh)
+            .crossfade(false)
+            .build()
+    )
 
     val hdState by hdPainter.state.collectAsState()
 

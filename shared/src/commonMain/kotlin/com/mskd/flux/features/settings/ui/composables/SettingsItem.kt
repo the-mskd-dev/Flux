@@ -44,14 +44,10 @@ fun SettingsItem(
             Text.List.Title(text = text)
         },
         supportingContent = {
-            AnimatedContent(
-                targetState = subText.uppercaseFirstLetter()
-            ) { text ->
-                Text.List.Body(
-                    text = text,
-                    color = valueColor,
-                )
-            }
+            Text.List.Body(
+                text = text.uppercaseFirstLetter(),
+                color = valueColor,
+            )
         },
         leadingContent = painter?.let {
             {

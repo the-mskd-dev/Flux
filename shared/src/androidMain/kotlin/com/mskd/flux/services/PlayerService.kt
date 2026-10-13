@@ -7,11 +7,18 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import com.mskd.flux.di.QualifiersAndroid
+import com.mskd.flux.features.player.data.manager.DecoderManagerHolder
+import com.mskd.flux.report.Trace
+import io.github.anilbeesetti.nextlib.media3ext.ffdecoder.DecoderManager
 import org.koin.android.scope.AndroidScopeComponent
 import org.koin.core.scope.Scope
 import org.koin.mp.KoinPlatformTools
 
 class PlayerService : MediaSessionService(), AndroidScopeComponent {
+
+    private companion object {
+        const val TAG = "PlayerService"
+    }
 
     override val scope: Scope by lazy {
         KoinPlatformTools.defaultContext().get().createScope(
@@ -21,6 +28,8 @@ class PlayerService : MediaSessionService(), AndroidScopeComponent {
     }
 
     val player: Player by scope.inject()
+
+    private val decoderManagerHolder: DecoderManagerHolder by lazy { scope.get() }
 
     private var mediaSession: MediaSession? = null
 
@@ -58,6 +67,11 @@ class PlayerService : MediaSessionService(), AndroidScopeComponent {
             .setCallback(mediaSessionCallback)
             .build()
 
+        // Resolving the player above built the ExoPlayer and attached this service's scoped
+        // DecoderManager to it (see modulePlayerAndroid). Publish it so AndroidPlayerManager
+        // can run runtime decoder recovery while this service is alive.
+        decoderManagerHolder.decoderManager = scope.get<DecoderManager>()
+
     }
 
     override fun onGetSession(p0: MediaSession.ControllerInfo): MediaSession? {
@@ -66,11 +80,22 @@ class PlayerService : MediaSessionService(), AndroidScopeComponent {
 
     override fun onDestroy() {
         mediaSession?.run {
+            // nextlib requires detaching the manager before releasing its player.
+            detachDecoderManager()
             player.release()
             release()
             mediaSession = null
         }
+        decoderManagerHolder.decoderManager = null
         scope.close()
         super.onDestroy()
+    }
+
+    private fun detachDecoderManager() {
+        try {
+            scope.getOrNull<DecoderManager>()?.detach()
+        } catch (e: Exception) {
+            Trace.error(TAG, "Failed to detach DecoderManager", e)
+        }
     }
 }

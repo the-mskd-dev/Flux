@@ -35,7 +35,6 @@ import com.mskd.flux.utils.extensions.uppercaseFirstLetter
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.season_and_episode
 import flux.shared.generated.resources.track
-import io.github.anilbeesetti.nextlib.media3ext.ffdecoder.DecoderManager
 import io.github.anilbeesetti.nextlib.media3ext.ffdecoder.DecoderMode
 import io.github.anilbeesetti.nextlib.mediainfo.MediaInfoBuilder
 import kotlinx.coroutines.CoroutineScope
@@ -59,7 +58,7 @@ import kotlin.time.Duration.Companion.milliseconds
 class AndroidPlayerManager(
     private val context: Context,
     private val saveTrackLanguageUseCase: SaveTrackLanguageUseCase,
-    private val decoderManager: DecoderManager
+    private val decoderManagerHolder: DecoderManagerHolder
 ) : Player.Listener, PlayerManager<Player> {
 
     private companion object {
@@ -336,6 +335,9 @@ class AndroidPlayerManager(
         if (decoderRecoveryAttempts >= MAX_DECODER_RECOVERY_ATTEMPTS) return false
 
         val player = (_state.value as? PlayerManager.State.Ready)?.player ?: return false
+        // The manager belongs to the running PlayerService: without it there is no decoder
+        // to switch, so the error is surfaced as usual.
+        val decoderManager = decoderManagerHolder.decoderManager ?: return false
 
         return try {
             val step = when (decoderRecoveryAttempts) {
@@ -373,6 +375,8 @@ class AndroidPlayerManager(
 
     /** Each new media starts from AUTO so the hardware decoder is tried first. */
     private fun resetDecoderModes() {
+        // Null when no PlayerService is alive: a fresh manager starts on AUTO anyway.
+        val decoderManager = decoderManagerHolder.decoderManager ?: return
         try {
             decoderManager.selectVideoDecoder(DecoderMode.AUTO)
             decoderManager.selectAudioDecoder(DecoderMode.AUTO)

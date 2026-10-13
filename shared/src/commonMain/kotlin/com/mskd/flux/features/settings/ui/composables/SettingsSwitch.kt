@@ -1,9 +1,7 @@
 package com.mskd.flux.features.settings.ui.composables
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
@@ -16,7 +14,6 @@ import androidx.compose.ui.graphics.painter.Painter
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.utils.extensions.uppercaseFirstLetter
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SettingsSwitch(
     text: String,
@@ -40,14 +37,10 @@ fun SettingsSwitch(
             Text.List.Title(text = text)
         },
         supportingContent = {
-            AnimatedContent(
-                targetState = subText.uppercaseFirstLetter()
-            ) { text ->
-                Text.List.Body(
-                    text = text,
-                    color = subTextColor,
-                )
-            }
+            Text.List.Body(
+                text = subText.uppercaseFirstLetter(),
+                color = subTextColor,
+            )
         },
         leadingContent = painter?.let {
             {

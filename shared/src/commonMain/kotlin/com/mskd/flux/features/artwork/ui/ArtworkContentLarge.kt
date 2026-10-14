@@ -19,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.People
@@ -69,6 +70,7 @@ fun ArtworkContentLarge(
         LazyColumn(
             modifier = Modifier.weight(.5f),
             horizontalAlignment = Alignment.CenterHorizontally,
+            contentPadding = PaddingValues(horizontal = FluxUI.Space.medium)
         ) {
 
             item {
@@ -78,9 +80,7 @@ fun ArtworkContentLarge(
             item {
 
                 Text.MainTitle(
-                    modifier = Modifier
-                        .padding(FluxUI.Space.medium)
-                        .wrapContentWidth(),
+                    modifier = Modifier.wrapContentWidth(),
                     text = when (fullArtwork) {
                         is FullArtwork.FullMovie -> fullArtwork.artwork.title
                         is FullArtwork.FullShow -> fullArtwork.seasons.find { it.season == selectedSeason }?.title ?: fullArtwork.artwork.title
@@ -132,9 +132,7 @@ fun ArtworkContentLarge(
                         Column(verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)) {
 
                             Text.Content.Title(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = FluxUI.Space.medium),
+                                modifier = Modifier.fillMaxWidth(),
                                 text = stringResource(Res.string.episodes),
                                 color = MaterialTheme.colorScheme.onPrimaryContainer
                             )
@@ -188,7 +186,10 @@ fun ArtworkContentLarge(
             }
 
             item {
-                Spacer(modifier = Modifier.height(scaffoldInnerPadding.calculateBottomPadding()))
+                Spacer(modifier = Modifier
+                    .padding(bottom = FluxUI.Space.bottomScreen)
+                    .height(scaffoldInnerPadding.calculateBottomPadding())
+                )
             }
 
         }

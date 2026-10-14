@@ -15,6 +15,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.People
@@ -47,7 +48,9 @@ fun ArtworkContentRegular(
 ) {
 
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = FluxUI.Space.medium),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 
@@ -93,9 +96,7 @@ fun ArtworkContentRegular(
                     Column(verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)) {
 
                         Text.Content.Title(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = FluxUI.Space.medium),
+                            modifier = Modifier.fillMaxWidth(),
                             text = stringResource(Res.string.episodes),
                             color = MaterialTheme.colorScheme.onBackground
                         )
@@ -150,7 +151,10 @@ fun ArtworkContentRegular(
         }
 
         item {
-            Spacer(modifier = Modifier.height(scaffoldInnerPadding.calculateBottomPadding()))
+            Spacer(modifier = Modifier
+                .padding(bottom = FluxUI.Space.bottomScreen)
+                .height(scaffoldInnerPadding.calculateBottomPadding())
+            )
         }
 
     }

@@ -17,6 +17,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.mskd.flux.core.model.artwork.FullArtwork
@@ -155,7 +156,7 @@ fun ShowContentRegular(
 
         item(span = { GridItemSpan(maxLineSpan) }) {
             Spacer(modifier = Modifier
-                .padding(bottom = FluxUI.Space.large)
+                .padding(bottom = FluxUI.Space.bottomScreen)
                 .height(scaffoldInnerPadding.calculateBottomPadding())
             )
         }

@@ -57,7 +57,6 @@ fun ArtworkDescriptionsPager(
 
         Card(
             modifier = Modifier
-                .padding(horizontal = FluxUI.Space.medium)
                 .then(
             if (pageCount > 1) {
                         Modifier.clickableWithBounce {

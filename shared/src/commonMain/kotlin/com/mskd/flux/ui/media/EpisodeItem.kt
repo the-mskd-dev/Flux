@@ -106,7 +106,6 @@ fun EpisodeItemLarge(
 
     Column(
         modifier = modifier
-            .padding(horizontal = FluxUI.Space.medium)
             .clip(FluxUI.shapes.corners)
             .let { if (episode.isAvailable) it else it.grayScale() }
             .background(bgColor)
@@ -212,7 +211,6 @@ fun EpisodeItemSmall(
 
     Column(
         modifier = modifier
-            .padding(horizontal = FluxUI.Space.medium)
             .clip(FluxUI.shapes.corners)
             .let { if (episode.isAvailable) it else it.grayScale() }
             .background(bgColor)

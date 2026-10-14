@@ -20,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.People
 import com.mskd.flux.features.artwork.ui.composables.ArtworkImageFull
@@ -165,7 +166,7 @@ fun ShowContentLarge(
 
             item(span = { GridItemSpan(maxLineSpan) }) {
                 Spacer(modifier = Modifier
-                    .padding(bottom = FluxUI.Space.large)
+                    .padding(bottom = FluxUI.Space.bottomScreen)
                     .height(scaffoldInnerPadding.calculateBottomPadding())
                 )
             }

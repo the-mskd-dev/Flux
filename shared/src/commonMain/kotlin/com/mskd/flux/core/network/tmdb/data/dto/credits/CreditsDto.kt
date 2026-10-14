@@ -1,4 +1,4 @@
-package com.mskd.flux.core.network.tmdb.data.dto.cast
+package com.mskd.flux.core.network.tmdb.data.dto.credits
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

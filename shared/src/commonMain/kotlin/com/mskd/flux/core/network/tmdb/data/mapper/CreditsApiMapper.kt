@@ -2,7 +2,7 @@ package com.mskd.flux.core.network.tmdb.data.mapper
 
 import com.mskd.flux.core.model.artwork.People
 import com.mskd.flux.core.model.artwork.PeopleType
-import com.mskd.flux.core.network.tmdb.data.dto.cast.CreditsDto
+import com.mskd.flux.core.network.tmdb.data.dto.credits.CreditsDto
 
 /**
  * Maps a TMDB credits response to the unified [People] model.

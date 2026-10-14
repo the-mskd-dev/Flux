@@ -21,8 +21,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.mskd.flux.core.model.artwork.FullArtwork
+import com.mskd.flux.core.model.artwork.People
 import com.mskd.flux.features.artwork.ui.composables.ArtworkImageFull
 import com.mskd.flux.features.artwork.ui.composables.GenresTags
+import com.mskd.flux.features.credits.ui.CreditsList
 import com.mskd.flux.features.show.presentation.ShowIntent
 import com.mskd.flux.features.show.ui.composables.SeasonItem
 import com.mskd.flux.mockups.MediaMockups
@@ -40,6 +42,7 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun ShowContentLarge(
     fullShow: FullArtwork.FullShow,
+    credits: List<People>,
     scaffoldInnerPadding: PaddingValues,
     sendIntent: (ShowIntent) -> Unit
 ) {
@@ -149,8 +152,21 @@ fun ShowContentLarge(
 
             }
 
+            if (credits.isNotEmpty()) {
+
+                item(span = { GridItemSpan(maxLineSpan) }) {
+
+                    CreditsList(credits = credits)
+
+                }
+
+            }
+
             item(span = { GridItemSpan(maxLineSpan) }) {
-                Spacer(modifier = Modifier.height(scaffoldInnerPadding.calculateBottomPadding()))
+                Spacer(modifier = Modifier
+                    .padding(bottom = FluxUI.Space.large)
+                    .height(scaffoldInnerPadding.calculateBottomPadding())
+                )
             }
 
         }
@@ -165,6 +181,7 @@ fun ShowContentLarge_Preview() {
     FluxTheme {
         ShowContentLarge(
             fullShow = MediaMockups.fullShow,
+            credits = emptyList(),
             scaffoldInnerPadding = PaddingValues.Zero,
             sendIntent = {}
         )

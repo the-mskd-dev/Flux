@@ -95,7 +95,7 @@ fun ShowScreen(
                 MaterialTheme(colorScheme = colorScheme) {
                     ShowScreenContent(
                         fullShow = content.fullShow,
-                        peoples = content.credits,
+                        credits = content.credits,
                         dialog = content.dialog,
                         sendIntent = viewModel::handleIntent
                     )
@@ -111,7 +111,7 @@ fun ShowScreen(
 @Composable
 fun ShowScreenContent(
     fullShow: FullArtwork.FullShow,
-    peoples: List<People>,
+    credits: List<People>,
     dialog: ShowDialog?,
     sendIntent: (ShowIntent) -> Unit
 ) {
@@ -150,13 +150,14 @@ fun ShowScreenContent(
         if (isLargeScreen) {
             ShowContentLarge(
                 fullShow = fullShow,
+                credits = credits,
                 scaffoldInnerPadding = innerPadding,
                 sendIntent = sendIntent,
             )
         } else {
             ShowContentRegular(
                 fullShow = fullShow,
-                peoples = peoples,
+                credits = credits,
                 scaffoldInnerPadding = innerPadding,
                 sendIntent = sendIntent,
             )
@@ -218,7 +219,7 @@ fun ShowScreen_Preview() {
     FluxThemePreview {
         ShowScreenContent(
             fullShow = MediaMockups.fullShow,
-            peoples = emptyList(),
+            credits = emptyList(),
             dialog = null,
             sendIntent = {}
         )

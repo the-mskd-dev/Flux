@@ -1,9 +1,9 @@
 package com.mskd.flux.core.network.tmdb.data.mapper
 
 import com.mskd.flux.core.model.artwork.PeopleType
-import com.mskd.flux.core.network.tmdb.data.dto.cast.CastMemberDto
-import com.mskd.flux.core.network.tmdb.data.dto.cast.CreditsDto
-import com.mskd.flux.core.network.tmdb.data.dto.cast.CrewMemberDto
+import com.mskd.flux.core.network.tmdb.data.dto.credits.CastMemberDto
+import com.mskd.flux.core.network.tmdb.data.dto.credits.CreditsDto
+import com.mskd.flux.core.network.tmdb.data.dto.credits.CrewMemberDto
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe

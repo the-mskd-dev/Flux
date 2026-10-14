@@ -10,21 +10,33 @@ import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import com.mskd.flux.core.model.artwork.People
 import com.mskd.flux.ui.image.FluxImage
+import com.mskd.flux.ui.image.IconPlaceholderPainter
+import com.mskd.flux.ui.image.rememberIconPlaceholderPainter
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.extensions.tmdbImage
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.ic_people
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun PeopleItem(people: People, ) {
+fun PeopleItem(
+    modifier: Modifier = Modifier,
+    people: People,
+    placeholder: Painter = rememberIconPlaceholderPainter(icon = Res.drawable.ic_people),
+    onClick: () -> Unit = {}
+) {
 
     Column(
-        modifier = Modifier.width(FluxUI.Dimension.itemWidth),
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
@@ -33,12 +45,15 @@ fun PeopleItem(people: People, ) {
                 .fillMaxWidth()
                 .aspectRatio(FluxUI.Dimension.itemRatio),
             shape = FluxUI.shapes.corners,
-            shadowElevation = FluxUI.Elevation.itemShadow
+            shadowElevation = FluxUI.Elevation.itemShadow,
+            onClick = onClick
         ) {
 
             FluxImage(
                 modifier = Modifier.fillMaxSize(),
                 path = people.profilePath?.tmdbImage.orEmpty(),
+                placeholder = placeholder,
+                error = placeholder,
                 contentDescription = people.name
             )
 

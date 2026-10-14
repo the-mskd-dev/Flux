@@ -7,7 +7,7 @@ import com.mskd.flux.core.model.language.toTmdbFormat
 import com.mskd.flux.core.network.tmdb.data.dto.ArtworkDto
 import com.mskd.flux.core.network.tmdb.data.dto.MediaTypeDto
 import com.mskd.flux.core.network.tmdb.data.dto.TranslationsDto
-import com.mskd.flux.core.network.tmdb.data.dto.cast.CreditsDto
+import com.mskd.flux.core.network.tmdb.data.dto.credits.CreditsDto
 import com.mskd.flux.core.network.tmdb.data.dto.genre.GenreDto
 import com.mskd.flux.core.network.tmdb.data.dto.movie.MovieDto
 import com.mskd.flux.core.network.tmdb.data.dto.show.EpisodeDto

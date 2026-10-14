@@ -27,6 +27,7 @@ import com.mskd.flux.features.artwork.ui.composables.GenresTags
 import com.mskd.flux.features.credits.ui.CreditsList
 import com.mskd.flux.features.show.presentation.ShowIntent
 import com.mskd.flux.features.show.ui.composables.SeasonItem
+import com.mskd.flux.mockups.CreditsMockup
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.ui.LandscapePreview
 import com.mskd.flux.ui.media.OverviewItem
@@ -181,7 +182,7 @@ fun ShowContentLarge_Preview() {
     FluxTheme {
         ShowContentLarge(
             fullShow = MediaMockups.fullShow,
-            credits = emptyList(),
+            credits = CreditsMockup.all,
             scaffoldInnerPadding = PaddingValues.Zero,
             sendIntent = {}
         )

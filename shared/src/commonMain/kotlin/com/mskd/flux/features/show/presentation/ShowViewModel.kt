@@ -38,7 +38,7 @@ class ShowViewModel(
         observeArtworkUseCase.flow,
         getCreditsUseCase(artworkId = artworkId),
         _userState,
-    ) { artworkState, people, dialog ->
+    ) { artworkState, credits, dialog ->
         when (artworkState) {
             is State.Loading -> ShowUiState(state = State.Loading)
             is State.Error -> ShowUiState(state = State.Error())
@@ -47,7 +47,11 @@ class ShowViewModel(
                     ?: return@combine ShowUiState(state = State.Error())
                 ShowUiState(
                     state = State.Content(
-                        ShowContent(fullShow = fullShow, credits = people, dialog = dialog)
+                        ShowContent(
+                            fullShow = fullShow,
+                            credits = credits,
+                            dialog = dialog
+                        )
                     )
                 )
             }

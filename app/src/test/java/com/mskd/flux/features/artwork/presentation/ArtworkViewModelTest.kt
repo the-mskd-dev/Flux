@@ -141,7 +141,7 @@ class ArtworkViewModelTest : FunSpec({
         // When / Then
         viewModel.uiState.test {
             val content = (awaitItem().state as State.Content<ArtworkContent>).content
-            content.people shouldBe people.toImmutableList()
+            content.credits shouldBe people.toImmutableList()
         }
 
     }

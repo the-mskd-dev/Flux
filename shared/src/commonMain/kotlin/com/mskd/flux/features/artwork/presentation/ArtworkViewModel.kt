@@ -66,7 +66,7 @@ class ArtworkViewModel(
         settingsDataStore.flow,
         getCreditsUseCase(artworkId = artworkId),
         _userState,
-    ) { artworkState, settings, people, userState ->
+    ) { artworkState, settings, credits, userState ->
 
         when (artworkState) {
             is State.Loading -> ArtworkUiState(state = State.Loading)
@@ -76,7 +76,7 @@ class ArtworkViewModel(
                 val dataState = ArtworkDataState(
                     fullArtwork = artworkState.content,
                     useExternalPlayer = settings.externalPlayer,
-                    credits = people,
+                    credits = credits,
                 )
 
                 ArtworkUiState(state = mergeStates(dataState, userState))
@@ -149,7 +149,7 @@ class ArtworkViewModel(
                 selectedSeason = season,
                 expandedEpisodeId = userState.expandedEpisodeId,
                 useExternalPlayer = dataState.useExternalPlayer,
-                people = dataState.credits,
+                credits = dataState.credits,
                 dialog = userState.dialog,
             )
         )

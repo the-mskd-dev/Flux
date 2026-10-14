@@ -17,9 +17,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Media
+import com.mskd.flux.core.model.artwork.People
 import com.mskd.flux.features.artwork.presentation.ArtworkIntent
 import com.mskd.flux.features.artwork.ui.composables.ArtworkDescriptionsPager
 import com.mskd.flux.features.artwork.ui.composables.ArtworkHeader
+import com.mskd.flux.features.credits.ui.CreditsList
+import com.mskd.flux.mockups.CreditsMockup
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.ui.PortraitPreview
 import com.mskd.flux.ui.media.EpisodeDropDownMenu
@@ -35,6 +38,7 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun ArtworkContentRegular(
     fullArtwork: FullArtwork,
+    credits: List<People>,
     selectedMedia: Media,
     selectedSeason: Int?,
     expandedEpisodeId: Long?,
@@ -141,6 +145,10 @@ fun ArtworkContentRegular(
 
         }
 
+        if (credits.isNotEmpty()) {
+            item { CreditsList(credits = credits) }
+        }
+
         item {
             Spacer(modifier = Modifier.height(scaffoldInnerPadding.calculateBottomPadding()))
         }
@@ -155,6 +163,7 @@ fun ArtworkContentMovie_Preview() {
     FluxTheme {
         ArtworkContentRegular(
             fullArtwork = MediaMockups.fullMovie,
+            credits = CreditsMockup.all,
             selectedMedia = MediaMockups.movie,
             selectedSeason = null,
             expandedEpisodeId = null,
@@ -170,6 +179,7 @@ fun ArtworkContentShow_Preview() {
     FluxTheme {
         ArtworkContentRegular(
             fullArtwork = MediaMockups.fullShow,
+            credits = CreditsMockup.all,
             selectedMedia = MediaMockups.episode1,
             selectedSeason = 1,
             expandedEpisodeId = null,

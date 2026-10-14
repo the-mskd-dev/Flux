@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -20,10 +21,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Media
+import com.mskd.flux.core.model.artwork.People
 import com.mskd.flux.features.artwork.presentation.ArtworkIntent
 import com.mskd.flux.features.artwork.ui.composables.ArtworkButtons
 import com.mskd.flux.features.artwork.ui.composables.ArtworkDescriptionsPager
 import com.mskd.flux.features.artwork.ui.composables.ArtworkImage
+import com.mskd.flux.features.credits.ui.CreditsList
+import com.mskd.flux.mockups.CreditsMockup
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.ui.LandscapePreview
 import com.mskd.flux.ui.media.EpisodeDropDownMenu
@@ -38,6 +42,7 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun ArtworkContentLarge(
     fullArtwork: FullArtwork,
+    credits: List<People>,
     selectedMedia: Media,
     selectedSeason: Int?,
     expandedEpisodeId: Long?,
@@ -178,6 +183,10 @@ fun ArtworkContentLarge(
 
             }
 
+            if (credits.isNotEmpty()) {
+                item { CreditsList(credits = credits) }
+            }
+
             item {
                 Spacer(modifier = Modifier.height(scaffoldInnerPadding.calculateBottomPadding()))
             }
@@ -195,6 +204,7 @@ fun ArtworkContentLargeMovie_Preview() {
     FluxTheme {
         ArtworkContentLarge(
             fullArtwork = MediaMockups.fullMovie,
+            credits = CreditsMockup.all,
             selectedMedia = MediaMockups.movie,
             selectedSeason = null,
             expandedEpisodeId = null,
@@ -210,6 +220,7 @@ fun ArtworkContentLargeShow_Preview() {
     FluxTheme {
         ArtworkContentLarge(
             fullArtwork = MediaMockups.fullShow,
+            credits = CreditsMockup.all,
             selectedMedia = MediaMockups.episode1,
             selectedSeason = 1,
             expandedEpisodeId = null,

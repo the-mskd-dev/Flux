@@ -30,7 +30,7 @@ data class ArtworkContent(
     val selectedSeason: Int?,
     val expandedEpisodeId: Long? = null,
     val useExternalPlayer: Boolean,
-    val people: ImmutableList<People> = persistentListOf(),
+    val credits: ImmutableList<People> = persistentListOf(),
     val dialog: ArtworkDialog?,
 )
 

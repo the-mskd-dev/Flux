@@ -26,6 +26,7 @@ import com.mskd.flux.features.artwork.ui.composables.GenresTags
 import com.mskd.flux.features.credits.ui.CreditsList
 import com.mskd.flux.features.show.presentation.ShowIntent
 import com.mskd.flux.features.show.ui.composables.SeasonItem
+import com.mskd.flux.mockups.CreditsMockup
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.ui.PortraitPreview
 import com.mskd.flux.ui.bleedHorizontal
@@ -170,7 +171,7 @@ fun ShowContentRegular_Preview() {
         ShowContentRegular(
             fullShow = MediaMockups.fullShow,
             scaffoldInnerPadding = PaddingValues.Zero,
-            credits = emptyList(),
+            credits = CreditsMockup.all,
             sendIntent = {}
         )
     }

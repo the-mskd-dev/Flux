@@ -25,6 +25,7 @@ import com.mskd.flux.ui.image.rememberIconPlaceholderPainter
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.cast
 import flux.shared.generated.resources.ic_people
 import flux.shared.generated.resources.seasons
 import org.jetbrains.compose.resources.stringResource
@@ -47,7 +48,7 @@ fun CreditsList(
 
         Text.Content.Title(
             modifier = Modifier.fillMaxWidth(),
-            text = stringResource(Res.string.seasons),
+            text = stringResource(Res.string.cast),
             color = MaterialTheme.colorScheme.onBackground
         )
 

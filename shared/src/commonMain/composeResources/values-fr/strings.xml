@@ -230,4 +230,6 @@
         <item>Cependant afin de publier l'application, j'ai besoin d'une poignée de testeurs et testeuses pour passer la validation de Google, et c'est pourquoi je me tourne vers vous. Si vous souhaitez participer, il suffit juste de m'envoyer votre adresse mail afin que je l'inscrive parmi les testeurs et testeuses, puis vous recevrez un lien Play Store vous proposant de télécharger l'application (gratuitement normalement), et puis c'est tout.</item>
         <item>Je vous remercie de votre aide et de votre soutien, et à bientôt !</item>
     </string-array>
+
+    <string name="cast">Équipe</string>
 </resources>

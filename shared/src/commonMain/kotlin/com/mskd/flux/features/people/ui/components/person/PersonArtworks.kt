@@ -45,7 +45,7 @@ fun PersonArtworks(
         modifier = Modifier.fillMaxWidth(),
         shape = LocalUiShapes.current.corners,
         shadowElevation = FluxUI.Elevation.itemShadow,
-        color = MaterialTheme.colorScheme.surfaceContainerLow
+        color = MaterialTheme.colorScheme.tertiaryContainer
     ) {
 
         Column(

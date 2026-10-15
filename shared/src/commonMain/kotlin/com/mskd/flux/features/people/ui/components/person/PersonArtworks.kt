@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.dp
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.features.people.presentation.PeopleIntent
 import com.mskd.flux.ui.bleedHorizontal
@@ -45,7 +46,7 @@ fun PersonArtworks(
         modifier = Modifier.fillMaxWidth(),
         shape = LocalUiShapes.current.corners,
         shadowElevation = FluxUI.Elevation.itemShadow,
-        color = MaterialTheme.colorScheme.tertiaryContainer
+        color = MaterialTheme.colorScheme.secondaryContainer,
     ) {
 
         Column(
@@ -57,7 +58,7 @@ fun PersonArtworks(
             Text.Content.Title(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(Res.string.also_in),
-                color = MaterialTheme.colorScheme.onBackground
+                color = MaterialTheme.colorScheme.onSecondaryContainer
             )
 
             LazyRow(

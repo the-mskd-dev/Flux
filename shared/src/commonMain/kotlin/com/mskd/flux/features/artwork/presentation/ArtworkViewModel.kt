@@ -62,7 +62,7 @@ class ArtworkViewModel(
     private val _userState = MutableStateFlow(ArtworkUserState())
 
     val uiState: StateFlow<ArtworkUiState> = combine(
-        observeArtworkUseCase.flow,
+        observeArtworkUseCase(artworkId = artworkId),
         settingsDataStore.flow,
         getPeopleUseCase(artworkId = artworkId),
         _userState,
@@ -90,14 +90,6 @@ class ArtworkViewModel(
         initialValue = ArtworkUiState()
     )
 
-
-    //endregion
-
-    //region Init
-
-    init {
-        observeArtworkUseCase(artworkId = artworkId)
-    }
 
     //endregion
 

@@ -45,7 +45,7 @@ class UnknownViewModel(
     private val _searchQuery = MutableStateFlow("")
 
     val uiState: StateFlow<UnknownUiState> = combine(
-        observeArtworkUseCase.flow,
+        observeArtworkUseCase(artworkId = Artwork.UNKNOWN_ID),
         settingsDataStore.flow,
         _searchQuery
     ) { artworkContent, settings, searchQuery ->
@@ -65,12 +65,6 @@ class UnknownViewModel(
         started = SharingStarted.WhileSubscribed(5_000),
         initialValue = UnknownUiState()
     )
-
-    //endregion
-
-    //region Init
-
-    init { observeArtworkUseCase(artworkId = Artwork.UNKNOWN_ID) }
 
     //endregion
 

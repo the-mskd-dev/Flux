@@ -35,7 +35,7 @@ class ShowViewModel(
     private val _userState = MutableStateFlow<ShowDialog?>(null)
 
     val uiState: StateFlow<ShowUiState> = combine(
-        observeArtworkUseCase.flow,
+        observeArtworkUseCase(artworkId = artworkId),
         getPeopleUseCase(artworkId = artworkId),
         _userState,
     ) { artworkState, people, dialog ->
@@ -67,14 +67,6 @@ class ShowViewModel(
     //region Computed properties
 
     private val showContent get() = (uiState.value.state as? State.Content)?.content
-
-    //endregion
-
-    //region Init
-
-    init {
-        observeArtworkUseCase(artworkId = artworkId)
-    }
 
     //endregion
 

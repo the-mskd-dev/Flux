@@ -70,7 +70,7 @@ fun Modifier.blurForeground(
 
 @Composable
 fun Modifier.fillMaxWidthWithLimit(
-    max: Dp = 500.dp,
+    max: Dp = 600.dp,
     @FloatRange fraction: Float = 1f
 ) : Modifier {
     return this

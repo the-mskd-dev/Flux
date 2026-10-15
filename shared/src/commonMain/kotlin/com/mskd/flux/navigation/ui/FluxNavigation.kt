@@ -23,6 +23,7 @@ import com.mskd.flux.features.customization.domain.model.NavigationStyle
 import com.mskd.flux.features.customization.ui.CustomizationScreen
 import com.mskd.flux.features.howTo.ui.HowToScreen
 import com.mskd.flux.features.message.ui.MessageScreen
+import com.mskd.flux.features.people.ui.PersonScreen
 import com.mskd.flux.features.privateFolder.ui.PrivateScreen
 import com.mskd.flux.features.settings.ui.SettingsScreen
 import com.mskd.flux.features.setup.ui.SetupScreen

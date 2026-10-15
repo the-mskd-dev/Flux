@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.mskd.flux.features.people.domain.model.PersonDetails
 import com.mskd.flux.features.people.presentation.PeopleIntent
 import com.mskd.flux.features.people.ui.components.person.PersonArtworks
-import com.mskd.flux.features.people.ui.components.person.PersonHeader
+import com.mskd.flux.features.people.ui.components.person.PersonDetails
 import com.mskd.flux.features.people.ui.components.person.PersonPicture
 import com.mskd.flux.ui.media.OverviewItem
 import com.mskd.flux.ui.theme.FluxUI
@@ -60,10 +60,7 @@ fun PersonContentLarge(
             }
 
             item {
-                PersonHeader(
-                    modifier = Modifier.fillMaxWidth(),
-                    details = details
-                )
+                PersonDetails(details = details)
             }
 
             if (!details.biography.isNullOrBlank()) {

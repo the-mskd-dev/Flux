@@ -121,13 +121,10 @@ fun PersonScreenContent(
 ) {
 
     val isLargeScreen = rememberScreenDimensions().isLarge
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     FluxScaffold(
-        title = details.name,
-        animatedTitle = true,
+        title = null,
         onBackTap = { sendIntent(PeopleIntent.OnBackTap) },
-        scrollBehavior = scrollBehavior
     ) { innerPadding ->
 
         if (isLargeScreen) {

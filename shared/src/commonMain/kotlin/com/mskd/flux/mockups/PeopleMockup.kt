@@ -2,6 +2,9 @@ package com.mskd.flux.mockups
 
 import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.artwork.PersonType
+import com.mskd.flux.features.people.domain.model.PersonDetails
+import com.mskd.flux.features.people.ui.components.person.PersonDetails
+import kotlinx.collections.immutable.toPersistentList
 
 object PeopleMockup {
 
@@ -72,5 +75,20 @@ object PeopleMockup {
     )
 
     val all = cast + crew
+
+    fun toPersonDetails(person: Person = cast.first()) = PersonDetails(
+        id = person.id,
+        name = person.name,
+        profilePath = person.profilePath,
+        birthday = "01-01-2001",
+        deathday = null,
+        placeOfBirth = "city",
+        biography = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        knownForDepartment = "Acting",
+        alsoKnownAs = listOf("Name 1", "Name 2", "Name 3"),
+        homepage = null,
+        imdbId = null,
+        artworks = MediaMockups.artworks.toPersistentList()
+    )
 
 }

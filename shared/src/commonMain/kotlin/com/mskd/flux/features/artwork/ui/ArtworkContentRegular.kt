@@ -21,7 +21,7 @@ import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.features.artwork.presentation.ArtworkIntent
 import com.mskd.flux.features.artwork.ui.composables.ArtworkDescriptionsPager
 import com.mskd.flux.features.artwork.ui.composables.ArtworkHeader
-import com.mskd.flux.features.people.ui.PeopleList
+import com.mskd.flux.features.people.ui.components.people.PeopleList
 import com.mskd.flux.mockups.PeopleMockup
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.ui.PortraitPreview

@@ -1,4 +1,4 @@
-package com.mskd.flux.features.people.ui
+package com.mskd.flux.features.people.ui.components.person
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,36 +18,34 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
-import com.mskd.flux.core.model.artwork.Person
+import com.mskd.flux.core.model.artwork.Artwork
+import com.mskd.flux.features.people.presentation.PeopleIntent
 import com.mskd.flux.ui.bleedHorizontal
 import com.mskd.flux.ui.dimensions.itemWidthFor
-import com.mskd.flux.ui.image.rememberIconPlaceholderPainter
+import com.mskd.flux.ui.media.MediaItem
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
-import flux.shared.generated.resources.cast
-import flux.shared.generated.resources.ic_person
+import flux.shared.generated.resources.known_for
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun PeopleList(
-    people: List<Person>,
-    onClick: (Person) -> Unit = {}
+fun PersonArtworks(
+    artworks: List<Artwork>,
+    sendIntent: (PeopleIntent) -> Unit
 ) {
 
-    val placeholder = rememberIconPlaceholderPainter(icon = Res.drawable.ic_person)
     var itemWidth by remember { mutableStateOf(FluxUI.Dimension.itemWidth) }
     val density = LocalDensity.current
 
     Column(
-        modifier = Modifier,
         verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
         Text.Content.Title(
             modifier = Modifier.fillMaxWidth(),
-            text = stringResource(Res.string.cast),
+            text = stringResource(Res.string.known_for),
             color = MaterialTheme.colorScheme.onBackground
         )
 
@@ -68,15 +66,15 @@ fun PeopleList(
             contentPadding = PaddingValues(horizontal = FluxUI.Space.medium)
         ) {
 
-            items(items = people, key = { it.creditId }) { person ->
+            items(items = artworks, key = { it.id }) { artwork ->
 
-                PersonItem(
+                MediaItem(
                     modifier = Modifier
                         .width(itemWidth)
                         .widthIn(max = FluxUI.Dimension.itemWidth),
-                    person = person,
-                    placeholder = placeholder,
-                    onClick = { onClick(person) }
+                    path = artwork.imagePath,
+                    description = artwork.title,
+                    onClick = { rgb -> sendIntent(PeopleIntent.OnArtworkClick(artwork = artwork, rgb = rgb)) }
                 )
 
             }

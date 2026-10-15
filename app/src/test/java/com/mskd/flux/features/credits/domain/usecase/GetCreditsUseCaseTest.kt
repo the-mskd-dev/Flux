@@ -2,8 +2,8 @@ package com.mskd.flux.features.credits.domain.usecase
 
 import app.cash.turbine.test
 import com.mskd.flux.core.FakeDatabaseRepository
-import com.mskd.flux.core.model.artwork.People
-import com.mskd.flux.core.model.artwork.PeopleType
+import com.mskd.flux.core.model.artwork.Person
+import com.mskd.flux.core.model.artwork.PersonType
 import com.mskd.flux.core.network.tmdb.domain.repository.ApiRepository
 import com.mskd.flux.features.credits.fake.FakeCreditsRepository
 import com.mskd.flux.mockups.MediaMockups
@@ -21,25 +21,25 @@ class GetCreditsUseCaseTest : FunSpec({
     val movieArtwork = MediaMockups.movieArtwork // ContentType.MOVIE
     val showArtwork = MediaMockups.showArtwork // ContentType.SHOW
 
-    fun castMember(artworkId: Long, id: Int = 1, name: String = "Edward Norton") = People(
+    fun castMember(artworkId: Long, id: Int = 1, name: String = "Edward Norton") = Person(
         id = id,
         creditId = "credit-$id",
         artworkId = artworkId,
         name = name,
         profilePath = "/profile.jpg",
         role = "The Narrator",
-        type = PeopleType.CAST,
+        type = PersonType.CAST,
         personOrder = 0
     )
 
-    fun crewMember(artworkId: Long, id: Int = 2, name: String = "Arnon Milchan") = People(
+    fun crewMember(artworkId: Long, id: Int = 2, name: String = "Arnon Milchan") = Person(
         id = id,
         creditId = "credit-$id",
         artworkId = artworkId,
         name = name,
         profilePath = "/profile.jpg",
         role = "Executive Producer",
-        type = PeopleType.CREW,
+        type = PersonType.CREW,
         personOrder = 0
     )
 

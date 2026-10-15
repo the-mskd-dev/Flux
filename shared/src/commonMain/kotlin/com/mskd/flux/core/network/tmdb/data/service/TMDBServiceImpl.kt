@@ -4,6 +4,7 @@ import com.mskd.flux.core.network.tmdb.data.dto.AuthenticationDto
 import com.mskd.flux.core.network.tmdb.data.dto.SearchResultsDto
 import com.mskd.flux.core.network.tmdb.data.dto.TranslationsDto
 import com.mskd.flux.core.network.tmdb.data.dto.credits.CreditsDto
+import com.mskd.flux.core.network.tmdb.data.dto.credits.PersonInfoDto
 import com.mskd.flux.core.network.tmdb.data.dto.genre.GenresResultDto
 import com.mskd.flux.core.network.tmdb.data.dto.movie.MovieDto
 import com.mskd.flux.core.network.tmdb.data.dto.show.EpisodeDto
@@ -146,6 +147,18 @@ class TMDBServiceImpl(private val client: HttpClient) : TMDBService {
     ): TranslationsDto = client
         .get("tv/$artworkId/season/$season/translations")
         .body()
+
+    //endregion
+
+    //region Person
+
+    override suspend fun getPersonInfo(
+        id: Int,
+        language: String
+    ): PersonInfoDto = client
+        .get("person/$id") {
+            parameter("language", language)
+        }.body()
 
     //endregion
 

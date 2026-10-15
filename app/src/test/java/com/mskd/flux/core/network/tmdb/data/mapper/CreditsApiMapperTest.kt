@@ -1,6 +1,6 @@
 package com.mskd.flux.core.network.tmdb.data.mapper
 
-import com.mskd.flux.core.model.artwork.PeopleType
+import com.mskd.flux.core.model.artwork.PersonType
 import com.mskd.flux.core.network.tmdb.data.dto.credits.CastMemberDto
 import com.mskd.flux.core.network.tmdb.data.dto.credits.CreditsDto
 import com.mskd.flux.core.network.tmdb.data.dto.credits.CrewMemberDto
@@ -36,7 +36,7 @@ class CreditsApiMapperTest : FunSpec({
         )
     )
 
-    test("maps cast and crew into a single unified People list") {
+    test("maps cast and crew into a single unified Person list") {
         // When
         val result = dto.toDomain(artworkId = artworkId)
 
@@ -49,7 +49,7 @@ class CreditsApiMapperTest : FunSpec({
         val result = dto.toDomain(artworkId = artworkId)
 
         // Then
-        val cast = result.first { it.type == PeopleType.CAST }
+        val cast = result.first { it.type == PersonType.CAST }
         cast.id shouldBe 819
         cast.creditId shouldBe "52fe4250c3a36847f80149f3"
         cast.artworkId shouldBe artworkId
@@ -64,7 +64,7 @@ class CreditsApiMapperTest : FunSpec({
         val result = dto.toDomain(artworkId = artworkId)
 
         // Then
-        val crew = result.first { it.type == PeopleType.CREW }
+        val crew = result.first { it.type == PersonType.CREW }
         crew.id shouldBe 376
         crew.creditId shouldBe "55731b8192514111610027d7"
         crew.artworkId shouldBe artworkId

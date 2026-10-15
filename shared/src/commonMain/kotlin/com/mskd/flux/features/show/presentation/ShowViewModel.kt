@@ -85,6 +85,7 @@ class ShowViewModel(
             // Navigation
             ShowIntent.OnBackTap -> _event.emit(ShowEvent.BackToPreviousScreen)
             is ShowIntent.OnSeasonClick -> navigateToSeason(season = intent.season, rgb = intent.rgb)
+            is ShowIntent.OnPersonClick -> _event.emit(ShowEvent.NavigateToPerson(person = intent.person))
 
             // Dialogs
             ShowIntent.CloseDialog -> closeDialog()

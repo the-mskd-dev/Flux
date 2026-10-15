@@ -22,7 +22,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Media
-import com.mskd.flux.core.model.artwork.People
+import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.presentation.ArtworkDialog
 import com.mskd.flux.features.artwork.presentation.ArtworkEvent
@@ -73,6 +73,7 @@ fun ArtworkScreen(
         viewModel.event.collect { event ->
             when (event) {
                 ArtworkEvent.BackToPreviousScreen -> onBack()
+                is ArtworkEvent.NavigateToPerson -> navigate(Route.Person(person = event.person))
                 is ArtworkEvent.PlayMedia -> {
                     if (event.externalPlayer)
                         launchExternalPlayer(event.media)
@@ -129,7 +130,7 @@ fun ArtworkScreen(
 @Composable
 fun ArtworkScreenContent(
     fullArtwork: FullArtwork,
-    credits: List<People> = emptyList(),
+    credits: List<Person> = emptyList(),
     selectedMedia: Media,
     selectedSeason: Int?,
     expandedEpisodeId: Long?,

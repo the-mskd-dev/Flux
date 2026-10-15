@@ -20,9 +20,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.mskd.flux.core.model.artwork.FullArtwork
-import com.mskd.flux.core.model.artwork.People
+import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.features.artwork.ui.composables.ArtworkImageFull
 import com.mskd.flux.features.artwork.ui.composables.GenresTags
 import com.mskd.flux.features.credits.ui.CreditsList
@@ -44,7 +43,7 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun ShowContentLarge(
     fullShow: FullArtwork.FullShow,
-    credits: List<People>,
+    credits: List<Person>,
     scaffoldInnerPadding: PaddingValues,
     sendIntent: (ShowIntent) -> Unit
 ) {
@@ -158,7 +157,7 @@ fun ShowContentLarge(
 
                 item(span = { GridItemSpan(maxLineSpan) }) {
 
-                    CreditsList(credits = credits)
+                    CreditsList(credits = credits, onClick = { sendIntent(ShowIntent.OnPersonClick(person = it)) })
 
                 }
 

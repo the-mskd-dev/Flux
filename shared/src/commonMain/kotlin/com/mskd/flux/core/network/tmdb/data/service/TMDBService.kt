@@ -4,6 +4,7 @@ import com.mskd.flux.core.network.tmdb.data.dto.AuthenticationDto
 import com.mskd.flux.core.network.tmdb.data.dto.SearchResultsDto
 import com.mskd.flux.core.network.tmdb.data.dto.TranslationsDto
 import com.mskd.flux.core.network.tmdb.data.dto.credits.CreditsDto
+import com.mskd.flux.core.network.tmdb.data.dto.credits.PersonInfoDto
 import com.mskd.flux.core.network.tmdb.data.dto.genre.GenresResultDto
 import com.mskd.flux.core.network.tmdb.data.dto.movie.MovieDto
 import com.mskd.flux.core.network.tmdb.data.dto.show.EpisodeDto
@@ -99,6 +100,15 @@ interface TMDBService {
         artworkId: Long,
         season: Int,
     ) : TranslationsDto
+
+    //endregion
+
+    //region Person
+
+    suspend fun getPersonInfo(
+        id: Int,
+        language: String
+    ) : PersonInfoDto
 
     //endregion
 

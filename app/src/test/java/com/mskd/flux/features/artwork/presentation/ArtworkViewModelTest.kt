@@ -4,8 +4,8 @@ import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.FullArtwork
-import com.mskd.flux.core.model.artwork.People
-import com.mskd.flux.core.model.artwork.PeopleType
+import com.mskd.flux.core.model.artwork.Person
+import com.mskd.flux.core.model.artwork.PersonType
 import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
@@ -18,6 +18,7 @@ import com.mskd.flux.features.progress.domain.usecase.MarkPreviousAsWatchedUseCa
 import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
+import com.mskd.flux.mockups.CreditsMockup
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.system.FilesLauncher
 import com.mskd.flux.system.UrlLauncher
@@ -35,9 +36,9 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.collections.immutable.toImmutableList
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ArtworkViewModelTest : FunSpec({
@@ -92,7 +93,7 @@ class ArtworkViewModelTest : FunSpec({
 
         observeArtworkUseCase = FakeObserveArtworkUseCase()
         getCreditsUseCase = mockk()
-        every { getCreditsUseCase(any()) } returns MutableStateFlow(emptyList<People>().toImmutableList())
+        every { getCreditsUseCase(any()) } returns MutableStateFlow(emptyList<Person>().toImmutableList())
 
         settingsDataStore = mockk(relaxed = true) {
             every { flow } returns MutableStateFlow(SettingsDataStore.State())
@@ -120,28 +121,28 @@ class ArtworkViewModelTest : FunSpec({
 
     }
 
-    test("exposes people in content") {
+    test("exposes person in content") {
 
         // Given
-        val people = listOf(
-            People(
+        val person = listOf(
+            Person(
                 id = 819,
                 creditId = "credit-819",
                 artworkId = MediaMockups.showArtwork.id,
                 name = "Edward Norton",
                 profilePath = "/profile.jpg",
                 role = "The Narrator",
-                type = PeopleType.CAST,
+                type = PersonType.CAST,
                 personOrder = 0
             )
         )
-        every { getCreditsUseCase(any()) } returns MutableStateFlow(people.toImmutableList())
+        every { getCreditsUseCase(any()) } returns MutableStateFlow(person.toImmutableList())
         updateVm(MediaMockups.showArtwork.id)
 
         // When / Then
         viewModel.uiState.test {
             val content = (awaitItem().state as State.Content<ArtworkContent>).content
-            content.credits shouldBe people.toImmutableList()
+            content.credits shouldBe person.toImmutableList()
         }
 
     }
@@ -442,6 +443,26 @@ class ArtworkViewModelTest : FunSpec({
             val content = (state.state as State.Content).content
             content.expandedEpisodeId shouldBe null
         }
+    }
+
+    context("OnPersonClick") {
+
+        test("should call NavigateToPerson event") {
+
+            // Given
+            val person = CreditsMockup.cast.first()
+
+            viewModel.event.test {
+
+                // When
+                viewModel.handleIntent(ArtworkIntent.OnPersonClick(person = person))
+
+                // Then
+                awaitItem() shouldBe ArtworkEvent.NavigateToPerson(person = person)
+
+            }
+        }
+
     }
 
     test("error state") {

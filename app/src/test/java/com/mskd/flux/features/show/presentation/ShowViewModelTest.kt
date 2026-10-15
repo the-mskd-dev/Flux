@@ -2,13 +2,14 @@ package com.mskd.flux.features.show.presentation
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
-import com.mskd.flux.core.model.artwork.People
-import com.mskd.flux.core.model.artwork.PeopleType
+import com.mskd.flux.core.model.artwork.Person
+import com.mskd.flux.core.model.artwork.PersonType
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.features.artwork.fake.FakeObserveArtworkUseCase
 import com.mskd.flux.features.credits.domain.usecase.GetCreditsUseCase
 import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
+import com.mskd.flux.mockups.CreditsMockup
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.system.UrlLauncher
 import io.kotest.core.spec.style.FunSpec
@@ -51,7 +52,7 @@ class ShowViewModelTest : FunSpec({
 
         observeArtworkUseCase = FakeObserveArtworkUseCase()
         getCreditsUseCase = mockk()
-        every { getCreditsUseCase(any()) } returns MutableStateFlow(persistentListOf<People>())
+        every { getCreditsUseCase(any()) } returns MutableStateFlow(persistentListOf<Person>())
 
         updateVm()
 
@@ -71,28 +72,28 @@ class ShowViewModelTest : FunSpec({
 
     }
 
-    test("exposes people in content") {
+    test("exposes person in content") {
 
         // Given
-        val people = listOf(
-            People(
+        val person = listOf(
+            Person(
                 id = 819,
                 creditId = "credit-819",
                 artworkId = MediaMockups.showArtwork.id,
                 name = "Edward Norton",
                 profilePath = "/profile.jpg",
                 role = "The Narrator",
-                type = PeopleType.CAST,
+                type = PersonType.CAST,
                 personOrder = 0
             )
         )
-        every { getCreditsUseCase(any()) } returns MutableStateFlow(people.toImmutableList())
+        every { getCreditsUseCase(any()) } returns MutableStateFlow(person.toImmutableList())
         updateVm()
 
         // When / Then
         viewModel.uiState.test {
             val content = (awaitItem().state as State.Content<ShowContent>).content
-            content.credits shouldBe people.toImmutableList()
+            content.credits shouldBe person.toImmutableList()
         }
 
     }
@@ -179,6 +180,26 @@ class ShowViewModelTest : FunSpec({
 
             coVerify { resetProgress(artwork = MediaMockups.showArtwork, season = null) }
         }
+    }
+
+    context("OnPersonClick") {
+
+        test("should call NavigateToPerson event") {
+
+            // Given
+            val person = CreditsMockup.cast.first()
+
+            viewModel.event.test {
+
+                // When
+                viewModel.handleIntent(ShowIntent.OnPersonClick(person = person))
+
+                // Then
+                awaitItem() shouldBe ShowEvent.NavigateToPerson(person = person)
+
+            }
+        }
+
     }
 
     test("error state") {

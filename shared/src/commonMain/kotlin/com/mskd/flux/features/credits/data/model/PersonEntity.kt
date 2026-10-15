@@ -5,10 +5,10 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import com.mskd.flux.core.database.data.model.ArtworkEntity
-import com.mskd.flux.core.model.artwork.PeopleType
+import com.mskd.flux.core.model.artwork.PersonType
 
 @Entity(
-    tableName = "people",
+    tableName = "person",
     primaryKeys = ["artworkId", "creditId"],
     foreignKeys = [
         ForeignKey(
@@ -20,14 +20,14 @@ import com.mskd.flux.core.model.artwork.PeopleType
     ],
     indices = [Index(value = ["artworkId"])]
 )
-data class PeopleEntity(
+data class PersonEntity(
     val artworkId: Long,
     val id: Int,
     val creditId: String,
     val name: String,
     val profilePath: String?,
     val role: String,
-    val type: PeopleType,
+    val type: PersonType,
     @ColumnInfo(name = "personOrder")
     val personOrder: Int = 0,
 )

@@ -2,7 +2,7 @@ package com.mskd.flux.core.database.data
 
 import androidx.room.TypeConverter
 import com.mskd.flux.core.model.artwork.ContentType
-import com.mskd.flux.core.model.artwork.PeopleType
+import com.mskd.flux.core.model.artwork.PersonType
 import com.mskd.flux.core.model.files.FileSource
 
 class Converters {
@@ -28,13 +28,13 @@ class Converters {
     }
 
     @TypeConverter
-    fun fromPeopleType(peopleType: PeopleType): String {
-        return peopleType.name
+    fun fromPersonType(personType: PersonType): String {
+        return personType.name
     }
 
     @TypeConverter
-    fun toPeopleType(value: String): PeopleType {
-        return PeopleType.valueOf(value)
+    fun toPersonType(value: String): PersonType {
+        return PersonType.valueOf(value)
     }
 
     @TypeConverter

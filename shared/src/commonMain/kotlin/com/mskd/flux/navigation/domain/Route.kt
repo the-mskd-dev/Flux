@@ -25,6 +25,9 @@ sealed class Route : NavKey {
     data class Show(val artworkId: Long, val rgb: Int?): Route()
 
     @Serializable
+    data class Person(val person: com.mskd.flux.core.model.artwork.Person) : Route()
+
+    @Serializable
     data class Artwork(val artworkId: Long, val season: Int? = null, val rgb: Int?): Route()
 
     @Serializable
@@ -68,6 +71,7 @@ val navConfig = SavedStateConfiguration {
             subclass(Route.Setup::class)
             subclass(Route.Catalog::class)
             subclass(Route.Show::class)
+            subclass(Route.Person::class)
             subclass(Route.Artwork::class)
             subclass(Route.UnknownArtworks::class)
             subclass(Route.PrivateFolder::class)

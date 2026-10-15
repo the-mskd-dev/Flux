@@ -26,6 +26,7 @@ interface DatabaseRepository {
     // Artworks
     suspend fun getArtwork(artworkId: Long) : Artwork?
     suspend fun getArtworks(includePrivates: Boolean = false) : List<Artwork>
+    suspend fun getArtworks(artworkIds: List<Long>) : List<Artwork>
 
     // Privacy
     suspend fun setArtworkPrivate(artworkId: Long, isPrivate: Boolean)

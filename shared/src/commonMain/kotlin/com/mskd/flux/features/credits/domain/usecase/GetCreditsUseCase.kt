@@ -2,7 +2,7 @@ package com.mskd.flux.features.credits.domain.usecase
 
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
 import com.mskd.flux.core.model.artwork.ContentType
-import com.mskd.flux.core.model.artwork.People
+import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.network.tmdb.domain.repository.ApiRepository
 import com.mskd.flux.features.credits.domain.repository.CreditsRepository
 import kotlinx.collections.immutable.ImmutableList
@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 
 /**
- * Emits the list of [People] linked to an artwork.
+ * Emits the list of [Person] linked to an artwork.
  *
  * The data comes from the local database when available. When the database has no entry
  * for the artwork, the cast is fetched from the TMDB API, then persisted so the database
@@ -27,7 +27,7 @@ class GetCreditsUseCase(
     private val databaseRepository: DatabaseRepository,
 ) {
 
-    operator fun invoke(artworkId: Long): Flow<ImmutableList<People>> {
+    operator fun invoke(artworkId: Long): Flow<ImmutableList<Person>> {
         return creditsRepository.flowPeople(artworkId = artworkId)
             .onEach { cached ->
                 if (cached.isEmpty()) {

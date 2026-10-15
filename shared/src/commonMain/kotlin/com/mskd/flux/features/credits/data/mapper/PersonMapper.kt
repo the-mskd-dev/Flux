@@ -1,10 +1,10 @@
 package com.mskd.flux.features.credits.data.mapper
 
-import com.mskd.flux.core.model.artwork.People
-import com.mskd.flux.features.credits.data.model.PeopleEntity
+import com.mskd.flux.core.model.artwork.Person
+import com.mskd.flux.features.credits.data.model.PersonEntity
 
-fun PeopleEntity.toDomain(): People {
-    return People(
+fun PersonEntity.toDomain(): Person {
+    return Person(
         id = this.id,
         creditId = this.creditId,
         artworkId = this.artworkId,
@@ -16,8 +16,8 @@ fun PeopleEntity.toDomain(): People {
     )
 }
 
-fun People.toEntity(): PeopleEntity {
-    return PeopleEntity(
+fun Person.toEntity(): PersonEntity {
+    return PersonEntity(
         artworkId = this.artworkId,
         id = this.id,
         creditId = this.creditId,

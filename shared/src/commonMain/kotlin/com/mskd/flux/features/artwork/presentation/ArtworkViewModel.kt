@@ -111,6 +111,7 @@ class ArtworkViewModel(
             ArtworkIntent.OpenArtworkInfo -> openArtworkInfo()
             is ArtworkIntent.OpenEpisodeInfo -> urlLauncher.open(url = intent.episode.infoUrl)
             is ArtworkIntent.OpenFileExplorer -> filesLauncher.open(file = intent.media.file)
+            is ArtworkIntent.OnPersonClick -> _event.emit(ArtworkEvent.NavigateToPerson(person = intent.person))
 
             // Dialogs
             ArtworkIntent.CloseDialog -> closeDialog()

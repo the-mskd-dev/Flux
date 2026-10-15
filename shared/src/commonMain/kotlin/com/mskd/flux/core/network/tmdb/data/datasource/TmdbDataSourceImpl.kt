@@ -8,6 +8,7 @@ import com.mskd.flux.core.network.tmdb.data.dto.ArtworkDto
 import com.mskd.flux.core.network.tmdb.data.dto.MediaTypeDto
 import com.mskd.flux.core.network.tmdb.data.dto.TranslationsDto
 import com.mskd.flux.core.network.tmdb.data.dto.credits.CreditsDto
+import com.mskd.flux.core.network.tmdb.data.dto.credits.PersonInfoDto
 import com.mskd.flux.core.network.tmdb.data.dto.genre.GenreDto
 import com.mskd.flux.core.network.tmdb.data.dto.movie.MovieDto
 import com.mskd.flux.core.network.tmdb.data.dto.show.EpisodeDto
@@ -229,6 +230,27 @@ class TmdbDataSourceImpl(
             )
         } catch (e: Exception) {
             Napier.e(tag = TAG, message = "getShowCredits - Fail to get credits for artworkId:$artworkId (${language.toTmdbFormat()})", throwable = e)
+            null
+        }
+
+    }
+
+    override suspend fun getPersonInfo(personId: Int): PersonInfoDto? {
+
+        if (!tokenDataStore.tokenIsAvailable())
+            return null
+
+        val language = tmdbLanguage()
+
+        return try {
+
+            tmdbService.getPersonInfo(
+                id = personId,
+                language = language.toTmdbFormat()
+            )
+
+        } catch (e: Exception) {
+            Napier.e(tag = TAG, message = "getPersonDetails - Fail to get person details for personId:$personId (${language.toTmdbFormat()})", throwable = e)
             null
         }
 

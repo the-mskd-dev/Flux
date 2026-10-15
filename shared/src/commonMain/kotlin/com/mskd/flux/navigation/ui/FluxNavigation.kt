@@ -21,6 +21,7 @@ import com.mskd.flux.features.about.ui.AboutScreen
 import com.mskd.flux.features.customization.domain.datastore.CustomizationDataStore
 import com.mskd.flux.features.customization.domain.model.NavigationStyle
 import com.mskd.flux.features.customization.ui.CustomizationScreen
+import com.mskd.flux.features.credits.ui.PeopleScreen
 import com.mskd.flux.features.howTo.ui.HowToScreen
 import com.mskd.flux.features.message.ui.MessageScreen
 import com.mskd.flux.features.privateFolder.ui.PrivateScreen
@@ -127,6 +128,13 @@ fun FluxNavigation(
                 }
                 entry<Route.PrivateFolder> {
                     PrivateScreen(
+                        navigate = { route -> navigator.navigate(route) },
+                        onBack = { navigator.onBack() },
+                    )
+                }
+                entry<Route.Person> { entry ->
+                    PeopleScreen(
+                        person = entry.person,
                         navigate = { route -> navigator.navigate(route) },
                         onBack = { navigator.onBack() },
                     )

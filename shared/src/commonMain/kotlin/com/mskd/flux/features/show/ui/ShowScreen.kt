@@ -20,7 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.core.model.artwork.FullArtwork
-import com.mskd.flux.core.model.artwork.People
+import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.show.presentation.ShowDialog
 import com.mskd.flux.features.show.presentation.ShowEvent
@@ -66,6 +66,7 @@ fun ShowScreen(
             when (event) {
                 ShowEvent.BackToPreviousScreen -> onBack()
                 is ShowEvent.NavigateToSeason -> navigate(Artwork(artworkId = event.artworkId, season = event.season, rgb = event.rgb))
+                is ShowEvent.NavigateToPerson -> navigate(Route.Person(person = event.person))
             }
         }
     }
@@ -112,7 +113,7 @@ fun ShowScreen(
 @Composable
 fun ShowScreenContent(
     fullShow: FullArtwork.FullShow,
-    credits: List<People>,
+    credits: List<Person>,
     dialog: ShowDialog?,
     sendIntent: (ShowIntent) -> Unit
 ) {

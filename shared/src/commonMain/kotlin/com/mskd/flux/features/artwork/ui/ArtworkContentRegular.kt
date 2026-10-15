@@ -15,10 +15,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Media
-import com.mskd.flux.core.model.artwork.People
+import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.features.artwork.presentation.ArtworkIntent
 import com.mskd.flux.features.artwork.ui.composables.ArtworkDescriptionsPager
 import com.mskd.flux.features.artwork.ui.composables.ArtworkHeader
@@ -39,7 +38,7 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun ArtworkContentRegular(
     fullArtwork: FullArtwork,
-    credits: List<People>,
+    credits: List<Person>,
     selectedMedia: Media,
     selectedSeason: Int?,
     expandedEpisodeId: Long?,
@@ -147,7 +146,7 @@ fun ArtworkContentRegular(
         }
 
         if (credits.isNotEmpty()) {
-            item { CreditsList(credits = credits) }
+            item { CreditsList(credits = credits, onClick = { sendIntent(ArtworkIntent.OnPersonClick(person = it)) }) }
         }
 
         item {

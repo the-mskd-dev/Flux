@@ -18,7 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
-import com.mskd.flux.core.model.artwork.People
+import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.ui.bleedHorizontal
 import com.mskd.flux.ui.dimensions.itemWidthFor
 import com.mskd.flux.ui.image.rememberIconPlaceholderPainter
@@ -26,17 +26,16 @@ import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.cast
-import flux.shared.generated.resources.ic_people
-import flux.shared.generated.resources.seasons
+import flux.shared.generated.resources.ic_person
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun CreditsList(
-    credits: List<People>,
-    onClick: (People) -> Unit = {}
+    credits: List<Person>,
+    onClick: (Person) -> Unit = {}
 ) {
 
-    val placeholder = rememberIconPlaceholderPainter(icon = Res.drawable.ic_people)
+    val placeholder = rememberIconPlaceholderPainter(icon = Res.drawable.ic_person)
     var itemWidth by remember { mutableStateOf(FluxUI.Dimension.itemWidth) }
     val density = LocalDensity.current
 
@@ -69,15 +68,15 @@ fun CreditsList(
             contentPadding = PaddingValues(horizontal = FluxUI.Space.medium)
         ) {
 
-            items(items = credits, key = { it.creditId }) { people ->
+            items(items = credits, key = { it.creditId }) { person ->
 
-                PeopleItem(
+                PersonItem(
                     modifier = Modifier
                         .width(itemWidth)
                         .widthIn(max = FluxUI.Dimension.itemWidth),
-                    people = people,
+                    person = person,
                     placeholder = placeholder,
-                    onClick = { onClick(people) }
+                    onClick = { onClick(person) }
                 )
 
             }

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 12,
-    "identityHash": "e34bb4ba8eadd04863e0e15dc0bb7587",
+    "identityHash": "4090ccda0db677402d0a38e6bcb0ff6e",
     "entities": [
       {
         "tableName": "artworks",
@@ -393,7 +393,7 @@
         ]
       },
       {
-        "tableName": "people",
+        "tableName": "person",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`artworkId` INTEGER NOT NULL, `id` INTEGER NOT NULL, `creditId` TEXT NOT NULL, `name` TEXT NOT NULL, `profilePath` TEXT, `role` TEXT NOT NULL, `type` TEXT NOT NULL, `personOrder` INTEGER NOT NULL, PRIMARY KEY(`artworkId`, `creditId`), FOREIGN KEY(`artworkId`) REFERENCES `artworks`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
@@ -453,13 +453,13 @@
         },
         "indices": [
           {
-            "name": "index_people_artworkId",
+            "name": "index_person_artworkId",
             "unique": false,
             "columnNames": [
               "artworkId"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_people_artworkId` ON `${TABLE_NAME}` (`artworkId`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_person_artworkId` ON `${TABLE_NAME}` (`artworkId`)"
           }
         ],
         "foreignKeys": [
@@ -479,7 +479,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e34bb4ba8eadd04863e0e15dc0bb7587')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4090ccda0db677402d0a38e6bcb0ff6e')"
     ]
   }
 }

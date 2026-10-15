@@ -31,6 +31,8 @@ data class PeopleDto(
 data class CastMemberDto(
     val id: Int,
     val name: String,
+    @SerialName("original_name")
+    val originalName: String,
     @SerialName("profile_path")
     val profilePath: String? = null,
     @SerialName("credit_id")
@@ -53,6 +55,8 @@ data class CastMemberDto(
 data class CrewMemberDto(
     val id: Int,
     val name: String,
+    @SerialName("original_name")
+    val originalName: String,
     @SerialName("profile_path")
     val profilePath: String? = null,
     @SerialName("credit_id")

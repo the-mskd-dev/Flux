@@ -251,9 +251,10 @@
     <string name="cast">Production</string>
 
     <string name="biography">Biography</string>
-    <string name="known_for">Known for</string>
     <string name="born">Born : %1$s</string>
     <string name="died">Died : %1$s</string>
     <string name="place_of_birth">Place of birth : %1$s</string>
     <string name="known_for_department">Known for : %1$s</string>
+    <string name="original_name">Original name : %1$s</string>
+    <string name="also_in">Also in</string>
 </resources>

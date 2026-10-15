@@ -14,6 +14,7 @@ import kotlinx.collections.immutable.persistentListOf
  *
  * @property id Unique TMDB person identifier.
  * @property name Display name of the person.
+ * @property originalName Display original name of the person.
  * @property profilePath Path to the person's profile photo (nullable).
  * @property birthday Birthday of the person in ISO format (`YYYY-MM-DD`) (nullable).
  * @property deathday Death day of the person in ISO format (`YYYY-MM-DD`), null when alive.
@@ -28,6 +29,7 @@ import kotlinx.collections.immutable.persistentListOf
 data class PersonDetails(
     val id: Int,
     val name: String,
+    val originalName: String?,
     val profilePath: String?,
     val birthday: String? = null,
     val deathday: String? = null,

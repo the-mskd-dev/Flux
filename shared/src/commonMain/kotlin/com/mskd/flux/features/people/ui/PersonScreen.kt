@@ -89,16 +89,7 @@ fun PersonScreen(
 fun PersonScreen_Preview() {
     FluxThemePreview {
         PersonScreenContent(
-            details = PersonDetails(
-                id = PeopleMockup.cast.first().id,
-                name = PeopleMockup.cast.first().name,
-                profilePath = PeopleMockup.cast.first().profilePath,
-                birthday = "1972-04-05",
-                placeOfBirth = "Saitama, Japan",
-                biography = "Junko Takeuchi (born 5 April 1972) is a Japanese voice actress from Saitama Prefecture. She is affiliated with Office Osaka.",
-                knownForDepartment = "Acting",
-                artworks = MediaMockups.artworks.take(3).toImmutableList()
-            ),
+            details = PeopleMockup.toPersonDetails(),
             sendIntent = {}
         )
     }

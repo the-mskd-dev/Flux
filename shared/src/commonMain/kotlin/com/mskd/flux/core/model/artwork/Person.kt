@@ -15,6 +15,7 @@ import kotlinx.serialization.Serializable
  * @property creditId Unique credit identifier of this person for the artwork (used as primary key).
  * @property artworkId Identifier of the parent artwork (movie or show).
  * @property name Display name of the person.
+ * @property originalName Display original name of the person.
  * @property profilePath Path to the person's profile photo (nullable).
  * @property role Character (cast) or job (crew) of the person.
  * @property type Whether the person belongs to the cast or the crew.
@@ -26,6 +27,7 @@ data class Person(
     val creditId: String,
     val artworkId: Long,
     val name: String,
+    val originalName: String?,
     val profilePath: String?,
     val role: String,
     val type: PersonType,

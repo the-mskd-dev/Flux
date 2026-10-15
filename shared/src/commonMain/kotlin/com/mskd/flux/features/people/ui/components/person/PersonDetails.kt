@@ -2,14 +2,15 @@ package com.mskd.flux.features.people.ui.components.person
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.features.people.domain.model.PersonDetails
 import com.mskd.flux.mockups.PeopleMockup
 import com.mskd.flux.ui.text.Text
@@ -22,6 +23,7 @@ import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.born
 import flux.shared.generated.resources.died
 import flux.shared.generated.resources.known_for_department
+import flux.shared.generated.resources.original_name
 import flux.shared.generated.resources.place_of_birth
 import org.jetbrains.compose.resources.stringResource
 import kotlin.String
@@ -42,42 +44,65 @@ fun PersonDetails(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(all = FluxUI.Space.medium),
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall)
         ) {
 
+            if (details.originalName != null && details.originalName != details.name) {
+                PersonDetailsItem(
+                    text = stringResource(Res.string.original_name, details.originalName),
+                )
+            }
+
             details.birthday?.parseTMDBDate()?.formattedText?.let { birthday ->
-                Text.Content.Body(
-                    modifier = Modifier.fillMaxWidth(),
+                PersonDetailsItem(
                     text = stringResource(Res.string.born, birthday),
-                    color = MaterialTheme.colorScheme.onBackground
                 )
             }
 
             details.deathday?.parseTMDBDate()?.formattedText?.let { deathday ->
-                Text.Content.Body(
-                    modifier = Modifier.fillMaxWidth(),
+                PersonDetailsItem(
                     text = stringResource(Res.string.died, deathday),
-                    color = MaterialTheme.colorScheme.onBackground
                 )
             }
 
             details.placeOfBirth?.let { placeOfBirth ->
-                Text.Content.Body(
-                    modifier = Modifier.fillMaxWidth(),
+                PersonDetailsItem(
                     text = stringResource(Res.string.place_of_birth, placeOfBirth),
-                    color = MaterialTheme.colorScheme.onBackground
                 )
             }
 
             details.knownForDepartment?.let { department ->
-                Text.Content.Body(
-                    modifier = Modifier.fillMaxWidth(),
+                PersonDetailsItem(
                     text = stringResource(Res.string.known_for_department, department),
-                    color = MaterialTheme.colorScheme.onBackground
                 )
             }
 
         }
+
+    }
+
+}
+
+@Composable
+fun PersonDetailsItem(
+    text: String,
+) {
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall),
+        verticalAlignment = Alignment.Top
+    ) {
+
+        Text.Content.Body(
+            text = "•",
+            color = MaterialTheme.colorScheme.onSecondaryContainer
+        )
+
+        Text.Content.Body(
+            modifier = Modifier.weight(1f),
+            text = text,
+            color = MaterialTheme.colorScheme.onSecondaryContainer
+        )
 
     }
 

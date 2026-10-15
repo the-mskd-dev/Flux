@@ -25,6 +25,7 @@ data class PersonEntity(
     val id: Int,
     val creditId: String,
     val name: String,
+    val originalName: String?,
     val profilePath: String?,
     val role: String,
     val type: PersonType,

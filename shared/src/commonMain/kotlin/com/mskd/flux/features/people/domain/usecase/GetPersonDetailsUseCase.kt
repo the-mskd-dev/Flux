@@ -37,6 +37,7 @@ class GetPersonDetailsUseCase(
         return PersonDetails(
             id = person.id,
             name = personInfo?.name?.ifBlank { null } ?: person.name,
+            originalName = person.originalName,
             profilePath = personInfo?.profilePath ?: person.profilePath,
             birthday = personInfo?.birthday,
             deathday = personInfo?.deathday,

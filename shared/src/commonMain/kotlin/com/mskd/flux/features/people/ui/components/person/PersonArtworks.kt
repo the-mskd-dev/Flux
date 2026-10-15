@@ -29,7 +29,7 @@ import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.ui.theme.LocalUiShapes
 import flux.shared.generated.resources.Res
-import flux.shared.generated.resources.known_for
+import flux.shared.generated.resources.also_in
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -56,7 +56,7 @@ fun PersonArtworks(
 
             Text.Content.Title(
                 modifier = Modifier.fillMaxWidth(),
-                text = stringResource(Res.string.known_for),
+                text = stringResource(Res.string.also_in),
                 color = MaterialTheme.colorScheme.onBackground
             )
 

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 12,
-    "identityHash": "4090ccda0db677402d0a38e6bcb0ff6e",
+    "identityHash": "90e117430ed765ec7e3b7c6794b53d86",
     "entities": [
       {
         "tableName": "artworks",
@@ -394,7 +394,7 @@
       },
       {
         "tableName": "person",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`artworkId` INTEGER NOT NULL, `id` INTEGER NOT NULL, `creditId` TEXT NOT NULL, `name` TEXT NOT NULL, `profilePath` TEXT, `role` TEXT NOT NULL, `type` TEXT NOT NULL, `personOrder` INTEGER NOT NULL, PRIMARY KEY(`artworkId`, `creditId`), FOREIGN KEY(`artworkId`) REFERENCES `artworks`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`artworkId` INTEGER NOT NULL, `id` INTEGER NOT NULL, `creditId` TEXT NOT NULL, `name` TEXT NOT NULL, `originalName` TEXT, `profilePath` TEXT, `role` TEXT NOT NULL, `type` TEXT NOT NULL, `personOrder` INTEGER NOT NULL, PRIMARY KEY(`artworkId`, `creditId`), FOREIGN KEY(`artworkId`) REFERENCES `artworks`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "artworkId",
@@ -419,6 +419,11 @@
             "columnName": "name",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "originalName",
+            "columnName": "originalName",
+            "affinity": "TEXT"
           },
           {
             "fieldPath": "profilePath",
@@ -479,7 +484,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4090ccda0db677402d0a38e6bcb0ff6e')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '90e117430ed765ec7e3b7c6794b53d86')"
     ]
   }
 }

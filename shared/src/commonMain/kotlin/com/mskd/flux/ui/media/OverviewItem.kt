@@ -50,16 +50,7 @@ fun OverviewItem(
     var hasLaidOut by remember { mutableStateOf(false) }
 
     Surface(
-        modifier = modifier
-            .fillMaxWidth()
-            .then(
-                if (hasLaidOut) Modifier.animateContentSize(
-                    animationSpec = spring(
-                        dampingRatio = Spring.DampingRatioMediumBouncy,
-                        stiffness = Spring.StiffnessHigh
-                    )
-                ) else Modifier
-            ),
+        modifier = modifier.fillMaxWidth(),
         color = MaterialTheme.colorScheme.surfaceContainer,
         shape = LocalUiShapes.current.corners,
         shadowElevation = FluxUI.Elevation.itemShadow,
@@ -68,6 +59,14 @@ fun OverviewItem(
         Column(
             modifier = modifier
                 .fillMaxWidth()
+                .then(
+                    if (hasLaidOut) Modifier.animateContentSize(
+                        animationSpec = spring(
+                            dampingRatio = Spring.DampingRatioMediumBouncy,
+                            stiffness = Spring.StiffnessHigh
+                        )
+                    ) else Modifier
+                )
                 .padding(all = FluxUI.Space.medium),
             verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
         ) {

@@ -25,8 +25,8 @@ import com.mskd.flux.features.artwork.presentation.ArtworkIntent
 import com.mskd.flux.features.artwork.ui.composables.ArtworkButtons
 import com.mskd.flux.features.artwork.ui.composables.ArtworkDescriptionsPager
 import com.mskd.flux.features.artwork.ui.composables.ArtworkImage
-import com.mskd.flux.features.credits.ui.CreditsList
-import com.mskd.flux.mockups.CreditsMockup
+import com.mskd.flux.features.people.ui.PeopleList
+import com.mskd.flux.mockups.PeopleMockup
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.ui.LandscapePreview
 import com.mskd.flux.ui.media.EpisodeDropDownMenu
@@ -41,7 +41,7 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun ArtworkContentLarge(
     fullArtwork: FullArtwork,
-    credits: List<Person>,
+    people: List<Person>,
     selectedMedia: Media,
     selectedSeason: Int?,
     expandedEpisodeId: Long?,
@@ -179,8 +179,8 @@ fun ArtworkContentLarge(
 
             }
 
-            if (credits.isNotEmpty()) {
-                item { CreditsList(credits = credits, onClick = { sendIntent(ArtworkIntent.OnPersonClick(person = it)) }) }
+            if (people.isNotEmpty()) {
+                item { PeopleList(people = people, onClick = { sendIntent(ArtworkIntent.OnPersonClick(person = it)) }) }
             }
 
             item {
@@ -203,7 +203,7 @@ fun ArtworkContentLargeMovie_Preview() {
     FluxTheme {
         ArtworkContentLarge(
             fullArtwork = MediaMockups.fullMovie,
-            credits = CreditsMockup.all,
+            people = PeopleMockup.all,
             selectedMedia = MediaMockups.movie,
             selectedSeason = null,
             expandedEpisodeId = null,
@@ -219,7 +219,7 @@ fun ArtworkContentLargeShow_Preview() {
     FluxTheme {
         ArtworkContentLarge(
             fullArtwork = MediaMockups.fullShow,
-            credits = CreditsMockup.all,
+            people = PeopleMockup.all,
             selectedMedia = MediaMockups.episode1,
             selectedSeason = 1,
             expandedEpisodeId = null,

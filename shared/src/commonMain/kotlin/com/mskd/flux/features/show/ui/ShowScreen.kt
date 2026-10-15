@@ -27,7 +27,7 @@ import com.mskd.flux.features.show.presentation.ShowEvent
 import com.mskd.flux.features.show.presentation.ShowIntent
 import com.mskd.flux.features.show.presentation.ShowViewModel
 import com.mskd.flux.features.show.ui.composables.SeasonDialog
-import com.mskd.flux.mockups.CreditsMockup
+import com.mskd.flux.mockups.PeopleMockup
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.navigation.domain.Route.Artwork
@@ -97,7 +97,7 @@ fun ShowScreen(
                 MaterialTheme(colorScheme = colorScheme) {
                     ShowScreenContent(
                         fullShow = content.fullShow,
-                        credits = content.credits,
+                        people = content.people,
                         dialog = content.dialog,
                         sendIntent = viewModel::handleIntent
                     )
@@ -113,7 +113,7 @@ fun ShowScreen(
 @Composable
 fun ShowScreenContent(
     fullShow: FullArtwork.FullShow,
-    credits: List<Person>,
+    people: List<Person>,
     dialog: ShowDialog?,
     sendIntent: (ShowIntent) -> Unit
 ) {
@@ -152,14 +152,14 @@ fun ShowScreenContent(
         if (isLargeScreen) {
             ShowContentLarge(
                 fullShow = fullShow,
-                credits = credits,
+                people = people,
                 scaffoldInnerPadding = innerPadding,
                 sendIntent = sendIntent,
             )
         } else {
             ShowContentRegular(
                 fullShow = fullShow,
-                credits = credits,
+                people = people,
                 scaffoldInnerPadding = innerPadding,
                 sendIntent = sendIntent,
             )
@@ -221,7 +221,7 @@ fun ShowScreen_Preview() {
     FluxThemePreview {
         ShowScreenContent(
             fullShow = MediaMockups.fullShow,
-            credits = CreditsMockup.all,
+            people = PeopleMockup.all,
             dialog = null,
             sendIntent = {}
         )

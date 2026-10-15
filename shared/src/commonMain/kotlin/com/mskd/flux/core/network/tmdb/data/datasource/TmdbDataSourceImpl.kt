@@ -7,8 +7,8 @@ import com.mskd.flux.core.model.language.toTmdbFormat
 import com.mskd.flux.core.network.tmdb.data.dto.ArtworkDto
 import com.mskd.flux.core.network.tmdb.data.dto.MediaTypeDto
 import com.mskd.flux.core.network.tmdb.data.dto.TranslationsDto
-import com.mskd.flux.core.network.tmdb.data.dto.credits.CreditsDto
-import com.mskd.flux.core.network.tmdb.data.dto.credits.PersonInfoDto
+import com.mskd.flux.core.network.tmdb.data.dto.people.PeopleDto
+import com.mskd.flux.core.network.tmdb.data.dto.people.PersonInfoDto
 import com.mskd.flux.core.network.tmdb.data.dto.genre.GenreDto
 import com.mskd.flux.core.network.tmdb.data.dto.movie.MovieDto
 import com.mskd.flux.core.network.tmdb.data.dto.show.EpisodeDto
@@ -156,7 +156,7 @@ class TmdbDataSourceImpl(
 
     }
 
-    override suspend fun getMovieCredits(artworkId: Long): CreditsDto? {
+    override suspend fun getMoviePeople(artworkId: Long): PeopleDto? {
 
         if (!tokenDataStore.tokenIsAvailable())
             return null
@@ -164,12 +164,12 @@ class TmdbDataSourceImpl(
         val language = tmdbLanguage()
 
         return try {
-            tmdbService.getMovieCredits(
+            tmdbService.getMoviePeople(
                 artworkId = artworkId,
                 language = language.toTmdbFormat()
             )
         } catch (e: Exception) {
-            Napier.e(tag = TAG, message = "getMovieCredits - Fail to get credits for artworkId:$artworkId (${language.toTmdbFormat()})", throwable = e)
+            Napier.e(tag = TAG, message = "getMoviePeople - Fail to get people for artworkId:$artworkId (${language.toTmdbFormat()})", throwable = e)
             null
         }
 
@@ -216,7 +216,7 @@ class TmdbDataSourceImpl(
 
     }
 
-    override suspend fun getShowCredits(artworkId: Long): CreditsDto? {
+    override suspend fun getShowPeople(artworkId: Long): PeopleDto? {
 
         if (!tokenDataStore.tokenIsAvailable())
             return null
@@ -224,12 +224,12 @@ class TmdbDataSourceImpl(
         val language = tmdbLanguage()
 
         return try {
-            tmdbService.getShowCredits(
+            tmdbService.getShowPeople(
                 artworkId = artworkId,
                 language = language.toTmdbFormat()
             )
         } catch (e: Exception) {
-            Napier.e(tag = TAG, message = "getShowCredits - Fail to get credits for artworkId:$artworkId (${language.toTmdbFormat()})", throwable = e)
+            Napier.e(tag = TAG, message = "getShowPeople - Fail to get people for artworkId:$artworkId (${language.toTmdbFormat()})", throwable = e)
             null
         }
 

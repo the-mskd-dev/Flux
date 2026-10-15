@@ -16,8 +16,8 @@ import com.mskd.flux.core.database.data.model.ArtworkEntity
 import com.mskd.flux.core.database.data.model.GenreEntity
 import com.mskd.flux.core.database.data.model.MediaEntity
 import com.mskd.flux.core.database.data.model.SeasonEntity
-import com.mskd.flux.features.credits.data.dao.PersonDao
-import com.mskd.flux.features.credits.data.model.PersonEntity
+import com.mskd.flux.features.people.data.dao.PersonDao
+import com.mskd.flux.features.people.data.model.PersonEntity
 import com.mskd.flux.features.history.data.dao.HistoryDao
 import com.mskd.flux.features.history.data.model.HistoryEntity
 import com.mskd.flux.features.sources.data.local.SourcesDao

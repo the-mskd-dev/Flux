@@ -21,8 +21,8 @@ import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.features.artwork.presentation.ArtworkIntent
 import com.mskd.flux.features.artwork.ui.composables.ArtworkDescriptionsPager
 import com.mskd.flux.features.artwork.ui.composables.ArtworkHeader
-import com.mskd.flux.features.credits.ui.CreditsList
-import com.mskd.flux.mockups.CreditsMockup
+import com.mskd.flux.features.people.ui.PeopleList
+import com.mskd.flux.mockups.PeopleMockup
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.ui.PortraitPreview
 import com.mskd.flux.ui.media.EpisodeDropDownMenu
@@ -38,7 +38,7 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun ArtworkContentRegular(
     fullArtwork: FullArtwork,
-    credits: List<Person>,
+    people: List<Person>,
     selectedMedia: Media,
     selectedSeason: Int?,
     expandedEpisodeId: Long?,
@@ -145,8 +145,8 @@ fun ArtworkContentRegular(
 
         }
 
-        if (credits.isNotEmpty()) {
-            item { CreditsList(credits = credits, onClick = { sendIntent(ArtworkIntent.OnPersonClick(person = it)) }) }
+        if (people.isNotEmpty()) {
+            item { PeopleList(people = people, onClick = { sendIntent(ArtworkIntent.OnPersonClick(person = it)) }) }
         }
 
         item {
@@ -166,7 +166,7 @@ fun ArtworkContentMovie_Preview() {
     FluxTheme {
         ArtworkContentRegular(
             fullArtwork = MediaMockups.fullMovie,
-            credits = CreditsMockup.all,
+            people = PeopleMockup.all,
             selectedMedia = MediaMockups.movie,
             selectedSeason = null,
             expandedEpisodeId = null,
@@ -182,7 +182,7 @@ fun ArtworkContentShow_Preview() {
     FluxTheme {
         ArtworkContentRegular(
             fullArtwork = MediaMockups.fullShow,
-            credits = CreditsMockup.all,
+            people = PeopleMockup.all,
             selectedMedia = MediaMockups.episode1,
             selectedSeason = 1,
             expandedEpisodeId = null,

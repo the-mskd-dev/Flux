@@ -16,7 +16,7 @@ data class ShowUiState(
 @Immutable
 data class ShowContent(
     val fullShow: FullArtwork.FullShow,
-    val credits: ImmutableList<Person> = persistentListOf(),
+    val people: ImmutableList<Person> = persistentListOf(),
     val dialog: ShowDialog? = null,
 )
 

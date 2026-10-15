@@ -40,8 +40,8 @@ internal class ApiRepositoryImpl(
         )
     }
 
-    override suspend fun getMovieCredits(artworkId: Long): List<Person> {
-        return tmdb.getMovieCredits(artworkId = artworkId)?.toDomain(artworkId = artworkId) ?: emptyList()
+    override suspend fun getMoviePeople(artworkId: Long): List<Person> {
+        return tmdb.getMoviePeople(artworkId = artworkId)?.toDomain(artworkId = artworkId) ?: emptyList()
     }
 
     //endregion
@@ -73,8 +73,8 @@ internal class ApiRepositoryImpl(
         return season to episodes
     }
 
-    override suspend fun getShowCredits(artworkId: Long): List<Person> {
-        return tmdb.getShowCredits(artworkId = artworkId)?.toDomain(artworkId = artworkId) ?: emptyList()
+    override suspend fun getShowPeople(artworkId: Long): List<Person> {
+        return tmdb.getShowPeople(artworkId = artworkId)?.toDomain(artworkId = artworkId) ?: emptyList()
     }
 
     override suspend fun getPersonInfo(personId: Int): PersonInfo? {

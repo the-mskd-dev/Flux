@@ -2,7 +2,7 @@ package com.mskd.flux.features
 
 import com.mskd.flux.features.artwork.moduleArtwork
 import com.mskd.flux.features.catalog.moduleCatalog
-import com.mskd.flux.features.credits.moduleCredits
+import com.mskd.flux.features.people.modulePeople
 import com.mskd.flux.features.customization.moduleCustomization
 import com.mskd.flux.features.history.moduleHistory
 import com.mskd.flux.features.images.moduleImages
@@ -24,11 +24,11 @@ val moduleFeatures = module {
     includes(
         moduleArtwork,
         moduleCatalog,
-        moduleCredits,
         moduleCustomization,
         moduleHistory,
         moduleImages,
         moduleMessage,
+        modulePeople,
         modulePlayer,
         modulePrivateFolder,
         moduleProgress,

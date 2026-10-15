@@ -7,9 +7,9 @@ import com.mskd.flux.core.model.artwork.PersonType
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.features.artwork.fake.FakeObserveArtworkUseCase
-import com.mskd.flux.features.credits.domain.usecase.GetCreditsUseCase
+import com.mskd.flux.features.people.domain.usecase.GetPeopleUseCase
 import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
-import com.mskd.flux.mockups.CreditsMockup
+import com.mskd.flux.mockups.PeopleMockup
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.system.UrlLauncher
 import io.kotest.core.spec.style.FunSpec
@@ -29,7 +29,7 @@ class ShowViewModelTest : FunSpec({
 
     lateinit var viewModel: ShowViewModel
     lateinit var observeArtworkUseCase: ObserveArtworkUseCase
-    lateinit var getCreditsUseCase: GetCreditsUseCase
+    lateinit var getPeopleUseCase: GetPeopleUseCase
     lateinit var resetProgress: ResetProgressUseCase
     lateinit var urlLauncher: UrlLauncher
 
@@ -41,7 +41,7 @@ class ShowViewModelTest : FunSpec({
         viewModel = ShowViewModel(
             artworkId = MediaMockups.showArtwork.id,
             observeArtworkUseCase = observeArtworkUseCase,
-            getCreditsUseCase = getCreditsUseCase,
+            getPeopleUseCase = getPeopleUseCase,
             resetProgress = resetProgress,
             urlLauncher = urlLauncher
         )
@@ -51,8 +51,8 @@ class ShowViewModelTest : FunSpec({
     beforeTest {
 
         observeArtworkUseCase = FakeObserveArtworkUseCase()
-        getCreditsUseCase = mockk()
-        every { getCreditsUseCase(any()) } returns MutableStateFlow(persistentListOf<Person>())
+        getPeopleUseCase = mockk()
+        every { getPeopleUseCase(any()) } returns MutableStateFlow(persistentListOf<Person>())
 
         updateVm()
 
@@ -87,13 +87,13 @@ class ShowViewModelTest : FunSpec({
                 personOrder = 0
             )
         )
-        every { getCreditsUseCase(any()) } returns MutableStateFlow(person.toImmutableList())
+        every { getPeopleUseCase(any()) } returns MutableStateFlow(person.toImmutableList())
         updateVm()
 
         // When / Then
         viewModel.uiState.test {
             val content = (awaitItem().state as State.Content<ShowContent>).content
-            content.credits shouldBe person.toImmutableList()
+            content.people shouldBe person.toImmutableList()
         }
 
     }
@@ -187,7 +187,7 @@ class ShowViewModelTest : FunSpec({
         test("should call NavigateToPerson event") {
 
             // Given
-            val person = CreditsMockup.cast.first()
+            val person = PeopleMockup.cast.first()
 
             viewModel.event.test {
 
@@ -207,7 +207,7 @@ class ShowViewModelTest : FunSpec({
         viewModel = ShowViewModel(
             artworkId = -999L,
             observeArtworkUseCase = observeArtworkUseCase,
-            getCreditsUseCase = getCreditsUseCase,
+            getPeopleUseCase = getPeopleUseCase,
             resetProgress = resetProgress,
             urlLauncher = urlLauncher
         )
@@ -223,7 +223,7 @@ class ShowViewModelTest : FunSpec({
         viewModel = ShowViewModel(
             artworkId = MediaMockups.movieArtwork.id,
             observeArtworkUseCase = observeArtworkUseCase,
-            getCreditsUseCase = getCreditsUseCase,
+            getPeopleUseCase = getPeopleUseCase,
             resetProgress = resetProgress,
             urlLauncher = urlLauncher
         )

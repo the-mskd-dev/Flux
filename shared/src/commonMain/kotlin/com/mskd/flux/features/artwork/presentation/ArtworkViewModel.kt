@@ -8,7 +8,7 @@ import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
-import com.mskd.flux.features.credits.domain.usecase.GetCreditsUseCase
+import com.mskd.flux.features.people.domain.usecase.GetPeopleUseCase
 import com.mskd.flux.features.player.domain.model.PlaybackAction
 import com.mskd.flux.features.player.domain.usecase.ResolvePlaybackActionUseCase
 import com.mskd.flux.features.progress.domain.usecase.ChangeMediaStatusUseCase
@@ -38,7 +38,7 @@ class ArtworkViewModel(
     private val urlLauncher: UrlLauncher,
     settingsDataStore: SettingsDataStore,
     observeArtworkUseCase: ObserveArtworkUseCase,
-    getCreditsUseCase: GetCreditsUseCase,
+    getPeopleUseCase: GetPeopleUseCase,
     private val changeMediaStatus: ChangeMediaStatusUseCase,
     private val markPreviousAsWatched: MarkPreviousAsWatchedUseCase,
     private val resetProgress: ResetProgressUseCase,
@@ -64,9 +64,9 @@ class ArtworkViewModel(
     val uiState: StateFlow<ArtworkUiState> = combine(
         observeArtworkUseCase.flow,
         settingsDataStore.flow,
-        getCreditsUseCase(artworkId = artworkId),
+        getPeopleUseCase(artworkId = artworkId),
         _userState,
-    ) { artworkState, settings, credits, userState ->
+    ) { artworkState, settings, people, userState ->
 
         when (artworkState) {
             is State.Loading -> ArtworkUiState(state = State.Loading)
@@ -76,7 +76,7 @@ class ArtworkViewModel(
                 val dataState = ArtworkDataState(
                     fullArtwork = artworkState.content,
                     useExternalPlayer = settings.externalPlayer,
-                    credits = credits,
+                    people = people,
                 )
 
                 ArtworkUiState(state = mergeStates(dataState, userState))
@@ -150,7 +150,7 @@ class ArtworkViewModel(
                 selectedSeason = season,
                 expandedEpisodeId = userState.expandedEpisodeId,
                 useExternalPlayer = dataState.useExternalPlayer,
-                credits = dataState.credits,
+                people = dataState.people,
                 dialog = userState.dialog,
             )
         )

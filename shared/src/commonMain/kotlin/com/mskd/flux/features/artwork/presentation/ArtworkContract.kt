@@ -13,7 +13,7 @@ import kotlinx.collections.immutable.persistentListOf
 data class ArtworkDataState(
     val fullArtwork: FullArtwork,
     val useExternalPlayer: Boolean,
-    val credits: ImmutableList<Person> = persistentListOf()
+    val people: ImmutableList<Person> = persistentListOf()
 )
 
 @Immutable
@@ -30,7 +30,7 @@ data class ArtworkContent(
     val selectedSeason: Int?,
     val expandedEpisodeId: Long? = null,
     val useExternalPlayer: Boolean,
-    val credits: ImmutableList<Person> = persistentListOf(),
+    val people: ImmutableList<Person> = persistentListOf(),
     val dialog: ArtworkDialog?,
 )
 

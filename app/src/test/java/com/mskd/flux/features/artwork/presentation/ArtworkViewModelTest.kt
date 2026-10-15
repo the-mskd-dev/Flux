@@ -10,7 +10,7 @@ import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.features.artwork.fake.FakeObserveArtworkUseCase
-import com.mskd.flux.features.credits.domain.usecase.GetCreditsUseCase
+import com.mskd.flux.features.people.domain.usecase.GetPeopleUseCase
 import com.mskd.flux.features.player.domain.model.PlaybackAction
 import com.mskd.flux.features.player.domain.usecase.ResolvePlaybackActionUseCase
 import com.mskd.flux.features.progress.domain.usecase.ChangeMediaStatusUseCase
@@ -18,7 +18,7 @@ import com.mskd.flux.features.progress.domain.usecase.MarkPreviousAsWatchedUseCa
 import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
-import com.mskd.flux.mockups.CreditsMockup
+import com.mskd.flux.mockups.PeopleMockup
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.system.FilesLauncher
 import com.mskd.flux.system.UrlLauncher
@@ -50,7 +50,7 @@ class ArtworkViewModelTest : FunSpec({
     lateinit var filesLauncher: FilesLauncher
     lateinit var urlLauncher: UrlLauncher
     lateinit var observeArtworkUseCase: ObserveArtworkUseCase
-    lateinit var getCreditsUseCase: GetCreditsUseCase
+    lateinit var getPeopleUseCase: GetPeopleUseCase
     lateinit var changeMediaStatus: ChangeMediaStatusUseCase
     lateinit var markPreviousAsWatched: MarkPreviousAsWatchedUseCase
     lateinit var resetProgress: ResetProgressUseCase
@@ -74,7 +74,7 @@ class ArtworkViewModelTest : FunSpec({
             artworkId = id,
             season = currentSeason,
             observeArtworkUseCase = observeArtworkUseCase,
-            getCreditsUseCase = getCreditsUseCase,
+            getPeopleUseCase = getPeopleUseCase,
             settingsDataStore = settingsDataStore,
             changeMediaStatus = changeMediaStatus,
             markPreviousAsWatched = markPreviousAsWatched,
@@ -92,8 +92,8 @@ class ArtworkViewModelTest : FunSpec({
         currentSeason = 1
 
         observeArtworkUseCase = FakeObserveArtworkUseCase()
-        getCreditsUseCase = mockk()
-        every { getCreditsUseCase(any()) } returns MutableStateFlow(emptyList<Person>().toImmutableList())
+        getPeopleUseCase = mockk()
+        every { getPeopleUseCase(any()) } returns MutableStateFlow(emptyList<Person>().toImmutableList())
 
         settingsDataStore = mockk(relaxed = true) {
             every { flow } returns MutableStateFlow(SettingsDataStore.State())
@@ -136,13 +136,13 @@ class ArtworkViewModelTest : FunSpec({
                 personOrder = 0
             )
         )
-        every { getCreditsUseCase(any()) } returns MutableStateFlow(person.toImmutableList())
+        every { getPeopleUseCase(any()) } returns MutableStateFlow(person.toImmutableList())
         updateVm(MediaMockups.showArtwork.id)
 
         // When / Then
         viewModel.uiState.test {
             val content = (awaitItem().state as State.Content<ArtworkContent>).content
-            content.credits shouldBe person.toImmutableList()
+            content.people shouldBe person.toImmutableList()
         }
 
     }
@@ -450,7 +450,7 @@ class ArtworkViewModelTest : FunSpec({
         test("should call NavigateToPerson event") {
 
             // Given
-            val person = CreditsMockup.cast.first()
+            val person = PeopleMockup.cast.first()
 
             viewModel.event.test {
 

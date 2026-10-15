@@ -27,7 +27,7 @@ val moduleArtwork = module {
             markPreviousAsWatched = get(),
             resetProgress = get(),
             observeArtworkUseCase = get(),
-            getCreditsUseCase = get(),
+            getPeopleUseCase = get(),
             resolvePlaybackAction = get(),
             recordPlaybackResult = get()
         )

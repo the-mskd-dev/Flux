@@ -2,8 +2,8 @@ package com.mskd.flux.core.network.tmdb.data.mapper
 
 import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.artwork.PersonType
-import com.mskd.flux.core.network.tmdb.data.dto.credits.CreditsDto
-import com.mskd.flux.core.network.tmdb.data.dto.credits.PersonInfoDto
+import com.mskd.flux.core.network.tmdb.data.dto.people.PeopleDto
+import com.mskd.flux.core.network.tmdb.data.dto.people.PersonInfoDto
 import com.mskd.flux.core.network.tmdb.domain.model.PersonInfo
 
 /**
@@ -12,7 +12,7 @@ import com.mskd.flux.core.network.tmdb.domain.model.PersonInfo
  * Cast members keep their billing [CastMemberDto.order] while crew members use their
  * index, so a single table/object can hold both cast and crew with a stable ordering.
  */
-fun CreditsDto.toDomain(artworkId: Long): List<Person> {
+fun PeopleDto.toDomain(artworkId: Long): List<Person> {
 
     val cast = this.cast.map { member ->
         Person(

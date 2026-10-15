@@ -110,7 +110,7 @@ fun ArtworkScreen(
                 MaterialTheme(colorScheme = colorScheme) {
                     ArtworkScreenContent(
                         fullArtwork = content.fullArtwork,
-                        credits = if (content.fullArtwork.contentType == ContentType.MOVIE) content.credits else emptyList(),
+                        people = if (content.fullArtwork.contentType == ContentType.MOVIE) content.people else emptyList(),
                         selectedMedia = content.selectedMedia,
                         selectedSeason = content.selectedSeason,
                         expandedEpisodeId = content.expandedEpisodeId,
@@ -130,7 +130,7 @@ fun ArtworkScreen(
 @Composable
 fun ArtworkScreenContent(
     fullArtwork: FullArtwork,
-    credits: List<Person> = emptyList(),
+    people: List<Person> = emptyList(),
     selectedMedia: Media,
     selectedSeason: Int?,
     expandedEpisodeId: Long?,
@@ -179,7 +179,7 @@ fun ArtworkScreenContent(
         if (isLargeScreen) {
             ArtworkContentLarge(
                 fullArtwork = fullArtwork,
-                credits = credits,
+                people = people,
                 selectedMedia = selectedMedia,
                 selectedSeason = selectedSeason,
                 expandedEpisodeId = expandedEpisodeId,
@@ -189,7 +189,7 @@ fun ArtworkScreenContent(
         } else {
             ArtworkContentRegular(
                 fullArtwork = fullArtwork,
-                credits = credits,
+                people = people,
                 selectedMedia = selectedMedia,
                 selectedSeason = selectedSeason,
                 expandedEpisodeId = expandedEpisodeId,

@@ -23,10 +23,10 @@ import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.features.artwork.ui.composables.ArtworkImageFull
 import com.mskd.flux.features.artwork.ui.composables.GenresTags
-import com.mskd.flux.features.credits.ui.CreditsList
+import com.mskd.flux.features.people.ui.PeopleList
 import com.mskd.flux.features.show.presentation.ShowIntent
 import com.mskd.flux.features.show.ui.composables.SeasonItem
-import com.mskd.flux.mockups.CreditsMockup
+import com.mskd.flux.mockups.PeopleMockup
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.ui.PortraitPreview
 import com.mskd.flux.ui.bleedHorizontal
@@ -43,7 +43,7 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun ShowContentRegular(
     fullShow: FullArtwork.FullShow,
-    credits: List<Person>,
+    people: List<Person>,
     scaffoldInnerPadding: PaddingValues,
     sendIntent: (ShowIntent) -> Unit
 ) {
@@ -143,11 +143,11 @@ fun ShowContentRegular(
 
         }
 
-        if (credits.isNotEmpty()) {
+        if (people.isNotEmpty()) {
 
             item(span = { GridItemSpan(maxLineSpan) }) {
 
-                CreditsList(credits = credits, onClick = { sendIntent(ShowIntent.OnPersonClick(person = it)) })
+                PeopleList(people = people, onClick = { sendIntent(ShowIntent.OnPersonClick(person = it)) })
 
             }
 
@@ -171,7 +171,7 @@ fun ShowContentRegular_Preview() {
         ShowContentRegular(
             fullShow = MediaMockups.fullShow,
             scaffoldInnerPadding = PaddingValues.Zero,
-            credits = CreditsMockup.all,
+            people = PeopleMockup.all,
             sendIntent = {}
         )
     }

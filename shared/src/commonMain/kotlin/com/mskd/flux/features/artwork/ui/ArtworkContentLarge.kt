@@ -26,8 +26,8 @@ import com.mskd.flux.features.artwork.ui.composables.ArtworkButtons
 import com.mskd.flux.features.artwork.ui.composables.ArtworkDescriptionsPager
 import com.mskd.flux.features.artwork.ui.composables.ArtworkImage
 import com.mskd.flux.features.people.ui.components.people.PeopleList
-import com.mskd.flux.mockups.PeopleMockup
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.mockups.PeopleMockup
 import com.mskd.flux.ui.LandscapePreview
 import com.mskd.flux.ui.media.EpisodeDropDownMenu
 import com.mskd.flux.ui.media.EpisodeItem

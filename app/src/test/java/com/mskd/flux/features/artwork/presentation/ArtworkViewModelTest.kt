@@ -18,8 +18,8 @@ import com.mskd.flux.features.progress.domain.usecase.MarkPreviousAsWatchedUseCa
 import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
-import com.mskd.flux.mockups.PeopleMockup
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.mockups.PeopleMockup
 import com.mskd.flux.system.FilesLauncher
 import com.mskd.flux.system.UrlLauncher
 import io.kotest.core.spec.style.FunSpec

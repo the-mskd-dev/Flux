@@ -9,8 +9,8 @@ import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtwo
 import com.mskd.flux.features.artwork.fake.FakeObserveArtworkUseCase
 import com.mskd.flux.features.people.domain.usecase.GetPeopleUseCase
 import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
-import com.mskd.flux.mockups.PeopleMockup
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.mockups.PeopleMockup
 import com.mskd.flux.system.UrlLauncher
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe

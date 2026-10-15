@@ -10,13 +10,9 @@ import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.mapper.buildFullArtworkMovie
 import com.mskd.flux.features.artwork.domain.mapper.buildFullArtworkShow
 import com.mskd.flux.features.sources.domain.usecase.FlowSourcesUseCase
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.flatMapLatest
 
 class ObserveArtworkUseCaseImpl(
     private val database: DatabaseRepository,

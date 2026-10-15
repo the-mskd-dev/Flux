@@ -3,10 +3,10 @@ package com.mskd.flux.core.network.tmdb.data.service
 import com.mskd.flux.core.network.tmdb.data.dto.AuthenticationDto
 import com.mskd.flux.core.network.tmdb.data.dto.SearchResultsDto
 import com.mskd.flux.core.network.tmdb.data.dto.TranslationsDto
-import com.mskd.flux.core.network.tmdb.data.dto.people.PeopleDto
-import com.mskd.flux.core.network.tmdb.data.dto.people.PersonInfoDto
 import com.mskd.flux.core.network.tmdb.data.dto.genre.GenresResultDto
 import com.mskd.flux.core.network.tmdb.data.dto.movie.MovieDto
+import com.mskd.flux.core.network.tmdb.data.dto.people.PeopleDto
+import com.mskd.flux.core.network.tmdb.data.dto.people.PersonInfoDto
 import com.mskd.flux.core.network.tmdb.data.dto.show.EpisodeDto
 import com.mskd.flux.core.network.tmdb.data.dto.show.SeasonDto
 import com.mskd.flux.core.network.tmdb.data.dto.show.ShowDto

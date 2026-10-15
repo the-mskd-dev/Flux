@@ -26,7 +26,6 @@ import flux.shared.generated.resources.known_for_department
 import flux.shared.generated.resources.original_name
 import flux.shared.generated.resources.place_of_birth
 import org.jetbrains.compose.resources.stringResource
-import kotlin.String
 
 @Composable
 fun PersonDetails(

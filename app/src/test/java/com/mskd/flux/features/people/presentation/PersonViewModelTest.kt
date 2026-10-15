@@ -6,8 +6,8 @@ import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.people.domain.model.PersonDetails
 import com.mskd.flux.features.people.domain.usecase.GetPersonDetailsUseCase
-import com.mskd.flux.mockups.PeopleMockup
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.mockups.PeopleMockup
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf

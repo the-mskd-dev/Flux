@@ -26,8 +26,8 @@ import com.mskd.flux.features.artwork.ui.composables.GenresTags
 import com.mskd.flux.features.people.ui.components.people.PeopleList
 import com.mskd.flux.features.show.presentation.ShowIntent
 import com.mskd.flux.features.show.ui.composables.SeasonItem
-import com.mskd.flux.mockups.PeopleMockup
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.mockups.PeopleMockup
 import com.mskd.flux.ui.PortraitPreview
 import com.mskd.flux.ui.bleedHorizontal
 import com.mskd.flux.ui.media.OverviewItem

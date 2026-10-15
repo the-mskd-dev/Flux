@@ -3,7 +3,6 @@ package com.mskd.flux.mockups
 import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.artwork.PersonType
 import com.mskd.flux.features.people.domain.model.PersonDetails
-import com.mskd.flux.features.people.ui.components.person.PersonDetails
 import kotlinx.collections.immutable.toPersistentList
 
 object PeopleMockup {

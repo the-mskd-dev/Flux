@@ -29,6 +29,7 @@ class PersonViewModelTest : FunSpec({
     val fullDetails = PersonDetails(
         id = person.id,
         name = "Junko Takeuchi",
+        originalName = "Junko Takeuchi",
         profilePath = "/zNjrblq3xS1idpCsmSl5P5eTon7.jpg",
         birthday = "1972-04-05",
         deathday = null,
@@ -44,6 +45,7 @@ class PersonViewModelTest : FunSpec({
     val offlineDetails = PersonDetails(
         id = person.id,
         name = person.name,
+        originalName = person.originalName,
         profilePath = person.profilePath,
         artworks = persistentListOf(MediaMockups.movieArtwork)
     )

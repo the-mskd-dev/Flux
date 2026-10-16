@@ -18,6 +18,7 @@ class PeopleApiMapperTest : FunSpec({
             CastMemberDto(
                 id = 819,
                 name = "Edward Norton",
+                originalName = "Edward Norton",
                 profilePath = "/8nytsqL59SFJTVYVrN72k6qkGgJ.jpg",
                 creditId = "52fe4250c3a36847f80149f3",
                 character = "The Narrator",
@@ -28,6 +29,7 @@ class PeopleApiMapperTest : FunSpec({
             CrewMemberDto(
                 id = 376,
                 name = "Arnon Milchan",
+                originalName = "Arnon Milchan",
                 profilePath = "/b2hBExX4NnczNAnLuTBF4kmNhZm.jpg",
                 creditId = "55731b8192514111610027d7",
                 job = "Executive Producer",

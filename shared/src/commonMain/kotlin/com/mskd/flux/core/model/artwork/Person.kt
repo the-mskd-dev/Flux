@@ -27,7 +27,7 @@ data class Person(
     val creditId: String,
     val artworkId: Long,
     val name: String,
-    val originalName: String?,
+    val originalName: String? = null,
     val profilePath: String?,
     val role: String,
     val type: PersonType,

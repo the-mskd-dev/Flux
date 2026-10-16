@@ -27,9 +27,9 @@ class PeopleRepositoryImplTest : FunSpec({
 
     test("flowPerson should map entities to domain and sort cast before crew by order") {
         // Given
-        val crew = PersonEntity(artworkId, 2, "c2", "Arnon Milchan", null, "Executive Producer", PersonType.CREW, personOrder = 0)
-        val cast1 = PersonEntity(artworkId, 1, "c1", "Edward Norton", "/p.jpg", "The Narrator", PersonType.CAST, personOrder = 1)
-        val cast0 = PersonEntity(artworkId, 3, "c3", "Meat Loaf", "/p2.jpg", "Robert Paulson", PersonType.CAST, personOrder = 0)
+        val crew = PersonEntity(artworkId, 2, "c2", "Arnon Milchan", null, null, "Executive Producer", PersonType.CREW, personOrder = 0)
+        val cast1 = PersonEntity(artworkId, 1, "c1", "Edward Norton", null, "/p.jpg", "The Narrator", PersonType.CAST, personOrder = 1)
+        val cast0 = PersonEntity(artworkId, 3, "c3", "Meat Loaf", null, "/p2.jpg", "Robert Paulson", PersonType.CAST, personOrder = 0)
         every { dao.flowPerson(artworkId) } returns MutableStateFlow(listOf(crew, cast1, cast0))
 
         // When / Then
@@ -45,8 +45,8 @@ class PeopleRepositoryImplTest : FunSpec({
 
     test("flowPerson should only return person of the requested artwork") {
         // Given : the DAO applies the WHERE artworkId = :artworkId clause
-        val other = PersonEntity(artworkId = 999L, id = 5, creditId = "x1", name = "Other", profilePath = null, role = "Role", type = PersonType.CAST, personOrder = 0)
-        val mine = PersonEntity(artworkId, id = 6, creditId = "y1", name = "Mine", profilePath = null, role = "Role", type = PersonType.CAST, personOrder = 0)
+        val other = PersonEntity(artworkId = 999L, id = 5, creditId = "x1", name = "Other", originalName = null, profilePath = null, role = "Role", type = PersonType.CAST, personOrder = 0)
+        val mine = PersonEntity(artworkId, id = 6, creditId = "y1", name = "Mine", originalName = null, profilePath = null, role = "Role", type = PersonType.CAST, personOrder = 0)
         val all = listOf(other, mine)
         every { dao.flowPerson(any()) } answers {
             val queriedId = firstArg<Long>()

@@ -10,10 +10,12 @@ import com.mskd.flux.features.catalog.domain.usecase.syncGenres.SyncGenresUseCas
 import com.mskd.flux.features.files.domain.usecase.FilterExistingFilesUseCase
 import com.mskd.flux.features.files.domain.usecase.GetDeviceFilesUseCase
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
+import com.mskd.flux.features.people.domain.usecase.SyncPeopleUseCase
 import com.mskd.flux.features.privateFolder.domain.datastore.PrivateFolderDataStore
 import com.mskd.flux.utils.extensions.groupInFolders
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
+import kotlin.time.Clock
 
 class SyncCatalogUseCase(
     private val database: DatabaseRepository,
@@ -26,6 +28,7 @@ class SyncCatalogUseCase(
     private val filterExistingFilesUseCase: FilterExistingFilesUseCase,
     private val syncGenresUseCase: SyncGenresUseCase,
     private val catalogFetcher: CatalogContentFetcher,
+    private val syncPeopleUseCase: SyncPeopleUseCase,
 ) {
 
     companion object { const val TAG = "SyncCatalogUseCase" }
@@ -49,8 +52,9 @@ class SyncCatalogUseCase(
 
             if (newFiles.isEmpty()) {
                 database.deleteMediasNotInFiles(existingFiles)
-                user.setSyncTime(System.currentTimeMillis())
+                user.setSyncTime(Clock.System.now().toEpochMilliseconds())
                 user.setVersionCode(appInfo.versionCode)
+                syncPeopleUseCase(force = !onlyNew)
                 return@launch
             }
 
@@ -105,10 +109,13 @@ class SyncCatalogUseCase(
             if (privateFolderState.enabled && privateFolderState.includeNsfw)
                 database.setNsfwArtworksPrivate()
 
+            // Background cast sync: only new artworks on light sync, everything on full sync
+            if (onlyNew) syncPeopleUseCase(artworks = catalog.artworks) else syncPeopleUseCase(force = true)
+
             coordinator.incrementProgress()
 
             imagesPrefetchManager.prefetchImages()
-            user.setSyncTime(System.currentTimeMillis())
+            user.setSyncTime(Clock.System.now().toEpochMilliseconds())
             user.setVersionCode(appInfo.versionCode)
 
         }

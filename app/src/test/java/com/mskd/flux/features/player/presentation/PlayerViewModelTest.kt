@@ -3,6 +3,7 @@ package com.mskd.flux.features.player.presentation
 import androidx.media3.common.Player
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
+import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.core.model.language.Language
 import com.mskd.flux.core.model.player.PlayerTrack
@@ -56,7 +57,7 @@ class PlayerViewModelTest : FunSpec({
         media?.let { observeArtworkUseCase(it.artworkId) }
         val playerParams = PlayerParams(
             mediaId = mediaId,
-            artworkId = media?.artworkId
+            artworkId = media?.artworkId ?: Artwork.UNKNOWN_ID
         )
 
         viewModel = PlayerViewModel(

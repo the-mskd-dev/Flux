@@ -234,6 +234,7 @@
     <string name="biography">Biografie</string>
     <string name="born">Geboren: %1$s</string>
     <string name="died">Gestorben: %1$s</string>
+    <string name="age">%1$d Jahre alt</string>
     <string name="place_of_birth">Geburtsort: %1$s</string>
     <string name="known_for_department">Bekannt für: %1$s</string>
     <string name="original_name">Originalname: %1$s</string>

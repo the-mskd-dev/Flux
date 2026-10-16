@@ -233,6 +233,7 @@
     <string name="biography">略歴</string>
     <string name="born">生まれ: %1$s</string>
     <string name="died">死没: %1$s</string>
+    <string name="age">%1$d歳</string>
     <string name="place_of_birth">出生地: %1$s</string>
     <string name="known_for_department">担当: %1$s</string>
     <string name="original_name">本名: %1$s</string>

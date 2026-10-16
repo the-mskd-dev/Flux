@@ -21,11 +21,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.mskd.flux.core.model.artwork.FullArtwork
+import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.features.artwork.ui.composables.ArtworkImageFull
 import com.mskd.flux.features.artwork.ui.composables.GenresTags
+import com.mskd.flux.features.people.ui.components.people.PeopleList
 import com.mskd.flux.features.show.presentation.ShowIntent
 import com.mskd.flux.features.show.ui.composables.SeasonItem
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.mockups.PeopleMockup
 import com.mskd.flux.ui.LandscapePreview
 import com.mskd.flux.ui.media.OverviewItem
 import com.mskd.flux.ui.text.Text
@@ -40,6 +43,7 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun ShowContentLarge(
     fullShow: FullArtwork.FullShow,
+    people: List<Person>,
     scaffoldInnerPadding: PaddingValues,
     sendIntent: (ShowIntent) -> Unit
 ) {
@@ -149,8 +153,21 @@ fun ShowContentLarge(
 
             }
 
+            if (people.isNotEmpty()) {
+
+                item(span = { GridItemSpan(maxLineSpan) }) {
+
+                    PeopleList(people = people, onClick = { sendIntent(ShowIntent.OnPersonClick(person = it)) })
+
+                }
+
+            }
+
             item(span = { GridItemSpan(maxLineSpan) }) {
-                Spacer(modifier = Modifier.height(scaffoldInnerPadding.calculateBottomPadding()))
+                Spacer(modifier = Modifier
+                    .padding(bottom = FluxUI.Space.bottomScreen)
+                    .height(scaffoldInnerPadding.calculateBottomPadding())
+                )
             }
 
         }
@@ -165,6 +182,7 @@ fun ShowContentLarge_Preview() {
     FluxTheme {
         ShowContentLarge(
             fullShow = MediaMockups.fullShow,
+            people = PeopleMockup.all,
             scaffoldInnerPadding = PaddingValues.Zero,
             sendIntent = {}
         )

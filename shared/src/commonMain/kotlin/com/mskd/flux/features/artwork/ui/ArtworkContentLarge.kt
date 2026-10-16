@@ -20,11 +20,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Media
+import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.features.artwork.presentation.ArtworkIntent
 import com.mskd.flux.features.artwork.ui.composables.ArtworkButtons
 import com.mskd.flux.features.artwork.ui.composables.ArtworkDescriptionsPager
 import com.mskd.flux.features.artwork.ui.composables.ArtworkImage
+import com.mskd.flux.features.people.ui.components.people.PeopleList
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.mockups.PeopleMockup
 import com.mskd.flux.ui.LandscapePreview
 import com.mskd.flux.ui.media.EpisodeDropDownMenu
 import com.mskd.flux.ui.media.EpisodeItem
@@ -38,6 +41,7 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun ArtworkContentLarge(
     fullArtwork: FullArtwork,
+    people: List<Person>,
     selectedMedia: Media,
     selectedSeason: Int?,
     expandedEpisodeId: Long?,
@@ -64,6 +68,7 @@ fun ArtworkContentLarge(
         LazyColumn(
             modifier = Modifier.weight(.5f),
             horizontalAlignment = Alignment.CenterHorizontally,
+            contentPadding = PaddingValues(horizontal = FluxUI.Space.medium)
         ) {
 
             item {
@@ -73,9 +78,7 @@ fun ArtworkContentLarge(
             item {
 
                 Text.MainTitle(
-                    modifier = Modifier
-                        .padding(FluxUI.Space.medium)
-                        .wrapContentWidth(),
+                    modifier = Modifier.wrapContentWidth(),
                     text = when (fullArtwork) {
                         is FullArtwork.FullMovie -> fullArtwork.artwork.title
                         is FullArtwork.FullShow -> fullArtwork.seasons.find { it.season == selectedSeason }?.title ?: fullArtwork.artwork.title
@@ -127,9 +130,7 @@ fun ArtworkContentLarge(
                         Column(verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)) {
 
                             Text.Content.Title(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = FluxUI.Space.medium),
+                                modifier = Modifier.fillMaxWidth(),
                                 text = stringResource(Res.string.episodes),
                                 color = MaterialTheme.colorScheme.onPrimaryContainer
                             )
@@ -178,8 +179,15 @@ fun ArtworkContentLarge(
 
             }
 
+            if (people.isNotEmpty()) {
+                item { PeopleList(people = people, onClick = { sendIntent(ArtworkIntent.OnPersonClick(person = it)) }) }
+            }
+
             item {
-                Spacer(modifier = Modifier.height(scaffoldInnerPadding.calculateBottomPadding()))
+                Spacer(modifier = Modifier
+                    .padding(bottom = FluxUI.Space.bottomScreen)
+                    .height(scaffoldInnerPadding.calculateBottomPadding())
+                )
             }
 
         }
@@ -195,6 +203,7 @@ fun ArtworkContentLargeMovie_Preview() {
     FluxTheme {
         ArtworkContentLarge(
             fullArtwork = MediaMockups.fullMovie,
+            people = PeopleMockup.all,
             selectedMedia = MediaMockups.movie,
             selectedSeason = null,
             expandedEpisodeId = null,
@@ -210,6 +219,7 @@ fun ArtworkContentLargeShow_Preview() {
     FluxTheme {
         ArtworkContentLarge(
             fullArtwork = MediaMockups.fullShow,
+            people = PeopleMockup.all,
             selectedMedia = MediaMockups.episode1,
             selectedSeason = 1,
             expandedEpisodeId = null,

@@ -229,4 +229,13 @@
         <item>여러분들의 도움과 응원에 감사드리며, 곧 다시 뵙겠습니다!</item>
     </string-array>
 
+    <string name="cast">제작팀</string>
+    <string name="biography">약력</string>
+    <string name="born">출생: %1$s</string>
+    <string name="died">사망: %1$s</string>
+    <string name="age">%1$d세</string>
+    <string name="place_of_birth">출생지: %1$s</string>
+    <string name="known_for_department">유명한 분야: %1$s</string>
+    <string name="original_name">본명: %1$s</string>
+    <string name="also_in">다른 출연작</string>
 </resources>

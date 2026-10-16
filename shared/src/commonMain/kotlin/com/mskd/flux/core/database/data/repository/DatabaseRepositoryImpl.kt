@@ -60,6 +60,10 @@ class DatabaseRepositoryImpl(
         return artworksDao.getArtworks(includePrivates = includePrivates).map { it.toDomain() }
     }
 
+    override suspend fun getArtworks(artworkIds: List<Long>): List<Artwork> {
+        return artworksDao.getArtworks(artworkIds = artworkIds).map { it.toDomain() }
+    }
+
     override suspend fun setArtworkPrivate(artworkId: Long, isPrivate: Boolean) {
         artworksDao.setArtworkPrivate(artworkId = artworkId, isPrivate = isPrivate)
     }

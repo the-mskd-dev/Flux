@@ -49,6 +49,10 @@ class FakeDatabaseRepository : DatabaseRepository {
         else MediaMockups.artworks.filter { !it.isPrivate }
     }
 
+    override suspend fun getArtworks(artworkIds: List<Long>): List<Artwork> {
+        return MediaMockups.artworks.filter { artworkIds.contains(it.id) }
+    }
+
     override suspend fun setArtworkPrivate(artworkId: Long, isPrivate: Boolean) {}
 
     override suspend fun clearPrivateArtworks() {}

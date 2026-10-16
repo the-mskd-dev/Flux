@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.core.model.artwork.FullArtwork
+import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.show.presentation.ShowDialog
 import com.mskd.flux.features.show.presentation.ShowEvent
@@ -27,6 +28,7 @@ import com.mskd.flux.features.show.presentation.ShowIntent
 import com.mskd.flux.features.show.presentation.ShowViewModel
 import com.mskd.flux.features.show.ui.composables.SeasonDialog
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.mockups.PeopleMockup
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.navigation.domain.Route.Artwork
 import com.mskd.flux.ui.FluxPreview
@@ -64,6 +66,7 @@ fun ShowScreen(
             when (event) {
                 ShowEvent.BackToPreviousScreen -> onBack()
                 is ShowEvent.NavigateToSeason -> navigate(Artwork(artworkId = event.artworkId, season = event.season, rgb = event.rgb))
+                is ShowEvent.NavigateToPerson -> navigate(Route.Person(person = event.person))
             }
         }
     }
@@ -94,6 +97,7 @@ fun ShowScreen(
                 MaterialTheme(colorScheme = colorScheme) {
                     ShowScreenContent(
                         fullShow = content.fullShow,
+                        people = content.people,
                         dialog = content.dialog,
                         sendIntent = viewModel::handleIntent
                     )
@@ -109,6 +113,7 @@ fun ShowScreen(
 @Composable
 fun ShowScreenContent(
     fullShow: FullArtwork.FullShow,
+    people: List<Person>,
     dialog: ShowDialog?,
     sendIntent: (ShowIntent) -> Unit
 ) {
@@ -147,12 +152,14 @@ fun ShowScreenContent(
         if (isLargeScreen) {
             ShowContentLarge(
                 fullShow = fullShow,
+                people = people,
                 scaffoldInnerPadding = innerPadding,
                 sendIntent = sendIntent,
             )
         } else {
             ShowContentRegular(
                 fullShow = fullShow,
+                people = people,
                 scaffoldInnerPadding = innerPadding,
                 sendIntent = sendIntent,
             )
@@ -214,6 +221,7 @@ fun ShowScreen_Preview() {
     FluxThemePreview {
         ShowScreenContent(
             fullShow = MediaMockups.fullShow,
+            people = PeopleMockup.all,
             dialog = null,
             sendIntent = {}
         )

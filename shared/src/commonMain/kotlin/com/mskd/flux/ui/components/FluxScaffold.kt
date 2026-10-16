@@ -69,6 +69,7 @@ fun FluxScaffold(
                 modifier = Modifier.blurForeground(
                     state = hazeState,
                     alpha = animatedAlpha,
+                    progressive = true
                 ),
                 title = title,
                 titleGraphicsLayer = { alpha = if (animatedTitle) animatedAlpha else 1f },

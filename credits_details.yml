@@ -1,0 +1,60 @@
+# Réponse type "TMDB person details" (fiche d'une personne)
+root:
+  type: object
+  fields:
+    adult:
+      type: boolean
+      nullable: false
+      example: false
+    also_known_as:
+      type: array<string>
+      nullable: false        # tableau potentiellement vide
+      example: ["竹内 順子", "타케우치 준코", "Takeuchi Junko"]
+    biography:
+      type: string
+      nullable: false        # chaîne vide possible si non renseignée
+      example: "Junko Takeuchi (born 5 April 1972) is a Japanese voice actress..."
+    birthday:
+      type: string           # format ISO "YYYY-MM-DD"
+      nullable: true
+      example: "1972-04-05"
+    deathday:
+      type: string           # format ISO "YYYY-MM-DD"
+      nullable: true         # null observé (personne vivante)
+      example: "2020-01-31"  # exemple illustratif, la valeur réelle ici est null
+    gender:
+      type: integer          # 0 = non spécifié, 1 = femme, 2 = homme, 3 = non-binaire
+      nullable: false
+      example: 1
+    homepage:
+      type: string
+      nullable: true
+      example: "https://www.oginext.com/women/takeuchi.html"
+    id:
+      type: integer
+      nullable: false
+      example: 82055
+    imdb_id:
+      type: string
+      nullable: true
+      example: "nm0847594"
+    known_for_department:
+      type: string
+      nullable: false
+      example: "Acting"
+    name:
+      type: string
+      nullable: false
+      example: "Junko Takeuchi"
+    place_of_birth:
+      type: string
+      nullable: true
+      example: "Saitama, Japan"
+    popularity:
+      type: number           # float
+      nullable: false
+      example: 1.8407
+    profile_path:
+      type: string
+      nullable: true
+      example: "/zNjrblq3xS1idpCsmSl5P5eTon7.jpg"

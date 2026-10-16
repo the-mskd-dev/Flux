@@ -33,6 +33,7 @@ import com.mskd.flux.ui.dimensions.rememberScreenDimensions
 import com.mskd.flux.ui.theme.FluxUI
 import dev.chrisbanes.haze.HazeInput
 import dev.chrisbanes.haze.HazePerformanceMode
+import dev.chrisbanes.haze.HazeProgressive
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.blur.HazeBlurDefaults
 import dev.chrisbanes.haze.blur.HazeBlurStyle
@@ -57,12 +58,21 @@ fun Modifier.blurForeground(
     alpha: Float = 1f,
     radius: Dp = HazeBlurDefaults.blurRadius,
     performanceMode: HazePerformanceMode? = null,
-    expandLayerBounds: Boolean = true
+    expandLayerBounds: Boolean = true,
+    progressive: Boolean = false
 ) = this.hazeBlur(
     input = HazeInput.Sources(state),
     style = HazeBlurStyle.Material3 {
         alpha(alpha)
         blurRadius(radius)
+        if (progressive) {
+            progressive(
+                HazeProgressive.verticalGradient(
+                    startIntensity = 1f,
+                    endIntensity = 0f,
+                ),
+            )
+        }
     },
     performanceMode = performanceMode,
     expandLayerBounds = expandLayerBounds
@@ -70,7 +80,7 @@ fun Modifier.blurForeground(
 
 @Composable
 fun Modifier.fillMaxWidthWithLimit(
-    max: Dp = 500.dp,
+    max: Dp = 600.dp,
     @FloatRange fraction: Float = 1f
 ) : Modifier {
     return this

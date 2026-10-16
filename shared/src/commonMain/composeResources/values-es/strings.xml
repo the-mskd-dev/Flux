@@ -230,4 +230,13 @@
         <item>¡Muchas gracias por vuestra ayuda y apoyo, hasta pronto!</item>
     </string-array>
 
+    <string name="cast">Equipo</string>
+    <string name="biography">Biografía</string>
+    <string name="born">Nacimiento: %1$s</string>
+    <string name="died">Fallecimiento: %1$s</string>
+    <string name="age">%1$d años</string>
+    <string name="place_of_birth">Lugar de nacimiento: %1$s</string>
+    <string name="known_for_department">Conocido/a por: %1$s</string>
+    <string name="original_name">Nombre original: %1$s</string>
+    <string name="also_in">También en</string>
 </resources>

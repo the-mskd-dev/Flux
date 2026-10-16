@@ -39,6 +39,9 @@ interface ArtworkDao {
     @Query("SELECT * FROM artworks WHERE (:includePrivates = 1 OR isPrivate = 0)")
     suspend fun getArtworks(includePrivates: Boolean = false) : List<ArtworkEntity>
 
+    @Query("SELECT * FROM artworks WHERE id IN (:artworkIds)")
+    suspend fun getArtworks(artworkIds: List<Long>) : List<ArtworkEntity>
+
 //endregion
 
 //region Private

@@ -9,6 +9,8 @@ import com.mskd.flux.core.network.tmdb.data.dto.MediaTypeDto
 import com.mskd.flux.core.network.tmdb.data.dto.TranslationsDto
 import com.mskd.flux.core.network.tmdb.data.dto.genre.GenreDto
 import com.mskd.flux.core.network.tmdb.data.dto.movie.MovieDto
+import com.mskd.flux.core.network.tmdb.data.dto.people.PeopleDto
+import com.mskd.flux.core.network.tmdb.data.dto.people.PersonInfoDto
 import com.mskd.flux.core.network.tmdb.data.dto.show.EpisodeDto
 import com.mskd.flux.core.network.tmdb.data.dto.show.SeasonDto
 import com.mskd.flux.core.network.tmdb.data.dto.show.ShowDto
@@ -154,6 +156,25 @@ class TmdbDataSourceImpl(
 
     }
 
+    override suspend fun getMoviePeople(artworkId: Long): PeopleDto? {
+
+        if (!tokenDataStore.tokenIsAvailable())
+            return null
+
+        val language = tmdbLanguage()
+
+        return try {
+            tmdbService.getMoviePeople(
+                artworkId = artworkId,
+                language = language.toTmdbFormat()
+            )
+        } catch (e: Exception) {
+            Napier.e(tag = TAG, message = "getMoviePeople - Fail to get people for artworkId:$artworkId (${language.toTmdbFormat()})", throwable = e)
+            null
+        }
+
+    }
+
     override suspend fun getShow(
         artworkId: Long
     ): ShowDto? {
@@ -190,6 +211,46 @@ class TmdbDataSourceImpl(
 
         } catch (e: Exception) {
             Trace.error(tag = TAG, message = "getTmdbMovie - Fail to get TMDBShow for artworkId:$artworkId (${language.toTmdbFormat()})", throwable = e)
+            null
+        }
+
+    }
+
+    override suspend fun getShowPeople(artworkId: Long): PeopleDto? {
+
+        if (!tokenDataStore.tokenIsAvailable())
+            return null
+
+        val language = tmdbLanguage()
+
+        return try {
+            tmdbService.getShowPeople(
+                artworkId = artworkId,
+                language = language.toTmdbFormat()
+            )
+        } catch (e: Exception) {
+            Napier.e(tag = TAG, message = "getShowPeople - Fail to get people for artworkId:$artworkId (${language.toTmdbFormat()})", throwable = e)
+            null
+        }
+
+    }
+
+    override suspend fun getPersonInfo(personId: Int): PersonInfoDto? {
+
+        if (!tokenDataStore.tokenIsAvailable())
+            return null
+
+        val language = tmdbLanguage()
+
+        return try {
+
+            tmdbService.getPersonInfo(
+                id = personId,
+                language = language.toTmdbFormat()
+            )
+
+        } catch (e: Exception) {
+            Napier.e(tag = TAG, message = "getPersonDetails - Fail to get person details for personId:$personId (${language.toTmdbFormat()})", throwable = e)
             null
         }
 

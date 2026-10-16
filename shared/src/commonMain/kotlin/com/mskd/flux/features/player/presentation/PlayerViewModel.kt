@@ -88,7 +88,7 @@ class PlayerViewModel<out T>(
     val progress: StateFlow<Long> = _progress.asStateFlow()
 
     val uiState: StateFlow<PlayerUiState<T>> = combine(
-        observeArtworkUseCase.flow,
+        observeArtworkUseCase(artworkId = params.artworkId),
         settingsDataStore.flow,
         playerManager.flow,
         _userState,
@@ -139,14 +139,8 @@ class PlayerViewModel<out T>(
     //region Lifecycle
 
     init {
-        playerManager.connect(sessionId = sessionId)
 
-        // Observe artwork if needed
-        params.artworkId?.let {
-            viewModelScope.launch {
-                observeArtworkUseCase(artworkId = it)
-            }
-        }
+        playerManager.connect(sessionId = sessionId)
 
         viewModelScope.launch {
 

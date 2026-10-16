@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class PlayerParams(
     val mediaId: Long,
-    val artworkId: Long? = null
+    val artworkId: Long
 ) {
 
     companion object {

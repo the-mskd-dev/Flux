@@ -147,7 +147,8 @@ fun UnknownScreenContent(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background),
+                .background(MaterialTheme.colorScheme.background)
+                .padding(horizontal = FluxUI.Space.medium),
         ) {
 
             Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
@@ -155,7 +156,6 @@ fun UnknownScreenContent(
             FluxSearchField(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = FluxUI.Space.medium)
                     .padding(bottom = FluxUI.Space.large),
                 value = searchQuery,
                 onValueChange = { sendIntent(UnknownIntent.DoSearch(it)) },

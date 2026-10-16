@@ -230,4 +230,14 @@
         <item>Cependant afin de publier l'application, j'ai besoin d'une poignée de testeurs et testeuses pour passer la validation de Google, et c'est pourquoi je me tourne vers vous. Si vous souhaitez participer, il suffit juste de m'envoyer votre adresse mail afin que je l'inscrive parmi les testeurs et testeuses, puis vous recevrez un lien Play Store vous proposant de télécharger l'application (gratuitement normalement), et puis c'est tout.</item>
         <item>Je vous remercie de votre aide et de votre soutien, et à bientôt !</item>
     </string-array>
+
+    <string name="cast">Équipe</string>
+    <string name="biography">Biographie</string>
+    <string name="born">Naissance : %1$s</string>
+    <string name="died">Décès : %1$s</string>
+    <string name="age">%1$d ans</string>
+    <string name="place_of_birth">Lieu de naissance : %1$s</string>
+    <string name="known_for_department">Connu(e) pour : %1$s</string>
+    <string name="original_name">Nom d\'origine : %1$s</string>
+    <string name="also_in">Également dans</string>
 </resources>

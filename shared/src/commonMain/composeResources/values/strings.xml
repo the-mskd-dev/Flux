@@ -249,7 +249,6 @@
     </string-array>
 
     <string name="cast">Production</string>
-
     <string name="biography">Biography</string>
     <string name="born">Born : %1$s</string>
     <string name="died">Died : %1$s</string>

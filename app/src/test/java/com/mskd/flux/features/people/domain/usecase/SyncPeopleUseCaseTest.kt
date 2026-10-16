@@ -79,7 +79,7 @@ class SyncPeopleUseCaseTest : FunSpec({
             userDataStore = userDataStore,
         )
 
-        useCase.invoke(artworks = listOf(movieArtwork))
+        useCase(artworks = listOf(movieArtwork))
         testDispatcher.scheduler.advanceUntilIdle()
 
         coVerify(exactly = 1) { apiRepository.getMoviePeople(artworkId = movieArtwork.id) }

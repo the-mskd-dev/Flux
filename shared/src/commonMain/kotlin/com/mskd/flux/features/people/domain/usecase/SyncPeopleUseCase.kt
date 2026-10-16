@@ -8,11 +8,12 @@ import com.mskd.flux.core.network.tmdb.domain.repository.ApiRepository
 import com.mskd.flux.features.people.domain.repository.PeopleRepository
 import com.mskd.flux.report.Trace
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.days
 
@@ -52,22 +53,26 @@ class SyncPeopleUseCase(
 
     private suspend fun syncArtworks(artworks: List<Artwork>) {
         val validArtworks = artworks.filter { it.id != Artwork.UNKNOWN_ID }
-        val dispatcher = Dispatchers.Default.limitedParallelism(5)
+        val semaphore = Semaphore(permits = 5)
 
         val people = coroutineScope {
 
             validArtworks.map { artwork ->
 
-                async(dispatcher) {
+                async {
 
-                    try {
-                        when (artwork.type) {
-                            ContentType.MOVIE -> apiRepository.getMoviePeople(artworkId = artwork.id)
-                            ContentType.SHOW -> apiRepository.getShowPeople(artworkId = artwork.id)
+                    semaphore.withPermit {
+
+                        try {
+                            when (artwork.type) {
+                                ContentType.MOVIE -> apiRepository.getMoviePeople(artworkId = artwork.id)
+                                ContentType.SHOW -> apiRepository.getShowPeople(artworkId = artwork.id)
+                            }
+                        } catch (e: Exception) {
+                            Trace.error(TAG, "Failed to sync people for artwork ${artwork.id}", e)
+                            emptyList()
                         }
-                    } catch (e: Exception) {
-                        Trace.error(TAG, "Failed to sync people for artwork ${artwork.id}", e)
-                        emptyList()
+
                     }
 
                 }

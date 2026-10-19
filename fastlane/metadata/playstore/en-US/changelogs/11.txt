@@ -1,0 +1,5 @@
+## Version 1.2.1
+
+- New feature : access to TMDB from artworks and episodes to get more information
+- Fix : Better image caching
+- Fix : Add year for shows to retrieve data

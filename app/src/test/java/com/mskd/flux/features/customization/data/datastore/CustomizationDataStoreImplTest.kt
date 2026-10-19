@@ -4,7 +4,7 @@ import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import app.cash.turbine.test
 import com.mskd.flux.features.customization.domain.datastore.CustomizationDataStore
 import com.mskd.flux.features.customization.domain.model.NavigationStyle
-import com.mskd.flux.utils.UiCommon
+import com.mskd.flux.ui.UiCommon
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.ExperimentalCoroutinesApi

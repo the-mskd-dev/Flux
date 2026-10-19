@@ -3,7 +3,7 @@ package com.mskd.flux.features.customization.presentation
 import androidx.compose.runtime.Immutable
 import com.mskd.flux.features.customization.domain.model.CustomizationDialog
 import com.mskd.flux.features.customization.domain.model.NavigationStyle
-import com.mskd.flux.utils.UiCommon
+import com.mskd.flux.ui.UiCommon
 
 @Immutable
 data class CustomizationUiState(

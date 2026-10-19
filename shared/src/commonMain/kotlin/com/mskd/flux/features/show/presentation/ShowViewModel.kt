@@ -6,6 +6,7 @@ import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
+import com.mskd.flux.features.people.domain.usecase.GetPeopleUseCase
 import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
 import com.mskd.flux.system.UrlLauncher
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -22,6 +23,7 @@ class ShowViewModel(
     private val artworkId: Long,
     private val urlLauncher: UrlLauncher,
     observeArtworkUseCase: ObserveArtworkUseCase,
+    getPeopleUseCase: GetPeopleUseCase,
     private val resetProgress: ResetProgressUseCase,
 ) : ViewModel() {
 
@@ -33,9 +35,10 @@ class ShowViewModel(
     private val _userState = MutableStateFlow<ShowDialog?>(null)
 
     val uiState: StateFlow<ShowUiState> = combine(
-        observeArtworkUseCase.flow,
+        observeArtworkUseCase(artworkId = artworkId),
+        getPeopleUseCase(artworkId = artworkId),
         _userState,
-    ) { artworkState, dialog ->
+    ) { artworkState, people, dialog ->
         when (artworkState) {
             is State.Loading -> ShowUiState(state = State.Loading)
             is State.Error -> ShowUiState(state = State.Error())
@@ -44,7 +47,11 @@ class ShowViewModel(
                     ?: return@combine ShowUiState(state = State.Error())
                 ShowUiState(
                     state = State.Content(
-                        ShowContent(fullShow = fullShow, dialog = dialog)
+                        ShowContent(
+                            fullShow = fullShow,
+                            people = people,
+                            dialog = dialog
+                        )
                     )
                 )
             }
@@ -63,14 +70,6 @@ class ShowViewModel(
 
     //endregion
 
-    //region Init
-
-    init {
-        observeArtworkUseCase(artworkId = artworkId)
-    }
-
-    //endregion
-
     //region Public Methods
 
     fun handleIntent(intent: ShowIntent) = viewModelScope.launch {
@@ -78,6 +77,7 @@ class ShowViewModel(
             // Navigation
             ShowIntent.OnBackTap -> _event.emit(ShowEvent.BackToPreviousScreen)
             is ShowIntent.OnSeasonClick -> navigateToSeason(season = intent.season, rgb = intent.rgb)
+            is ShowIntent.OnPersonClick -> _event.emit(ShowEvent.NavigateToPerson(person = intent.person))
 
             // Dialogs
             ShowIntent.CloseDialog -> closeDialog()

@@ -5,7 +5,7 @@ import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.materialkolor.rememberDynamicColorScheme
-import com.mskd.flux.utils.UiCommon
+import com.mskd.flux.ui.UiCommon
 
 @Composable
 fun createColorScheme(

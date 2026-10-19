@@ -49,6 +49,10 @@ class FakeDatabaseRepository : DatabaseRepository {
         else MediaMockups.artworks.filter { !it.isPrivate }
     }
 
+    override suspend fun getArtworks(artworkIds: List<Long>): List<Artwork> {
+        return MediaMockups.artworks.filter { artworkIds.contains(it.id) }
+    }
+
     override suspend fun setArtworkPrivate(artworkId: Long, isPrivate: Boolean) {}
 
     override suspend fun clearPrivateArtworks() {}
@@ -69,6 +73,12 @@ class FakeDatabaseRepository : DatabaseRepository {
 
     override suspend fun getMediasNotInFiles(files: List<UserFile>): List<Media> {
         return MediaMockups.allMedias.filter { e -> !files.contains(e.file) }
+    }
+
+    override suspend fun getNextEpisodeFor(episode: Episode): Episode? {
+        val episodes = MediaMockups.episodes.filter { it.artworkId == episode.artworkId }
+        return episodes.sortedWith(compareBy({ it.season }, { it.number }))
+            .firstOrNull { it.season > episode.season || (it.season == episode.season && it.number > episode.number) }
     }
 
     override suspend fun getMovie(artworkId: Long): Movie? {

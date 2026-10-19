@@ -8,7 +8,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.ColorScheme
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -21,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.core.model.artwork.FullArtwork
+import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.show.presentation.ShowDialog
 import com.mskd.flux.features.show.presentation.ShowEvent
@@ -28,17 +28,18 @@ import com.mskd.flux.features.show.presentation.ShowIntent
 import com.mskd.flux.features.show.presentation.ShowViewModel
 import com.mskd.flux.features.show.ui.composables.SeasonDialog
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.mockups.PeopleMockup
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.navigation.domain.Route.Artwork
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.components.ErrorScreen
-import com.mskd.flux.ui.components.FluxDropDownMenu
-import com.mskd.flux.ui.components.FluxDropDownMenuItem
 import com.mskd.flux.ui.components.FluxScaffold
 import com.mskd.flux.ui.components.LoadingScreen
 import com.mskd.flux.ui.components.ResetProgressDialog
 import com.mskd.flux.ui.dimensions.rememberScreenDimensions
+import com.mskd.flux.ui.modal.menu.FluxPopUpMenu
+import com.mskd.flux.ui.modal.menu.FluxPopUpMenuItem
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_eraser
 import flux.shared.generated.resources.more_info
@@ -65,6 +66,7 @@ fun ShowScreen(
             when (event) {
                 ShowEvent.BackToPreviousScreen -> onBack()
                 is ShowEvent.NavigateToSeason -> navigate(Artwork(artworkId = event.artworkId, season = event.season, rgb = event.rgb))
+                is ShowEvent.NavigateToPerson -> navigate(Route.Person(person = event.person))
             }
         }
     }
@@ -95,6 +97,7 @@ fun ShowScreen(
                 MaterialTheme(colorScheme = colorScheme) {
                     ShowScreenContent(
                         fullShow = content.fullShow,
+                        people = content.people,
                         dialog = content.dialog,
                         sendIntent = viewModel::handleIntent
                     )
@@ -107,10 +110,10 @@ fun ShowScreen(
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShowScreenContent(
     fullShow: FullArtwork.FullShow,
+    people: List<Person>,
     dialog: ShowDialog?,
     sendIntent: (ShowIntent) -> Unit
 ) {
@@ -137,12 +140,11 @@ fun ShowScreenContent(
                 }
             )
 
-            if (showMenu) {
-                ShowDropDownMenu(
-                    onDismissRequest = { showMenu = false },
-                    sendIntent = sendIntent
-                )
-            }
+            ShowDropDownMenu(
+                isVisible = showMenu,
+                onDismissRequest = { showMenu = false },
+                sendIntent = sendIntent
+            )
 
         }
     ) { innerPadding ->
@@ -150,12 +152,14 @@ fun ShowScreenContent(
         if (isLargeScreen) {
             ShowContentLarge(
                 fullShow = fullShow,
+                people = people,
                 scaffoldInnerPadding = innerPadding,
                 sendIntent = sendIntent,
             )
         } else {
             ShowContentRegular(
                 fullShow = fullShow,
+                people = people,
                 scaffoldInnerPadding = innerPadding,
                 sendIntent = sendIntent,
             )
@@ -181,14 +185,16 @@ fun ShowScreenContent(
 
 @Composable
 fun ShowDropDownMenu(
+    isVisible: Boolean,
     onDismissRequest: () -> Unit,
     sendIntent: (ShowIntent) -> Unit
 ) {
 
-    FluxDropDownMenu(
+    FluxPopUpMenu(
+        isVisible = isVisible,
         onDismissRequest = onDismissRequest,
         items = listOf(
-            FluxDropDownMenuItem(
+            FluxPopUpMenuItem(
                 text = stringResource(Res.string.more_info),
                 onClick = {
                     sendIntent(ShowIntent.OpenShowInfo)
@@ -196,7 +202,7 @@ fun ShowDropDownMenu(
                 },
                 leadingIcon = { Icon(imageVector = Icons.Outlined.Info, contentDescription = stringResource(Res.string.more_info)) },
             ),
-            FluxDropDownMenuItem(
+            FluxPopUpMenuItem(
                 text = stringResource(Res.string.reset_progress),
                 onClick = {
                     sendIntent(ShowIntent.ShowResetProgressDialog)
@@ -215,6 +221,7 @@ fun ShowScreen_Preview() {
     FluxThemePreview {
         ShowScreenContent(
             fullShow = MediaMockups.fullShow,
+            people = PeopleMockup.all,
             dialog = null,
             sendIntent = {}
         )

@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.setup.domain.model.SetupScreen
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
-import com.mskd.flux.utils.Trace
+import com.mskd.flux.report.Trace
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow

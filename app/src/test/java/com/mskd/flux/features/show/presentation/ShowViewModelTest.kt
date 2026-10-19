@@ -2,27 +2,34 @@ package com.mskd.flux.features.show.presentation
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
+import com.mskd.flux.core.model.artwork.Person
+import com.mskd.flux.core.model.artwork.PersonType
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.features.artwork.fake.FakeObserveArtworkUseCase
+import com.mskd.flux.features.people.domain.usecase.GetPeopleUseCase
 import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.mockups.PeopleMockup
 import com.mskd.flux.system.UrlLauncher
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.flow.MutableStateFlow
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class ShowViewModelTest : FunSpec({
 
     fluxExtensions()
 
     lateinit var viewModel: ShowViewModel
     lateinit var observeArtworkUseCase: ObserveArtworkUseCase
+    lateinit var getPeopleUseCase: GetPeopleUseCase
     lateinit var resetProgress: ResetProgressUseCase
     lateinit var urlLauncher: UrlLauncher
 
@@ -34,6 +41,7 @@ class ShowViewModelTest : FunSpec({
         viewModel = ShowViewModel(
             artworkId = MediaMockups.showArtwork.id,
             observeArtworkUseCase = observeArtworkUseCase,
+            getPeopleUseCase = getPeopleUseCase,
             resetProgress = resetProgress,
             urlLauncher = urlLauncher
         )
@@ -43,6 +51,8 @@ class ShowViewModelTest : FunSpec({
     beforeTest {
 
         observeArtworkUseCase = FakeObserveArtworkUseCase()
+        getPeopleUseCase = mockk()
+        every { getPeopleUseCase(any()) } returns MutableStateFlow(persistentListOf<Person>())
 
         updateVm()
 
@@ -58,6 +68,32 @@ class ShowViewModelTest : FunSpec({
             val content = (initialState.state as State.Content<ShowContent>).content
             content.dialog shouldBe null
 
+        }
+
+    }
+
+    test("exposes person in content") {
+
+        // Given
+        val person = listOf(
+            Person(
+                id = 819,
+                creditId = "credit-819",
+                artworkId = MediaMockups.showArtwork.id,
+                name = "Edward Norton",
+                profilePath = "/profile.jpg",
+                role = "The Narrator",
+                type = PersonType.CAST,
+                personOrder = 0
+            )
+        )
+        every { getPeopleUseCase(any()) } returns MutableStateFlow(person.toImmutableList())
+        updateVm()
+
+        // When / Then
+        viewModel.uiState.test {
+            val content = (awaitItem().state as State.Content<ShowContent>).content
+            content.people shouldBe person.toImmutableList()
         }
 
     }
@@ -146,11 +182,32 @@ class ShowViewModelTest : FunSpec({
         }
     }
 
+    context("OnPersonClick") {
+
+        test("should call NavigateToPerson event") {
+
+            // Given
+            val person = PeopleMockup.cast.first()
+
+            viewModel.event.test {
+
+                // When
+                viewModel.handleIntent(ShowIntent.OnPersonClick(person = person))
+
+                // Then
+                awaitItem() shouldBe ShowEvent.NavigateToPerson(person = person)
+
+            }
+        }
+
+    }
+
     test("error state") {
 
         viewModel = ShowViewModel(
             artworkId = -999L,
             observeArtworkUseCase = observeArtworkUseCase,
+            getPeopleUseCase = getPeopleUseCase,
             resetProgress = resetProgress,
             urlLauncher = urlLauncher
         )
@@ -166,6 +223,7 @@ class ShowViewModelTest : FunSpec({
         viewModel = ShowViewModel(
             artworkId = MediaMockups.movieArtwork.id,
             observeArtworkUseCase = observeArtworkUseCase,
+            getPeopleUseCase = getPeopleUseCase,
             resetProgress = resetProgress,
             urlLauncher = urlLauncher
         )

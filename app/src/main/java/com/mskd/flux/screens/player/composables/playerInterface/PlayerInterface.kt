@@ -103,11 +103,11 @@ fun PlayerInterface(
 
         }
 
-        PlayerNextEpisode(
+        PlayerChapterButton(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(end = FluxUI.Space.large),
-            nextButton = content.nextButton,
+            chapterButton = content.chapterButton,
             bottomMargin = {
                 if (content.showInterface) {
                     seekBarHeight + FluxUI.Space.medium

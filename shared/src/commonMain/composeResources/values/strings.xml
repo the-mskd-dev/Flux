@@ -56,7 +56,7 @@
         <item>Spider-man (2002).mkv</item>
         <item>Your name.avi</item>
         <item>Spider-man-no-way-home-(2021).mp4</item>
-        <item>Spider.man.brand.new.day.mp4</item>
+        <item>Spider.man.brand.\new.day.mp4</item>
     </string-array>
     <string-array name="shows_naming" translatable="false">
         <item>show name_s01e02.mkv</item>
@@ -74,9 +74,9 @@
     <string name="rewatch">Rewatch</string>
     <string name="about">About</string>
     <string name="who_am_i">Who am I?</string>
-    <string name="who_am_i_desc">I've been passionate about smartphones since my teenage years, and I decided to become an Android developer, a job I've been doing for a few years now.nBeyond that, I'm just an average guy who loves manga, traveling, and Real Madrid.</string>
+    <string name="who_am_i_desc">I've been passionate about smartphones since my teenage years, and I decided to become an Android developer, a job I've been doing for a few years now.\nBeyond that, I'm just an average guy who loves manga, traveling, and Real Madrid.</string>
     <string name="why_this_app">Why this app?</string>
-    <string name="why_this_app_desc">Sometimes, you end up with a lot of video files and wish for an app to organize them simply. An app like Infuse exists on iOS, but since there's no equivalent on Android, I decided to create it myself for my personal needs.nPlus, as an Android developer, this app also helps me stay up-to-date with the latest developments and serves as a kind of "sandbox".</string>
+    <string name="why_this_app_desc">Sometimes, you end up with a lot of video files and wish for an app to organize them simply. An app like Infuse exists on iOS, but since there's no equivalent on Android, I decided to create it myself for my personal needs.\nPlus, as an Android developer, this app also helps me stay up-to-date with the latest developments and serves as a kind of "sandbox".</string>
     <string name="how_it_works">How does this app work?</string>
     <string name="how_it_works_desc">This app will scan your video files longer than 5 minutes and extract information from the file name (title, season, episode, year). Then, the TMDB API is used to fetch additional information like the synopsis, rating, genre, etc.</string>
     <string name="which_technologies">What technologies are used?</string>
@@ -95,7 +95,9 @@
     <string name="track">Track</string>
     <string name="subtitles">Subtitles</string>
     <string name="audio_tracks">Audio tracks</string>
-    <string name="next_episode">Next episode (%1$dsec)</string>
+    <string name="next_episode">Next episode</string>
+    <string name="skip_opening">Skip opening</string>
+    <string name="skip_ending">Skip ending</string>
     <string name="close">Close</string>
     <string name="do_not_show_again">Don't show again</string>
     <string name="tmdb_api_token">TMDB API Token</string>
@@ -116,9 +118,7 @@
     <string name="other_files">Other files</string>
     <string name="no_item">There are no items to display</string>
     <string name="skip">Skip</string>
-    <string name="snackbar_add_api_key">Add your key to enjoy a better experience</string>
     <string name="add">Add</string>
-    <string name="snackbar_see_tuto">To organize your library, please check the naming of your files</string>
     <string name="see">See</string>
     <string name="more_info">More information</string>
     <string name="external_player">External player</string>
@@ -247,4 +247,14 @@
         <item>However, in order to publish the app, I need a handful of testers to pass Google's validation, and that's why I'm turning to you. If you'd like to participate, all you need to do is send me your email address so I can add you to the list of testers, and then you'll receive a Play Store link inviting you to download the app (normally for free), and that's it.</item>
         <item>Thank you for your help and support, and see you soon!</item>
     </string-array>
+
+    <string name="cast">Production</string>
+    <string name="biography">Biography</string>
+    <string name="born">Born : %1$s</string>
+    <string name="died">Died : %1$s</string>
+    <string name="age">%1$d years old</string>
+    <string name="place_of_birth">Place of birth : %1$s</string>
+    <string name="known_for_department">Known for : %1$s</string>
+    <string name="original_name">Original name : %1$s</string>
+    <string name="also_in">Also in</string>
 </resources>

@@ -26,6 +26,7 @@ interface DatabaseRepository {
     // Artworks
     suspend fun getArtwork(artworkId: Long) : Artwork?
     suspend fun getArtworks(includePrivates: Boolean = false) : List<Artwork>
+    suspend fun getArtworks(artworkIds: List<Long>) : List<Artwork>
 
     // Privacy
     suspend fun setArtworkPrivate(artworkId: Long, isPrivate: Boolean)
@@ -37,6 +38,7 @@ interface DatabaseRepository {
     // Medias
     suspend fun getMedias() : List<Media>
     suspend fun getMediasNotInFiles(files: List<UserFile>) : List<Media>
+    suspend fun getNextEpisodeFor(episode: Episode) : Episode?
 
     // Movies
     suspend fun getMovie(artworkId: Long) : Movie?

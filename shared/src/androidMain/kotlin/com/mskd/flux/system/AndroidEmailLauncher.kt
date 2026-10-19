@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.core.net.toUri
-import com.mskd.flux.utils.Trace
+import com.mskd.flux.report.Trace
 
 class AndroidEmailLauncher(private val context: Context) : EmailLauncher {
 

@@ -6,7 +6,7 @@ import com.mskd.flux.features.customization.presentation.CustomizationUiState
 import com.mskd.flux.features.settings.ui.composables.SettingsItem
 import com.mskd.flux.features.settings.ui.composables.SettingsSection
 import com.mskd.flux.features.settings.ui.composables.SettingsSwitch
-import com.mskd.flux.utils.UiCommon
+import com.mskd.flux.ui.UiCommon
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.accent_color
 import flux.shared.generated.resources.accent_color_desc

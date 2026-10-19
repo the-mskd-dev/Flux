@@ -1,12 +1,12 @@
 package com.mskd.flux.features.player.presentation
 
 import androidx.compose.runtime.Immutable
-import androidx.media3.common.Player
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.core.model.player.PlayerTrack
+import com.mskd.flux.features.player.domain.model.VideoChapter
 
 
 @Immutable
@@ -35,9 +35,8 @@ data class PlayerUiContent<out T>(
     val seekOverlay: SeekOverlay? = null,
     val ambientOverlay: AmbientOverlay? = null,
     val settingsSheet: SettingsSheet? = null,
-    val nextButton: NextButton = NextButton.Hidden,
-
-    ) {
+    val chapterButton: ChapterButton? = null
+) {
 
     @Immutable
     data class SeekOverlay(
@@ -60,10 +59,9 @@ data class PlayerUiContent<out T>(
         data class Tracks(val type: PlayerTrack.Type) : SettingsSheet()
     }
 
-    sealed class NextButton {
-        data class Showed(val episode: Episode) : NextButton()
-        data object Hidden : NextButton()
-        data object Canceled : NextButton()
+    sealed interface ChapterButton {
+        data class Skip(val chapter: VideoChapter) : ChapterButton
+        data class NextEpisode(val nextEpisode: Episode) : ChapterButton
     }
 
 }
@@ -88,14 +86,8 @@ data class PlayerUserState(
     val seekOverlay: PlayerUiContent.SeekOverlay? = null,
     val ambientOverlay: PlayerUiContent.AmbientOverlay? = null,
     val settingsSheet: PlayerUiContent.SettingsSheet? = null,
-    val nextButton: PlayerUiContent.NextButton = PlayerUiContent.NextButton.Hidden,
+    val chapterButton: PlayerUiContent.ChapterButton? = null
 )
-
-sealed class PlayerScreenState {
-    data object Loading : PlayerScreenState()
-    data object Error : PlayerScreenState()
-    data class Content(val player: Player, val media: Media) : PlayerScreenState()
-}
 
 sealed class PlayerIntent {
     data class PlayMedia(val media: Media) : PlayerIntent()
@@ -108,8 +100,8 @@ sealed class PlayerIntent {
     data class UpdateProgress(val progress: Long) : PlayerIntent()
     data class ShowSettings(val sheet: PlayerUiContent.SettingsSheet?) : PlayerIntent()
     data class SelectTrack(val track: PlayerTrack) : PlayerIntent()
-    data class PlayNextEpisode(val episode: Episode) : PlayerIntent()
-    data object CancelNextEpisode : PlayerIntent()
+
+    data class OnChapterButtonTap(val button: PlayerUiContent.ChapterButton?) : PlayerIntent()
     data class OnVolumeChange(val delta: Float) : PlayerIntent()
     data class OnBrightnessChange(val delta: Float) : PlayerIntent()
     data class UpdateAmbientOverlay(val type: PlayerUiContent.AmbientOverlay.Type, val value: Int) : PlayerIntent()

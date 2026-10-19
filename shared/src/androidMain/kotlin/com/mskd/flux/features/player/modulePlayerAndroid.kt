@@ -12,10 +12,13 @@ import androidx.media3.extractor.mp4.Mp4Extractor
 import com.mskd.flux.di.QualifiersAndroid
 import com.mskd.flux.features.player.data.PipIsEnabledUseCase
 import com.mskd.flux.features.player.data.manager.AndroidPlayerManager
+import com.mskd.flux.features.player.data.manager.DecoderManagerHolder
+import com.mskd.flux.features.player.data.usecase.AndroidGetChaptersUseCase
 import com.mskd.flux.features.player.data.usecase.AndroidPipIsEnabledUseCase
 import com.mskd.flux.features.player.domain.manager.PlayerManager
+import com.mskd.flux.features.player.domain.usecase.GetChaptersUseCase
 import com.mskd.flux.features.player.presentation.PlayerViewModel
-import com.mskd.flux.utils.Trace
+import com.mskd.flux.report.Trace
 import io.github.anilbeesetti.nextlib.media3ext.ffdecoder.DecoderManager
 import io.github.anilbeesetti.nextlib.media3ext.ffdecoder.NextRenderersFactory
 import org.koin.android.ext.koin.androidContext
@@ -26,11 +29,18 @@ private const val TAG = "modulePlayerAndroid"
 
 val modulePlayerAndroid = module {
 
-    // One manager per player: selects the decoder (hardware / software / FFmpeg)
-    // and enables runtime decoder fallback through NextRenderersFactory.
-    single { DecoderManager() }
+    // Publishes the DecoderManager of the running PlayerService to AndroidPlayerManager,
+    // which is created outside of the service scope but needs the manager to run
+    // runtime decoder recovery. Cleared by the service on destroy.
+    single { DecoderManagerHolder() }
 
     scope(QualifiersAndroid.PLAYER_SERVICE_SCOPE) {
+
+        // One manager per player: NextRenderersFactory can only wrap a single renderer set,
+        // so a manager must never outlive its ExoPlayer. Scoping it with the service gives
+        // every service restart a fresh manager and controller instead of a shared,
+        // already-used one (which is what crashed on service restart).
+        scoped<DecoderManager> { DecoderManager() }
 
         scoped<Player> {
             val context = androidContext()
@@ -57,8 +67,8 @@ val modulePlayerAndroid = module {
                 }
                 .also { player ->
                     try {
-                        // detach() is idempotent: guards against a service restart where
-                        // the previous player was released without detaching.
+                        // The manager is scoped with this player, so this runs exactly once
+                        // per service instance; detach() stays as an idempotent safety net.
                         decoderManager.detach()
                         // Must be attached before any prepare. The scope is injected from
                         // PlayerService.onCreate on the main (application) thread.
@@ -76,7 +86,7 @@ val modulePlayerAndroid = module {
         AndroidPlayerManager(
             context = androidContext(),
             saveTrackLanguageUseCase = get(),
-            decoderManager = get()
+            decoderManagerHolder = get()
         )
     }
 
@@ -90,6 +100,8 @@ val modulePlayerAndroid = module {
             saveProgressUseCase = get(),
             getSubtitlesUseCase = get(),
             saveTrackLanguageUseCase = get(),
+            getChaptersUseCase = get(),
+            getNextEpisodeUseCase = get()
         )
     }
 
@@ -97,6 +109,12 @@ val modulePlayerAndroid = module {
         AndroidPipIsEnabledUseCase(
             context = androidContext(),
             settingsDataStore = get()
+        )
+    }
+
+    single<GetChaptersUseCase> {
+        AndroidGetChaptersUseCase(
+            context = androidContext(),
         )
     }
 

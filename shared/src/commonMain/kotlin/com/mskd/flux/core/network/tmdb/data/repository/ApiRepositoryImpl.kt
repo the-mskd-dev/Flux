@@ -5,10 +5,12 @@ import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Genre
 import com.mskd.flux.core.model.artwork.Movie
+import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.core.network.tmdb.data.datasource.TmdbDataSource
 import com.mskd.flux.core.network.tmdb.data.mapper.toDomain
+import com.mskd.flux.core.network.tmdb.domain.model.PersonInfo
 import com.mskd.flux.core.network.tmdb.domain.model.Translation
 import com.mskd.flux.core.network.tmdb.domain.model.TranslationRequest
 import com.mskd.flux.core.network.tmdb.domain.repository.ApiRepository
@@ -38,6 +40,10 @@ internal class ApiRepositoryImpl(
         )
     }
 
+    override suspend fun getMoviePeople(artworkId: Long): List<Person> {
+        return tmdb.getMoviePeople(artworkId = artworkId)?.toDomain(artworkId = artworkId) ?: emptyList()
+    }
+
     //endregion
 
     //region Show
@@ -65,6 +71,14 @@ internal class ApiRepositoryImpl(
             }
 
         return season to episodes
+    }
+
+    override suspend fun getShowPeople(artworkId: Long): List<Person> {
+        return tmdb.getShowPeople(artworkId = artworkId)?.toDomain(artworkId = artworkId) ?: emptyList()
+    }
+
+    override suspend fun getPersonInfo(personId: Int): PersonInfo? {
+        return tmdb.getPersonInfo(personId = personId)?.toDomain()
     }
 
     //endregion

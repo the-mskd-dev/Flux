@@ -1,8 +1,8 @@
 package com.mskd.flux.tmdb
 
 import com.mskd.flux.configs.ApiConfig
+import com.mskd.flux.core.model.language.Language
 import com.mskd.flux.mockups.TMDBResponseMockups
-import com.mskd.flux.utils.Language
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.comparables.shouldBeGreaterThan
@@ -46,7 +46,7 @@ class TMDBServiceTest : FunSpec({
             .setResponseCode(200)
         apiConfig.mockWebServer.enqueue(mockResponse)
 
-        val tmdbResult = apiConfig.api.searchMovie("your name")
+        val tmdbResult = apiConfig.api.searchMovie("your name", language = Language.ENGLISH.code)
 
         tmdbResult.results.isNotEmpty() shouldBe true
         tmdbResult.resultCount shouldBeGreaterThan 0
@@ -61,7 +61,7 @@ class TMDBServiceTest : FunSpec({
         apiConfig.mockWebServer.enqueue(mockResponse)
 
         shouldThrow<Exception> {
-            apiConfig.api.searchMovie("your name")
+            apiConfig.api.searchMovie("your name", language = Language.ENGLISH.code)
         }
 
     }
@@ -73,7 +73,7 @@ class TMDBServiceTest : FunSpec({
             .setResponseCode(200)
         apiConfig.mockWebServer.enqueue(mockResponse)
 
-        val tmdbResult = apiConfig.api.getMovieDetails(0L)
+        val tmdbResult = apiConfig.api.getMovieDetails(0L, language = Language.ENGLISH.code)
 
         tmdbResult.title.isNotEmpty() shouldBe true
 
@@ -86,7 +86,7 @@ class TMDBServiceTest : FunSpec({
         apiConfig.mockWebServer.enqueue(mockResponse)
 
         shouldThrow<Exception> {
-            apiConfig.api.getMovieDetails(0L)
+            apiConfig.api.getMovieDetails(0L, language = Language.ENGLISH.code)
         }
 
     }
@@ -124,7 +124,7 @@ class TMDBServiceTest : FunSpec({
             .setResponseCode(200)
         apiConfig.mockWebServer.enqueue(mockResponse)
 
-        val tmdbResult = apiConfig.api.searchShow("naruto")
+        val tmdbResult = apiConfig.api.searchShow("naruto", language = Language.ENGLISH.code)
 
         tmdbResult.results.isNotEmpty() shouldBe true
         tmdbResult.resultCount shouldBeGreaterThan 0
@@ -139,7 +139,7 @@ class TMDBServiceTest : FunSpec({
         apiConfig.mockWebServer.enqueue(mockResponse)
 
         shouldThrow<Exception> {
-            apiConfig.api.searchShow("naruto")
+            apiConfig.api.searchShow("naruto", language = Language.ENGLISH.code)
         }
 
     }
@@ -177,7 +177,7 @@ class TMDBServiceTest : FunSpec({
             .setResponseCode(200)
         apiConfig.mockWebServer.enqueue(mockResponse)
 
-        val tmdbResult = apiConfig.api.getEpisode(0L, 1, 1)
+        val tmdbResult = apiConfig.api.getEpisode(0L, 1, 1, language = Language.ENGLISH.code)
 
         tmdbResult.title.isNotEmpty() shouldBe true
 
@@ -190,7 +190,7 @@ class TMDBServiceTest : FunSpec({
         apiConfig.mockWebServer.enqueue(mockResponse)
 
         shouldThrow<Exception> {
-            apiConfig.api.getEpisode(0L, 1, 1)
+            apiConfig.api.getEpisode(0L, 1, 1, language = Language.ENGLISH.code)
         }
 
     }

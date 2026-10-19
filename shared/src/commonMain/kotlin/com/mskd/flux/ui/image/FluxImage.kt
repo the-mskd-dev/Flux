@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePainter
@@ -32,13 +33,22 @@ fun FluxImage(
     path: String,
     contentDescription: String,
     contentScale: ContentScale = ContentScale.Crop,
-    onSuccess: ((AsyncImagePainter.State.Success) -> Unit)? = null
+    onSuccess: ((AsyncImagePainter.State.Success) -> Unit)? = null,
+    placeholder: Painter? = Image.placeholder,
+    error: Painter? = Image.error,
 ) {
     val context = LocalPlatformContext.current
     val urlLow = path.tmdbImage
     val urlHigh = path.tmdbImageLarge
 
-    val hdPainter = rememberAsyncImagePainter(urlHigh)
+    val hdPainter = rememberAsyncImagePainter(
+        model = ImageRequest.Builder(context)
+            .data(urlHigh)
+            .memoryCacheKey(urlHigh)
+            .diskCacheKey(urlHigh)
+            .crossfade(false)
+            .build()
+    )
 
     val hdState by hdPainter.state.collectAsState()
 
@@ -50,8 +60,8 @@ fun FluxImage(
                 .data(urlLow)
                 .crossfade(true)
                 .build(),
-            placeholder = Image.placeholder,
-            error = Image.error,
+            placeholder = placeholder,
+            error = error,
             contentDescription = contentDescription,
             contentScale = contentScale,
             onSuccess = onSuccess

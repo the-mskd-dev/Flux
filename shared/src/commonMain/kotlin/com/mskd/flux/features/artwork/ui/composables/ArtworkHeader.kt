@@ -18,6 +18,7 @@ import com.mskd.flux.features.artwork.presentation.ArtworkIntent
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.FluxThemePreview
+import com.mskd.flux.ui.bleedHorizontal
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxUI
 
@@ -41,6 +42,7 @@ fun ArtworkHeader(
 
         ArtworkImage(
             modifier = Modifier
+                .bleedHorizontal()
                 .constrainAs(image) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)

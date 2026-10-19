@@ -32,13 +32,13 @@ import com.mskd.flux.features.settings.ui.composables.SettingsSyncSection
 import com.mskd.flux.features.settings.ui.composables.SettingsTmdbSection
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.navigation.domain.Route.Token
+import com.mskd.flux.system.rememberNotificationsPermission
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.components.FluxOptionsDialog
 import com.mskd.flux.ui.components.FluxScaffold
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.ui.theme.LocalUiGlobal
-import com.mskd.flux.utils.rememberNotificationsPermission
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.settings
 import org.jetbrains.compose.resources.stringResource

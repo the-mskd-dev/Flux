@@ -2,8 +2,8 @@ package com.mskd.flux.features.settings.data.datastore
 
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import app.cash.turbine.test
+import com.mskd.flux.core.model.language.Language
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
-import com.mskd.flux.utils.Language
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -186,7 +186,7 @@ class SettingsDataStoreImplTest : FunSpec({
     test("setDataLanguage should update value in flow") {
 
         // Given
-        val newValue = Language.KOREAN.code
+        val newValue = Language.KOREAN
         settingsDataStore.flow.test {
             awaitItem()
 

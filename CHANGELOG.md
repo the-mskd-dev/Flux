@@ -1,5 +1,6 @@
-## Version 1.8.3
+## Version 1.8.4
 
-- Core: Prepare CMP and KMP step by step
-- Core: Improve player compatibility 
-- Feature: Add new languages for metadata (Arabic, Chinese, Dutch)
+- Feature: Add credits
+- Feature: Bypass openings and endings, and more relevant "next episode" button
+- Fix: Player crash
+- Fix: Improve image caching and rendering

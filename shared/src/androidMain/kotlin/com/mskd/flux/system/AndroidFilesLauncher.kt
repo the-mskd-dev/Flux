@@ -8,7 +8,7 @@ import android.provider.DocumentsContract
 import androidx.core.net.toUri
 import com.mskd.flux.core.model.files.FileSource
 import com.mskd.flux.core.model.files.UserFile
-import com.mskd.flux.utils.Trace
+import com.mskd.flux.report.Trace
 
 class AndroidFilesLauncher(private val context: Context) : FilesLauncher {
 

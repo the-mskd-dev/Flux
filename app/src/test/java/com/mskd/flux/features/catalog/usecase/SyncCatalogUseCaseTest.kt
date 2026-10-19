@@ -16,6 +16,7 @@ import com.mskd.flux.features.catalog.fake.FakeCatalogSyncCoordinator
 import com.mskd.flux.features.files.domain.usecase.FilterExistingFilesUseCase
 import com.mskd.flux.features.files.domain.usecase.GetDeviceFilesUseCase
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
+import com.mskd.flux.features.people.domain.usecase.SyncPeopleUseCase
 import com.mskd.flux.features.privateFolder.domain.datastore.PrivateFolderDataStore
 import com.mskd.flux.mockups.MediaMockups
 import io.kotest.core.spec.style.FunSpec
@@ -24,6 +25,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -59,6 +61,7 @@ class SyncCatalogUseCaseTest : FunSpec({
         filterExistingFilesUseCase: FilterExistingFilesUseCase = mockk(relaxed = true),
         syncGenresUseCase: SyncGenresUseCase = mockk(relaxed = true),
         catalogFetcher: CatalogContentFetcher = mockk(relaxed = true),
+        syncPeopleUseCase: SyncPeopleUseCase = mockk(relaxed = true),
     ) = SyncCatalogUseCase(
         database = database,
         privateFolder = privateFolder,
@@ -70,6 +73,7 @@ class SyncCatalogUseCaseTest : FunSpec({
         filterExistingFilesUseCase = filterExistingFilesUseCase,
         syncGenresUseCase = syncGenresUseCase,
         catalogFetcher = catalogFetcher,
+        syncPeopleUseCase = syncPeopleUseCase,
     )
 
     test("if full sync is running, nothing to do when a light sync is requested") {
@@ -440,6 +444,100 @@ class SyncCatalogUseCaseTest : FunSpec({
         // Then
         coVerify { database.saveMedias(newCatalog.movies + MediaMockups.episodes) }
     }
+
+    // region SyncPeopleUseCase integration
+
+    test("if new files are detected during light sync, people sync targets only the new artworks") {
+        // Given
+        val newCatalog = Catalog(
+            artworks = MediaMockups.artworks,
+            movies = MediaMockups.movies,
+            seasons = MediaMockups.seasons,
+            episodes = MediaMockups.episodes
+        )
+        val database = mockk<DatabaseRepository>(relaxed = true)
+        val syncPeopleUseCase = mockk<SyncPeopleUseCase>(relaxed = true)
+
+        val getDeviceFilesUseCase = mockk<GetDeviceFilesUseCase>()
+        coEvery { getDeviceFilesUseCase() } returns newCatalog.movies.map { it.file }
+
+        val catalogFetcher = mockk<CatalogContentFetcher>(relaxed = true) {
+            coEvery { fetch(any(), any()) } returns newCatalog
+        }
+
+        val useCase = createUseCase(
+            database = database,
+            getDeviceFilesUseCase = getDeviceFilesUseCase,
+            catalogFetcher = catalogFetcher,
+            syncPeopleUseCase = syncPeopleUseCase,
+        )
+
+        // When
+        useCase.invoke(onlyNew = true)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Then
+        verify(exactly = 1) { syncPeopleUseCase(artworks = any(), force = false) }
+        verify(exactly = 0) { syncPeopleUseCase(artworks = null, force = true) }
+    }
+
+    test("if new files are detected during full sync, people sync is forced") {
+        // Given
+        val newCatalog = Catalog(
+            artworks = MediaMockups.artworks,
+            movies = MediaMockups.movies,
+            seasons = MediaMockups.seasons,
+            episodes = MediaMockups.episodes
+        )
+        val database = mockk<DatabaseRepository>(relaxed = true)
+        val syncPeopleUseCase = mockk<SyncPeopleUseCase>(relaxed = true)
+
+        val getDeviceFilesUseCase = mockk<GetDeviceFilesUseCase>()
+        coEvery { getDeviceFilesUseCase() } returns newCatalog.movies.map { it.file }
+
+        val catalogFetcher = mockk<CatalogContentFetcher>(relaxed = true) {
+            coEvery { fetch(any(), any()) } returns newCatalog
+        }
+
+        val useCase = createUseCase(
+            database = database,
+            getDeviceFilesUseCase = getDeviceFilesUseCase,
+            catalogFetcher = catalogFetcher,
+            syncPeopleUseCase = syncPeopleUseCase,
+        )
+
+        // When
+        useCase.invoke(onlyNew = false)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Then
+        verify(exactly = 1) { syncPeopleUseCase(force = true) }
+        verify(exactly = 0) { syncPeopleUseCase(artworks = match { it != null }, force = any()) }
+    }
+
+    test("if light sync finds no new file, people sync only checks the 7-day period") {
+        // Given
+        val database = mockk<DatabaseRepository>(relaxed = true)
+        val syncPeopleUseCase = mockk<SyncPeopleUseCase>(relaxed = true)
+        val getDeviceFilesUseCase = mockk<GetDeviceFilesUseCase>()
+        coEvery { getDeviceFilesUseCase() } returns emptyList()
+
+        val useCase = createUseCase(
+            database = database,
+            getDeviceFilesUseCase = getDeviceFilesUseCase,
+            syncPeopleUseCase = syncPeopleUseCase,
+        )
+
+        // When
+        useCase.invoke(onlyNew = true)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Then
+        coVerify { database.deleteMediasNotInFiles(emptyList()) }
+        verify(exactly = 1) { syncPeopleUseCase(force = false) }
+    }
+
+    // endregion
 
 
 })

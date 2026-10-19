@@ -10,7 +10,7 @@ This F-Droid build is completely free, ad-free, tracker-free, and contains zero 
 - 🛡️ Pure FOSS: No ads, no telemetry, no proprietary SDKs, and no account required.
 
 ### 💖 Support the Project
-If you enjoy Flux, consider supporting its development by purchasing the Supporter Edition on the Google Play Store or via GitHub Sponsors.
+If you enjoy Flux, consider supporting its development by purchasing the Supporter Edition on the Google Play Store or via GitHub Sponsors. Thanks a lot, Kisses. 🙏
 
 ---
 

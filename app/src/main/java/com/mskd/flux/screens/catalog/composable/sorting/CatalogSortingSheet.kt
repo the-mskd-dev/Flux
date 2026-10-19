@@ -2,7 +2,6 @@ package com.mskd.flux.screens.catalog.composable.sorting
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
@@ -15,7 +14,6 @@ import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.sort_by
 import org.jetbrains.compose.resources.stringResource
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CatalogSortingSheet(
     isVisible: Boolean,
@@ -42,7 +40,6 @@ fun CatalogSortingSheet(
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @FluxPreview
 @Composable
 fun CatalogSortingSheet_Preview() {

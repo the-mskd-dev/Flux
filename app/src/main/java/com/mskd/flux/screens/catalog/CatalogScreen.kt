@@ -15,8 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -26,7 +24,6 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -71,7 +68,6 @@ import com.mskd.flux.ui.blurBackground
 import com.mskd.flux.ui.blurForeground
 import com.mskd.flux.ui.components.LoadingScreen
 import com.mskd.flux.ui.dimensions.rememberScreenDimensions
-import com.mskd.flux.ui.global.animateAlphaState
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.rememberExternalPlayerAction
 import dev.chrisbanes.haze.rememberHazeState
@@ -156,7 +152,7 @@ fun CatalogScreen(
 
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun CatalogContent(
     state: CatalogState.Content,
@@ -172,10 +168,6 @@ fun CatalogContent(
 
     val screenDimensions = rememberScreenDimensions()
     val columns = if (screenDimensions.isLarge) 5 else FluxUI.itemsPerRow.artworks
-
-    val gridState = rememberLazyGridState()
-    val isScrolled by remember { derivedStateOf { gridState.canScrollBackward } }
-    val blurAlpha by animateAlphaState(targetValue = if (isScrolled) 1f else 0f,)
 
     val density = LocalDensity.current
     var headerHeight by remember { mutableStateOf(0.dp) }
@@ -218,7 +210,6 @@ fun CatalogContent(
                         end = FluxUI.Space.medium,
                         top = headerHeight
                     ),
-                    state = gridState,
                 ) {
 
                     if (state.artworks.none { !it.isUnknown }) {
@@ -319,7 +310,7 @@ fun CatalogContent(
                     .align(Alignment.TopCenter)
                     .fillMaxWidth()
                     .onSizeChanged { headerHeight = with(density) { it.height.toDp() } }
-                    .blurForeground(state = hazeState, alpha = blurAlpha)
+                    .blurForeground(state = hazeState, progressive = true)
                     .padding(top = paddingValues.calculateTopPadding()),
                 sendIntent = sendIntent
             )

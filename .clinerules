@@ -1,0 +1,22 @@
+# SYSTEM & TOOL CONSTRAINTS
+1. WORKSPACE BOUNDARY: You are strictly forbidden from reading, searching, or modifying any files outside of the current project root directory.
+2. PATH RESOLUTION: Always use relative paths starting with `./` (e.g., `./AGENT.md`).
+3. SEARCH TOOLS: Never execute global search commands (`find /`, `grep` from root) in the terminal. Restrict all file operations to the current workspace.
+
+# ANDROID CLI & TERMINAL TOOLING
+
+You are allowed to execute terminal commands to interact with the Android environment, run builds, and inspect tests.
+
+## Available Tooling & Commands:
+1. **Unit Testing & Verification**:
+   - Command: `./gradlew test` (or `./gradlew :app:testFossDebugUnitTest`)
+   - Purpose: Validate ViewModel tests, Koin module configurations, and logic.
+
+2. **Android CLI / ADB Automation**:
+   - Command: `adb devices` (to check connected emulators or physical devices)
+   - Command: `adb logcat -d | grep "com.mskd.flux"` (to inspect app logs and crashes)
+   - Command: `./gradlew installFossDebug` (to build and install the debug APK)
+
+## Execution Rules for CLI:
+- Always check that a device/emulator is connected via `adb devices` before running installation or UI inspection commands.
+- Never run long-polling logcat commands (`adb logcat` without `-d`); always use `-d` to dump and exit so the terminal process does not hang.

@@ -1,4 +1,0 @@
-- Feature: Nouvelles langues: Espagnol, Allemand, Italien, Coréen, Japonais
-- Feature: Compatibilité améliorée des noms de fichiers
-- Feature: Accès à l'explorateur de fichiers depuis les médias
-- Fix: Images parfois affichées en SD

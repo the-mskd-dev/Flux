@@ -1,1 +1,1 @@
-Modern local video player and library for your movies, shows, and anime.
+Modern local video player and library for your movies, TV shows, and anime.

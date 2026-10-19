@@ -1,0 +1,6 @@
+- Core: Play Store version
+- Fix: Save tracks languages
+- Fix: Search in Other files
+- UI: Speed up home screen loading
+- UI: UI enhancement
+- Core: Beginning of CMP

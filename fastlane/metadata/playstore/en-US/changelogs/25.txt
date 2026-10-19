@@ -1,0 +1,5 @@
+- FEATURE: Picture-in-Picture
+- FEATURE: Caching HD images option
+- FEATURE: Remove duration filter when retrieve files
+- UI: Add old blurred header option
+- CORE: Use of KMP libraries (Koin, Ktor, Kotlin-serialization)

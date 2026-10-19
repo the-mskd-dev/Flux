@@ -7,11 +7,11 @@ By purchasing Flux on Google Play, you directly support independent open-source 
 
 ### 🎬 Key Features
 
-- 📂 Complete Media Catalog: Organize and browse your local movies, TV series, and anime in one unified interface.
+- 📂 Complete Media Catalog: Organize and browse your local movies, TV shows, and anime in one unified interface.
 - 🍿 Rich TMDB Metadata: Automatically retrieve high-resolution posters, plot summaries, episode details, genres, and cast info.
 - ▶️ Built-in Video Player: Smooth playback with automatic progress tracking, playback history, and resume options for episodes and movies.
 - 🔗 External Player Integration: Easily open your media files with third-party video players if preferred.
-- 🎨 Material 3 Design: A clean, intuitive Material 3 Expressive UI optimized for browsing cinema and TV content.
+- 🎨 Material 3 Design: A clean, intuitive Material 3 Expressive library optimized for browsing cinema and TV content.
 - 🔒 Privacy-First: No ads, no paywalls, no recurring subscriptions, and zero user tracking.
 
 ---

@@ -26,9 +26,6 @@ kotlinxSerializationCore = "1.11.0"
 # -- UI --
 haze = "2.0.1"
 
-# -- Navigation --
-nav3Core = "1.1.6"
-
 # -- DI --
 koin = "4.2.2"
 
@@ -95,9 +92,8 @@ haze-blur-materials = { group = "dev.chrisbanes.haze", name = "haze-blur-materia
 material-kolor = { group = "com.materialkolor", name = "material-kolor", version = "5.0.1" }
 
 # -- Navigation --
-androidx-navigation3-runtime = { group = "androidx.navigation3", name = "navigation3-runtime", version.ref = "nav3Core" }
-androidx-navigation3-ui = { group = "androidx.navigation3", name = "navigation3-ui", version.ref = "nav3Core" }
-androidx-lifecycle-viewmodel-nav3 = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-navigation3", version.ref = "lifecycle" }
+navigation-ui = { group = "org.jetbrains.androidx.navigation3", name = "navigation3-ui", version = "1.2.0-rc01" }
+navigation-lifecycle = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel-navigation3", version.ref = "lifecycle" }
 compose-navigation = { group = "org.jetbrains.androidx.navigation", name = "navigation-compose", version = "2.10.0-beta01" }
 
 # -- Accompanist --
@@ -238,6 +234,10 @@ shared-ui = [
     "compose-material-icons",
     "compose-material-adaptive",
     "compose-material-adaptive-navigation",
+]
+shared-navigation = [
+    "navigation-ui",
+    "navigation-lifecycle",
     "compose-navigation"
 ]
 
@@ -263,12 +263,6 @@ android-compose = [
 android-compose-debug = [
     "androidx-ui-tooling",
     "androidx-ui-test-manifest"
-]
-
-android-navigation = [
-    "androidx-navigation3-runtime",
-    "androidx-navigation3-ui",
-    "androidx-lifecycle-viewmodel-nav3",
 ]
 
 android-accompanist = [

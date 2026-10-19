@@ -5,6 +5,8 @@ import com.mskd.flux.core.network.tmdb.data.dto.ArtworkDto
 import com.mskd.flux.core.network.tmdb.data.dto.TranslationsDto
 import com.mskd.flux.core.network.tmdb.data.dto.genre.GenreDto
 import com.mskd.flux.core.network.tmdb.data.dto.movie.MovieDto
+import com.mskd.flux.core.network.tmdb.data.dto.people.PeopleDto
+import com.mskd.flux.core.network.tmdb.data.dto.people.PersonInfoDto
 import com.mskd.flux.core.network.tmdb.data.dto.show.EpisodeDto
 import com.mskd.flux.core.network.tmdb.data.dto.show.SeasonDto
 import com.mskd.flux.core.network.tmdb.data.dto.show.ShowDto
@@ -18,7 +20,13 @@ interface TmdbDataSource {
 
     suspend fun getMovie(artworkId: Long) : MovieDto?
 
+    suspend fun getMoviePeople(artworkId: Long) : PeopleDto?
+
     suspend fun getShow(artworkId: Long) : ShowDto?
+
+    suspend fun getShowPeople(artworkId: Long) : PeopleDto?
+
+    suspend fun getPersonInfo(personId: Int) : PersonInfoDto?
 
     suspend fun getEpisode(
         artworkId: Long,

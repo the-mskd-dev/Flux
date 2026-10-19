@@ -3,9 +3,11 @@ package com.mskd.flux
 import android.app.Application
 import android.content.Context
 import com.mskd.flux.core.model.artwork.ContentType
+import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.core.AppInfo
 import com.mskd.flux.di.moduleAndroidApp
 import com.mskd.flux.di.modulePlatform
+import com.mskd.flux.features.people.presentation.PersonViewModel
 import com.mskd.flux.features.player.domain.model.PlayerParams
 import com.mskd.flux.features.player.presentation.PlayerViewModel
 import io.kotest.core.spec.style.FunSpec
@@ -37,7 +39,8 @@ class KoinModulesTest : FunSpec({
                 io.ktor.client.engine.HttpClientEngine::class
             ),
             injections = injectedParameters(
-                definition<PlayerViewModel<*>>(PlayerParams::class)
+                definition<PlayerViewModel<*>>(PlayerParams::class),
+                definition<PersonViewModel>(Person::class)
             )
         )
 

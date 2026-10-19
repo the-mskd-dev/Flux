@@ -1,7 +1,7 @@
 package com.mskd.flux.features.customization.domain.datastore
 
 import com.mskd.flux.features.customization.domain.model.NavigationStyle
-import com.mskd.flux.utils.UiCommon
+import com.mskd.flux.ui.UiCommon
 import kotlinx.coroutines.flow.Flow
 
 interface CustomizationDataStore {

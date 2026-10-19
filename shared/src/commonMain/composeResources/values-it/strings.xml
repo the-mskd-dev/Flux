@@ -78,7 +78,9 @@
     <string name="track">Traccia</string>
     <string name="subtitles">Sottotitoli</string>
     <string name="audio_tracks">Tracce audio</string>
-    <string name="next_episode">Prossimo episodio (%1$ds)</string>
+    <string name="next_episode">Prossimo episodio</string>
+    <string name="skip_opening">Salta la sigla</string>
+    <string name="skip_ending">Salta la sigla finale</string>
     <string name="close">Chiudi</string>
     <string name="do_not_show_again">Non mostrare più</string>
     <string name="tmdb_api_token">Token API TMDB</string>
@@ -99,9 +101,7 @@
     <string name="other_files">Altri file</string>
     <string name="no_item">Non ci sono elementi da mostrare</string>
     <string name="skip">Salta</string>
-    <string name="snackbar_add_api_key">Aggiungi la tua chiave per un'esperienza migliore</string>
     <string name="add">Aggiungi</string>
-    <string name="snackbar_see_tuto">Per organizzare la tua libreria, controlla la nomenclatura dei tuoi file</string>
     <string name="see">Vedi</string>
     <string name="more_info">Maggiori informazioni</string>
     <string name="external_player">Player esterno</string>
@@ -229,4 +229,15 @@
         <item>Tuttavia, per poter pubblicare l'applicazione, ho bisogno di un pugno di tester per superare la validazione di Google, ed è per questo che mi rivolgo a voi. Se desiderate partecipare, vi basta inviarmi il vostro indirizzo email in modo che possa iscrivervi tra i tester, dopodiché riceverete un link del Play Store che vi proporrà di scaricare l'applicazione (normalmente gratis), e questo è tutto.</item>
         <item>Vi ringrazio per il vostro aiuto e per il vostro supporto, a presto!</item>
     </string-array>
+
+    <string name="cast">Produzione</string>
+    <string name="biography">Biografia</string>
+    <string name="born">Nascita: %1$s</string>
+    <string name="died">Morte: %1$s</string>
+    <string name="age">%1$d anni</string>
+    <string name="place_of_birth">Luogo di nascita: %1$s</string>
+    <string name="known_for_department">Conosciuto/a per: %1$s</string>
+    <string name="original_name">Nome originale: %1$s</string>
+    <string name="also_in">Anche in</string>
+
 </resources>

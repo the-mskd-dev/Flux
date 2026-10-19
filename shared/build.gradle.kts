@@ -56,6 +56,7 @@ kotlin {
                 api(libs.bundles.shared.datastore)
                 api(libs.bundles.shared.tools)
                 api(libs.bundles.shared.ui)
+                api(libs.bundles.shared.navigation)
             }
         }
 

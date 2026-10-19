@@ -26,15 +26,13 @@ import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.player.PlayerTrack
 import com.mskd.flux.features.player.domain.manager.PlayerManager
 import com.mskd.flux.features.player.domain.usecase.SaveTrackLanguageUseCase
+import com.mskd.flux.report.Trace
 import com.mskd.flux.services.PlayerService
-import com.mskd.flux.utils.Constants
-import com.mskd.flux.utils.Trace
 import com.mskd.flux.utils.extensions.tmdbImage
 import com.mskd.flux.utils.extensions.uppercaseFirstLetter
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.season_and_episode
 import flux.shared.generated.resources.track
-import io.github.anilbeesetti.nextlib.media3ext.ffdecoder.DecoderManager
 import io.github.anilbeesetti.nextlib.media3ext.ffdecoder.DecoderMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -57,7 +55,7 @@ import kotlin.time.Duration.Companion.milliseconds
 class AndroidPlayerManager(
     private val context: Context,
     private val saveTrackLanguageUseCase: SaveTrackLanguageUseCase,
-    private val decoderManager: DecoderManager
+    private val decoderManagerHolder: DecoderManagerHolder
 ) : Player.Listener, PlayerManager<Player> {
 
     private companion object {
@@ -84,8 +82,8 @@ class AndroidPlayerManager(
     private val _subtitles = MutableStateFlow<List<String?>>(emptyList())
     override val subtitles: Flow<List<String?>> = _subtitles.asStateFlow()
 
-    private val _progress = MutableStateFlow(PlayerManager.Progress())
-    override val progress: Flow<PlayerManager.Progress> = _progress.asStateFlow()
+    private val _progress = MutableStateFlow(0L)
+    override val progress: Flow<Long> = _progress.asStateFlow()
 
     //endregion
 
@@ -334,6 +332,9 @@ class AndroidPlayerManager(
         if (decoderRecoveryAttempts >= MAX_DECODER_RECOVERY_ATTEMPTS) return false
 
         val player = (_state.value as? PlayerManager.State.Ready)?.player ?: return false
+        // The manager belongs to the running PlayerService: without it there is no decoder
+        // to switch, so the error is surfaced as usual.
+        val decoderManager = decoderManagerHolder.decoderManager ?: return false
 
         return try {
             val step = when (decoderRecoveryAttempts) {
@@ -371,6 +372,8 @@ class AndroidPlayerManager(
 
     /** Each new media starts from AUTO so the hardware decoder is tried first. */
     private fun resetDecoderModes() {
+        // Null when no PlayerService is alive: a fresh manager starts on AUTO anyway.
+        val decoderManager = decoderManagerHolder.decoderManager ?: return
         try {
             decoderManager.selectVideoDecoder(DecoderMode.AUTO)
             decoderManager.selectAudioDecoder(DecoderMode.AUTO)
@@ -535,21 +538,14 @@ class AndroidPlayerManager(
 
                     if (player.isPlaying && player.duration > 0) {
 
-                        val progressPercentage = player.currentPosition.toFloat() / player.duration.toFloat()
-                        val showNextEpisode = progressPercentage >= Constants.PLAYER.PROGRESS_THRESHOLD
-
-                        _progress.update {
-                            it.copy(
-                                progress = player.currentPosition,
-                                showNextEpisode = showNextEpisode
-                            )
-                        }
+                        _progress.update { player.currentPosition }
 
                     }
 
                 }
 
                 delay(1000.milliseconds)
+
             }
         }
     }

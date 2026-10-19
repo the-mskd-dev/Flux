@@ -78,7 +78,9 @@
     <string name="track">Spur</string>
     <string name="subtitles">Untertitel</string>
     <string name="audio_tracks">Tonspuren</string>
-    <string name="next_episode">Nächste Folge (%1$d Sek.)</string>
+    <string name="next_episode">Nächste Folge</string>
+    <string name="skip_opening">Intro überspringen</string>
+    <string name="skip_ending">Outro überspringen</string>
     <string name="close">Schließen</string>
     <string name="do_not_show_again">Nicht mehr anzeigen</string>
     <string name="tmdb_api_token">TMDB-API-Token</string>
@@ -99,9 +101,7 @@
     <string name="other_files">Andere Dateien</string>
     <string name="no_item">Keine Elemente zum Anzeigen vorhanden</string>
     <string name="skip">Überspringen</string>
-    <string name="snackbar_add_api_key">Füge deinen Schlüssel hinzu für ein besseres Erlebnis</string>
     <string name="add">Hinzufügen</string>
-    <string name="snackbar_see_tuto">Prüfe die Benennung deiner Dateien, um deine Mediathek zu strukturieren</string>
     <string name="see">Ansehen</string>
     <string name="more_info">Weitere Informationen</string>
     <string name="external_player">Externer Player</string>
@@ -229,4 +229,14 @@
         <item>Um die App jedoch zu veröffentlichen, benötige ich eine Handvoll Testerinnen und Tester, um die Validierung von Google zu bestehen, und deshalb wende ich mich an euch. Wenn ihr mitmachen möchtet, müsst ihr mir einfach eure E-Mail-Adresse senden, damit ich sie in die Testerliste eintragen kann. Danach erhaltet ihr einen Play Store-Link, über den ihr die App (normalerweise kostenlos) herunterladen könnt, und das ist auch schon alles.</item>
         <item>Vielen Dank für eure Hilfe und Unterstützung, und bis bald!</item>
     </string-array>
+
+    <string name="cast">Filmteam</string>
+    <string name="biography">Biografie</string>
+    <string name="born">Geboren: %1$s</string>
+    <string name="died">Gestorben: %1$s</string>
+    <string name="age">%1$d Jahre alt</string>
+    <string name="place_of_birth">Geburtsort: %1$s</string>
+    <string name="known_for_department">Bekannt für: %1$s</string>
+    <string name="original_name">Originalname: %1$s</string>
+    <string name="also_in">Auch in</string>
 </resources>

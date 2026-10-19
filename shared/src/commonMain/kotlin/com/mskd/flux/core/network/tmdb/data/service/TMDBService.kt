@@ -5,10 +5,11 @@ import com.mskd.flux.core.network.tmdb.data.dto.SearchResultsDto
 import com.mskd.flux.core.network.tmdb.data.dto.TranslationsDto
 import com.mskd.flux.core.network.tmdb.data.dto.genre.GenresResultDto
 import com.mskd.flux.core.network.tmdb.data.dto.movie.MovieDto
+import com.mskd.flux.core.network.tmdb.data.dto.people.PeopleDto
+import com.mskd.flux.core.network.tmdb.data.dto.people.PersonInfoDto
 import com.mskd.flux.core.network.tmdb.data.dto.show.EpisodeDto
 import com.mskd.flux.core.network.tmdb.data.dto.show.SeasonDto
 import com.mskd.flux.core.network.tmdb.data.dto.show.ShowDto
-import com.mskd.flux.utils.Constants
 
 interface TMDBService {
 
@@ -23,19 +24,24 @@ interface TMDBService {
     suspend fun searchMovie(
         title: String,
         year: Int? = null,
-        language: String = Constants.Global.LANGUAGE
+        language: String
     ) : SearchResultsDto
 
     suspend fun getMovieDetails(
         id: Long,
-        language: String = Constants.Global.LANGUAGE
+        language: String
     ) : MovieDto
 
     suspend fun getMovieTranslations(
         artworkId: Long,
     ) : TranslationsDto
 
-    suspend fun getMovieGenres(language: String = Constants.Global.LANGUAGE) : GenresResultDto
+    suspend fun getMovieGenres(language: String) : GenresResultDto
+
+    suspend fun getMoviePeople(
+        artworkId: Long,
+        language: String
+    ) : PeopleDto
 
     //endregion
 
@@ -44,19 +50,24 @@ interface TMDBService {
     suspend fun searchShow(
         title: String,
         year: Int? = null,
-        language: String = Constants.Global.LANGUAGE
+        language: String
     ) : SearchResultsDto
 
     suspend fun getShowDetails(
         artworkId: Long,
-        language: String = Constants.Global.LANGUAGE
+        language: String
     ) : ShowDto
 
     suspend fun getShowTranslations(
         artworkId: Long,
     ) : TranslationsDto
 
-    suspend fun getShowGenres(language: String = Constants.Global.LANGUAGE) : GenresResultDto
+    suspend fun getShowGenres(language: String) : GenresResultDto
+
+    suspend fun getShowPeople(
+        artworkId: Long,
+        language: String
+    ) : PeopleDto
 
     //endregion
 
@@ -66,7 +77,7 @@ interface TMDBService {
         id: Long,
         season: Int,
         number: Int,
-        language: String = Constants.Global.LANGUAGE
+        language: String
     ) : EpisodeDto
 
     suspend fun getEpisodeTranslations(
@@ -82,13 +93,22 @@ interface TMDBService {
     suspend fun getSeason(
         id: Long,
         season: Int,
-        language: String = Constants.Global.LANGUAGE
+        language: String
     ) : SeasonDto
 
     suspend fun getSeasonTranslations(
         artworkId: Long,
         season: Int,
     ) : TranslationsDto
+
+    //endregion
+
+    //region Person
+
+    suspend fun getPersonInfo(
+        id: Int,
+        language: String
+    ) : PersonInfoDto
 
     //endregion
 

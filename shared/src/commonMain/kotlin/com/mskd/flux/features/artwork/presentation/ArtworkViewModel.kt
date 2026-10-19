@@ -8,6 +8,7 @@ import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
+import com.mskd.flux.features.people.domain.usecase.GetPeopleUseCase
 import com.mskd.flux.features.player.domain.model.PlaybackAction
 import com.mskd.flux.features.player.domain.usecase.ResolvePlaybackActionUseCase
 import com.mskd.flux.features.progress.domain.usecase.ChangeMediaStatusUseCase
@@ -37,6 +38,7 @@ class ArtworkViewModel(
     private val urlLauncher: UrlLauncher,
     settingsDataStore: SettingsDataStore,
     observeArtworkUseCase: ObserveArtworkUseCase,
+    getPeopleUseCase: GetPeopleUseCase,
     private val changeMediaStatus: ChangeMediaStatusUseCase,
     private val markPreviousAsWatched: MarkPreviousAsWatchedUseCase,
     private val resetProgress: ResetProgressUseCase,
@@ -60,10 +62,11 @@ class ArtworkViewModel(
     private val _userState = MutableStateFlow(ArtworkUserState())
 
     val uiState: StateFlow<ArtworkUiState> = combine(
-        observeArtworkUseCase.flow,
+        observeArtworkUseCase(artworkId = artworkId),
         settingsDataStore.flow,
+        getPeopleUseCase(artworkId = artworkId),
         _userState,
-    ) { artworkState, settings, userState ->
+    ) { artworkState, settings, people, userState ->
 
         when (artworkState) {
             is State.Loading -> ArtworkUiState(state = State.Loading)
@@ -73,6 +76,7 @@ class ArtworkViewModel(
                 val dataState = ArtworkDataState(
                     fullArtwork = artworkState.content,
                     useExternalPlayer = settings.externalPlayer,
+                    people = people,
                 )
 
                 ArtworkUiState(state = mergeStates(dataState, userState))
@@ -89,14 +93,6 @@ class ArtworkViewModel(
 
     //endregion
 
-    //region Init
-
-    init {
-        observeArtworkUseCase(artworkId = artworkId)
-    }
-
-    //endregion
-
     //region Public Methods
 
     fun handleIntent(intent: ArtworkIntent) = viewModelScope.launch {
@@ -107,6 +103,7 @@ class ArtworkViewModel(
             ArtworkIntent.OpenArtworkInfo -> openArtworkInfo()
             is ArtworkIntent.OpenEpisodeInfo -> urlLauncher.open(url = intent.episode.infoUrl)
             is ArtworkIntent.OpenFileExplorer -> filesLauncher.open(file = intent.media.file)
+            is ArtworkIntent.OnPersonClick -> _event.emit(ArtworkEvent.NavigateToPerson(person = intent.person))
 
             // Dialogs
             ArtworkIntent.CloseDialog -> closeDialog()
@@ -145,6 +142,7 @@ class ArtworkViewModel(
                 selectedSeason = season,
                 expandedEpisodeId = userState.expandedEpisodeId,
                 useExternalPlayer = dataState.useExternalPlayer,
+                people = dataState.people,
                 dialog = userState.dialog,
             )
         )

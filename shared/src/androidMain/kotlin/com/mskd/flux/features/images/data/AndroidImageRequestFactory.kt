@@ -9,7 +9,7 @@ class AndroidImageRequestFactory(private val context: Context) : ImageRequestFac
     override fun build(url: String, onEnd: (String) -> Unit): ImageRequest {
         return ImageRequest.Builder(context = context)
             .data(url)
-            .memoryCachePolicy(CachePolicy.DISABLED)
+            .memoryCachePolicy(CachePolicy.ENABLED)
             .diskCachePolicy(CachePolicy.ENABLED)
             .listener(
                 onSuccess = { _, _ -> onEnd(url) },

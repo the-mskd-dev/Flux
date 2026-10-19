@@ -2,14 +2,6 @@ package com.mskd.flux.utils
 
 object Constants {
 
-    object Behaviour {
-        const val TRANSITION_SPEED = 400
-    }
-
-    object Global {
-        val LANGUAGE get() = systemLanguage().toTmdbFormat()
-    }
-
     object TMDB {
         const val IMAGE_LARGE = "https://image.tmdb.org/t/p/original"
         const val IMAGE = "https://image.tmdb.org/t/p/w300"

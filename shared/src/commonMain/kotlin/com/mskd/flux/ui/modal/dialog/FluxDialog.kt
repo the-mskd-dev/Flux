@@ -8,8 +8,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,7 +19,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.TextButton
@@ -33,12 +30,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.mskd.flux.ui.blurForeground
 import com.mskd.flux.ui.fillMaxWidthWithLimit
 import com.mskd.flux.ui.global.BackGesture
 import com.mskd.flux.ui.modal.LocalModalHost
 import com.mskd.flux.ui.modal.ModalEntry
 import com.mskd.flux.ui.modal.ModalHostState
+import com.mskd.flux.ui.modal.scrim.ScrimBackground
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxUI
 import dev.chrisbanes.haze.HazeState
@@ -60,29 +57,17 @@ fun FluxDialogHost(
 
     val visible = host.visible && current != null
 
-    BackGesture(enabled = host.visible, onBack = { entry?.onDismiss?.invoke() })
+    if (visible) {
+        BackGesture(enabled = true, onBack = { entry?.onDismiss?.invoke() })
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
 
-        // Scrim
-        AnimatedVisibility(
-            visible = visible,
-            modifier = Modifier.matchParentSize(),
-            enter = fadeIn(),
-            exit = fadeOut()
-        ) {
-            Box(
-                Modifier
-                    .fillMaxSize()
-                    .blurForeground(state = hazeState, radius = 3.dp)
-                    .background(MaterialTheme.colorScheme.scrim.copy(alpha = .3f))
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                        onClick = { entry?.onDismiss() }
-                    )
-            )
-        }
+        ScrimBackground(
+            isVisible = visible,
+            hazeState = hazeState,
+            entry = entry
+        )
 
         // Sheet
         AnimatedVisibility(
@@ -113,8 +98,7 @@ fun FluxDialogHost(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .blurForeground(hazeState)
-                        .background(MaterialTheme.colorScheme.surfaceContainer.copy(alpha = .9f))
+                        .background(MaterialTheme.colorScheme.surfaceContainer)
                         .padding(FluxUI.Space.large),
                     verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
                 ) {

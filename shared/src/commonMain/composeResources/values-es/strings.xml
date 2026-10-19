@@ -78,7 +78,9 @@
     <string name="track">Pista</string>
     <string name="subtitles">Subtítulos</string>
     <string name="audio_tracks">Pistas de audio</string>
-    <string name="next_episode">Siguiente episodio (%1$ds)</string>
+    <string name="next_episode">Siguiente episodio</string>
+    <string name="skip_opening">Saltar introducción</string>
+    <string name="skip_ending">Saltar ending</string>
     <string name="close">Cerrar</string>
     <string name="do_not_show_again">No volver a mostrar</string>
     <string name="tmdb_api_token">Token de la API de TMDB</string>
@@ -99,9 +101,7 @@
     <string name="other_files">Otros archivos</string>
     <string name="no_item">No hay elementos para mostrar</string>
     <string name="skip">Omitir</string>
-    <string name="snackbar_add_api_key">Añade tu clave para disfrutar de una mejor experiencia</string>
     <string name="add">Añadir</string>
-    <string name="snackbar_see_tuto">Para organizar tu biblioteca, revisa la nomenclatura de tus archivos</string>
     <string name="see">Ver</string>
     <string name="more_info">Más información</string>
     <string name="external_player">Reproductor externo</string>
@@ -230,4 +230,13 @@
         <item>¡Muchas gracias por vuestra ayuda y apoyo, hasta pronto!</item>
     </string-array>
 
+    <string name="cast">Equipo</string>
+    <string name="biography">Biografía</string>
+    <string name="born">Nacimiento: %1$s</string>
+    <string name="died">Fallecimiento: %1$s</string>
+    <string name="age">%1$d años</string>
+    <string name="place_of_birth">Lugar de nacimiento: %1$s</string>
+    <string name="known_for_department">Conocido/a por: %1$s</string>
+    <string name="original_name">Nombre original: %1$s</string>
+    <string name="also_in">También en</string>
 </resources>

@@ -1,11 +1,16 @@
 package com.mskd.flux.core.network.tmdb.data.datasource
 
 import com.mskd.flux.core.model.files.UserFile
+import com.mskd.flux.core.model.language.Language
+import com.mskd.flux.core.model.language.languageCode
+import com.mskd.flux.core.model.language.toTmdbFormat
 import com.mskd.flux.core.network.tmdb.data.dto.ArtworkDto
 import com.mskd.flux.core.network.tmdb.data.dto.MediaTypeDto
 import com.mskd.flux.core.network.tmdb.data.dto.TranslationsDto
 import com.mskd.flux.core.network.tmdb.data.dto.genre.GenreDto
 import com.mskd.flux.core.network.tmdb.data.dto.movie.MovieDto
+import com.mskd.flux.core.network.tmdb.data.dto.people.PeopleDto
+import com.mskd.flux.core.network.tmdb.data.dto.people.PersonInfoDto
 import com.mskd.flux.core.network.tmdb.data.dto.show.EpisodeDto
 import com.mskd.flux.core.network.tmdb.data.dto.show.SeasonDto
 import com.mskd.flux.core.network.tmdb.data.dto.show.ShowDto
@@ -13,9 +18,7 @@ import com.mskd.flux.core.network.tmdb.data.service.TMDBService
 import com.mskd.flux.core.network.tmdb.domain.model.TranslationRequest
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
-import com.mskd.flux.utils.Language
-import com.mskd.flux.utils.Trace
-import com.mskd.flux.utils.toTmdbFormat
+import com.mskd.flux.report.Trace
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -30,6 +33,8 @@ class TmdbDataSourceImpl(
         const val TAG = "TmdbRepositoryImpl"
     }
 
+    private suspend fun tmdbLanguage(): String = settings.getDataLanguage()
+
     override suspend fun getArtwork(
         file: UserFile
     ): ArtworkDto? {
@@ -37,7 +42,7 @@ class TmdbDataSourceImpl(
         if (!tokenDataStore.tokenIsAvailable())
             return null
 
-        val language = settings.getDataLanguage()
+        val language = tmdbLanguage()
 
         return try {
 
@@ -90,7 +95,7 @@ class TmdbDataSourceImpl(
         if (!tokenDataStore.tokenIsAvailable())
             return emptyList()
 
-        val language = settings.getDataLanguage()
+        val language = tmdbLanguage()
 
         return coroutineScope {
 
@@ -117,7 +122,7 @@ class TmdbDataSourceImpl(
         if (!tokenDataStore.tokenIsAvailable())
             return null
 
-        val language = settings.getDataLanguage()
+        val language = tmdbLanguage()
 
         return try {
 
@@ -151,6 +156,25 @@ class TmdbDataSourceImpl(
 
     }
 
+    override suspend fun getMoviePeople(artworkId: Long): PeopleDto? {
+
+        if (!tokenDataStore.tokenIsAvailable())
+            return null
+
+        val language = tmdbLanguage()
+
+        return try {
+            tmdbService.getMoviePeople(
+                artworkId = artworkId,
+                language = language.toTmdbFormat()
+            )
+        } catch (e: Exception) {
+            Napier.e(tag = TAG, message = "getMoviePeople - Fail to get people for artworkId:$artworkId (${language.toTmdbFormat()})", throwable = e)
+            null
+        }
+
+    }
+
     override suspend fun getShow(
         artworkId: Long
     ): ShowDto? {
@@ -158,7 +182,7 @@ class TmdbDataSourceImpl(
         if (!tokenDataStore.tokenIsAvailable())
             return null
 
-        val language = settings.getDataLanguage()
+        val language = tmdbLanguage()
 
         return try {
 
@@ -192,6 +216,46 @@ class TmdbDataSourceImpl(
 
     }
 
+    override suspend fun getShowPeople(artworkId: Long): PeopleDto? {
+
+        if (!tokenDataStore.tokenIsAvailable())
+            return null
+
+        val language = tmdbLanguage()
+
+        return try {
+            tmdbService.getShowPeople(
+                artworkId = artworkId,
+                language = language.toTmdbFormat()
+            )
+        } catch (e: Exception) {
+            Napier.e(tag = TAG, message = "getShowPeople - Fail to get people for artworkId:$artworkId (${language.toTmdbFormat()})", throwable = e)
+            null
+        }
+
+    }
+
+    override suspend fun getPersonInfo(personId: Int): PersonInfoDto? {
+
+        if (!tokenDataStore.tokenIsAvailable())
+            return null
+
+        val language = tmdbLanguage()
+
+        return try {
+
+            tmdbService.getPersonInfo(
+                id = personId,
+                language = language.toTmdbFormat()
+            )
+
+        } catch (e: Exception) {
+            Napier.e(tag = TAG, message = "getPersonDetails - Fail to get person details for personId:$personId (${language.toTmdbFormat()})", throwable = e)
+            null
+        }
+
+    }
+
     override suspend fun getEpisode(
         artworkId: Long,
         season: Int,
@@ -201,7 +265,7 @@ class TmdbDataSourceImpl(
         if (!tokenDataStore.tokenIsAvailable())
             return null
 
-        val language = settings.getDataLanguage()
+        val language = tmdbLanguage()
 
         return try {
 
@@ -244,7 +308,7 @@ class TmdbDataSourceImpl(
         if (!tokenDataStore.tokenIsAvailable())
             return null
 
-        val language = settings.getDataLanguage()
+        val language = tmdbLanguage()
 
         return try {
 
@@ -294,7 +358,7 @@ class TmdbDataSourceImpl(
                 is TranslationRequest.Episode -> tmdbService.getEpisodeTranslations(artworkId = request.artworkId, season = request.season, number = request.number)
             }
 
-            val requestedTranslation = result.translations.find { it.language.equals(request.language, true) && !it.data.overview.isNullOrBlank() }
+            val requestedTranslation = result.translations.find { it.language.equals(request.language.languageCode(), true) && !it.data.overview.isNullOrBlank() }
             val fallbackTranslation = result.translations.find { it.language.equals(Language.ENGLISH.code, true) && !it.data.overview.isNullOrBlank() }
 
             val translation = when {

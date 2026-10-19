@@ -1,12 +1,12 @@
 package com.mskd.flux.utils.extensions
 
-import com.mskd.flux.utils.Trace
+import com.mskd.flux.report.Trace
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.toJavaLocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-actual val LocalDate.formattedText: String?get() {
+actual val LocalDate.formattedText: String? get() {
     try {
         val formatter = DateTimeFormatter
             .ofLocalizedDate(java.time.format.FormatStyle.MEDIUM)

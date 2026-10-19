@@ -60,6 +60,10 @@ class DatabaseRepositoryImpl(
         return artworksDao.getArtworks(includePrivates = includePrivates).map { it.toDomain() }
     }
 
+    override suspend fun getArtworks(artworkIds: List<Long>): List<Artwork> {
+        return artworksDao.getArtworks(artworkIds = artworkIds).map { it.toDomain() }
+    }
+
     override suspend fun setArtworkPrivate(artworkId: Long, isPrivate: Boolean) {
         artworksDao.setArtworkPrivate(artworkId = artworkId, isPrivate = isPrivate)
     }
@@ -104,6 +108,14 @@ class DatabaseRepositoryImpl(
 
     override suspend fun getEpisodes(artworkId: Long): List<Episode> {
         return mediasDao.getForArtwork(artworkId = artworkId).mapNotNull { it.toDomain() as? Episode }.sort()
+    }
+
+    override suspend fun getNextEpisodeFor(episode: Episode): Episode? {
+        return mediasDao.getNextEpisodeFor(
+            artworkId = episode.artworkId,
+            season = episode.season,
+            number = episode.number
+        )?.toDomain() as? Episode
     }
 
     override suspend fun getEpisodeCount(artworkId: Long): Int {

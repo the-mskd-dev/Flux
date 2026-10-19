@@ -62,19 +62,9 @@ class ObserveArtworkUseCaseTest : FunSpec({
 
     }
 
-    test("if no artwork, no flow") {
-        runTest {
-            useCase.flow.test {
-                expectNoEvents()
-            }
-        }
-    }
-
     test("if artwork is missing -> State.Error") {
         runTest {
-            useCase.invoke(MediaMockups.movie.artworkId)
-
-            useCase.flow.test {
+            useCase.invoke(MediaMockups.movie.artworkId).test {
                 awaitItem().shouldBeInstanceOf<State.Error>()
             }
         }
@@ -83,9 +73,7 @@ class ObserveArtworkUseCaseTest : FunSpec({
     test("if type MOVIE but movie is missing -> State.Error") {
         runTest {
             artworkFlow.value = MediaMockups.movieArtwork
-            useCase.invoke(MediaMockups.movieArtwork.id)
-
-            useCase.flow.test {
+            useCase.invoke(MediaMockups.movieArtwork.id).test {
                 awaitItem().shouldBeInstanceOf<State.Error>()
             }
         }
@@ -95,9 +83,7 @@ class ObserveArtworkUseCaseTest : FunSpec({
         runTest {
             artworkFlow.value = MediaMockups.movieArtwork
             mediasFlow.value = listOf(MediaMockups.movie)
-            useCase.invoke(MediaMockups.movieArtwork.id)
-
-            useCase.flow.test {
+            useCase.invoke(MediaMockups.movieArtwork.id).test {
                 val content = awaitItem()
                     .shouldBeInstanceOf<State.Content<FullArtwork>>()
                     .content
@@ -114,9 +100,7 @@ class ObserveArtworkUseCaseTest : FunSpec({
             artworkFlow.value = MediaMockups.showArtwork
             seasonsFlow.value = MediaMockups.seasons
             mediasFlow.value = MediaMockups.episodes
-            useCase.invoke(MediaMockups.showArtwork.id)
-
-            useCase.flow.test {
+            useCase.invoke(MediaMockups.showArtwork.id).test {
                 val content = awaitItem()
                     .shouldBeInstanceOf<State.Content<FullArtwork>>()
                     .content
@@ -130,7 +114,7 @@ class ObserveArtworkUseCaseTest : FunSpec({
         }
     }
 
-    test("new artworkID -> cancel previous observation and then start a new one") {
+    test("a new artworkID starts an independent observation with the new artwork") {
         runTest {
             val movieArtworkFlow = MutableStateFlow<Artwork?>(MediaMockups.movieArtwork)
             val showArtworkFlow = MutableStateFlow<Artwork?>(MediaMockups.showArtwork)
@@ -143,14 +127,12 @@ class ObserveArtworkUseCaseTest : FunSpec({
             every { database.flowSeasons(MediaMockups.showArtwork.id) } returns MutableStateFlow(MediaMockups.seasons)
             every { database.flowMedias(MediaMockups.showArtwork.id) } returns MutableStateFlow(MediaMockups.episodes)
 
-            useCase.invoke(MediaMockups.movieArtwork.id)
-
-            useCase.flow.test {
+            useCase.invoke(MediaMockups.movieArtwork.id).test {
                 val first = awaitItem().shouldBeInstanceOf<State.Content<FullArtwork>>()
                 first.content.shouldBeInstanceOf<FullArtwork.FullMovie>()
+            }
 
-                useCase.invoke(MediaMockups.showArtwork.id)
-
+            useCase.invoke(MediaMockups.showArtwork.id).test {
                 val second = awaitItem().shouldBeInstanceOf<State.Content<FullArtwork>>()
                 second.content.shouldBeInstanceOf<FullArtwork.FullShow>()
             }
@@ -171,9 +153,7 @@ class ObserveArtworkUseCaseTest : FunSpec({
             sourcesFlow.value = listOf(
                 UserFolder(path = "content://tree/primary/Movies", isAvailable = true)
             )
-            useCase.invoke(MediaMockups.movieArtwork.id)
-
-            useCase.flow.test {
+            useCase.invoke(MediaMockups.movieArtwork.id).test {
                 val fullMovie = awaitItem()
                     .shouldBeInstanceOf<State.Content<FullArtwork>>()
                     .content
@@ -198,9 +178,7 @@ class ObserveArtworkUseCaseTest : FunSpec({
             sourcesFlow.value = listOf(
                 UserFolder(path = "content://tree/primary/Movies", isAvailable = false)
             )
-            useCase.invoke(MediaMockups.movieArtwork.id)
-
-            useCase.flow.test {
+            useCase.invoke(MediaMockups.movieArtwork.id).test {
                 val fullMovie = awaitItem()
                     .shouldBeInstanceOf<State.Content<FullArtwork>>()
                     .content
@@ -225,9 +203,7 @@ class ObserveArtworkUseCaseTest : FunSpec({
             sourcesFlow.value = listOf(
                 UserFolder(path = "content://tree/primary/OtherFolder", isAvailable = true)
             )
-            useCase.invoke(MediaMockups.movieArtwork.id)
-
-            useCase.flow.test {
+            useCase.invoke(MediaMockups.movieArtwork.id).test {
                 val fullMovie = awaitItem()
                     .shouldBeInstanceOf<State.Content<FullArtwork>>()
                     .content
@@ -255,9 +231,7 @@ class ObserveArtworkUseCaseTest : FunSpec({
             sourcesFlow.value = listOf(
                 UserFolder(path = "content://tree/primary/Naruto", isAvailable = false)
             )
-            useCase.invoke(MediaMockups.showArtwork.id)
-
-            useCase.flow.test {
+            useCase.invoke(MediaMockups.showArtwork.id).test {
                 val fullShow = awaitItem()
                     .shouldBeInstanceOf<State.Content<FullArtwork>>()
                     .content
@@ -282,9 +256,7 @@ class ObserveArtworkUseCaseTest : FunSpec({
             sourcesFlow.value = listOf(
                 UserFolder(path = "content://tree/primary/Movies", isAvailable = true)
             )
-            useCase.invoke(MediaMockups.movieArtwork.id)
-
-            useCase.flow.test {
+            useCase.invoke(MediaMockups.movieArtwork.id).test {
                 val first = awaitItem()
                     .shouldBeInstanceOf<State.Content<FullArtwork>>()
                     .content

@@ -48,7 +48,7 @@ fun EpisodeItem(
     isExpanded: Boolean = false,
     onClick: (Episode) -> Unit,
     onReadMoreTap: (Boolean) -> Unit = {},
-    dropDownMenu: @Composable ((onDismissRequest: () -> Unit) -> Unit)? = null
+    dropDownMenu: @Composable ((isVisible: Boolean, onDismissRequest: () -> Unit) -> Unit)? = null
 ) {
 
     Box(
@@ -95,7 +95,7 @@ fun EpisodeItemLarge(
     isExpanded: Boolean,
     onClick: (Episode) -> Unit,
     onReadMoreTap: (Boolean) -> Unit,
-    dropDownMenu: @Composable ((onDismissRequest: () -> Unit) -> Unit)? = null
+    dropDownMenu: @Composable ((isVisible: Boolean, onDismissRequest: () -> Unit) -> Unit)? = null
 ) {
 
     var isOverflowing by remember { mutableStateOf(false) }
@@ -106,7 +106,6 @@ fun EpisodeItemLarge(
 
     Column(
         modifier = modifier
-            .padding(horizontal = FluxUI.Space.medium)
             .clip(FluxUI.shapes.corners)
             .let { if (episode.isAvailable) it else it.grayScale() }
             .background(bgColor)
@@ -185,8 +184,10 @@ fun EpisodeItemLarge(
 
         }
 
-        if (showMenu)
-            dropDownMenu?.invoke { showMenu = false }
+        dropDownMenu?.invoke(
+            showMenu,
+            { showMenu = false }
+        )
     }
 
 }
@@ -199,7 +200,7 @@ fun EpisodeItemSmall(
     isExpanded: Boolean,
     onClick: (Episode) -> Unit,
     onReadMoreTap: (Boolean) -> Unit,
-    dropDownMenu: @Composable ((onDismissRequest: () -> Unit) -> Unit)? = null
+    dropDownMenu: @Composable ((isVisible: Boolean, onDismissRequest: () -> Unit) -> Unit)? = null
 ) {
 
     var isOverflowing by remember { mutableStateOf(false) }
@@ -210,7 +211,6 @@ fun EpisodeItemSmall(
 
     Column(
         modifier = modifier
-            .padding(horizontal = FluxUI.Space.medium)
             .clip(FluxUI.shapes.corners)
             .let { if (episode.isAvailable) it else it.grayScale() }
             .background(bgColor)
@@ -293,9 +293,10 @@ fun EpisodeItemSmall(
             )
         }
 
-        if (showMenu) {
-            dropDownMenu?.invoke { showMenu = false }
-        }
+        dropDownMenu?.invoke(
+            showMenu,
+            { showMenu = false }
+        )
 
     }
 

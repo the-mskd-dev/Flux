@@ -2,8 +2,11 @@ package com.mskd.flux.features.show.presentation
 
 import androidx.compose.runtime.Immutable
 import com.mskd.flux.core.model.artwork.FullArtwork
+import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.core.State
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 @Immutable
 data class ShowUiState(
@@ -13,6 +16,7 @@ data class ShowUiState(
 @Immutable
 data class ShowContent(
     val fullShow: FullArtwork.FullShow,
+    val people: ImmutableList<Person> = persistentListOf(),
     val dialog: ShowDialog? = null,
 )
 
@@ -25,6 +29,7 @@ sealed class ShowIntent {
     // Navigation
     object OnBackTap: ShowIntent()
     data class OnSeasonClick(val season: Int, val rgb: Int?) : ShowIntent()
+    data class OnPersonClick(val person: Person) : ShowIntent()
 
     // Dialogs
     data object CloseDialog : ShowIntent()
@@ -39,4 +44,5 @@ sealed class ShowIntent {
 sealed class ShowEvent {
     object BackToPreviousScreen : ShowEvent()
     data class NavigateToSeason(val artworkId: Long, val season: Int, val rgb: Int?) : ShowEvent()
+    data class NavigateToPerson(val person: Person) : ShowEvent()
 }

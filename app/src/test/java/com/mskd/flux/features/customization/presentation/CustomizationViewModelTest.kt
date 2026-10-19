@@ -6,7 +6,7 @@ import com.mskd.flux.core.model.core.FluxOptionsDialogState
 import com.mskd.flux.features.customization.domain.datastore.CustomizationDataStore
 import com.mskd.flux.features.customization.domain.model.CustomizationDialog
 import com.mskd.flux.features.customization.domain.model.NavigationStyle
-import com.mskd.flux.utils.UiCommon
+import com.mskd.flux.ui.UiCommon
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe

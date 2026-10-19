@@ -4,7 +4,6 @@ import android.app.Application
 import com.mskd.flux.BuildConfig
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.CrashDialogActivity
-import com.mskd.flux.utils.Trace
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.number
 import kotlinx.datetime.toLocalDateTime

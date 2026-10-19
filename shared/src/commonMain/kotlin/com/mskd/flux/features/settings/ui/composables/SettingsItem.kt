@@ -1,12 +1,10 @@
 package com.mskd.flux.features.settings.ui.composables
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
@@ -21,7 +19,6 @@ import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.extensions.uppercaseFirstLetter
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SettingsItem(
     text: String,
@@ -44,14 +41,10 @@ fun SettingsItem(
             Text.List.Title(text = text)
         },
         supportingContent = {
-            AnimatedContent(
-                targetState = subText.uppercaseFirstLetter()
-            ) { text ->
-                Text.List.Body(
-                    text = text,
-                    color = valueColor,
-                )
-            }
+            Text.List.Body(
+                text = subText.uppercaseFirstLetter(),
+                color = valueColor,
+            )
         },
         leadingContent = painter?.let {
             {

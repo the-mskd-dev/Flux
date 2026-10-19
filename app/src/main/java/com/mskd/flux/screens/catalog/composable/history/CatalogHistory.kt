@@ -199,13 +199,12 @@ fun CatalogHistoryItem(
                             contentDescription = "menu button"
                         )
 
-                        if (showMenu) {
-                            CatalogHistoryMenu(
-                                entry = entry,
-                                onDismissRequest = { showMenu = false },
-                                sendIntent = sendIntent
-                            )
-                        }
+                        CatalogHistoryMenu(
+                            isVisible = showMenu,
+                            entry = entry,
+                            onDismissRequest = { showMenu = false },
+                            sendIntent = sendIntent
+                        )
 
                     }
                 )

@@ -11,6 +11,7 @@ val moduleShow = module {
             artworkId = params.get(),
             urlLauncher = get(),
             observeArtworkUseCase = get(),
+            getPeopleUseCase = get(),
             resetProgress = get(),
         )
     }

@@ -1,1 +1,1 @@
-Organize local videos into a library with TMDB metadata & smooth playback.
+Modern local video player and library for your movies, TV shows, and anime.

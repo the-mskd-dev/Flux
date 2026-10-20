@@ -7,7 +7,6 @@ import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.core.network.tmdb.domain.repository.ApiRepository
 import com.mskd.flux.features.catalog.domain.model.ArtworkWithFiles
 import com.mskd.flux.report.Trace
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll

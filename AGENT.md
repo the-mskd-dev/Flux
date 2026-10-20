@@ -60,6 +60,7 @@ Each feature must consist of 3 distinct files:
 4. **Verification**: After generating or modifying code for a step (especially Step C), execute `./gradlew testFossDebugUnitTest` in the terminal and fix any failures before checking the box.
 5. **Scope Restriction**: Modify ONLY files related to the current step. NEVER touch Gradle files (`build.gradle.kts`) unless explicitly requested.
 6. **Additional actions**: Don't forget to correctly add/remove imports.
+7. **Changelog**: At the end, add a single line at the end of `./CHANGELOG.md` to indicate the new feature/fix/update (e.g., `feature: Add new images`).
 
 ### Universal Rules
 1. **KMP Isolation Rule 🚨**:

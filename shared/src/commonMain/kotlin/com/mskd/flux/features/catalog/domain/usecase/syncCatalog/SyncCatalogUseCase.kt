@@ -47,7 +47,7 @@ class SyncCatalogUseCase(
             val existingFiles = filterExistingFilesUseCase(files = (dbMedias).map { it.file })
 
             val newFiles = if (!onlyNew) deviceFiles else {
-                deviceFiles.filter { file -> existingFiles.none { it.path == file.path } }
+                deviceFiles.filter { file -> existingFiles.none { it.path == file.path && it.name == file.name } }
             }
 
             if (newFiles.isEmpty()) {
@@ -69,7 +69,7 @@ class SyncCatalogUseCase(
             // Seasons
             steps += newFiles
                 .filter { it.season != null }
-                .distinctBy { it.nameProperties.title to it.season }
+                .distinctBy { (it.nameProperties.tmdbId ?: it.nameProperties.title) to it.season }
                 .size
 
             // Medias

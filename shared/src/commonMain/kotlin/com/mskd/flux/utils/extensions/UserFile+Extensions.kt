@@ -6,14 +6,18 @@ import com.mskd.flux.core.model.files.UserFile
 fun List<UserFile>.groupInFolders() : List<CatalogFolder> {
     return this
         .groupBy { file ->
-            file.nameProperties.title to file.nameProperties.year
+            // The TMDB ID identifies the artwork whatever the name: the title only groups files without ID
+            val properties = file.nameProperties
+            if (properties.tmdbId != null) Triple(properties.tmdbId, null, null)
+            else Triple(null, properties.title, properties.year)
         }
         .map { (key, files) ->
-            val (title, year) = key
+            val properties = files.first().nameProperties
             CatalogFolder(
-                title = title,
-                year = year,
-                files = files
+                title = properties.title,
+                year = properties.year,
+                files = files,
+                tmdbId = key.first
             )
         }
 }

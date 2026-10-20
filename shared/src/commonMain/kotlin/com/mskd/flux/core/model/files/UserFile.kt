@@ -15,9 +15,17 @@ data class UserFile(
 ) {
 
     val nameProperties: FileProperties
-        get() = FileProperties.extractFromName(name)
-            ?: FileProperties.extractFromPath(realPath)
-            ?: FileProperties(title = name.replace("-", " ").trim().lowercase())
+        get() {
+            val properties = FileProperties.extractFromName(name)
+                ?: FileProperties.extractFromPath(realPath)
+                ?: FileProperties(
+                    title = FileProperties.removeTmdbId(name).ifBlank { name }.replace("-", " ").trim().lowercase()
+                )
+            // The ID of the file name has priority over the ID of the folder name
+            return properties.copy(
+                tmdbId = FileProperties.findTmdbId(name) ?: FileProperties.extractTmdbIdFromPath(realPath)
+            )
+        }
 
     val isEpisode: Boolean
         get() = nameProperties.season != null && nameProperties.episode != null
@@ -42,6 +50,7 @@ data class FileProperties(
     val year: Int? = null,
     val season: Int? = null,
     val episode: Int? = null,
+    val tmdbId: Long? = null,
 ) {
 
     companion object {
@@ -76,6 +85,14 @@ data class FileProperties(
         )
 
         private val NON_TITLE_FOLDERS = setOf("movies", "movie", "download", "downloads", "flux")
+
+        private val TMDB_ID_PATTERN = Regex("\\{tmdb-(\\d+)\\}", RegexOption.IGNORE_CASE)
+
+        internal fun findTmdbId(text: String): Long? =
+            TMDB_ID_PATTERN.find(text)?.groupValues?.get(1)?.toLongOrNull()
+
+        internal fun removeTmdbId(text: String): String =
+            text.replace(TMDB_ID_PATTERN, " ").replace(Regex(" +"), " ").trim()
 
 
         private fun findSeasonEpisode(text: String): Pair<Int, Int>? {
@@ -131,7 +148,8 @@ data class FileProperties(
         }
 
         fun extractFromName(filename: String): FileProperties? {
-            val nameWithoutExt = filename.substringBeforeLast('.', filename)
+            val tmdbId = findTmdbId(filename)
+            val nameWithoutExt = removeTmdbId(filename.substringBeforeLast('.', filename))
 
             // Try for show
             val match = findSeasonEpisodeWithRange(nameWithoutExt)
@@ -140,7 +158,7 @@ data class FileProperties(
                 val prefix = nameWithoutExt.substring(0, matchResult.range.first)
                 val (title, year) = extractTitleAndYear(prefix)
                 if (title.isBlank()) return null
-                return FileProperties(title, year, seasonEpisode.first, seasonEpisode.second)
+                return FileProperties(title, year, seasonEpisode.first, seasonEpisode.second, tmdbId)
             }
 
             // If only numeric, maybe a naming by folder
@@ -148,21 +166,33 @@ data class FileProperties(
 
             // Try for movie
             val (title, year) = extractTitleAndYear(nameWithoutExt)
-            return if (title.isNotBlank()) FileProperties(title, year, null, null) else null
+            return if (title.isNotBlank()) FileProperties(title, year, null, null, tmdbId) else null
+        }
+
+        /**
+         * The TMDB ID of a path is the one of its title folder: the parent folder, or the grandparent
+         * if the parent is a season folder.
+         */
+        fun extractTmdbIdFromPath(path: String): Long? {
+            val segments = path.toPath().segments
+            val parentFolder = segments.getOrNull(segments.size - 2) ?: return null
+            val titleFolder = if (findSeason(parentFolder) != null) segments.getOrNull(segments.size - 3) else parentFolder
+            return titleFolder?.let { findTmdbId(it) }
         }
 
         fun extractFromPath(path: String): FileProperties? {
             val segments = path.toPath().segments
             val lastSegment = segments.lastOrNull() ?: return null
-            val filename = lastSegment.substringBeforeLast('.', lastSegment)
+            val filename = removeTmdbId(lastSegment.substringBeforeLast('.', lastSegment))
+            val tmdbId = extractTmdbIdFromPath(path)
 
             // 1. Season + episode in the filename
             findSeasonEpisode(filename)?.let { (season, episode) ->
                 val titleSegment = segments.getOrNull(segments.size - 2)
                     ?.takeUnless { it.lowercase() in NON_TITLE_FOLDERS }
                     ?: return null // no title folder
-                val (title, year) = extractTitleAndYear(titleSegment)
-                return FileProperties(title, year, season, episode)
+                val (title, year) = extractTitleAndYear(removeTmdbId(titleSegment))
+                return FileProperties(title, year, season, episode, tmdbId)
             }
 
             // 2. Episode only -> need season in the parent folder
@@ -177,19 +207,24 @@ data class FileProperties(
                 if (season == null) break // no season -> no need to continue here
 
                 val titleSegment = segments.getOrNull(segments.size - 3) ?: return null
-                val (title, year) = extractTitleAndYear(titleSegment)
-                return FileProperties(title, year, season, episode)
+                val (title, year) = extractTitleAndYear(removeTmdbId(titleSegment))
+                return FileProperties(title, year, season, episode, tmdbId)
             }
 
             // 3. No episode -> movie
             // Specific case : filename only numeric without season folder -> the number is the title
             if (NUMERIC_ONLY.matches(filename)) {
-                return FileProperties(title = filename, year = null, season = null, episode = null)
+                return FileProperties(title = filename, year = null, season = null, episode = null, tmdbId = tmdbId)
             }
 
             val parentFolder = segments.getOrNull(segments.size - 2) ?: return null
-            val (title, year) = extractTitleAndYear(parentFolder)
-            return FileProperties(title, year, null, null)
+            val (title, year) = extractTitleAndYear(removeTmdbId(parentFolder))
+            // A folder made only of the TMDB ID has no title: use the file name
+            if (title.isBlank()) {
+                val (fileTitle, fileYear) = extractTitleAndYear(filename)
+                return FileProperties(fileTitle, fileYear, null, null, tmdbId)
+            }
+            return FileProperties(title, year, null, null, tmdbId)
         }
 
     }

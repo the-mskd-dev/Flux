@@ -6,7 +6,8 @@ import com.mskd.flux.core.model.files.UserFile
 data class CatalogFolder(
     val title: String,
     val year: Int? = null,
-    val files: List<UserFile>
+    val files: List<UserFile>,
+    val tmdbId: Long? = null,
 ) {
 
     val type: ContentType?

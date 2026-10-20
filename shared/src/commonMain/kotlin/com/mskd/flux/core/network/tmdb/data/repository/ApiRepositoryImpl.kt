@@ -9,6 +9,7 @@ import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.core.network.tmdb.data.datasource.TmdbDataSource
+import com.mskd.flux.core.network.tmdb.data.mapper.toArtwork
 import com.mskd.flux.core.network.tmdb.data.mapper.toDomain
 import com.mskd.flux.core.network.tmdb.domain.model.PersonInfo
 import com.mskd.flux.core.network.tmdb.domain.model.Translation
@@ -22,6 +23,11 @@ internal class ApiRepositoryImpl(
     //region Artwork
 
     override suspend fun getArtwork(file: UserFile): Artwork = tmdb.getArtwork(file = file)?.toDomain() ?: Artwork.UNKNOWN
+
+    override suspend fun getArtworkById(id: Long, type: ContentType): Artwork? = when (type) {
+        ContentType.MOVIE -> tmdb.getMovie(artworkId = id)?.toArtwork()
+        ContentType.SHOW -> tmdb.getShow(artworkId = id)?.toArtwork()
+    }
 
     override suspend fun getGenres(): List<Genre> = tmdb.getGenres().map { it.toDomain() }
 

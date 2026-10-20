@@ -57,7 +57,7 @@ Each feature must consist of 3 distinct files:
 1. **Spec-Driven Execution**: If a `_plan.md` file is provided, you MUST read it before acting.
 2. **Strict Step-by-Step**: Execute ONLY the specific step requested by the user. DO NOT anticipate or execute the next steps.
 3. **Update State**: Once a step is fully implemented, check the corresponding box in the `_plan.md` file (`- [x]`) and stop.
-4. **Verification**: After generating or modifying code for a step (especially Step C), execute `./gradlew test` in the terminal and fix any failures before checking the box.
+4. **Verification**: After generating or modifying code for a step (especially Step C), execute `./gradlew testFossDebugUnitTest` in the terminal and fix any failures before checking the box.
 5. **Scope Restriction**: Modify ONLY files related to the current step. NEVER touch Gradle files (`build.gradle.kts`) unless explicitly requested.
 6. **Additional actions**: Don't forget to correctly add/remove imports.
 

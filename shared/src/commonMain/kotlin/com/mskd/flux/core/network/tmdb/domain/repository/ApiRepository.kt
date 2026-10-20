@@ -1,6 +1,7 @@
 package com.mskd.flux.core.network.tmdb.domain.repository
 
 import com.mskd.flux.core.model.artwork.Artwork
+import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Genre
 import com.mskd.flux.core.model.artwork.Movie
@@ -14,6 +15,8 @@ import com.mskd.flux.core.network.tmdb.domain.model.TranslationRequest
 interface ApiRepository {
 
     suspend fun getArtwork(file: UserFile): Artwork
+
+    suspend fun getArtworkById(id: Long, type: ContentType): Artwork?
 
     suspend fun getGenres() : List<Genre>
 

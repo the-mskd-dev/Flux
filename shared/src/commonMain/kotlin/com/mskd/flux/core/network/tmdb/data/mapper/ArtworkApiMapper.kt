@@ -4,6 +4,8 @@ import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.network.tmdb.data.dto.ArtworkDto
 import com.mskd.flux.core.network.tmdb.data.dto.MediaTypeDto
+import com.mskd.flux.core.network.tmdb.data.dto.movie.MovieDto
+import com.mskd.flux.core.network.tmdb.data.dto.show.ShowDto
 import kotlinx.collections.immutable.toImmutableList
 
 fun ArtworkDto.toDomain() : Artwork {
@@ -15,6 +17,32 @@ fun ArtworkDto.toDomain() : Artwork {
         bannerPath = this.bannerPath.orEmpty(),
         type = if (this.type == MediaTypeDto.MOVIE) ContentType.MOVIE else ContentType.SHOW,
         genreIds = this.genreIds.toImmutableList(),
+        nsfw = this.nsfw
+    )
+}
+
+fun MovieDto.toArtwork() : Artwork {
+    return Artwork(
+        id = this.id,
+        title = this.title,
+        description = this.description,
+        imagePath = this.imagePath.orEmpty(),
+        bannerPath = this.bannerPath.orEmpty(),
+        type = ContentType.MOVIE,
+        genreIds = this.genres.map { it.id }.toImmutableList(),
+        nsfw = this.nsfw
+    )
+}
+
+fun ShowDto.toArtwork() : Artwork {
+    return Artwork(
+        id = this.id,
+        title = this.title,
+        description = this.description,
+        imagePath = this.imagePath.orEmpty(),
+        bannerPath = this.bannerPath.orEmpty(),
+        type = ContentType.SHOW,
+        genreIds = this.genres.map { it.id }.toImmutableList(),
         nsfw = this.nsfw
     )
 }

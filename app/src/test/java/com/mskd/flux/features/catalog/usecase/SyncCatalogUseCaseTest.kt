@@ -5,6 +5,7 @@ import com.mskd.flux.core.database.domain.repository.DatabaseRepository
 import com.mskd.flux.core.datastore.domain.UserDataStore
 import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.catalog.Catalog
+import com.mskd.flux.core.model.catalog.CatalogFolder
 import com.mskd.flux.core.model.core.AppInfo
 import com.mskd.flux.core.model.files.FileSource
 import com.mskd.flux.core.model.files.UserFile
@@ -25,6 +26,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.slot
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -213,6 +215,82 @@ class SyncCatalogUseCaseTest : FunSpec({
         coVerify { database.saveSeasons(newCatalog.seasons) }
         coVerify { database.saveMedias(newCatalog.movies + newCatalog.episodes) }
         coVerify { database.deleteAll() }
+    }
+
+    test("files named with a TMDB ID are passed to the fetcher with their tmdbId") {
+        // Given
+        val deviceFiles = listOf(
+            UserFile(name = "Dune {tmdb-438631} (2021).mkv", path = "path/dune"),
+            UserFile(name = "Game of Thrones {tmdb-1399} S01E01.mkv", path = "path/got"),
+            UserFile(name = "Inception.mkv", path = "path/inception"),
+        )
+        val getDeviceFilesUseCase = mockk<GetDeviceFilesUseCase>()
+        coEvery { getDeviceFilesUseCase() } returns deviceFiles
+
+        val foldersSlot = slot<List<CatalogFolder>>()
+        val catalogFetcher = mockk<CatalogContentFetcher>(relaxed = true) {
+            coEvery { fetch(capture(foldersSlot), any()) } returns Catalog(
+                artworks = emptyList(),
+                movies = emptyList(),
+                seasons = emptyList(),
+                episodes = emptyList()
+            )
+        }
+
+        val useCase = createUseCase(
+            getDeviceFilesUseCase = getDeviceFilesUseCase,
+            catalogFetcher = catalogFetcher
+        )
+
+        // When
+        useCase.state.test {
+            awaitItem() shouldBe SyncState.Idle
+
+            useCase.invoke(onlyNew = false)
+            awaitItem() shouldBe SyncState.Syncing(full = true)
+
+            testDispatcher.scheduler.advanceUntilIdle()
+            awaitItem() shouldBe SyncState.Idle
+        }
+
+        // Then
+        val folders = foldersSlot.captured
+        folders.size shouldBe 3
+        folders.map { it.tmdbId }.toSet() shouldBe setOf(438631L, 1399L, null)
+    }
+
+    test("files sharing a TMDB ID in differently named folders are passed as a single folder") {
+        // Given
+        val deviceFiles = listOf(
+            UserFile(name = "Dune.mkv", path = "path/1", realPath = "movies/Dune {tmdb-438631}/Dune.mkv"),
+            UserFile(name = "Dune.2021.1080p.mkv", path = "path/2", realPath = "other/Dune Part One {tmdb-438631}/Dune.2021.1080p.mkv"),
+        )
+        val getDeviceFilesUseCase = mockk<GetDeviceFilesUseCase>()
+        coEvery { getDeviceFilesUseCase() } returns deviceFiles
+
+        val foldersSlot = slot<List<CatalogFolder>>()
+        val catalogFetcher = mockk<CatalogContentFetcher>(relaxed = true) {
+            coEvery { fetch(capture(foldersSlot), any()) } returns Catalog(
+                artworks = emptyList(),
+                movies = emptyList(),
+                seasons = emptyList(),
+                episodes = emptyList()
+            )
+        }
+
+        val useCase = createUseCase(
+            getDeviceFilesUseCase = getDeviceFilesUseCase,
+            catalogFetcher = catalogFetcher
+        )
+
+        // When
+        useCase.invoke(onlyNew = false)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Then
+        foldersSlot.captured.size shouldBe 1
+        foldersSlot.captured.first().tmdbId shouldBe 438631L
+        foldersSlot.captured.first().files shouldBe deviceFiles
     }
 
     test("the state changes from Idle to Syncing and then returns to Idle during execution") {

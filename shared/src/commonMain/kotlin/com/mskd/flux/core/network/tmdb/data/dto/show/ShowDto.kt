@@ -21,5 +21,7 @@ data class ShowDto(
     val voteCount: Int,
     @SerialName("first_air_date")
     val releaseDate: String,
-    val genres: List<GenreDto>
+    val genres: List<GenreDto>,
+    @SerialName("adult")
+    val nsfw: Boolean = false,
 )

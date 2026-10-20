@@ -16,6 +16,7 @@ import kotlinx.serialization.Serializable
  * @property voteAverage Average rating of the movie.
  * @property voteCount Number of votes for the movie.
  * @property releaseDate Release date of the movie as a string.
+ * @property nsfw Whether the movie is for adults only.
  */
 @Serializable
 data class MovieDto(
@@ -35,5 +36,7 @@ data class MovieDto(
     val voteCount: Int,
     @SerialName("release_date")
     val releaseDate: String,
-    val genres: List<GenreDto>
+    val genres: List<GenreDto>,
+    @SerialName("adult")
+    val nsfw: Boolean = false,
 )

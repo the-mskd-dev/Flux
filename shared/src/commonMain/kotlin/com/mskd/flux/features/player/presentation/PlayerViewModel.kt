@@ -366,14 +366,12 @@ class PlayerViewModel<out T>(
 
     private suspend fun showNextEpisode() {
 
-        val media = content?.media
+        val media = content?.media ?: return
         val cache = nextEpisodeCache
-        val nextEpisode = if (cache != null && cache.first == media?.mediaId) {
+        val nextEpisode = if (cache?.first == media.mediaId) {
             cache.second
         } else {
-            getNextEpisodeUseCase(media = media).also { result ->
-                media?.let { nextEpisodeCache = it.mediaId to result }
-            }
+            getNextEpisodeUseCase(media = media).also { nextEpisodeCache = media.mediaId to it }
         } ?: return
 
         _userState.update { it.copy(chapterButton = PlayerUiContent.ChapterButton.NextEpisode(nextEpisode = nextEpisode)) }

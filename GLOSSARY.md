@@ -2,6 +2,30 @@
 
 Flux organise les fichiers vidéo locaux de l'utilisateur en bibliothèque (enrichie via TMDB) et les lit avec un historique de progression.
 
+## Modèles
+
+**Artwork**:
+Représente une œuvre sans les Media associés.
+_Avoid_: Film, Série, Saison, Episode, Genre
+
+**Media**:
+
+**Movie**:
+Media de type film. Associé à un fichier local, c'est ce que l'on va utiliser pour lire via le lecteur. Il ne doit y avoir qu'un seul Movie pour un Artwork de type MOVIE.
+
+**Episode**:
+Media de type série. Associé à un fichier local, c'est ce que l'on va utiliser pour lire via le lecteur.Il peut y avoir plusieurs Episode pour un Artwork de type SHOW.
+
+**Season**:
+Représente une saison pour les oeuvres de type SHOW. Il peut y avoir plusieurs Season pour un Artwork de type SHOW. Une Season peut contenir plusieurs Episode.
+
+**Genre**:
+Genre de l'Artwork.
+_Avoid_: Type, catégorie
+
+**FullArtwork**:
+Regroupe un Artwork avec son ou ses Media, ainsi que ses Genre
+
 ## Lecteur
 
 **Media**:

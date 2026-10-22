@@ -38,7 +38,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -117,13 +116,14 @@ class AndroidPlayerManager(
         _state.value = PlayerManager.State.Connecting
 
         val sessionToken = SessionToken(context, ComponentName(context, PlayerService::class.java))
-        controllerFuture = MediaController.Builder(context, sessionToken).buildAsync()
+        val future = MediaController.Builder(context, sessionToken).buildAsync()
+        controllerFuture = future
 
-        controllerFuture?.addListener({
+        future.addListener({
             // Ignore a connection completed after disconnect (or superseded)
-            if (_state.value !is PlayerManager.State.Connecting) return@addListener
+            if (_state.value !is PlayerManager.State.Connecting || controllerFuture !== future) return@addListener
             try {
-                val controller = controllerFuture?.get() ?: run {
+                val controller = future.get() ?: run {
                     _state.value = PlayerManager.State.Error()
                     return@addListener
                 }
@@ -143,7 +143,6 @@ class AndroidPlayerManager(
         if (currentSessionId != sessionId) return
 
         stopProgressMonitoring()
-        scope.coroutineContext.cancelChildren()
         resetDecoderRecovery()
         resetDecoderModes()
 

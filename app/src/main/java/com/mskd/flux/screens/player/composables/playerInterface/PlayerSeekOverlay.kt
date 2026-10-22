@@ -28,7 +28,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.constraintlayout.compose.layoutId
-import com.mskd.flux.features.player.presentation.PlayerUiContent
+import com.mskd.flux.features.player.presentation.SeekOverlay
 import com.mskd.flux.ui.LandscapePreview
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
@@ -42,7 +42,7 @@ import org.jetbrains.compose.resources.painterResource
 fun PlayerSeekOverlay(
     layoutIdLeft: String,
     layoutIdRight: String,
-    seekOverlay: () -> PlayerUiContent.SeekOverlay?
+    seekOverlay: () -> SeekOverlay?
 ) {
 
     val overlay = seekOverlay()
@@ -69,7 +69,7 @@ fun PlayerSeekOverlay(
     ) {
 
         AnimatedVisibility(
-            visible = overlay?.type == PlayerUiContent.SeekOverlay.Type.REWIND,
+            visible = overlay?.type == SeekOverlay.Type.REWIND,
             enter = fadeIn(animationSpec = spring(stiffness = Spring.StiffnessLow)),
             exit = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessLow)),
             label = "Visibility left seek overlay"
@@ -99,7 +99,7 @@ fun PlayerSeekOverlay(
     ) {
 
         AnimatedVisibility(
-            visible = overlay?.type == PlayerUiContent.SeekOverlay.Type.FORWARD,
+            visible = overlay?.type == SeekOverlay.Type.FORWARD,
             enter = fadeIn(animationSpec = spring(stiffness = Spring.StiffnessLow)),
             exit = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessLow)),
             label = "Visibility right seek overlay"
@@ -191,12 +191,12 @@ fun PlayerSeekOverlay_Preview() {
                 PlayerSeekOverlay(
                     layoutIdLeft = "",
                     layoutIdRight = "",
-                    seekOverlay = { PlayerUiContent.SeekOverlay(amount = 10, type = PlayerUiContent.SeekOverlay.Type.REWIND) }
+                    seekOverlay = { SeekOverlay(amount = 10, type = SeekOverlay.Type.REWIND) }
                 )
                 PlayerSeekOverlay(
                     layoutIdLeft = "",
                     layoutIdRight = "",
-                    seekOverlay = { PlayerUiContent.SeekOverlay(amount = 10, type = PlayerUiContent.SeekOverlay.Type.FORWARD) }
+                    seekOverlay = { SeekOverlay(amount = 10, type = SeekOverlay.Type.FORWARD) }
                 )
             }
 

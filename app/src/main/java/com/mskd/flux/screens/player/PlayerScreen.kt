@@ -53,7 +53,11 @@ import com.mskd.flux.core.model.core.State
 import com.mskd.flux.core.model.enums.Side
 import com.mskd.flux.features.player.domain.model.PlayerParams
 import com.mskd.flux.features.player.presentation.PlayerIntent
-import com.mskd.flux.features.player.presentation.PlayerUiContent
+import com.mskd.flux.features.player.presentation.PlayerInterfaceState
+import com.mskd.flux.features.player.presentation.PlayerOverlays
+import com.mskd.flux.features.player.presentation.PlayerSession
+import com.mskd.flux.screens.player.composables.collectSelectedAsState
+import kotlinx.coroutines.flow.StateFlow
 import com.mskd.flux.features.player.presentation.PlayerViewModel
 import com.mskd.flux.features.player.presentation.rememberPlayerScaleEffects
 import com.mskd.flux.features.player.presentation.rememberWindowStateHolder
@@ -84,10 +88,9 @@ fun PlayerScreen(
     viewModel: PlayerViewModel<Player> = koinViewModel(parameters = { parametersOf(params) })
 ) {
 
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val session by viewModel.session.collectAsStateWithLifecycle()
     val subtitles by viewModel.subtitles.collectAsStateWithLifecycle()
     val progress by viewModel.progress.collectAsStateWithLifecycle()
-    val content = (uiState.state as? State.Content)?.content
 
     val windowStateHolder = rememberWindowStateHolder()
     var interfaceVisibilityCountdown by remember { mutableIntStateOf(3) }
@@ -95,14 +98,15 @@ fun PlayerScreen(
     PlayerSideEffects(
         viewModel = viewModel,
         windowStateHolder = windowStateHolder,
-        showInterface = content?.showInterface ?: false,
         onBack = onBack,
-        isPlayingContent = { content?.isPlaying == true },
     )
 
     // Automatically hide interface after 5 seconds
-    LaunchedEffect(content?.showInterface, content?.settingsSheet) {
-        if (content?.showInterface == true && content.settingsSheet == null) {
+    val showInterface by viewModel.interfaceState.collectSelectedAsState { it.showInterface }
+    val hasSettingsSheet by viewModel.interfaceState.collectSelectedAsState { it.settingsSheet != null }
+    val hasContent = session is State.Content
+    LaunchedEffect(hasContent, showInterface, hasSettingsSheet) {
+        if (hasContent && showInterface && !hasSettingsSheet) {
             while (interfaceVisibilityCountdown > 0) {
                 delay(1.seconds)
                 interfaceVisibilityCountdown--
@@ -117,7 +121,7 @@ fun PlayerScreen(
     }
 
     AnimatedContent(
-        targetState = uiState.state,
+        targetState = session,
         label = "CatalogScreenState",
         transitionSpec = { fadeIn() togetherWith fadeOut() },
         contentKey = { state ->
@@ -144,7 +148,10 @@ fun PlayerScreen(
                 val focusRequester = remember { FocusRequester() }
 
                 PlayerContent(
-                    content = state.content,
+                    session = state.content,
+                    interfaceState = viewModel.interfaceState,
+                    overlays = viewModel.overlays,
+                    isPlaying = viewModel.isPlaying,
                     subtitles = { subtitles },
                     progress = { progress },
                     focusRequester = focusRequester,
@@ -163,7 +170,10 @@ fun PlayerScreen(
 @OptIn(UnstableApi::class)
 @Composable
 fun PlayerContent(
-    content: PlayerUiContent<Player>,
+    session: PlayerSession<Player>,
+    interfaceState: StateFlow<PlayerInterfaceState>,
+    overlays: StateFlow<PlayerOverlays>,
+    isPlaying: StateFlow<Boolean>,
     subtitles: () -> List<String?>,
     progress: () -> Long,
     focusRequester: FocusRequester,
@@ -174,20 +184,20 @@ fun PlayerContent(
     val configuration = LocalConfiguration.current
     val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
 
-    var currentVideoSize by remember { mutableStateOf(content.player.videoSize) }
+    var currentVideoSize by remember { mutableStateOf(session.player.videoSize) }
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
     }
 
-    DisposableEffect(content.player) {
+    DisposableEffect(session.player) {
         val listener = object : Player.Listener {
             override fun onVideoSizeChanged(videoSize: VideoSize) {
                 currentVideoSize = videoSize
             }
         }
-        content.player.addListener(listener)
-        onDispose { content.player.removeListener(listener) }
+        session.player.addListener(listener)
+        onDispose { session.player.removeListener(listener) }
     }
 
     val scaleState = rememberPlayerScaleEffects(
@@ -213,6 +223,9 @@ fun PlayerContent(
     }
 
     val currentSendIntent by rememberUpdatedState(sendIntent)
+    val isInPip by interfaceState.collectSelectedAsState { it.isInPip }
+    val seekOverlay by overlays.collectSelectedAsState { it.seekOverlay }
+    val ambientOverlay by overlays.collectSelectedAsState { it.ambientOverlay }
 
     ConstraintLayout(
         modifier = Modifier
@@ -288,10 +301,10 @@ fun PlayerContent(
                     scaleX = scale
                     scaleY = scale
                 },
-            player = content.player
+            player = session.player
         )
 
-        if (!content.isInPip) {
+        if (!isInPip) {
 
             PlayerSubtitles(
                 modifier = Modifier
@@ -303,8 +316,10 @@ fun PlayerContent(
 
             PlayerInterface(
                 modifier = Modifier.layoutId("playerInterface"),
-                media = content.media,
-                content = content,
+                session = session,
+                interfaceState = interfaceState,
+                overlays = overlays,
+                isPlaying = isPlaying,
                 progress = progress,
                 sendIntent = sendIntent,
             )
@@ -312,12 +327,12 @@ fun PlayerContent(
             PlayerSeekOverlay(
                 layoutIdLeft = "leftSeekOverlay",
                 layoutIdRight = "rightSeekOverlay",
-                seekOverlay = { content.seekOverlay }
+                seekOverlay = { seekOverlay }
             )
 
             PlayerAmbientOverlay(
                 modifier = Modifier.layoutId("ambientOverlay"),
-                ambientOverlay = { content.ambientOverlay }
+                ambientOverlay = { ambientOverlay }
             )
 
         }
@@ -325,7 +340,8 @@ fun PlayerContent(
     }
 
     PlayerSettings(
-        content = content,
+        session = session,
+        interfaceState = interfaceState,
         sendIntent = sendIntent
     )
 

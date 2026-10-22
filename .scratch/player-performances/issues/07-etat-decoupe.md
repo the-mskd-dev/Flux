@@ -11,7 +11,7 @@ Spec : `../spec.md` (lot B)
 
 **Blocked by:** 06
 
-**Status:** ready-for-agent
+**Status:** done
 
 - [ ] Les flux ci-dessus remplacent l'état monolithique ; les types intermédiaires `PlayerDataState` et `PlayerUserState`, et leur fusion, sont supprimés
 - [ ] Un changement d'overlay n'émet ni sur `session` ni sur `interface` (nouveau cas de test)

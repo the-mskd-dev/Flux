@@ -17,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.layoutId
@@ -26,27 +27,35 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
-import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.features.player.presentation.PlayerIntent
-import com.mskd.flux.features.player.presentation.PlayerUiContent
+import com.mskd.flux.features.player.presentation.PlayerInterfaceState
+import com.mskd.flux.features.player.presentation.PlayerOverlays
+import com.mskd.flux.features.player.presentation.PlayerSession
+import com.mskd.flux.screens.player.composables.collectSelectedAsState
+import kotlinx.coroutines.flow.StateFlow
 import com.mskd.flux.ui.theme.FluxUI
 
 @Composable
 fun PlayerInterface(
     modifier: Modifier = Modifier,
-    media: Media,
-    content: PlayerUiContent<Any>,
+    session: PlayerSession<Any>,
+    interfaceState: StateFlow<PlayerInterfaceState>,
+    overlays: StateFlow<PlayerOverlays>,
+    isPlaying: StateFlow<Boolean>,
     progress: () -> Long,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
     val density = LocalDensity.current
+    val showInterface by interfaceState.collectSelectedAsState { it.showInterface }
+    val isPlayingState = isPlaying.collectAsStateWithLifecycle()
+    val chapterButton = overlays.collectSelectedAsState { it.chapterButton }
     var seekBarHeight by remember { mutableStateOf(0.dp) }
 
     Box(modifier = modifier) {
 
         AnimatedVisibility(
-            visible = content.showInterface,
+            visible = showInterface,
             enter = fadeIn(animationSpec = spring(stiffness = Spring.StiffnessLow)),
             exit = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessLow)),
         ) {
@@ -60,7 +69,7 @@ fun PlayerInterface(
 
                 PlayerTopBar(
                     modifier = Modifier.layoutId("topBar"),
-                    media = media,
+                    media = session.media,
                     onBackTap = { sendIntent(PlayerIntent.OnBackTap) }
                 )
 
@@ -81,8 +90,8 @@ fun PlayerInterface(
                             ),
                             exit = scaleOut()
                         ),
-                    isPlaying = content.isPlaying,
-                    rewindAndForward = content.playerRewind to content.playerForward,
+                    isPlaying = isPlayingState.value,
+                    rewindAndForward = session.playerRewind to session.playerForward,
                     sendIntent = sendIntent
                 )
 
@@ -93,9 +102,9 @@ fun PlayerInterface(
                             val height = with(density) { coordinates.size.height.toDp() }
                             if (seekBarHeight != height) seekBarHeight = height
                         },
-                    isPlaying = content.isPlaying,
+                    isPlaying = isPlayingState.value,
                     progress = progress,
-                    duration = content.duration,
+                    duration = session.duration,
                     sendIntent = sendIntent,
                 )
 
@@ -107,9 +116,9 @@ fun PlayerInterface(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(end = FluxUI.Space.large),
-            chapterButton = content.chapterButton,
+            chapterButton = chapterButton.value,
             bottomMargin = {
-                if (content.showInterface) {
+                if (showInterface) {
                     seekBarHeight + FluxUI.Space.medium
                 } else {
                     FluxUI.Space.large

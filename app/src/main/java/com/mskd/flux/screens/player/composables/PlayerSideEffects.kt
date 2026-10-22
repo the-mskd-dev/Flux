@@ -19,8 +19,7 @@ import androidx.media3.common.Player
 import com.mskd.flux.MainActivity
 import com.mskd.flux.features.player.presentation.PlayerEvent
 import com.mskd.flux.features.player.presentation.PlayerIntent
-import com.mskd.flux.features.player.presentation.PlayerIntent.UpdateAmbientOverlay
-import com.mskd.flux.features.player.presentation.PlayerUiContent
+import com.mskd.flux.features.player.presentation.AmbientOverlay
 import com.mskd.flux.features.player.presentation.PlayerViewModel
 import com.mskd.flux.features.player.presentation.WindowStateHolder
 import com.mskd.flux.ui.global.LifecycleComponent
@@ -31,15 +30,14 @@ import kotlinx.coroutines.launch
 fun PlayerSideEffects(
     viewModel: PlayerViewModel<Player>,
     windowStateHolder: WindowStateHolder,
-    showInterface: Boolean,
     onBack: () -> Unit,
-    isPlayingContent: () -> Boolean,
 ) {
+
+    val showInterface by viewModel.interfaceState.collectSelectedAsState { it.showInterface }
 
     val lifecycleOwner = LocalLifecycleOwner.current
     val activity = LocalContext.current.findActivity() as? MainActivity
     val originalOrientation = remember { activity?.requestedOrientation }
-    val currentIsPlayingContent by rememberUpdatedState(isPlayingContent)
 
     // Observer PiP state
     val isInPip by produceState(initialValue = false, activity) {
@@ -55,7 +53,7 @@ fun PlayerSideEffects(
 
     DisposableEffect(activity) {
         activity?.setOnUserLeaveHintCallback {
-            if (currentIsPlayingContent()) {
+            if (viewModel.isPlaying.value) {
                 val params = PictureInPictureParams.Builder()
                     .setAspectRatio(Rational(16, 9))
                     .build()
@@ -96,7 +94,7 @@ fun PlayerSideEffects(
                         PlayerEvent.BackToPreviousScreen -> onBack()
                         is PlayerEvent.ChangeBrightness -> {
                             windowStateHolder.changeBrightness(delta = event.delta)?.let { brightness ->
-                                viewModel.handleIntent(UpdateAmbientOverlay(type = PlayerUiContent.AmbientOverlay.Type.BRIGHTNESS, value = brightness))
+                                viewModel.handleIntent(PlayerIntent.UpdateAmbientOverlay(type = AmbientOverlay.Type.BRIGHTNESS, value = brightness))
                             }
                         }
                     }

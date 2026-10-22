@@ -2,6 +2,7 @@ package com.mskd.flux.features.player.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.core.State
@@ -69,6 +70,9 @@ class PlayerViewModel<out T>(
     private val content get() = (uiState.value.state as? State.Content<PlayerUiContent<T>>)?.content
 
     private var chapters: List<VideoChapter> = emptyList()
+
+    // Next episode lookup, cached for the current media (null result included)
+    private var nextEpisodeCache: Pair<Long, Episode?>? = null
 
     //endregion
 
@@ -362,7 +366,15 @@ class PlayerViewModel<out T>(
 
     private suspend fun showNextEpisode() {
 
-        val nextEpisode = getNextEpisodeUseCase(media = content?.media) ?: return
+        val media = content?.media
+        val cache = nextEpisodeCache
+        val nextEpisode = if (cache != null && cache.first == media?.mediaId) {
+            cache.second
+        } else {
+            getNextEpisodeUseCase(media = media).also { result ->
+                media?.let { nextEpisodeCache = it.mediaId to result }
+            }
+        } ?: return
 
         _userState.update { it.copy(chapterButton = PlayerUiContent.ChapterButton.NextEpisode(nextEpisode = nextEpisode)) }
 

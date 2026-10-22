@@ -501,6 +501,46 @@ class PlayerViewModelTest : FunSpec({
 
     }
 
+    test("next episode is searched once per media despite several progress ticks") {
+
+        // Given
+        val progressFlow = MutableStateFlow(0L)
+        playerManager = mockk(relaxed = true) {
+            every { flow } returns MutableStateFlow(
+                PlayerManager.State.Ready(
+                    player = player,
+                    duration = MediaMockups.episode1.duration.minToMs
+                )
+            )
+            every { progress } returns progressFlow
+        }
+
+        updateVm()
+
+        viewModel.uiState.test {
+            awaitItem()
+            coVerify { playerManager.playMedia(any(), any()) }
+
+            // When
+            progressFlow.value = 1_370_000L
+            awaitItem().content.chapterButton shouldBe
+                PlayerUiContent.ChapterButton.NextEpisode(nextEpisode = MediaMockups.episode2)
+            progressFlow.value = 1_371_000L
+            progressFlow.value = 1_372_000L
+            progressFlow.value = 1_373_000L
+            viewModel.progress.test {
+                awaitItem()
+                cancelAndIgnoreRemainingEvents()
+            }
+
+            // Then
+            coVerify(exactly = 1) { getNextEpisodeUseCase(MediaMockups.episode1) }
+
+            cancelAndIgnoreRemainingEvents()
+        }
+
+    }
+
     test("on volume change") {
         viewModel.uiState.test {
             awaitItem()

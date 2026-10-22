@@ -195,7 +195,7 @@ fun PlayerContent(
         isPortrait = isPortrait
     )
 
-    val animatedScale by animateFloatAsState(
+    val animatedScale = animateFloatAsState(
         targetValue = scaleState.targetScale,
         animationSpec = spring(
             dampingRatio = Spring.DampingRatioNoBouncy,
@@ -280,11 +280,11 @@ fun PlayerContent(
         ContentFrame(
             modifier = Modifier
                 .layoutId("player")
-                .graphicsLayer(
-                    scaleX = animatedScale,
-                    scaleY = animatedScale
-                )
-            ,
+                .graphicsLayer {
+                    val scale = animatedScale.value
+                    scaleX = scale
+                    scaleY = scale
+                },
             player = content.player
         )
 

@@ -18,6 +18,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -43,9 +44,12 @@ fun PlayerAmbientOverlay(
 
     val overlay = ambientOverlay()
 
-    var value by remember { mutableIntStateOf(0) }
-    if (overlay?.value != null) {
-        value = overlay.value
+    var lastValue by remember { mutableIntStateOf(0) }
+    val overlayValue = overlay?.value
+    LaunchedEffect(overlayValue) {
+        if (overlayValue != null) {
+            lastValue = overlayValue
+        }
     }
 
     AnimatedVisibility(
@@ -94,7 +98,7 @@ fun PlayerAmbientOverlay(
 
             LinearProgressIndicator(
                 modifier = Modifier.width(100.dp),
-                progress = { value / 100f },
+                progress = { (overlayValue ?: lastValue) / 100f },
                 color = Color.White,
                 trackColor = Color.Black,
                 gapSize = 0.dp,

@@ -24,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -211,6 +212,8 @@ fun PlayerContent(
         }
     }
 
+    val currentSendIntent by rememberUpdatedState(sendIntent)
+
     ConstraintLayout(
         modifier = Modifier
             .focusRequester(focusRequester)
@@ -244,15 +247,15 @@ fun PlayerContent(
                     onTap = { offset ->
                         val edgeMargin = 32.dp.toPx()
                         if (offset.x > edgeMargin && offset.x < (size.width - edgeMargin)) {
-                            sendIntent(PlayerIntent.ChangeInterfaceVisibility)
+                            currentSendIntent(PlayerIntent.ChangeInterfaceVisibility)
                         }
                     },
                     onDoubleTap = { offset ->
                         val width = size.width
                         if (offset.x < (width * .4f)) {
-                            sendIntent(PlayerIntent.OnFastRewind)
+                            currentSendIntent(PlayerIntent.OnFastRewind)
                         } else if (offset.x > (width * .6f)) {
-                            sendIntent(PlayerIntent.OnFastForward)
+                            currentSendIntent(PlayerIntent.OnFastForward)
                         }
                     }
                 )
@@ -266,8 +269,8 @@ fun PlayerContent(
                     onVerticalDrag = { change, dragAmount ->
                         val delta = (-dragAmount / size.height) * 2
                         when (side) {
-                            Side.LEFT -> sendIntent(PlayerIntent.OnBrightnessChange(delta))
-                            Side.RIGHT -> sendIntent(PlayerIntent.OnVolumeChange(delta))
+                            Side.LEFT -> currentSendIntent(PlayerIntent.OnBrightnessChange(delta))
+                            Side.RIGHT -> currentSendIntent(PlayerIntent.OnVolumeChange(delta))
                         }
                         change.consume()
                     },

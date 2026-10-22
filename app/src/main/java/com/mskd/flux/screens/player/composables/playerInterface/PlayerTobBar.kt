@@ -46,8 +46,7 @@ fun PlayerTopBar(
     ) {
 
         Box(
-            modifier = modifier
-                .statusBarsPadding()
+            modifier = Modifier
                 .clickable { onBackTap() }
                 .size(50.dp)
                 .clip(shape = CircleShape)

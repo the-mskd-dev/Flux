@@ -6,7 +6,7 @@ Spec : `../spec.md` (lot C)
 
 **Blocked by:** 07
 
-**Status:** ready-for-agent
+**Status:** done
 
 - [ ] L'Interface reste composée quand elle est masquée ; l'apparition et la disparition passent par une transition sur la visibilité et sont appliquées dans `graphicsLayer`
 - [ ] Animations strictement identiques à aujourd'hui :

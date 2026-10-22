@@ -45,7 +45,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import org.jetbrains.compose.resources.getString
 import java.util.Locale
 import kotlin.math.roundToInt
@@ -93,6 +92,9 @@ class AndroidPlayerManager(
 
     private var currentMediaId: Long = -1L
     private var currentSessionId: String? = null
+
+    /** Resolved once in [playMedia] (suspending) so [onTracksChanged] never blocks the main thread. */
+    private var defaultTrackLabel: String? = null
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private var progressJob: Job? = null
@@ -194,6 +196,8 @@ class AndroidPlayerManager(
 
     override suspend fun playMedia(media: Media, subtitlesPath: String?) {
         val player = (_state.value as? PlayerManager.State.Ready)?.player ?: return
+
+        if (defaultTrackLabel == null) defaultTrackLabel = getString(Res.string.track)
 
         if (media.mediaId != currentMediaId) {
 
@@ -404,7 +408,7 @@ class AndroidPlayerManager(
     override fun onTracksChanged(tracks: Tracks) {
         val current = _state.value as? PlayerManager.State.Ready ?: return
 
-        val defaultLabel = runBlocking { getString(Res.string.track) }
+        val defaultLabel = defaultTrackLabel ?: ""
 
         var selectedAudio: PlayerTrack? = current.selectedAudio
         var selectedSubtitles: PlayerTrack? = current.selectedSubtitles

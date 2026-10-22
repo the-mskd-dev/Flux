@@ -38,6 +38,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -113,10 +114,14 @@ class AndroidPlayerManager(
             return
         }
 
+        _state.value = PlayerManager.State.Connecting
+
         val sessionToken = SessionToken(context, ComponentName(context, PlayerService::class.java))
         controllerFuture = MediaController.Builder(context, sessionToken).buildAsync()
 
         controllerFuture?.addListener({
+            // Ignore a connection completed after disconnect (or superseded)
+            if (_state.value !is PlayerManager.State.Connecting) return@addListener
             try {
                 val controller = controllerFuture?.get() ?: run {
                     _state.value = PlayerManager.State.Error()
@@ -138,6 +143,7 @@ class AndroidPlayerManager(
         if (currentSessionId != sessionId) return
 
         stopProgressMonitoring()
+        scope.coroutineContext.cancelChildren()
         resetDecoderRecovery()
         resetDecoderModes()
 
@@ -249,8 +255,7 @@ class AndroidPlayerManager(
     }
 
     override fun selectTrack(track: PlayerTrack) {
-        val current = _state.value as? PlayerManager.State.Ready ?: return
-        val player = current.player
+        val player = (_state.value as? PlayerManager.State.Ready)?.player ?: return
         val currentTracks = player.currentTracks
         var selectedTrack: PlayerTrack? = null
 
@@ -265,9 +270,12 @@ class AndroidPlayerManager(
             .build()
 
         selectedTrack?.let { t ->
-            when (t.type) {
-                PlayerTrack.Type.AUDIO -> _state.update { current.copy(selectedAudio = t) }
-                PlayerTrack.Type.SUBTITLES -> _state.update { current.copy(selectedSubtitles = t) }
+            _state.update { state ->
+                val ready = state as? PlayerManager.State.Ready ?: return@update state
+                when (t.type) {
+                    PlayerTrack.Type.AUDIO -> ready.copy(selectedAudio = t)
+                    PlayerTrack.Type.SUBTITLES -> ready.copy(selectedSubtitles = t)
+                }
             }
         }
     }
@@ -277,24 +285,30 @@ class AndroidPlayerManager(
     //region Player events
 
     override fun onEvents(player: Player, events: Player.Events) {
-        val currentState = _state.value as? PlayerManager.State.Ready ?: return
+        if (_state.value !is PlayerManager.State.Ready) return
 
-        if (events.containsAny(
-                Player.EVENT_PLAY_WHEN_READY_CHANGED,
-                Player.EVENT_PLAYBACK_STATE_CHANGED,
-                Player.EVENT_IS_PLAYING_CHANGED
-            )
-        ) {
-            _state.update { currentState.copy(isPlaying = player.playWhenReady) }
-            if (player.isPlaying) startProgressMonitoring() else stopProgressMonitoring()
-        }
-
-        if (
+        val playingChanged = events.containsAny(
+            Player.EVENT_PLAY_WHEN_READY_CHANGED,
+            Player.EVENT_PLAYBACK_STATE_CHANGED,
+            Player.EVENT_IS_PLAYING_CHANGED
+        )
+        val duration = if (
             events.contains(Player.EVENT_PLAYBACK_STATE_CHANGED)
             && player.playbackState == Player.STATE_READY
-        ) {
-            val duration = player.duration.coerceAtLeast(0L)
-            _state.update { currentState.copy(duration = duration) }
+        ) player.duration.coerceAtLeast(0L) else null
+
+        if (playingChanged || duration != null) {
+            _state.update { state ->
+                val ready = state as? PlayerManager.State.Ready ?: return@update state
+                ready.copy(
+                    isPlaying = if (playingChanged) player.playWhenReady else ready.isPlaying,
+                    duration = duration ?: ready.duration
+                )
+            }
+        }
+
+        if (playingChanged) {
+            if (player.isPlaying) startProgressMonitoring() else stopProgressMonitoring()
         }
 
     }
@@ -406,12 +420,12 @@ class AndroidPlayerManager(
     }
 
     override fun onTracksChanged(tracks: Tracks) {
-        val current = _state.value as? PlayerManager.State.Ready ?: return
+        if (_state.value !is PlayerManager.State.Ready) return
 
         val defaultLabel = defaultTrackLabel ?: ""
 
-        var selectedAudio: PlayerTrack? = current.selectedAudio
-        var selectedSubtitles: PlayerTrack? = current.selectedSubtitles
+        var selectedAudio: PlayerTrack? = null
+        var selectedSubtitles: PlayerTrack? = null
 
         val tracks = tracks.groups
             .filter { it.type == C.TRACK_TYPE_AUDIO || it.type == C.TRACK_TYPE_TEXT }
@@ -439,11 +453,12 @@ class AndroidPlayerManager(
                 }
             }
 
-        _state.update {
-            current.copy(
+        _state.update { state ->
+            val ready = state as? PlayerManager.State.Ready ?: return@update state
+            ready.copy(
                 tracks = tracks,
-                selectedAudio = selectedAudio,
-                selectedSubtitles = selectedSubtitles
+                selectedAudio = selectedAudio ?: ready.selectedAudio,
+                selectedSubtitles = selectedSubtitles ?: ready.selectedSubtitles
             )
         }
 

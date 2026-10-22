@@ -3,6 +3,7 @@ package com.mskd.flux.features.player.data.manager
 import android.content.ComponentName
 import android.content.Context
 import android.net.Uri
+import android.os.Bundle
 import androidx.annotation.OptIn
 import androidx.core.net.toUri
 import androidx.media3.common.C
@@ -25,6 +26,7 @@ import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.player.PlayerTrack
 import com.mskd.flux.features.player.domain.manager.PlayerManager
+import com.mskd.flux.features.player.domain.manager.SeekPrecision
 import com.mskd.flux.features.player.domain.usecase.SaveTrackLanguageUseCase
 import com.mskd.flux.report.Trace
 import com.mskd.flux.services.PlayerService
@@ -90,6 +92,8 @@ class AndroidPlayerManager(
 
     private var controllerFuture: ListenableFuture<MediaController>? = null
 
+    private var lastSeekPrecision = SeekPrecision.EXACT
+
     private var currentMediaId: Long = -1L
     private var currentSessionId: String? = null
 
@@ -129,6 +133,7 @@ class AndroidPlayerManager(
                 }
 
                 controller.addListener(this@AndroidPlayerManager)
+                lastSeekPrecision = SeekPrecision.EXACT
                 _state.value = PlayerManager.State.Ready(player = controller)
             } catch (e: Exception) {
                 Trace.error(tag = TAG, message = "Failed to connect", throwable = e)
@@ -174,13 +179,24 @@ class AndroidPlayerManager(
         (_state.value as? PlayerManager.State.Ready)?.player?.pause()
     }
 
-    override fun seekTo(progress: Long) {
-        (_state.value as? PlayerManager.State.Ready)?.player?.seekTo(progress)
+    override fun seekTo(progress: Long, precision: SeekPrecision) {
+        val controller = (_state.value as? PlayerManager.State.Ready)?.player as? MediaController ?: return
+        applySeekPrecision(controller, precision)
+        controller.seekTo(progress)
+    }
+
+    // Seek parameters live on the service's ExoPlayer; commands are delivered in order,
+    // so the next seek is decoded with the precision just requested.
+    private fun applySeekPrecision(controller: MediaController, precision: SeekPrecision) {
+        if (precision == lastSeekPrecision) return
+        controller.sendCustomCommand(PlayerService.setSeekPrecisionCommand(precision), Bundle.EMPTY)
+        lastSeekPrecision = precision
     }
 
     override fun seekRewind(value: Long) {
         (_state.value as? PlayerManager.State.Ready)?.player?.let {
             val targetPosition = (it.currentPosition - value).coerceAtLeast(0L)
+            (it as? MediaController)?.let { c -> applySeekPrecision(c, SeekPrecision.EXACT) }
             it.seekTo(targetPosition)
         }
     }
@@ -188,6 +204,7 @@ class AndroidPlayerManager(
     override fun seekForward(value: Long) {
         (_state.value as? PlayerManager.State.Ready)?.player?.let {
             val targetPosition = (it.currentPosition + value).coerceAtMost(it.duration)
+            (it as? MediaController)?.let { c -> applySeekPrecision(c, SeekPrecision.EXACT) }
             it.seekTo(targetPosition)
         }
     }

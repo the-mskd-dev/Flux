@@ -6,7 +6,7 @@ Spec : `../spec.md` (lot C)
 
 **Blocked by:** 07
 
-**Status:** ready-for-agent
+**Status:** done
 
 - [ ] Pendant le glissement, le curseur et le temps affiché viennent de l'état local du doigt, pas de la Progress du lecteur (pas de retour en arrière du curseur)
 - [ ] Pendant le glissement, au plus un seek toutes les ~150 ms, en mode rapide (image clé la plus proche, `CLOSEST_SYNC`) ; la limitation est faite côté UI

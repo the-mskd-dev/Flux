@@ -1,5 +1,6 @@
 package com.mskd.flux.features.player.presentation
 
+import com.mskd.flux.features.player.domain.manager.SeekPrecision
 import androidx.compose.runtime.Immutable
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Media
@@ -68,7 +69,7 @@ sealed class PlayerIntent {
     data object TogglePlayButton : PlayerIntent()
     data object OnFastRewind : PlayerIntent()
     data object OnFastForward : PlayerIntent()
-    data class SeekTo(val progress: Long) : PlayerIntent()
+    data class SeekTo(val progress: Long, val precision: SeekPrecision = SeekPrecision.EXACT) : PlayerIntent()
     data class ShowSettings(val sheet: SettingsSheet?) : PlayerIntent()
     data class SelectTrack(val track: PlayerTrack) : PlayerIntent()
 

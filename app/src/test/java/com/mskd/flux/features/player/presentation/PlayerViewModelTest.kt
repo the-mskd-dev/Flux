@@ -12,6 +12,7 @@ import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtwo
 import com.mskd.flux.features.artwork.fake.FakeObserveArtworkUseCase
 import com.mskd.flux.features.files.domain.usecase.GetSubtitlesUseCase
 import com.mskd.flux.features.player.data.PipIsEnabledUseCase
+import com.mskd.flux.features.player.domain.manager.SeekPrecision
 import com.mskd.flux.features.player.domain.manager.PlayerManager
 import com.mskd.flux.features.player.domain.model.PlayerParams
 import com.mskd.flux.features.player.domain.model.VideoChapter
@@ -342,7 +343,15 @@ class PlayerViewModelTest : FunSpec({
         viewModel.event.test {
             viewModel.handleIntent(PlayerIntent.SeekTo(4L))
 
-            coVerify { playerManager.seekTo(progress = 4L) }
+            coVerify { playerManager.seekTo(progress = 4L, precision = SeekPrecision.EXACT) }
+        }
+    }
+
+    test("seek to forwards the requested precision") {
+        viewModel.event.test {
+            viewModel.handleIntent(PlayerIntent.SeekTo(7L, SeekPrecision.FAST))
+
+            coVerify { playerManager.seekTo(progress = 7L, precision = SeekPrecision.FAST) }
         }
     }
 
@@ -415,7 +424,7 @@ class PlayerViewModelTest : FunSpec({
                 )
 
                 // Then
-                coVerify { playerManager.seekTo(progress = openingChapter.end) }
+                coVerify { playerManager.seekTo(progress = openingChapter.end, precision = SeekPrecision.EXACT) }
 
                 cancelAndIgnoreRemainingEvents()
             }
@@ -454,7 +463,7 @@ class PlayerViewModelTest : FunSpec({
 
                 // Then
                 expectNoEvents()
-                coVerify(exactly = 0) { playerManager.seekTo(any()) }
+                coVerify(exactly = 0) { playerManager.seekTo(any(), any()) }
                 coVerify(exactly = 0) { recordProgress(any(), any()) }
 
                 cancelAndIgnoreRemainingEvents()

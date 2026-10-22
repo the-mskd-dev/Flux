@@ -12,6 +12,7 @@ import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtwo
 import com.mskd.flux.features.files.domain.usecase.GetSubtitlesUseCase
 import com.mskd.flux.features.player.data.PipIsEnabledUseCase
 import com.mskd.flux.features.player.domain.manager.PlayerManager
+import com.mskd.flux.features.player.domain.manager.SeekPrecision
 import com.mskd.flux.features.player.domain.mapper.toPlayerTrack
 import com.mskd.flux.features.player.domain.model.PlayerParams
 import com.mskd.flux.features.player.domain.model.VideoChapter
@@ -244,7 +245,7 @@ class PlayerViewModel<out T>(
             PlayerIntent.TogglePlayButton -> togglePlayButton()
             PlayerIntent.OnFastRewind -> onFastRewind()
             PlayerIntent.OnFastForward -> onFastForward()
-            is PlayerIntent.SeekTo -> seekTo(progress = intent.progress)
+            is PlayerIntent.SeekTo -> seekTo(progress = intent.progress, precision = intent.precision)
             is PlayerIntent.SelectTrack -> selectTrack(track = intent.track)
             is PlayerIntent.OnVolumeChange -> onVolumeChange(delta = intent.delta)
             is PlayerIntent.OnChapterButtonTap -> onChapterButtonTap(button = intent.button)
@@ -285,8 +286,8 @@ class PlayerViewModel<out T>(
         _volume.tryEmit(playerManager.changeVolume(delta))
     }
 
-    private fun seekTo(progress: Long) {
-        playerManager.seekTo(progress = progress)
+    private fun seekTo(progress: Long, precision: SeekPrecision) {
+        playerManager.seekTo(progress = progress, precision = precision)
     }
 
     private fun changeInterfaceVisibility() {
@@ -369,7 +370,7 @@ class PlayerViewModel<out T>(
             is ChapterButton.Skip -> {
 
                 val endPosition = button.chapter.end
-                seekTo(progress = endPosition)
+                seekTo(progress = endPosition, precision = SeekPrecision.EXACT)
 
             }
 

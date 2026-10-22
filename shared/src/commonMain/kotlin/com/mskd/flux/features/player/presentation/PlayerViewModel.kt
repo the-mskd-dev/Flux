@@ -28,6 +28,7 @@ import com.mskd.flux.ui.text.TextProvider
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -91,33 +92,43 @@ class PlayerViewModel<out T>(
     private val _progress = MutableStateFlow(0L)
     val progress: StateFlow<Long> = _progress.asStateFlow()
 
-    val uiState: StateFlow<PlayerUiState<T>> = combine(
+    // The full Artwork is only used to resolve the Media: only a Media change is propagated
+    private val mediaState: Flow<State<Media>> = combine(
         observeArtworkUseCase(artworkId = params.artworkId),
+        _userState.map { it.mediaId }.distinctUntilChanged(),
+    ) { artworkState, mediaId ->
+        when (artworkState) {
+            is State.Content -> resolveMedia(fullArtwork = artworkState.content, mediaId = mediaId)
+                ?.let { State.Content(it) }
+                ?: State.Error()
+            is State.Error -> State.Error()
+            else -> State.Loading
+        }
+    }.distinctUntilChanged { old, new ->
+        old is State.Content && new is State.Content && old.content.mediaId == new.content.mediaId
+    }
+
+    val uiState: StateFlow<PlayerUiState<T>> = combine(
+        mediaState,
         settingsDataStore.flow,
         playerManager.flow,
         _userState,
-    ) { artworkState, settings, playerState, userState ->
+    ) { mediaState, settings, playerState, userState ->
 
         when {
-            artworkState is State.Error -> {
+            mediaState is State.Error -> {
                 PlayerUiState(state = State.Error())
             }
             playerState is PlayerManager.State.Error -> {
                 val (code, message) = playerState
                 PlayerUiState(state = State.Error(code = code, message = message?.let { TextProvider.Static(it) }))
             }
-            artworkState !is State.Content || playerState !is PlayerManager.State.Ready ->
+            mediaState !is State.Content || playerState !is PlayerManager.State.Ready ->
                 PlayerUiState(state = State.Loading)
             else -> {
 
-                val media = resolveMedia(
-                    fullArtwork = artworkState.content,
-                    mediaId = userState.mediaId
-                ) ?: return@combine PlayerUiState(state = State.Error())
-
                 val dataState = PlayerDataState(
-                    fullArtwork = artworkState.content,
-                    media = media,
+                    media = mediaState.content,
                     player = playerState.player,
                     playerRewind = settings.playerRewindValue,
                     playerForward = settings.playerForwardValue,
@@ -219,7 +230,6 @@ class PlayerViewModel<out T>(
     private fun mergeStates(dataState: PlayerDataState<T>, userState: PlayerUserState) : State<PlayerUiContent<T>> {
         return State.Content(
             content = PlayerUiContent(
-                fullArtwork = dataState.fullArtwork,
                 media = dataState.media,
                 playerRewind = dataState.playerRewind,
                 playerForward = dataState.playerForward,
@@ -241,15 +251,13 @@ class PlayerViewModel<out T>(
 
     private suspend fun processIntent(intent: PlayerIntent) {
         when (intent) {
-            is PlayerIntent.PlayMedia -> playMedia(media = intent.media)
             PlayerIntent.ChangeInterfaceVisibility -> changeInterfaceVisibility()
             is PlayerIntent.ShowSettings -> showSettingsSheet(sheet = intent.sheet)
-            PlayerIntent.SaveTime -> saveTime()
             PlayerIntent.OnBackTap -> onBackTap()
             PlayerIntent.TogglePlayButton -> togglePlayButton()
             PlayerIntent.OnFastRewind -> onFastRewind()
             PlayerIntent.OnFastForward -> onFastForward()
-            is PlayerIntent.UpdateProgress -> updateProgress(progress = intent.progress)
+            is PlayerIntent.SeekTo -> seekTo(progress = intent.progress)
             is PlayerIntent.SelectTrack -> selectTrack(track = intent.track)
             is PlayerIntent.OnVolumeChange -> onVolumeChange(delta = intent.delta)
             is PlayerIntent.OnBrightnessChange -> onBrightnessChange(delta = intent.delta)
@@ -300,7 +308,7 @@ class PlayerViewModel<out T>(
         _event.send(PlayerEvent.ChangeBrightness(delta = delta))
     }
 
-    private fun updateProgress(progress: Long) {
+    private fun seekTo(progress: Long) {
         playerManager.seekTo(progress = progress)
     }
 
@@ -384,7 +392,7 @@ class PlayerViewModel<out T>(
             is PlayerUiContent.ChapterButton.Skip -> {
 
                 val endPosition = button.chapter.end
-                updateProgress(progress = endPosition)
+                seekTo(progress = endPosition)
 
             }
 

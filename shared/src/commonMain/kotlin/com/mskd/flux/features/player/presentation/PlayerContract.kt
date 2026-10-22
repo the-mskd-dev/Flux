@@ -2,7 +2,6 @@ package com.mskd.flux.features.player.presentation
 
 import androidx.compose.runtime.Immutable
 import com.mskd.flux.core.model.artwork.Episode
-import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.core.model.player.PlayerTrack
@@ -18,7 +17,6 @@ data class PlayerUiState<out T>(
 data class PlayerUiContent<out T>(
 
     // DataState
-    val fullArtwork: FullArtwork,
     val media: Media,
     val playerRewind: Int = 10,
     val playerForward: Int = 10,
@@ -67,7 +65,6 @@ data class PlayerUiContent<out T>(
 }
 
 data class PlayerDataState<out T>(
-    val fullArtwork: FullArtwork,
     val media: Media,
     val player: T,
     val playerRewind: Int,
@@ -90,14 +87,12 @@ data class PlayerUserState(
 )
 
 sealed class PlayerIntent {
-    data class PlayMedia(val media: Media) : PlayerIntent()
-    data object SaveTime : PlayerIntent()
     data object OnBackTap : PlayerIntent()
     data object ChangeInterfaceVisibility : PlayerIntent()
     data object TogglePlayButton : PlayerIntent()
     data object OnFastRewind : PlayerIntent()
     data object OnFastForward : PlayerIntent()
-    data class UpdateProgress(val progress: Long) : PlayerIntent()
+    data class SeekTo(val progress: Long) : PlayerIntent()
     data class ShowSettings(val sheet: PlayerUiContent.SettingsSheet?) : PlayerIntent()
     data class SelectTrack(val track: PlayerTrack) : PlayerIntent()
 

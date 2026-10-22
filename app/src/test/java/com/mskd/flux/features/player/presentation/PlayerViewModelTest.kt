@@ -4,6 +4,7 @@ import androidx.media3.common.Player
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.model.artwork.Artwork
+import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.core.model.language.Language
 import com.mskd.flux.core.model.player.PlayerTrack
@@ -29,11 +30,15 @@ import com.mskd.flux.utils.extensions.minToMs
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeInstanceOf
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 
 class PlayerViewModelTest : FunSpec({
 
@@ -222,7 +227,7 @@ class PlayerViewModelTest : FunSpec({
                 awaitItem()
 
                 // When
-                viewModel.handleIntent(PlayerIntent.SaveTime)
+                viewModel.handleIntent(PlayerIntent.OnClosePiP)
 
                 // Then
                 coVerify { recordProgress(testCase.media, testCase.time) }
@@ -302,12 +307,36 @@ class PlayerViewModelTest : FunSpec({
         }
     }
 
-    test("update progress") {
+    test("seek to") {
         viewModel.event.test {
-            viewModel.handleIntent(PlayerIntent.UpdateProgress(4L))
+            viewModel.handleIntent(PlayerIntent.SeekTo(4L))
 
             coVerify { playerManager.seekTo(progress = 4L) }
         }
+    }
+
+    test("artwork re-emission without media change does not emit a new state") {
+
+        // Given
+        val fullArtwork = FakeObserveArtworkUseCase()(MediaMockups.showArtwork.id).first() as State.Content
+        val artworkFlow = MutableStateFlow<State<FullArtwork>>(fullArtwork)
+        observeArtworkUseCase = object : ObserveArtworkUseCase {
+            override fun invoke(artworkId: Long): Flow<State<FullArtwork>> = artworkFlow
+        }
+        updateVm()
+
+        viewModel.uiState.test {
+            awaitItem().state shouldBe viewModel.uiState.value.state
+            viewModel.uiState.value.state.shouldBeInstanceOf<State.Content<*>>()
+
+            // When
+            val show = fullArtwork.content as FullArtwork.FullShow
+            artworkFlow.value = State.Content(show.copy(genres = persistentListOf()))
+
+            // Then
+            expectNoEvents()
+        }
+
     }
 
     context("select track") {

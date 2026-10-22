@@ -19,7 +19,6 @@ import androidx.media3.common.Player
 import com.mskd.flux.MainActivity
 import com.mskd.flux.features.player.presentation.PlayerEvent
 import com.mskd.flux.features.player.presentation.PlayerIntent
-import com.mskd.flux.features.player.presentation.AmbientOverlay
 import com.mskd.flux.features.player.presentation.PlayerViewModel
 import com.mskd.flux.features.player.presentation.WindowStateHolder
 import com.mskd.flux.ui.global.LifecycleComponent
@@ -92,11 +91,6 @@ fun PlayerSideEffects(
                 viewModel.event.collect { event ->
                     when (event) {
                         PlayerEvent.BackToPreviousScreen -> onBack()
-                        is PlayerEvent.ChangeBrightness -> {
-                            windowStateHolder.changeBrightness(delta = event.delta)?.let { brightness ->
-                                viewModel.handleIntent(PlayerIntent.UpdateAmbientOverlay(type = AmbientOverlay.Type.BRIGHTNESS, value = brightness))
-                            }
-                        }
                     }
                 }
             }

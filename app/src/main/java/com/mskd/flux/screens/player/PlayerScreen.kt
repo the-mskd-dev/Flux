@@ -26,6 +26,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
+import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -52,6 +54,7 @@ import androidx.media3.ui.compose.ContentFrame
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.core.model.enums.Side
 import com.mskd.flux.features.player.domain.model.PlayerParams
+import com.mskd.flux.features.player.presentation.AmbientOverlay
 import com.mskd.flux.features.player.presentation.PlayerIntent
 import com.mskd.flux.features.player.presentation.PlayerInterfaceState
 import com.mskd.flux.features.player.presentation.PlayerOverlays
@@ -59,6 +62,7 @@ import com.mskd.flux.features.player.presentation.PlayerSession
 import com.mskd.flux.screens.player.composables.collectSelectedAsState
 import kotlinx.coroutines.flow.StateFlow
 import com.mskd.flux.features.player.presentation.PlayerViewModel
+import com.mskd.flux.features.player.presentation.WindowStateHolder
 import com.mskd.flux.features.player.presentation.rememberPlayerScaleEffects
 import com.mskd.flux.features.player.presentation.rememberWindowStateHolder
 import com.mskd.flux.screens.player.composables.PlayerSideEffects
@@ -74,7 +78,12 @@ import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.extensions.description
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.oups_an_error_occured
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -152,6 +161,8 @@ fun PlayerScreen(
                     interfaceState = viewModel.interfaceState,
                     overlays = viewModel.overlays,
                     isPlaying = viewModel.isPlaying,
+                    volume = viewModel.volume,
+                    windowStateHolder = windowStateHolder,
                     subtitles = { subtitles },
                     progress = { progress },
                     focusRequester = focusRequester,
@@ -174,6 +185,8 @@ fun PlayerContent(
     interfaceState: StateFlow<PlayerInterfaceState>,
     overlays: StateFlow<PlayerOverlays>,
     isPlaying: StateFlow<Boolean>,
+    volume: Flow<Int>,
+    windowStateHolder: WindowStateHolder,
     subtitles: () -> List<String?>,
     progress: () -> Long,
     focusRequester: FocusRequester,
@@ -223,9 +236,34 @@ fun PlayerContent(
     }
 
     val currentSendIntent by rememberUpdatedState(sendIntent)
+    val currentWindowStateHolder by rememberUpdatedState(windowStateHolder)
     val isInPip by interfaceState.collectSelectedAsState { it.isInPip }
     val seekOverlay by overlays.collectSelectedAsState { it.seekOverlay }
-    val ambientOverlay by overlays.collectSelectedAsState { it.ambientOverlay }
+
+    // The Ambient overlay is local to the screen: brightness is applied here, volume comes back from the VM
+    var ambientOverlay by remember { mutableStateOf<AmbientOverlay?>(null) }
+    var ambientTick by remember { mutableIntStateOf(0) }
+    val showAmbient = remember {
+        { type: AmbientOverlay.Type, value: Int ->
+            ambientOverlay = AmbientOverlay(type = type, value = value)
+            ambientTick++
+        }
+    }
+
+    // Read through snapshotFlow so that ticks do not recompose the screen
+    LaunchedEffect(Unit) {
+        snapshotFlow { ambientTick }.collectLatest {
+            if (it == 0) return@collectLatest
+            delay(1.seconds)
+            ambientOverlay = null
+        }
+    }
+
+    val currentShowAmbient by rememberUpdatedState(showAmbient)
+
+    LaunchedEffect(volume) {
+        volume.collect { showAmbient(AmbientOverlay.Type.VOLUME, it) }
+    }
 
     ConstraintLayout(
         modifier = Modifier
@@ -275,20 +313,42 @@ fun PlayerContent(
             }
             .pointerInput(Unit) {
                 var side = Side.LEFT
-                detectVerticalDragGestures(
-                    onDragStart = { offset ->
-                        side = if (offset.x > size.width / 2) Side.RIGHT else Side.LEFT
-                    },
-                    onVerticalDrag = { change, dragAmount ->
-                        val delta = (-dragAmount / size.height) * 2
-                        when (side) {
-                            Side.LEFT -> currentSendIntent(PlayerIntent.OnBrightnessChange(delta))
-                            Side.RIGHT -> currentSendIntent(PlayerIntent.OnVolumeChange(delta))
-                        }
-                        change.consume()
-                    },
+                var pendingDelta = 0f
 
+                fun flush() {
+                    val delta = pendingDelta
+                    if (delta == 0f) return
+                    pendingDelta = 0f
+                    when (side) {
+                        Side.LEFT -> currentWindowStateHolder.changeBrightness(delta)
+                            ?.let { currentShowAmbient(AmbientOverlay.Type.BRIGHTNESS, it) }
+                        Side.RIGHT -> currentSendIntent(PlayerIntent.OnVolumeChange(delta))
+                    }
+                }
+
+                coroutineScope {
+                    // Finger moves are accumulated and applied at most once per frame
+                    val frameRequests = Channel<Unit>(Channel.CONFLATED)
+                    launch {
+                        for (request in frameRequests) {
+                            withFrameNanos { }
+                            flush()
+                        }
+                    }
+                    detectVerticalDragGestures(
+                        onDragStart = { offset ->
+                            side = if (offset.x > size.width / 2) Side.RIGHT else Side.LEFT
+                            pendingDelta = 0f
+                        },
+                        onDragEnd = { flush() },
+                        onDragCancel = { flush() },
+                        onVerticalDrag = { change, dragAmount ->
+                            pendingDelta += (-dragAmount / size.height) * 2
+                            frameRequests.trySend(Unit)
+                            change.consume()
+                        },
                     )
+                }
             },
         constraintSet = playerConstraintSet(videoSize = currentVideoSize)
     ) {

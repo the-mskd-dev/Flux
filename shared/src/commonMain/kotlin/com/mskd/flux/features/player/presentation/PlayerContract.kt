@@ -29,11 +29,10 @@ data class PlayerInterfaceState(
     val settingsSheet: SettingsSheet? = null,
 )
 
-/** Transient elements that change often. */
+/** Transient elements that change often. The Ambient overlay is local to the screen. */
 @Immutable
 data class PlayerOverlays(
     val seekOverlay: SeekOverlay? = null,
-    val ambientOverlay: AmbientOverlay? = null,
     val chapterButton: ChapterButton? = null,
 )
 
@@ -75,8 +74,6 @@ sealed class PlayerIntent {
 
     data class OnChapterButtonTap(val button: ChapterButton?) : PlayerIntent()
     data class OnVolumeChange(val delta: Float) : PlayerIntent()
-    data class OnBrightnessChange(val delta: Float) : PlayerIntent()
-    data class UpdateAmbientOverlay(val type: AmbientOverlay.Type, val value: Int) : PlayerIntent()
     data object GoToBackground : PlayerIntent()
     data object GoToForeground : PlayerIntent()
 
@@ -86,5 +83,4 @@ sealed class PlayerIntent {
 
 sealed class PlayerEvent {
     data object BackToPreviousScreen : PlayerEvent()
-    data class ChangeBrightness(val delta: Float) : PlayerEvent()
 }

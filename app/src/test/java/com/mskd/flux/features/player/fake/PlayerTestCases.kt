@@ -4,7 +4,6 @@ import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.player.PlayerTrack
 import com.mskd.flux.features.player.domain.model.VideoChapter
-import com.mskd.flux.features.player.presentation.AmbientOverlay
 import com.mskd.flux.features.player.presentation.ChapterButton
 import com.mskd.flux.features.player.presentation.SettingsSheet
 
@@ -37,12 +36,6 @@ object PlayerTestCases {
     data class SelectTrack(
         val description: String,
         val track: PlayerTrack,
-    )
-
-    data class UpdateAmbientOverlay(
-        val description: String,
-        val type: AmbientOverlay.Type,
-        val value: Int
     )
 
 }

@@ -311,11 +311,9 @@ class PlayerViewModelTest : FunSpec({
 
                     // When
                     viewModel.handleIntent(PlayerIntent.OnFastForward)
-                    viewModel.handleIntent(PlayerIntent.UpdateAmbientOverlay(type = AmbientOverlay.Type.VOLUME, value = 30))
 
                     // Then
                     awaitItem().seekOverlay shouldBe SeekOverlay(amount = viewModel.sessionContent.playerForward, type = SeekOverlay.Type.FORWARD)
-                    awaitItem().ambientOverlay shouldBe AmbientOverlay(type = AmbientOverlay.Type.VOLUME, value = 30)
                     cancelAndIgnoreRemainingEvents()
                 }
                 expectNoEvents()
@@ -601,56 +599,16 @@ class PlayerViewModelTest : FunSpec({
 
     }
 
-    test("on volume change") {
-        viewModel.overlays.test {
-            awaitItem()
+    test("on volume change applies the volume and emits the applied value") {
+        every { playerManager.changeVolume(.5f) } returns 60
+
+        viewModel.volume.test {
 
             viewModel.handleIntent(PlayerIntent.OnVolumeChange(delta = .5f))
 
-            awaitItem().ambientOverlay?.type shouldBe AmbientOverlay.Type.VOLUME
+            awaitItem() shouldBe 60
             coVerify { playerManager.changeVolume(.5f) }
 
-        }
-    }
-
-    test("on brightness change") {
-        viewModel.session.test {
-            awaitItem()
-
-            viewModel.event.test {
-
-                viewModel.handleIntent(PlayerIntent.OnBrightnessChange(delta = .5f))
-
-                val event = awaitItem()
-
-                event shouldBe PlayerEvent.ChangeBrightness(delta = .5f)
-
-            }
-
-        }
-    }
-
-    context("update ambient overlay") {
-        withData(
-            nameFn = { it.description },
-            PlayerTestCases.UpdateAmbientOverlay(
-                description = "Brightness",
-                type = AmbientOverlay.Type.BRIGHTNESS,
-                value = 50
-            ),
-            PlayerTestCases.UpdateAmbientOverlay(
-                description = "Volume",
-                type = AmbientOverlay.Type.VOLUME,
-                value = 50
-            )
-        ) { testCase ->
-            viewModel.overlays.test {
-                awaitItem()
-
-                viewModel.handleIntent(PlayerIntent.UpdateAmbientOverlay(type = testCase.type, value = testCase.value))
-
-                awaitItem().ambientOverlay shouldBe AmbientOverlay(type = testCase.type, value = testCase.value)
-            }
         }
     }
 

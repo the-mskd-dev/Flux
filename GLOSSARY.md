@@ -1,36 +1,99 @@
 # Flux
 
-Flux organise les fichiers vidéo locaux de l'utilisateur en bibliothèque (enrichie via TMDB) et les lit avec un historique de progression.
+Flux organise les UserFile de l'utilisateur en Catalog (enrichi via TMDB) et les lit en mémorisant leur Progress.
 
 ## Modèles
 
 **Artwork**:
-Représente une œuvre sans les Media associés.
-_Avoid_: Film, Série, Saison, Episode, Genre
+Film ou série tel qu'identifié sur TMDB, porteur des métadonnées, indépendamment des Media qui y sont rattachés.
+_Avoid_: Œuvre, Content, Title, Media
+
+**ContentType**:
+Nature d'un Artwork : MOVIE (film) ou SHOW (série).
+_Avoid_: Media type, catégorie
+
+**Show**:
+Artwork de type SHOW.
+_Avoid_: Série, TV show
+
+**Unknown Artwork**:
+Show spécial qui regroupe, sous forme d'Episode, les Media dont le UserFile n'a pu être associé à aucun Artwork TMDB, y compris les films.
+_Avoid_: Others, Autres, Inconnu
 
 **Media**:
+Élément lisible associé à un UserFile : un Movie ou un Episode.
+_Avoid_: Vidéo, fichier
 
 **Movie**:
-Media de type film. Associé à un fichier local, c'est ce que l'on va utiliser pour lire via le lecteur. Il ne doit y avoir qu'un seul Movie pour un Artwork de type MOVIE.
+Media d'un Artwork de type MOVIE : l'élément lisible, pas l'œuvre. Un Artwork MOVIE a exactement un Movie.
+_Avoid_: Film
 
 **Episode**:
-Media de type série. Associé à un fichier local, c'est ce que l'on va utiliser pour lire via le lecteur.Il peut y avoir plusieurs Episode pour un Artwork de type SHOW.
+Media d'un Show, identifié par son numéro de saison et son numéro d'épisode. Un Show peut avoir plusieurs Episode.
 
 **Season**:
-Représente une saison pour les oeuvres de type SHOW. Il peut y avoir plusieurs Season pour un Artwork de type SHOW. Une Season peut contenir plusieurs Episode.
+Regroupement des Episode d'un Show par numéro de saison. Un Episode peut exister sans Season correspondante.
+
+**Unavailable**:
+Se dit d'un Media dont le UserFile est momentanément inaccessible (UserFolder déconnecté, permission révoquée) : il reste dans le Catalog mais ne peut pas être lu.
+_Avoid_: Supprimé, manquant, offline
+
+**Status**:
+État de visionnage d'un Media : à voir, en cours ou vu. Le statut d'un Artwork n'est que la synthèse de celui de ses Media.
+_Avoid_: État, vu/non vu
+
+**Progress**:
+Position de reprise de lecture d'un Media.
+_Avoid_: Historique, currentTime
 
 **Genre**:
 Genre de l'Artwork.
 _Avoid_: Type, catégorie
 
-**FullArtwork**:
-Regroupe un Artwork avec son ou ses Media, ainsi que ses Genre
+## Personnes
+
+**Person**:
+Individu, identifié par TMDB, ayant participé à un ou plusieurs Artwork.
+_Avoid_: People, Credit, intervenant
+
+**Cast**:
+Ensemble des Person qui interprètent un personnage dans un Artwork.
+_Avoid_: Acteurs, casting, distribution
+
+**Crew**:
+Ensemble des Person ayant un poste technique sur un Artwork (réalisation, scénario…).
+_Avoid_: Équipe, staff
+
+**Role**:
+Personnage (pour le Cast) ou poste (pour le Crew) d'une Person dans un Artwork.
+_Avoid_: Job, character, fonction
+
+## Catalog
+
+**Catalog**:
+Ensemble des Artwork et Media connus de Flux pour l'utilisateur.
+_Avoid_: Bibliothèque, Library, Collection
+
+**UserFile**:
+Fichier vidéo présent sur l'appareil de l'utilisateur, à l'origine d'un Media.
+_Avoid_: Fichier local, vidéo
+
+**UserFolder**:
+Dossier de l'appareil que l'utilisateur a confié à Flux pour y chercher des UserFile.
+_Avoid_: Source, répertoire
+
+**Sync**:
+Opération qui parcourt les UserFolder et rapproche chaque UserFile d'un Artwork TMDB pour mettre à jour le Catalog.
+_Avoid_: Scan, refresh, import, matching
+
+**Private Artwork**:
+Artwork masqué du Catalog, accessible uniquement dans le Private Folder.
+
+**Private Folder**:
+Espace protégé par code PIN regroupant les Private Artwork.
+_Avoid_: Coffre, dossier caché
 
 ## Lecteur
-
-**Media**:
-Élément lisible associé à un fichier local : un film ou un épisode.
-_Avoid_: Vidéo, fichier
 
 **Interface**:
 Couche de contrôles du lecteur (barre du haut, boutons de lecture, barre de progression) affichée au tap et masquée automatiquement.

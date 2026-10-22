@@ -1,13 +1,13 @@
 package com.mskd.flux.core.model.artwork
 
 /**
- * Represents an episode of a TV show.
+ * Represents a season of a show, grouping its episodes by season number.
  *
- * @property title Title of the episode.
+ * @property title Title of the season.
  * @property artworkId Identifier of the parent show.
  * @property season Season number.
- * @property imagePath Path to the episode's image.
- * @property description Description or synopsis of the media.
+ * @property imagePath Path to the season's image.
+ * @property description Description or synopsis of the season.
  */
 data class Season(
     val id: Long,

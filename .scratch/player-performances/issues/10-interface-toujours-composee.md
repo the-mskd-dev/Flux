@@ -19,3 +19,9 @@ Spec : `../spec.md` (lot C)
 - [ ] La hauteur de la barre de progression n'est plus mesurée à chaque apparition
 - [ ] Le masquage automatique et l'affichage simultané des barres système fonctionnent comme avant
 - [ ] `./gradlew :app:testFossDebugUnitTest` passe
+
+## Comments
+
+- Implémenté via `updateTransition` (alpha, échelle des boutons, glissement des FAB) lu dans `graphicsLayer`. Specs reprises des defaults d'`AnimatedVisibility` : `scaleOut()`/`slide*()` = spring `StiffnessMediumLow` (à vérifier visuellement sur appareil).
+- Éléments désactivés/non focusables une fois l'Interface totalement masquée (pas pendant le fondu, comme avant). Barre ondulée composée seulement tant que l'Interface est visible ou en transition.
+- Hauteur de la barre : `onSizeChanged` au lieu de `onGloballyPositioned`.

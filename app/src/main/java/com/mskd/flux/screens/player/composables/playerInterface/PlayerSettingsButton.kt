@@ -17,11 +17,13 @@ import com.mskd.flux.features.player.presentation.SettingsSheet
 @Composable
 fun PlayerSettingsButton(
     modifier: Modifier,
+    enabled: Boolean,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
     IconButton(
         modifier = modifier.statusBarsPadding(),
+        enabled = enabled,
         colors = IconButtonDefaults.iconButtonColors(
             contentColor = Color.White
         ),

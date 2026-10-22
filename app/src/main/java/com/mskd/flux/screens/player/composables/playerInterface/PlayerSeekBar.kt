@@ -40,6 +40,8 @@ fun PlayerSeekBar(
     isPlaying: Boolean,
     progress: () -> Long,
     duration: Long,
+    enabled: Boolean,
+    showWave: Boolean,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
@@ -101,6 +103,8 @@ fun PlayerSeekBar(
             interactionSource = interactionSource,
             isPlaying = isPlaying,
             duration = duration,
+            enabled = enabled,
+            showWave = showWave,
         )
 
         PlayerSeekBarTime(
@@ -121,6 +125,8 @@ fun PlayerSlider(
     interactionSource : MutableInteractionSource,
     isPlaying: Boolean,
     duration: Long,
+    enabled: Boolean = true,
+    showWave: Boolean = true,
 ) {
 
     val waveProgress = FluxUI.player.waveProgress
@@ -128,19 +134,22 @@ fun PlayerSlider(
     Slider(
         modifier = modifier,
         value = value(),
+        enabled = enabled,
         onValueChange = onValueChange,
         valueRange = valueRange,
         onValueChangeFinished = onValueChangeFinished,
         interactionSource = interactionSource,
         track = { sliderState ->
 
-            LinearWavyProgressIndicator(
-                modifier = Modifier.fillMaxWidth(),
-                amplitude = { if (isPlaying && waveProgress) 1f else 0f },
-                progress = { if (duration > 0) sliderState.value / duration else 0f },
-                stopSize = 10.dp,
-                waveSpeed = 20.dp
-            )
+            if (showWave) {
+                LinearWavyProgressIndicator(
+                    modifier = Modifier.fillMaxWidth(),
+                    amplitude = { if (isPlaying && waveProgress) 1f else 0f },
+                    progress = { if (duration > 0) sliderState.value / duration else 0f },
+                    stopSize = 10.dp,
+                    waveSpeed = 20.dp
+                )
+            }
 
         },
         thumb = {

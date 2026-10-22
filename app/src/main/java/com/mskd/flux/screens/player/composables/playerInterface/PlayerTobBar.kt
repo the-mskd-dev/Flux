@@ -34,6 +34,7 @@ import org.jetbrains.compose.resources.stringResource
 fun PlayerTopBar(
     modifier: Modifier,
     media: Media,
+    enabled: Boolean,
     onBackTap: () -> Unit
 ) {
 
@@ -47,7 +48,7 @@ fun PlayerTopBar(
 
         Box(
             modifier = Modifier
-                .clickable { onBackTap() }
+                .clickable(enabled = enabled) { onBackTap() }
                 .size(50.dp)
                 .clip(shape = CircleShape)
                 .padding(FluxUI.Space.extraSmall),

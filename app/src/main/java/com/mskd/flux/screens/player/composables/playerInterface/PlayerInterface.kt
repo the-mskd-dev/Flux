@@ -1,12 +1,9 @@
 package com.mskd.flux.screens.player.composables.playerInterface
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.spring
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,8 +17,10 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.focusProperties
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.layoutId
-import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -46,69 +45,90 @@ fun PlayerInterface(
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
-    val density = LocalDensity.current
     val showInterface by interfaceState.collectSelectedAsState { it.showInterface }
     val isPlayingState = isPlaying.collectAsStateWithLifecycle()
     val chapterButton = overlays.collectSelectedAsState { it.chapterButton }
     var seekBarHeight by remember { mutableStateOf(0.dp) }
+    val density = LocalDensity.current
+
+    // The Interface stays composed: its appearance is replayed by this transition, read in the draw phase only
+    val transition = updateTransition(targetState = showInterface, label = "PlayerInterfaceVisibility")
+    val alpha = transition.animateFloat(
+        transitionSpec = { spring(stiffness = Spring.StiffnessLow) },
+        label = "PlayerInterfaceAlpha"
+    ) { if (it) 1f else 0f }
+    val buttonsScale = transition.animateFloat(
+        transitionSpec = {
+            if (targetState) {
+                spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow)
+            } else {
+                spring(stiffness = Spring.StiffnessMediumLow)
+            }
+        },
+        label = "PlayerControlButtonsScale"
+    ) { if (it) 1f else 0f }
+    val buttonsSlide = transition.animateFloat(
+        transitionSpec = { spring(stiffness = Spring.StiffnessMediumLow) },
+        label = "PlayerControlButtonsSlide"
+    ) { if (it) 1f else 0f }
+
+    // Visible, appearing or fading out (as with AnimatedVisibility): once fully hidden, the wavy track is
+    // no longer composed and no element receives click or focus. Disabled styling never shows during the fade.
+    val isActive = transition.currentState || transition.targetState
 
     Box(modifier = modifier) {
 
-        AnimatedVisibility(
-            visible = showInterface,
-            enter = fadeIn(animationSpec = spring(stiffness = Spring.StiffnessLow)),
-            exit = fadeOut(animationSpec = spring(stiffness = Spring.StiffnessLow)),
+        ConstraintLayout(
+            modifier = Modifier
+                .graphicsLayer { this.alpha = alpha.value }
+                .focusProperties { canFocus = isActive }
+                .background(MaterialTheme.colorScheme.scrim.copy(alpha = .5f))
+                .fillMaxSize(),
+            constraintSet = PlayerInterfaceConstraintSet
         ) {
 
-            ConstraintLayout(
+            PlayerTopBar(
+                modifier = Modifier.layoutId("topBar"),
+                media = session.media,
+                enabled = isActive,
+                onBackTap = { sendIntent(PlayerIntent.OnBackTap) }
+            )
+
+            PlayerSettingsButton(
+                modifier = Modifier.layoutId("settings"),
+                enabled = isActive,
+                sendIntent = sendIntent
+            )
+
+            // A fully scaled-down Row cannot be hit, so hidden buttons receive no click
+            PlayerControlButtons(
                 modifier = Modifier
-                    .background(MaterialTheme.colorScheme.scrim.copy(alpha = .5f))
-                    .fillMaxSize(),
-                constraintSet = PlayerInterfaceConstraintSet
-            ) {
+                    .layoutId("controlButtons")
+                    .graphicsLayer {
+                        val scale = buttonsScale.value
+                        scaleX = scale
+                        scaleY = scale
+                    },
+                isPlaying = isPlayingState.value,
+                rewindAndForward = session.playerRewind to session.playerForward,
+                slide = { buttonsSlide.value },
+                sendIntent = sendIntent
+            )
 
-                PlayerTopBar(
-                    modifier = Modifier.layoutId("topBar"),
-                    media = session.media,
-                    onBackTap = { sendIntent(PlayerIntent.OnBackTap) }
-                )
-
-                PlayerSettingsButton(
-                    modifier = Modifier.layoutId("settings"),
-                    sendIntent = sendIntent
-                )
-
-                PlayerControlButtons(
-                    modifier = Modifier
-                        .layoutId("controlButtons")
-                        .animateEnterExit(
-                            enter = scaleIn(
-                                animationSpec = spring(
-                                    dampingRatio = Spring.DampingRatioMediumBouncy,
-                                    stiffness = Spring.StiffnessLow
-                                )
-                            ),
-                            exit = scaleOut()
-                        ),
-                    isPlaying = isPlayingState.value,
-                    rewindAndForward = session.playerRewind to session.playerForward,
-                    sendIntent = sendIntent
-                )
-
-                PlayerSeekBar(
-                    modifier = Modifier
-                        .layoutId("seekBar")
-                        .onGloballyPositioned { coordinates ->
-                            val height = with(density) { coordinates.size.height.toDp() }
-                            if (seekBarHeight != height) seekBarHeight = height
-                        },
-                    isPlaying = isPlayingState.value,
-                    progress = progress,
-                    duration = session.duration,
-                    sendIntent = sendIntent,
-                )
-
-            }
+            PlayerSeekBar(
+                modifier = Modifier
+                    .layoutId("seekBar")
+                    .onSizeChanged { size ->
+                        val height = with(density) { size.height.toDp() }
+                        if (seekBarHeight != height) seekBarHeight = height
+                    },
+                isPlaying = isPlayingState.value,
+                progress = progress,
+                duration = session.duration,
+                enabled = isActive,
+                showWave = isActive,
+                sendIntent = sendIntent,
+            )
 
         }
 

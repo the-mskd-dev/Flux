@@ -33,6 +33,7 @@ import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.audio_tracks
 import flux.shared.generated.resources.by_default
+import flux.shared.generated.resources.subtitles_disabled
 import flux.shared.generated.resources.subtitles
 import org.jetbrains.compose.resources.stringResource
 
@@ -105,7 +106,11 @@ fun PlayerTracksSheet(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
 
-                        Text.List.Title(text = track.label.ifBlank { stringResource(Res.string.by_default) })
+                        Text.List.Title(
+                            text = track.label.ifBlank {
+                                stringResource(if (track == PlayerTrack.NO_SUBTITLES) Res.string.subtitles_disabled else Res.string.by_default)
+                            }
+                        )
 
                         if (track == selectedTrack) {
                             Icon(

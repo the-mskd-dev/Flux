@@ -123,6 +123,7 @@
     <string name="information_language">情報の言語</string>
     <string name="sync_in_progress">同期中…</string>
     <string name="by_default">デフォルト</string>
+    <string name="subtitles_disabled">オフ</string>
     <string name="cache_images">HD画像をキャッシュ</string>
     <string name="images_cached">キャッシュ済み画像</string>
     <string name="caching_images_in_progress">画像をキャッシュ中… %1$d%</string>

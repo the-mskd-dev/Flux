@@ -123,6 +123,7 @@
     <string name="information_language">Idioma de la información</string>
     <string name="sync_in_progress">Sincronización en curso…</string>
     <string name="by_default">Por defecto</string>
+    <string name="subtitles_disabled">Desactivados</string>
     <string name="cache_images">Guardar imágenes HD en caché</string>
     <string name="images_cached">Imágenes en caché</string>
     <string name="caching_images_in_progress">Guardando imágenes en caché… %1$d%</string>

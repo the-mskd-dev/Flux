@@ -113,6 +113,28 @@ class PlayerViewModelTest : FunSpec({
 
     }
 
+    test("tracks update selects no subtitles when subtitles are disabled") {
+
+        // Given
+        coEvery { saveTrackLanguageUseCase.subtitlesEnabled() } returns false
+        val tracksFlow = MutableStateFlow(PlayerManager.State.Ready(player = player))
+        every { playerManager.flow } returns tracksFlow
+        updateVm()
+
+        // When
+        viewModel.session.test {
+            awaitItem()
+            tracksFlow.value = PlayerManager.State.Ready(player = player, tracks = listOf(PlayerMockups.Subtitles.english))
+            awaitItem()
+            cancelAndConsumeRemainingEvents()
+        }
+
+        // Then
+        coVerify { playerManager.selectTrack(track = PlayerTrack.NO_SUBTITLES) }
+        coVerify(exactly = 0) { playerManager.selectTrack(track = match { it.type == PlayerTrack.Type.SUBTITLES && it != PlayerTrack.NO_SUBTITLES }) }
+
+    }
+
     test("interface visibility") {
         viewModel.interfaceState.test {
 

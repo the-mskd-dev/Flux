@@ -31,6 +31,7 @@ import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.by_default
+import flux.shared.generated.resources.subtitles_disabled
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -69,7 +70,9 @@ fun PlayerSettingsSheet(
 
                 PlayerSettingsItem(
                     label = "Subtitles",
-                    value = selectedSubtitles?.label.orEmpty().ifBlank { stringResource(Res.string.by_default) },
+                    value = selectedSubtitles?.label.orEmpty().ifBlank {
+                        stringResource(if (selectedSubtitles == PlayerTrack.NO_SUBTITLES) Res.string.subtitles_disabled else Res.string.by_default)
+                    },
                     onClick = {
                         val intent = SettingsSheet.Tracks(type = PlayerTrack.Type.SUBTITLES)
                         sendIntent(PlayerIntent.ShowSettings(sheet = intent)) }

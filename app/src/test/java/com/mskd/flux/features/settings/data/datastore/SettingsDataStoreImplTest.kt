@@ -108,6 +108,19 @@ class SettingsDataStoreImplTest : FunSpec({
         }
     }
 
+    test("subtitlesEnabled is true by default and setSubtitlesEnabled updates flow") {
+
+        settingsDataStore.flow.test {
+            awaitItem().subtitlesEnabled shouldBe true
+
+            settingsDataStore.setSubtitlesEnabled(false)
+
+            awaitItem().subtitlesEnabled shouldBe false
+
+            cancelAndConsumeRemainingEvents()
+        }
+    }
+
     test("setAudioLanguage should update value in flow") {
 
         // Given

@@ -16,6 +16,8 @@ interface SettingsDataStore {
 
     suspend fun setSubtitlesLanguage(language: String)
 
+    suspend fun setSubtitlesEnabled(enabled: Boolean)
+
     suspend fun setAudioLanguage(language: String)
 
     suspend fun setExternalPlayer(useExternalPlayer: Boolean)
@@ -36,6 +38,7 @@ interface SettingsDataStore {
         val playerRewindValue: Int = 10,
         val playerForwardValue: Int = 10,
         val subtitlesLanguage: String = systemLanguage(),
+        val subtitlesEnabled: Boolean = true,
         val audioLanguage: String = systemLanguage(),
         val externalPlayer: Boolean = false,
         val pipIsEnabled: Boolean = true,

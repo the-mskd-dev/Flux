@@ -329,6 +329,17 @@ class AndroidPlayerManager(
 
     }
 
+    // Progress is only polled while playing: publish seeks directly so a paused seek is reflected.
+    override fun onPositionDiscontinuity(
+        oldPosition: Player.PositionInfo,
+        newPosition: Player.PositionInfo,
+        reason: Int
+    ) {
+        if (reason == Player.DISCONTINUITY_REASON_SEEK) {
+            _progress.update { newPosition.positionMs }
+        }
+    }
+
     override fun onCues(cueGroup: CueGroup) {
         _subtitles.update { cueGroup.cues.map { it.text?.toString() } }
     }

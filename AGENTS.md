@@ -9,11 +9,11 @@
 
 ### Issue tracker
 
-Issues and specs live as local markdown files under `.scratch/<feature>/`. See `docs/agents/issue-tracker.md`.
+Issues and specs live in GitHub Issues (`the-mskd-dev/Flux`, via the `gh` CLI). See `docs/agents/issue-tracker.md`.
 
 ### Triage labels
 
-Default five-role vocabulary (needs-triage, needs-info, ready-for-agent, ready-for-human, wontfix), recorded as `Status:` lines. See `docs/agents/triage-labels.md`.
+Default five-role vocabulary (needs-triage, needs-info, ready-for-agent, ready-for-human, wontfix), applied as GitHub labels. See `docs/agents/triage-labels.md`.
 
 ### Domain docs
 

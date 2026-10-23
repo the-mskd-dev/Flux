@@ -43,6 +43,7 @@ class SaveTrackLanguageUseCaseTest : FunSpec({
 
         // Then
         coVerify { settings.setSubtitlesLanguage(Language.ENGLISH.code) }
+        coVerify { settings.setSubtitlesEnabled(true) }
         coVerify(exactly = 0) { settings.setAudioLanguage(any()) }
 
     }
@@ -54,16 +55,18 @@ class SaveTrackLanguageUseCaseTest : FunSpec({
 
         // Then
         coVerify { settings.setAudioLanguage(Language.FRENCH.code) }
+        coVerify(exactly = 0) { settings.setSubtitlesEnabled(any()) }
         coVerify(exactly = 0) { settings.setSubtitlesLanguage(any()) }
 
     }
 
-    test("no subtitles track does not save anything") {
+    test("no subtitles track saves subtitles as disabled and keeps language") {
 
         // When
         saveTrackLanguage(track = PlayerTrack.NO_SUBTITLES)
 
         // Then
+        coVerify { settings.setSubtitlesEnabled(false) }
         coVerify(exactly = 0) { settings.setSubtitlesLanguage(any()) }
         coVerify(exactly = 0) { settings.setAudioLanguage(any()) }
 
@@ -71,6 +74,10 @@ class SaveTrackLanguageUseCaseTest : FunSpec({
 
     test("get subtitles language returns saved locale") {
         saveTrackLanguage.getSubtitlesLanguage() shouldBe Language.ENGLISH.code
+    }
+
+    test("subtitles enabled returns saved value") {
+        saveTrackLanguage.subtitlesEnabled() shouldBe true
     }
 
     test("get audio language returns saved locale") {

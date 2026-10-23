@@ -300,7 +300,10 @@ class PlayerViewModel<out T>(
 
     private suspend fun updateTracks() {
         val preferredAudio = saveTrackLanguageUseCase.getAudioLanguage().toPlayerTrack(type = Type.AUDIO)
-        val preferredSubtitles = saveTrackLanguageUseCase.getSubtitlesLanguage().toPlayerTrack(type = Type.SUBTITLES)
+        val preferredSubtitles = if (saveTrackLanguageUseCase.subtitlesEnabled())
+            saveTrackLanguageUseCase.getSubtitlesLanguage().toPlayerTrack(type = Type.SUBTITLES)
+        else
+            PlayerTrack.NO_SUBTITLES
 
         playerManager.selectTrack(track = preferredAudio)
         playerManager.selectTrack(track = preferredSubtitles)

@@ -123,6 +123,7 @@
     <string name="information_language">Sprache der Informationen</string>
     <string name="sync_in_progress">Synchronisierung läuft…</string>
     <string name="by_default">Standard</string>
+    <string name="subtitles_disabled">Deaktiviert</string>
     <string name="cache_images">HD-Bilder zwischenspeichern</string>
     <string name="images_cached">Bilder im Cache</string>
     <string name="caching_images_in_progress">Bilder werden zwischengespeichert… %1$d%</string>

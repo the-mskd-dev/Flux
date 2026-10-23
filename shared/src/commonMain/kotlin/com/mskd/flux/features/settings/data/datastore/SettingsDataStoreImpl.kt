@@ -22,6 +22,7 @@ class SettingsDataStoreImpl(val settingsDataStore: DataStore<Preferences>) : Set
         val PLAYER_REWIND = intPreferencesKey("player_rewind")
         val PLAYER_FORWARD = intPreferencesKey("player_forward")
         val SUBTITLES_LANGUAGE = stringPreferencesKey("subtitles_language")
+        val SUBTITLES_ENABLED = booleanPreferencesKey("subtitles_enabled")
         val AUDIO_LANGUAGE = stringPreferencesKey("audio_language")
         val EXTERNAL_PLAYER = booleanPreferencesKey("external_player")
         val PIP_IS_ENABLED = booleanPreferencesKey("pip_is_enabled")
@@ -38,6 +39,7 @@ class SettingsDataStoreImpl(val settingsDataStore: DataStore<Preferences>) : Set
             val playerRewindValue = preferences[Keys.PLAYER_REWIND] ?: 10
             val playerForwardValue = preferences[Keys.PLAYER_FORWARD] ?: 10
             val subtitlesLanguage = preferences[Keys.SUBTITLES_LANGUAGE] ?: systemLanguage()
+            val subtitlesEnabled = preferences[Keys.SUBTITLES_ENABLED] ?: true
             val audioLanguage = preferences[Keys.AUDIO_LANGUAGE] ?: systemLanguage()
             val externalPlayer = preferences[Keys.EXTERNAL_PLAYER] ?: false
             val pipIsEnabled = preferences[Keys.PIP_IS_ENABLED] ?: true
@@ -50,6 +52,7 @@ class SettingsDataStoreImpl(val settingsDataStore: DataStore<Preferences>) : Set
                 playerRewindValue = playerRewindValue,
                 playerForwardValue = playerForwardValue,
                 subtitlesLanguage = subtitlesLanguage,
+                subtitlesEnabled = subtitlesEnabled,
                 audioLanguage = audioLanguage,
                 externalPlayer = externalPlayer,
                 pipIsEnabled = pipIsEnabled,
@@ -95,6 +98,12 @@ class SettingsDataStoreImpl(val settingsDataStore: DataStore<Preferences>) : Set
     override suspend fun setSubtitlesLanguage(language: String) {
         settingsDataStore.edit { preferences ->
             preferences[Keys.SUBTITLES_LANGUAGE] = language
+        }
+    }
+
+    override suspend fun setSubtitlesEnabled(enabled: Boolean) {
+        settingsDataStore.edit { preferences ->
+            preferences[Keys.SUBTITLES_ENABLED] = enabled
         }
     }
 

@@ -261,6 +261,7 @@ class AndroidPlayerManager(
                 .buildUpon()
                 .setPreferredAudioLanguage(saveTrackLanguageUseCase.getAudioLanguage())
                 .setPreferredTextLanguage(saveTrackLanguageUseCase.getSubtitlesLanguage())
+                .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, !saveTrackLanguageUseCase.subtitlesEnabled())
                 .build()
 
             player.prepare()

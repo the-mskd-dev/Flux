@@ -123,6 +123,7 @@
     <string name="information_language">정보 언어</string>
     <string name="sync_in_progress">동기화 진행 중…</string>
     <string name="by_default">기본값</string>
+    <string name="subtitles_disabled">사용 안 함</string>
     <string name="cache_images">HD 이미지 캐싱</string>
     <string name="images_cached">캐시된 이미지</string>
     <string name="caching_images_in_progress">이미지 캐싱 중… %1$d%</string>

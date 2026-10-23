@@ -23,7 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import com.mskd.flux.core.model.player.PlayerTrack
 import com.mskd.flux.features.player.presentation.PlayerIntent
-import com.mskd.flux.features.player.presentation.PlayerUiContent
+import com.mskd.flux.features.player.presentation.SettingsSheet
 import com.mskd.flux.mockups.PlayerMockups
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.text.Text
@@ -60,7 +60,7 @@ fun PlayerSettingsSheet(
                     label = "Audio",
                     value = selectedAudio?.label.orEmpty().ifBlank { stringResource(Res.string.by_default) },
                     onClick = {
-                        val intent = PlayerUiContent.SettingsSheet.Tracks(type = PlayerTrack.Type.AUDIO)
+                        val intent = SettingsSheet.Tracks(type = PlayerTrack.Type.AUDIO)
                         sendIntent(PlayerIntent.ShowSettings(sheet = intent))
                     }
                 )
@@ -71,7 +71,7 @@ fun PlayerSettingsSheet(
                     label = "Subtitles",
                     value = selectedSubtitles?.label.orEmpty().ifBlank { stringResource(Res.string.by_default) },
                     onClick = {
-                        val intent = PlayerUiContent.SettingsSheet.Tracks(type = PlayerTrack.Type.SUBTITLES)
+                        val intent = SettingsSheet.Tracks(type = PlayerTrack.Type.SUBTITLES)
                         sendIntent(PlayerIntent.ShowSettings(sheet = intent)) }
                 )
 

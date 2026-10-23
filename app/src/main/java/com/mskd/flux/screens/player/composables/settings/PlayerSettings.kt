@@ -1,33 +1,42 @@
 package com.mskd.flux.screens.player.composables.settings
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.mskd.flux.features.player.presentation.PlayerInterfaceState
 import com.mskd.flux.features.player.presentation.PlayerIntent
-import com.mskd.flux.features.player.presentation.PlayerUiContent
+import com.mskd.flux.features.player.presentation.PlayerSession
+import com.mskd.flux.features.player.presentation.SettingsSheet
+import com.mskd.flux.screens.player.composables.collectSelectedAsState
+import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun PlayerSettings(
-    content: PlayerUiContent<Any>,
+    session: PlayerSession<Any>,
+    interfaceState: StateFlow<PlayerInterfaceState>,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
-    when (content.settingsSheet) {
-        PlayerUiContent.SettingsSheet.Settings -> {
+    val settingsSheet by interfaceState.collectSelectedAsState { it.settingsSheet }
+
+    when (val sheet = settingsSheet) {
+        SettingsSheet.Settings -> {
             PlayerSettingsSheet(
-                selectedAudio = content.selectedAudio,
-                selectedSubtitles = content.selectedSubtitles,
+                selectedAudio = session.selectedAudio,
+                selectedSubtitles = session.selectedSubtitles,
                 sendIntent = sendIntent
             )
         }
-        is PlayerUiContent.SettingsSheet.Tracks -> {
+        is SettingsSheet.Tracks -> {
             PlayerTracksSheet(
-                tracks = content.tracks,
-                selectedAudio = content.selectedAudio,
-                selectedSubtitles = content.selectedSubtitles,
-                type = (content.settingsSheet as PlayerUiContent.SettingsSheet.Tracks).type,
+                tracks = session.tracks,
+                selectedAudio = session.selectedAudio,
+                selectedSubtitles = session.selectedSubtitles,
+                type = sheet.type,
                 sendIntent = sendIntent
             )
         }
-        else -> {}
+        null -> {}
     }
 
 }

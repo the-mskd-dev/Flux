@@ -82,7 +82,7 @@ val modulePlayerAndroid = module {
         }
     }
 
-    factory<PlayerManager<Player>> {
+    single<PlayerManager<Player>> {
         AndroidPlayerManager(
             context = androidContext(),
             saveTrackLanguageUseCase = get(),

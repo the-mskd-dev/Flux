@@ -43,8 +43,8 @@ _Avoid_: Supprimé, manquant, offline
 _Avoid_: État, vu/non vu
 
 **Progress**:
-Position de reprise de lecture d'un Media.
-_Avoid_: Historique, currentTime
+Position de lecture d'un Media, mise à jour pendant la lecture et mémorisée pour la reprise.
+_Avoid_: Historique, currentTime, Position
 
 **Genre**:
 Genre de l'Artwork.

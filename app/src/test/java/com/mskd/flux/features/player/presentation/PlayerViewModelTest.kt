@@ -4,6 +4,7 @@ import androidx.media3.common.Player
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.model.artwork.Artwork
+import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.core.model.language.Language
 import com.mskd.flux.core.model.player.PlayerTrack
@@ -11,6 +12,7 @@ import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtwo
 import com.mskd.flux.features.artwork.fake.FakeObserveArtworkUseCase
 import com.mskd.flux.features.files.domain.usecase.GetSubtitlesUseCase
 import com.mskd.flux.features.player.data.PipIsEnabledUseCase
+import com.mskd.flux.features.player.domain.manager.SeekPrecision
 import com.mskd.flux.features.player.domain.manager.PlayerManager
 import com.mskd.flux.features.player.domain.model.PlayerParams
 import com.mskd.flux.features.player.domain.model.VideoChapter
@@ -29,11 +31,15 @@ import com.mskd.flux.utils.extensions.minToMs
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeInstanceOf
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 
 class PlayerViewModelTest : FunSpec({
 
@@ -108,21 +114,18 @@ class PlayerViewModelTest : FunSpec({
     }
 
     test("interface visibility") {
-        viewModel.uiState.test {
+        viewModel.interfaceState.test {
 
             // Hidden by default
-            val initialState = awaitItem()
-            initialState.content.showInterface shouldBe false
+            awaitItem().showInterface shouldBe false
 
             // Test show
             viewModel.handleIntent(PlayerIntent.ChangeInterfaceVisibility)
-            val showedState = awaitItem()
-            showedState.content.showInterface shouldBe true
+            awaitItem().showInterface shouldBe true
 
             // Test hide
             viewModel.handleIntent(PlayerIntent.ChangeInterfaceVisibility)
-            val hiddenState = awaitItem()
-            hiddenState.content.showInterface shouldBe false
+            awaitItem().showInterface shouldBe false
 
         }
     }
@@ -132,19 +135,19 @@ class PlayerViewModelTest : FunSpec({
             nameFn = { it.description },
             PlayerTestCases.ShowSettings(
                 description = "Show settings sheet",
-                sheet = PlayerUiContent.SettingsSheet.Settings,
+                sheet = SettingsSheet.Settings,
             ),
             PlayerTestCases.ShowSettings(
                 description = "Show audio sheet",
-                sheet = PlayerUiContent.SettingsSheet.Tracks(PlayerTrack.Type.AUDIO),
+                sheet = SettingsSheet.Tracks(PlayerTrack.Type.AUDIO),
             ),
             PlayerTestCases.ShowSettings(
                 description = "Show subtitles sheet",
-                sheet = PlayerUiContent.SettingsSheet.Settings,
+                sheet = SettingsSheet.Settings,
             )
         ) { testCase ->
 
-            viewModel.uiState.test {
+            viewModel.interfaceState.test {
 
                 // Skip initial
                 awaitItem()
@@ -153,8 +156,7 @@ class PlayerViewModelTest : FunSpec({
                 viewModel.handleIntent(PlayerIntent.ShowSettings(sheet = testCase.sheet))
 
                 // Then
-                val settingsState = awaitItem()
-                settingsState.content.settingsSheet shouldBe testCase.sheet
+                awaitItem().settingsSheet shouldBe testCase.sheet
 
             }
 
@@ -216,13 +218,13 @@ class PlayerViewModelTest : FunSpec({
 
             updateVm(mediaId = testCase.media.mediaId)
 
-            viewModel.uiState.test {
+            viewModel.session.test {
 
                 // Skip initial
                 awaitItem()
 
                 // When
-                viewModel.handleIntent(PlayerIntent.SaveTime)
+                viewModel.handleIntent(PlayerIntent.OnClosePiP)
 
                 // Then
                 coVerify { recordProgress(testCase.media, testCase.time) }
@@ -246,12 +248,12 @@ class PlayerViewModelTest : FunSpec({
             )
         ) { testCase ->
 
-            viewModel.uiState.test {
+            viewModel.interfaceState.test {
                 awaitItem()
 
                 if (testCase.interfaceShowed) {
                     viewModel.handleIntent(PlayerIntent.ChangeInterfaceVisibility)
-                    awaitItem().content.showInterface shouldBe true
+                    awaitItem().showInterface shouldBe true
                 }
 
                 viewModel.event.test {
@@ -278,36 +280,103 @@ class PlayerViewModelTest : FunSpec({
     }
 
     test("fast rewind") {
-        viewModel.uiState.test {
-            val state = awaitItem()
+        viewModel.overlays.test {
+            awaitItem()
 
             viewModel.handleIntent(PlayerIntent.OnFastRewind)
 
-            val finalState = awaitItem()
-            finalState.content.seekOverlay shouldBe PlayerUiContent.SeekOverlay(amount = state.content.playerRewind, type = PlayerUiContent.SeekOverlay.Type.REWIND)
+            awaitItem().seekOverlay shouldBe SeekOverlay(amount = viewModel.sessionContent.playerRewind, type = SeekOverlay.Type.REWIND)
             coVerify { playerManager.seekRewind(any()) }
         }
     }
 
     test("fast forward") {
-        viewModel.uiState.test {
-            val state = awaitItem()
+        viewModel.overlays.test {
+            awaitItem()
 
             viewModel.handleIntent(PlayerIntent.OnFastForward)
 
-            val finalState = awaitItem()
-            finalState.content.seekOverlay shouldBe PlayerUiContent.SeekOverlay(amount = state.content.playerForward, type = PlayerUiContent.SeekOverlay.Type.FORWARD)
+            awaitItem().seekOverlay shouldBe SeekOverlay(amount = viewModel.sessionContent.playerForward, type = SeekOverlay.Type.FORWARD)
             coVerify { playerManager.seekForward(any()) }
 
         }
     }
 
-    test("update progress") {
-        viewModel.event.test {
-            viewModel.handleIntent(PlayerIntent.UpdateProgress(4L))
+    test("overlay change emits neither on session nor on interface") {
+        viewModel.session.test {
+            awaitItem()
+            viewModel.interfaceState.test {
+                awaitItem()
+                viewModel.overlays.test {
+                    awaitItem()
 
-            coVerify { playerManager.seekTo(progress = 4L) }
+                    // When
+                    viewModel.handleIntent(PlayerIntent.OnFastForward)
+
+                    // Then
+                    awaitItem().seekOverlay shouldBe SeekOverlay(amount = viewModel.sessionContent.playerForward, type = SeekOverlay.Type.FORWARD)
+                    cancelAndIgnoreRemainingEvents()
+                }
+                expectNoEvents()
+            }
+            expectNoEvents()
         }
+    }
+
+    test("play state change emits neither on session nor on interface") {
+        val flow = MutableStateFlow<PlayerManager.State<Player>>(PlayerManager.State.Ready(player = player))
+        every { playerManager.flow } returns flow
+        updateVm()
+
+        viewModel.session.test {
+            awaitItem()
+            viewModel.isPlaying.test {
+                awaitItem() shouldBe false
+                flow.value = PlayerManager.State.Ready(player = player, isPlaying = true)
+                awaitItem() shouldBe true
+            }
+            expectNoEvents()
+        }
+    }
+
+    test("seek to") {
+        viewModel.event.test {
+            viewModel.handleIntent(PlayerIntent.SeekTo(4L))
+
+            coVerify { playerManager.seekTo(progress = 4L, precision = SeekPrecision.EXACT) }
+        }
+    }
+
+    test("seek to forwards the requested precision") {
+        viewModel.event.test {
+            viewModel.handleIntent(PlayerIntent.SeekTo(7L, SeekPrecision.FAST))
+
+            coVerify { playerManager.seekTo(progress = 7L, precision = SeekPrecision.FAST) }
+        }
+    }
+
+    test("artwork re-emission without media change does not emit a new state") {
+
+        // Given
+        val fullArtwork = FakeObserveArtworkUseCase()(MediaMockups.showArtwork.id).first() as State.Content
+        val artworkFlow = MutableStateFlow<State<FullArtwork>>(fullArtwork)
+        observeArtworkUseCase = object : ObserveArtworkUseCase {
+            override fun invoke(artworkId: Long): Flow<State<FullArtwork>> = artworkFlow
+        }
+        updateVm()
+
+        viewModel.session.test {
+            awaitItem() shouldBe viewModel.session.value
+            viewModel.session.value.shouldBeInstanceOf<State.Content<*>>()
+
+            // When
+            val show = fullArtwork.content as FullArtwork.FullShow
+            artworkFlow.value = State.Content(show.copy(genres = persistentListOf()))
+
+            // Then
+            expectNoEvents()
+        }
+
     }
 
     context("select track") {
@@ -324,7 +393,7 @@ class PlayerViewModelTest : FunSpec({
             ),
         ) { testCase ->
 
-            viewModel.uiState.test {
+            viewModel.session.test {
 
                 awaitItem()
 
@@ -346,16 +415,16 @@ class PlayerViewModelTest : FunSpec({
             // Given
             val openingChapter = VideoChapter(index = 0, start = 0L, end = 90_000L, type = VideoChapterType.OPENING)
 
-            viewModel.uiState.test {
+            viewModel.session.test {
                 awaitItem()
 
                 // When
                 viewModel.handleIntent(
-                    PlayerIntent.OnChapterButtonTap(PlayerUiContent.ChapterButton.Skip(chapter = openingChapter))
+                    PlayerIntent.OnChapterButtonTap(ChapterButton.Skip(chapter = openingChapter))
                 )
 
                 // Then
-                coVerify { playerManager.seekTo(progress = openingChapter.end) }
+                coVerify { playerManager.seekTo(progress = openingChapter.end, precision = SeekPrecision.EXACT) }
 
                 cancelAndIgnoreRemainingEvents()
             }
@@ -364,20 +433,19 @@ class PlayerViewModelTest : FunSpec({
 
         test("next episode saves the time and changes the media") {
 
-            viewModel.uiState.test {
+            viewModel.session.test {
                 awaitItem()
 
                 // When
                 viewModel.handleIntent(
                     PlayerIntent.OnChapterButtonTap(
-                        PlayerUiContent.ChapterButton.NextEpisode(nextEpisode = MediaMockups.episode2)
+                        ChapterButton.NextEpisode(nextEpisode = MediaMockups.episode2)
                     )
                 )
 
                 // Then
-                val state = awaitItem()
-                state.content.media.mediaId shouldBe MediaMockups.episode2.mediaId
-                state.content.chapterButton shouldBe null
+                (awaitItem() as State.Content).content.media.mediaId shouldBe MediaMockups.episode2.mediaId
+                viewModel.overlays.value.chapterButton shouldBe null
                 coVerify { recordProgress(MediaMockups.episode1, any()) }
 
                 cancelAndIgnoreRemainingEvents()
@@ -387,7 +455,7 @@ class PlayerViewModelTest : FunSpec({
 
         test("null button does nothing") {
 
-            viewModel.uiState.test {
+            viewModel.session.test {
                 awaitItem()
 
                 // When
@@ -395,7 +463,7 @@ class PlayerViewModelTest : FunSpec({
 
                 // Then
                 expectNoEvents()
-                coVerify(exactly = 0) { playerManager.seekTo(any()) }
+                coVerify(exactly = 0) { playerManager.seekTo(any(), any()) }
                 coVerify(exactly = 0) { recordProgress(any(), any()) }
 
                 cancelAndIgnoreRemainingEvents()
@@ -415,7 +483,7 @@ class PlayerViewModelTest : FunSpec({
                     VideoChapter(index = 0, start = 0L, end = 90_000L, type = VideoChapterType.OPENING),
                 ),
                 progress = 30_000L,
-                expectedChapterButton = PlayerUiContent.ChapterButton.Skip(
+                expectedChapterButton = ChapterButton.Skip(
                     chapter = VideoChapter(index = 0, start = 0L, end = 90_000L, type = VideoChapterType.OPENING)
                 )
             ),
@@ -428,7 +496,7 @@ class PlayerViewModelTest : FunSpec({
                     VideoChapter(index = 3, start = 1_300_000L, end = 1_380_000L, type = VideoChapterType.CHAPTER),
                 ),
                 progress = 1_250_000L,
-                expectedChapterButton = PlayerUiContent.ChapterButton.Skip(
+                expectedChapterButton = ChapterButton.Skip(
                     chapter = VideoChapter(index = 2, start = 1_200_000L, end = 1_300_000L, type = VideoChapterType.ENDING)
                 )
             ),
@@ -440,13 +508,13 @@ class PlayerViewModelTest : FunSpec({
                     VideoChapter(index = 2, start = 1_200_000L, end = 1_380_000L, type = VideoChapterType.ENDING),
                 ),
                 progress = 1_300_000L,
-                expectedChapterButton = PlayerUiContent.ChapterButton.NextEpisode(nextEpisode = MediaMockups.episode2)
+                expectedChapterButton = ChapterButton.NextEpisode(nextEpisode = MediaMockups.episode2)
             ),
             PlayerTestCases.ChapterButtonTest(
                 description = "progress near the end of the media shows the NextEpisode button",
                 chapters = emptyList(),
                 progress = 1_370_000L,
-                expectedChapterButton = PlayerUiContent.ChapterButton.NextEpisode(nextEpisode = MediaMockups.episode2)
+                expectedChapterButton = ChapterButton.NextEpisode(nextEpisode = MediaMockups.episode2)
             ),
             PlayerTestCases.ChapterButtonTest(
                 description = "progress in a normal chapter hides the button",
@@ -476,7 +544,7 @@ class PlayerViewModelTest : FunSpec({
 
             updateVm()
 
-            viewModel.uiState.test {
+            viewModel.overlays.test {
 
                 // Skip initial state & ensure the media (and so the chapters) are loaded
                 awaitItem()
@@ -488,10 +556,9 @@ class PlayerViewModelTest : FunSpec({
                 // Then
                 if (testCase.expectedChapterButton == null) {
                     // No new state is emitted when the button stays/becomes null
-                    viewModel.uiState.value.content.chapterButton shouldBe null
+                    viewModel.overlays.value.chapterButton shouldBe null
                 } else {
-                    val state = awaitItem()
-                    state.content.chapterButton shouldBe testCase.expectedChapterButton
+                    awaitItem().chapterButton shouldBe testCase.expectedChapterButton
                 }
 
                 cancelAndIgnoreRemainingEvents()
@@ -501,58 +568,56 @@ class PlayerViewModelTest : FunSpec({
 
     }
 
-    test("on volume change") {
-        viewModel.uiState.test {
+    test("next episode is searched once per media despite several progress ticks") {
+
+        // Given
+        val progressFlow = MutableStateFlow(0L)
+        playerManager = mockk(relaxed = true) {
+            every { flow } returns MutableStateFlow(
+                PlayerManager.State.Ready(
+                    player = player,
+                    duration = MediaMockups.episode1.duration.minToMs
+                )
+            )
+            every { progress } returns progressFlow
+        }
+
+        updateVm()
+
+        viewModel.overlays.test {
             awaitItem()
+            coVerify { playerManager.playMedia(any(), any()) }
+
+            // When
+            progressFlow.value = 1_370_000L
+            awaitItem().chapterButton shouldBe
+                ChapterButton.NextEpisode(nextEpisode = MediaMockups.episode2)
+            progressFlow.value = 1_371_000L
+            progressFlow.value = 1_372_000L
+            progressFlow.value = 1_373_000L
+            viewModel.progress.test {
+                awaitItem()
+                cancelAndIgnoreRemainingEvents()
+            }
+
+            // Then
+            coVerify(exactly = 1) { getNextEpisodeUseCase(MediaMockups.episode1) }
+
+            cancelAndIgnoreRemainingEvents()
+        }
+
+    }
+
+    test("on volume change applies the volume and emits the applied value") {
+        every { playerManager.changeVolume(.5f) } returns 60
+
+        viewModel.volume.test {
 
             viewModel.handleIntent(PlayerIntent.OnVolumeChange(delta = .5f))
 
-            val state = awaitItem()
-            state.content.ambientOverlay?.type shouldBe PlayerUiContent.AmbientOverlay.Type.VOLUME
+            awaitItem() shouldBe 60
             coVerify { playerManager.changeVolume(.5f) }
 
-        }
-    }
-
-    test("on brightness change") {
-        viewModel.uiState.test {
-            awaitItem()
-
-            viewModel.event.test {
-
-                viewModel.handleIntent(PlayerIntent.OnBrightnessChange(delta = .5f))
-
-                val event = awaitItem()
-
-                event shouldBe PlayerEvent.ChangeBrightness(delta = .5f)
-
-            }
-
-        }
-    }
-
-    context("update ambient overlay") {
-        withData(
-            nameFn = { it.description },
-            PlayerTestCases.UpdateAmbientOverlay(
-                description = "Brightness",
-                type = PlayerUiContent.AmbientOverlay.Type.BRIGHTNESS,
-                value = 50
-            ),
-            PlayerTestCases.UpdateAmbientOverlay(
-                description = "Volume",
-                type = PlayerUiContent.AmbientOverlay.Type.VOLUME,
-                value = 50
-            )
-        ) { testCase ->
-            viewModel.uiState.test {
-                awaitItem()
-
-                viewModel.handleIntent(PlayerIntent.UpdateAmbientOverlay(type = testCase.type, value = testCase.value))
-
-                val state = awaitItem()
-                state.content.ambientOverlay shouldBe PlayerUiContent.AmbientOverlay(type = testCase.type, value = testCase.value)
-            }
         }
     }
 
@@ -569,7 +634,7 @@ class PlayerViewModelTest : FunSpec({
         }
         updateVm()
 
-        viewModel.uiState.test {
+        viewModel.session.test {
             awaitItem()
 
             viewModel.handleIntent(PlayerIntent.GoToBackground)
@@ -592,7 +657,7 @@ class PlayerViewModelTest : FunSpec({
         }
         updateVm()
 
-        viewModel.uiState.test {
+        viewModel.session.test {
             awaitItem()
 
             viewModel.handleIntent(PlayerIntent.GoToBackground)
@@ -616,8 +681,8 @@ class PlayerViewModelTest : FunSpec({
         observeArtworkUseCase(-999L)
         updateVm(mediaId = -999L)
 
-        viewModel.uiState.test {
-            awaitItem().state shouldBe State.Error()
+        viewModel.session.test {
+            awaitItem() shouldBe State.Error()
         }
     }
 
@@ -627,8 +692,8 @@ class PlayerViewModelTest : FunSpec({
         }
         updateVm()
 
-        viewModel.uiState.test {
-            awaitItem().state shouldBe State.Error()
+        viewModel.session.test {
+            awaitItem() shouldBe State.Error()
         }
     }
 
@@ -645,7 +710,7 @@ class PlayerViewModelTest : FunSpec({
         }
         updateVm()
 
-        viewModel.uiState.test {
+        viewModel.session.test {
             awaitItem()
 
             viewModel.handleIntent(PlayerIntent.GoToBackground)
@@ -663,7 +728,7 @@ class PlayerViewModelTest : FunSpec({
         saveTrackLanguageUseCase = SaveTrackLanguageUseCase(settings = settingsDataStore)
         updateVm()
 
-        viewModel.uiState.test {
+        viewModel.session.test {
             awaitItem()
             val track = PlayerTrack(id = "1", label = "English", language = Language.ENGLISH.code, type = PlayerTrack.Type.AUDIO)
 
@@ -674,5 +739,5 @@ class PlayerViewModelTest : FunSpec({
 
 })
 
-private val PlayerUiState<Player>.content: PlayerUiContent<Player>
-    get() = (state as State.Content).content
+private val PlayerViewModel<Player>.sessionContent: PlayerSession<Player>
+    get() = (session.value as State.Content).content

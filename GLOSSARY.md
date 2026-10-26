@@ -123,8 +123,20 @@ _Avoid_: Double-tap overlay
 Indication éphémère de la valeur de volume ou de luminosité pendant un geste vertical.
 _Avoid_: Volume overlay, brightness overlay
 
+**Chapter**:
+Section nommée ou numérotée d'un Media, telle que décrite dans son UserFile. Un Chapter est soit un Opening, soit un Ending, soit un Chapter ordinaire.
+_Avoid_: Segment, marqueur, partie
+
+**Opening**:
+Chapter correspondant au générique de début d'un Media.
+_Avoid_: Intro, OP, générique
+
+**Ending**:
+Chapter correspondant à un générique de fin d'un Media. Un Media peut en avoir plusieurs (générique, scène post-générique, second générique).
+_Avoid_: Outro, ED, Credits, générique
+
 **Chapter button**:
-Action contextuelle proposée pendant la lecture : passer un chapitre (générique) ou lancer l'épisode suivant.
+Action contextuelle proposée pendant la lecture : passer un Opening ou un Ending, ou lancer l'épisode suivant.
 _Avoid_: Skip button
 
 **Settings sheet**:

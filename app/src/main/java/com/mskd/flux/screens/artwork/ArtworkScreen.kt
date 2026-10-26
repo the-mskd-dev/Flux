@@ -73,6 +73,7 @@ fun ArtworkScreen(
             when (event) {
                 ArtworkEvent.BackToPreviousScreen -> onBack()
                 is ArtworkEvent.NavigateToPerson -> navigate(Route.Person(person = event.person))
+                is ArtworkEvent.NavigateToGallery -> navigate(Route.Gallery(artworkId = event.artworkId, contentType = event.contentType))
                 is ArtworkEvent.PlayMedia -> {
                     if (event.externalPlayer)
                         launchExternalPlayer(event.media)

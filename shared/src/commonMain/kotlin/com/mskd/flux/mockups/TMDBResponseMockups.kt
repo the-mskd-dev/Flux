@@ -1069,4 +1069,20 @@ object TMDBResponseMockups {
         }
     """.trimIndent()
 
+    val movieImages = """
+        {
+          "id": 372058,
+          "backdrops": [
+            { "aspect_ratio": 1.778, "height": 1080, "width": 1920, "iso_639_1": null, "file_path": "/backdrop1.jpg", "vote_average": 5.3, "vote_count": 10 },
+            { "aspect_ratio": 1.778, "height": 1080, "width": 1920, "iso_639_1": "ja", "file_path": "/backdrop2.jpg", "vote_average": 5.9, "vote_count": 4 }
+          ],
+          "logos": [
+            { "aspect_ratio": 3.0, "height": 200, "width": 600, "iso_639_1": "en", "file_path": "/logo1.png", "vote_average": 7.0, "vote_count": 2 }
+          ],
+          "posters": [
+            { "aspect_ratio": 0.667, "height": 3000, "width": 2000, "iso_639_1": "en", "file_path": "/poster1.jpg", "vote_average": 5.5, "vote_count": 8 }
+          ]
+        }
+    """.trimIndent()
+
 }

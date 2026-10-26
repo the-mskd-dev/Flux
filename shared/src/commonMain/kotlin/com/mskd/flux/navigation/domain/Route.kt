@@ -31,6 +31,9 @@ sealed class Route : NavKey {
     data class Artwork(val artworkId: Long, val season: Int? = null, val rgb: Int?): Route()
 
     @Serializable
+    data class Gallery(val artworkId: Long, val contentType: ContentType): Route()
+
+    @Serializable
     data object UnknownArtworks: Route()
 
     @Serializable
@@ -73,6 +76,7 @@ val navConfig = SavedStateConfiguration {
             subclass(Route.Show::class)
             subclass(Route.Person::class)
             subclass(Route.Artwork::class)
+            subclass(Route.Gallery::class)
             subclass(Route.UnknownArtworks::class)
             subclass(Route.PrivateFolder::class)
             subclass(Route.Search::class)

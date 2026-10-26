@@ -2,6 +2,7 @@ package com.mskd.flux.features.artwork.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Media
@@ -104,6 +105,7 @@ class ArtworkViewModel(
             is ArtworkIntent.OpenEpisodeInfo -> urlLauncher.open(url = intent.episode.infoUrl)
             is ArtworkIntent.OpenFileExplorer -> filesLauncher.open(file = intent.media.file)
             is ArtworkIntent.OnPersonClick -> _event.emit(ArtworkEvent.NavigateToPerson(person = intent.person))
+            ArtworkIntent.OnArtworkImageClick -> navigateToGallery()
 
             // Dialogs
             ArtworkIntent.CloseDialog -> closeDialog()
@@ -161,6 +163,11 @@ class ArtworkViewModel(
                     ?: episodes.firstEpisodeToWatch()
             }
         }
+    }
+
+    private suspend fun navigateToGallery() {
+        val artwork = fullArtwork?.artwork?.takeIf { it.type == ContentType.MOVIE } ?: return
+        _event.emit(ArtworkEvent.NavigateToGallery(artworkId = artwork.id, contentType = artwork.type))
     }
 
     private suspend fun playMedia(media: Media, forceInternal: Boolean) {

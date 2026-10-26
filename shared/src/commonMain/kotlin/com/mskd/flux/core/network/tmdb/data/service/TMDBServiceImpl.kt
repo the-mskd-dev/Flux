@@ -4,6 +4,7 @@ import com.mskd.flux.core.network.tmdb.data.dto.AuthenticationDto
 import com.mskd.flux.core.network.tmdb.data.dto.SearchResultsDto
 import com.mskd.flux.core.network.tmdb.data.dto.TranslationsDto
 import com.mskd.flux.core.network.tmdb.data.dto.genre.GenresResultDto
+import com.mskd.flux.core.network.tmdb.data.dto.images.ImagesDto
 import com.mskd.flux.core.network.tmdb.data.dto.movie.MovieDto
 import com.mskd.flux.core.network.tmdb.data.dto.people.PeopleDto
 import com.mskd.flux.core.network.tmdb.data.dto.people.PersonInfoDto
@@ -14,6 +15,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
+import kotlin.coroutines.cancellation.CancellationException
 
 class TMDBServiceImpl(private val client: HttpClient) : TMDBService {
 
@@ -64,6 +66,21 @@ class TMDBServiceImpl(private val client: HttpClient) : TMDBService {
         .get("movie/$artworkId/credits") {
             parameter("language", language)
         }.body()
+
+    override suspend fun getMovieImages(
+        artworkId: Long,
+        language: String
+    ): Result<ImagesDto> = try {
+        Result.success(
+            client.get("movie/$artworkId/images") {
+                parameter("language", language)
+            }.body<ImagesDto>()
+        )
+    } catch (e: CancellationException) {
+        throw e
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
 
     //endregion
 

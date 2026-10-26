@@ -8,6 +8,7 @@ import com.mskd.flux.core.network.tmdb.data.dto.ArtworkDto
 import com.mskd.flux.core.network.tmdb.data.dto.MediaTypeDto
 import com.mskd.flux.core.network.tmdb.data.dto.TranslationsDto
 import com.mskd.flux.core.network.tmdb.data.dto.genre.GenreDto
+import com.mskd.flux.core.network.tmdb.data.dto.images.ImagesDto
 import com.mskd.flux.core.network.tmdb.data.dto.movie.MovieDto
 import com.mskd.flux.core.network.tmdb.data.dto.people.PeopleDto
 import com.mskd.flux.core.network.tmdb.data.dto.people.PersonInfoDto
@@ -154,6 +155,14 @@ class TmdbDataSourceImpl(
             null
         }
 
+    }
+
+    override suspend fun getMovieImages(artworkId: Long): ImagesDto {
+        val imagesDto = tmdbService.getMovieImages(
+        artworkId = artworkId,
+        language = tmdbLanguage().toTmdbFormat()
+    ).getOrThrow()
+        return imagesDto
     }
 
     override suspend fun getMoviePeople(artworkId: Long): PeopleDto? {

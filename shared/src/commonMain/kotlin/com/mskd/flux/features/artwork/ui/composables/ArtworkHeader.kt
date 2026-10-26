@@ -52,7 +52,8 @@ fun ArtworkHeader(
                 .aspectRatio(FluxUI.Ratio.rectangle),
             fullArtwork = fullArtwork,
             currentMedia = currentMedia,
-            selectedSeason = selectedSeason
+            selectedSeason = selectedSeason,
+            onClick = { sendIntent(ArtworkIntent.OnArtworkImageClick) }
         )
 
         if (isMovie) {

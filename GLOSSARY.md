@@ -50,6 +50,22 @@ _Avoid_: Historique, currentTime, Position
 Genre de l'Artwork.
 _Avoid_: Type, catégorie
 
+**Backdrop**:
+Image TMDB 16:9 d'un Artwork, en paysage.
+_Avoid_: Fanart, banner, bannière
+
+**Poster**:
+Image TMDB 2:3 d'un Artwork, en portrait.
+_Avoid_: Affiche, cover, jaquette
+
+**Artwork image**:
+Image affichée en haut de la page d'un Artwork. Un tap l'ouvre dans la Gallery lorsqu'un token TMDB est configuré.
+_Avoid_: Header image, banner, bannière
+
+**Gallery**:
+Page listant toutes les images TMDB d'un Artwork (Backdrop et Poster, toutes langues) dans une seule grille triée par note décroissante, avec un visualiseur plein écran zoomable. Pour un Show, uniquement les images du Show lui-même, pas celles des Season ni des Episode. Rien n'est stocké localement.
+_Avoid_: Galerie d'images, Images, Photos
+
 ## Personnes
 
 **Person**:

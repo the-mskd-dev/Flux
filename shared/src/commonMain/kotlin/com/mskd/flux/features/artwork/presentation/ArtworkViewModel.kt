@@ -16,6 +16,7 @@ import com.mskd.flux.features.progress.domain.usecase.MarkPreviousAsWatchedUseCa
 import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
+import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.system.FilesLauncher
 import com.mskd.flux.system.UrlLauncher
 import com.mskd.flux.utils.extensions.firstEpisode
@@ -37,6 +38,7 @@ class ArtworkViewModel(
     private val filesLauncher: FilesLauncher,
     private val urlLauncher: UrlLauncher,
     settingsDataStore: SettingsDataStore,
+    private val tokenDataStore: TokenDataStore,
     observeArtworkUseCase: ObserveArtworkUseCase,
     getPeopleUseCase: GetPeopleUseCase,
     private val changeMediaStatus: ChangeMediaStatusUseCase,
@@ -104,6 +106,7 @@ class ArtworkViewModel(
             is ArtworkIntent.OpenEpisodeInfo -> urlLauncher.open(url = intent.episode.infoUrl)
             is ArtworkIntent.OpenFileExplorer -> filesLauncher.open(file = intent.media.file)
             is ArtworkIntent.OnPersonClick -> _event.emit(ArtworkEvent.NavigateToPerson(person = intent.person))
+            ArtworkIntent.OnArtworkImageClick -> navigateToGallery()
 
             // Dialogs
             ArtworkIntent.CloseDialog -> closeDialog()
@@ -161,6 +164,12 @@ class ArtworkViewModel(
                     ?: episodes.firstEpisodeToWatch()
             }
         }
+    }
+
+    private suspend fun navigateToGallery() {
+        if (!tokenDataStore.tokenIsAvailable()) return
+        val artwork = fullArtwork?.artwork ?: return
+        _event.emit(ArtworkEvent.NavigateToGallery(artworkId = artwork.id, contentType = artwork.type))
     }
 
     private suspend fun playMedia(media: Media, forceInternal: Boolean) {

@@ -4,6 +4,7 @@ import androidx.compose.runtime.Immutable
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Media
+import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.core.State
 import kotlinx.collections.immutable.ImmutableList
@@ -52,6 +53,7 @@ sealed interface ArtworkIntent {
     data class OpenFileExplorer(val media: Media): ArtworkIntent
     data class OpenEpisodeInfo(val episode: Episode): ArtworkIntent
     data class OnPersonClick(val person: Person): ArtworkIntent
+    data object OnArtworkImageClick : ArtworkIntent
 
     // Dialogs
     data object CloseDialog: ArtworkIntent
@@ -72,4 +74,5 @@ sealed interface ArtworkEvent {
     object BackToPreviousScreen : ArtworkEvent
     data class PlayMedia(val media: Media, val externalPlayer: Boolean) : ArtworkEvent
     data class NavigateToPerson(val person: Person) : ArtworkEvent
+    data class NavigateToGallery(val artworkId: Long, val contentType: ContentType) : ArtworkEvent
 }

@@ -2,6 +2,7 @@ package com.mskd.flux.features.show.presentation
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
+import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.artwork.PersonType
 import com.mskd.flux.core.model.core.State
@@ -11,11 +12,13 @@ import com.mskd.flux.features.people.domain.usecase.GetPeopleUseCase
 import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.PeopleMockup
+import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.system.UrlLauncher
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.mockk.coVerify
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -32,9 +35,11 @@ class ShowViewModelTest : FunSpec({
     lateinit var getPeopleUseCase: GetPeopleUseCase
     lateinit var resetProgress: ResetProgressUseCase
     lateinit var urlLauncher: UrlLauncher
+    lateinit var tokenDataStore: TokenDataStore
 
     val updateVm: () -> Unit = {
 
+        tokenDataStore = mockk(relaxed = true) { coEvery { tokenIsAvailable() } returns true }
         resetProgress = mockk(relaxed = true)
         urlLauncher = mockk(relaxed = true)
 
@@ -42,6 +47,7 @@ class ShowViewModelTest : FunSpec({
             artworkId = MediaMockups.showArtwork.id,
             observeArtworkUseCase = observeArtworkUseCase,
             getPeopleUseCase = getPeopleUseCase,
+            tokenDataStore = tokenDataStore,
             resetProgress = resetProgress,
             urlLauncher = urlLauncher
         )
@@ -182,6 +188,25 @@ class ShowViewModelTest : FunSpec({
         }
     }
 
+    context("OnArtworkImageClick") {
+
+        test("navigates to the gallery when a token is available") {
+            viewModel.event.test {
+                viewModel.handleIntent(ShowIntent.OnArtworkImageClick)
+                awaitItem() shouldBe ShowEvent.NavigateToGallery(artworkId = MediaMockups.showArtwork.id, contentType = ContentType.SHOW)
+            }
+        }
+
+        test("does nothing without token") {
+            coEvery { tokenDataStore.tokenIsAvailable() } returns false
+            viewModel.event.test {
+                viewModel.handleIntent(ShowIntent.OnArtworkImageClick)
+                expectNoEvents()
+            }
+        }
+
+    }
+
     context("OnPersonClick") {
 
         test("should call NavigateToPerson event") {
@@ -208,6 +233,7 @@ class ShowViewModelTest : FunSpec({
             artworkId = -999L,
             observeArtworkUseCase = observeArtworkUseCase,
             getPeopleUseCase = getPeopleUseCase,
+            tokenDataStore = tokenDataStore,
             resetProgress = resetProgress,
             urlLauncher = urlLauncher
         )
@@ -224,6 +250,7 @@ class ShowViewModelTest : FunSpec({
             artworkId = MediaMockups.movieArtwork.id,
             observeArtworkUseCase = observeArtworkUseCase,
             getPeopleUseCase = getPeopleUseCase,
+            tokenDataStore = tokenDataStore,
             resetProgress = resetProgress,
             urlLauncher = urlLauncher
         )

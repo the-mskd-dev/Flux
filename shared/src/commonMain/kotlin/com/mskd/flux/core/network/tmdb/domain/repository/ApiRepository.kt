@@ -8,6 +8,7 @@ import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.files.UserFile
+import com.mskd.flux.features.gallery.domain.model.GalleryImage
 import com.mskd.flux.core.network.tmdb.domain.model.PersonInfo
 import com.mskd.flux.core.network.tmdb.domain.model.Translation
 import com.mskd.flux.core.network.tmdb.domain.model.TranslationRequest
@@ -23,6 +24,10 @@ interface ApiRepository {
     suspend fun getMovie(artworkId: Long, file: UserFile): Movie?
 
     suspend fun getMoviePeople(artworkId: Long): List<Person>
+
+    suspend fun getMovieImages(artworkId: Long): List<GalleryImage>
+
+    suspend fun getShowImages(artworkId: Long): List<GalleryImage>
 
     suspend fun getShowPeople(artworkId: Long): List<Person>
 

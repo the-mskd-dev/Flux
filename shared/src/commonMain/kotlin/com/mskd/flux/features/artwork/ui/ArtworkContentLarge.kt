@@ -61,6 +61,7 @@ fun ArtworkContentLarge(
                 currentMedia = selectedMedia,
                 selectedSeason = selectedSeason,
                 orientation = Orientation.Horizontal,
+                onClick = { sendIntent(ArtworkIntent.OnArtworkImageClick) }
             )
 
         }

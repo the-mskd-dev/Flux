@@ -241,4 +241,7 @@
     <string name="original_name">Nome originale: %1$s</string>
     <string name="also_in">Anche in</string>
 
+    <string name="retry">Riprova</string>
+    <string name="unavailable_check_connection">Non disponibile, controlla la connessione</string>
+    <string name="gallery_empty">Nessuna immagine disponibile</string>
 </resources>

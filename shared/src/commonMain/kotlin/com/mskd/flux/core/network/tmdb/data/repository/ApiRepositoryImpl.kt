@@ -8,6 +8,7 @@ import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.files.UserFile
+import com.mskd.flux.features.gallery.domain.model.GalleryImage
 import com.mskd.flux.core.network.tmdb.data.datasource.TmdbDataSource
 import com.mskd.flux.core.network.tmdb.data.mapper.toArtwork
 import com.mskd.flux.core.network.tmdb.data.mapper.toDomain
@@ -50,9 +51,15 @@ internal class ApiRepositoryImpl(
         return tmdb.getMoviePeople(artworkId = artworkId)?.toDomain(artworkId = artworkId) ?: emptyList()
     }
 
+    override suspend fun getMovieImages(artworkId: Long): List<GalleryImage> =
+        tmdb.getMovieImages(artworkId = artworkId).toDomain()
+
     //endregion
 
     //region Show
+
+    override suspend fun getShowImages(artworkId: Long): List<GalleryImage> =
+        tmdb.getShowImages(artworkId = artworkId).toDomain()
 
     override suspend fun getSeasonAndEpisodes(
         artworkId: Long,

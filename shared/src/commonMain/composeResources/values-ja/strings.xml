@@ -239,4 +239,7 @@
     <string name="known_for_department">担当: %1$s</string>
     <string name="original_name">本名: %1$s</string>
     <string name="also_in">その他の出演作</string>
+    <string name="retry">再試行</string>
+    <string name="unavailable_check_connection">利用できません。接続を確認してください</string>
+    <string name="gallery_empty">利用できる画像がありません</string>
 </resources>

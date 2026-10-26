@@ -9,10 +9,14 @@ import com.mskd.flux.features.gallery.domain.model.GalleryImage
 import com.mskd.flux.features.gallery.domain.model.GalleryImageType
 import com.mskd.flux.core.network.tmdb.domain.repository.ApiRepository
 import com.mskd.flux.features.gallery.domain.usecase.GetGalleryImagesUseCase
+import com.mskd.flux.features.connectivity.domain.ConnectivityRepository
 import com.mskd.flux.mockups.MediaMockups
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
+import io.mockk.clearMocks
+import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.test.TestDispatcher
@@ -23,6 +27,7 @@ class GalleryViewModelTest : FunSpec({
 
     lateinit var viewModel: GalleryViewModel
     lateinit var apiRepository: ApiRepository
+    lateinit var connectivityRepository: ConnectivityRepository
 
     val artwork = MediaMockups.movieArtwork
 
@@ -36,11 +41,14 @@ class GalleryViewModelTest : FunSpec({
             contentType = ContentType.MOVIE,
             getGalleryImages = GetGalleryImagesUseCase(apiRepository = apiRepository),
             databaseRepository = FakeDatabaseRepository(),
+            connectivityRepository = connectivityRepository,
         )
     }
 
     beforeTest {
         apiRepository = mockk()
+        connectivityRepository = mockk()
+        every { connectivityRepository.currentlyOnline() } returns true
         coEvery { apiRepository.getMovieImages(artwork.id) } returns listOf(lowBackdrop, highPoster, midBackdrop)
         updateVm()
     }
@@ -72,6 +80,79 @@ class GalleryViewModelTest : FunSpec({
         testDispatcher.scheduler.advanceUntilIdle()
 
         viewModel.uiState.value.title shouldBe artwork.title
+
+    }
+
+    fun contentImages(): List<GalleryImage> =
+        (viewModel.uiState.value.state as State.Content).content.images
+
+    test("offline gives the unavailable state without requesting the images") {
+
+        clearMocks(apiRepository, answers = false)
+        every { connectivityRepository.currentlyOnline() } returns false
+        updateVm()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.uiState.value.state shouldBe State.Error()
+        viewModel.uiState.value.failure shouldBe GalleryFailure.OFFLINE
+        coVerify(exactly = 0) { apiRepository.getMovieImages(any()) }
+
+    }
+
+    test("retry reloads the images once back online") {
+
+        every { connectivityRepository.currentlyOnline() } returns false
+        updateVm()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        every { connectivityRepository.currentlyOnline() } returns true
+        viewModel.handleIntent(GalleryIntent.OnRetryTap)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.uiState.value.failure shouldBe null
+        contentImages() shouldBe listOf(highPoster, midBackdrop, lowBackdrop)
+
+    }
+
+    test("a network error gives the error state and retry recovers") {
+
+        coEvery { apiRepository.getMovieImages(artwork.id) } throws RuntimeException("boom")
+        updateVm()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.uiState.value.state shouldBe State.Error()
+        viewModel.uiState.value.failure shouldBe GalleryFailure.ERROR
+
+        coEvery { apiRepository.getMovieImages(artwork.id) } returns listOf(highPoster)
+        viewModel.handleIntent(GalleryIntent.OnRetryTap)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.uiState.value.failure shouldBe null
+        contentImages() shouldBe listOf(highPoster)
+
+    }
+
+    test("a failing retry keeps the images already displayed") {
+
+        testDispatcher.scheduler.advanceUntilIdle()
+        coEvery { apiRepository.getMovieImages(artwork.id) } throws RuntimeException("boom")
+
+        viewModel.handleIntent(GalleryIntent.OnRetryTap)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.uiState.value.failure shouldBe GalleryFailure.ERROR
+        contentImages() shouldBe listOf(highPoster, midBackdrop, lowBackdrop)
+
+    }
+
+    test("an empty list gives empty content") {
+
+        coEvery { apiRepository.getMovieImages(artwork.id) } returns emptyList()
+        updateVm()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.uiState.value.failure shouldBe null
+        contentImages() shouldBe emptyList()
 
     }
 

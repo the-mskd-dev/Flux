@@ -239,4 +239,7 @@
     <string name="known_for_department">유명한 분야: %1$s</string>
     <string name="original_name">본명: %1$s</string>
     <string name="also_in">다른 출연작</string>
+    <string name="retry">다시 시도</string>
+    <string name="unavailable_check_connection">사용할 수 없습니다. 연결을 확인하세요</string>
+    <string name="gallery_empty">사용 가능한 이미지가 없습니다</string>
 </resources>

@@ -7,8 +7,11 @@ import com.mskd.flux.features.gallery.domain.model.GalleryImage
 @Immutable
 data class GalleryUiState(
     val title: String = "",
-    val state: State<GalleryContent> = State.Loading
+    val state: State<GalleryContent> = State.Loading,
+    val failure: GalleryFailure? = null
 )
+
+enum class GalleryFailure { OFFLINE, ERROR }
 
 @Immutable
 data class GalleryContent(
@@ -17,6 +20,7 @@ data class GalleryContent(
 
 sealed interface GalleryIntent {
     data object OnBackTap : GalleryIntent
+    data object OnRetryTap : GalleryIntent
 }
 
 sealed interface GalleryEvent {

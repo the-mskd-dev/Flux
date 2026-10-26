@@ -5,8 +5,11 @@ import androidx.lifecycle.viewModelScope
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.core.State
+import com.mskd.flux.features.connectivity.domain.ConnectivityRepository
 import com.mskd.flux.features.gallery.domain.usecase.GetGalleryImagesUseCase
 import com.mskd.flux.report.Trace
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -21,6 +24,7 @@ class GalleryViewModel(
     private val contentType: ContentType,
     private val getGalleryImages: GetGalleryImagesUseCase,
     private val databaseRepository: DatabaseRepository,
+    private val connectivityRepository: ConnectivityRepository,
 ) : ViewModel() {
 
     //region Flow
@@ -30,6 +34,8 @@ class GalleryViewModel(
 
     private val _uiState = MutableStateFlow(GalleryUiState())
     val uiState: StateFlow<GalleryUiState> = _uiState.asStateFlow()
+
+    private var loadJob: Job? = null
 
     //endregion
 
@@ -47,6 +53,7 @@ class GalleryViewModel(
     fun handleIntent(intent: GalleryIntent) = viewModelScope.launch {
         when (intent) {
             GalleryIntent.OnBackTap -> _event.emit(GalleryEvent.BackToPreviousScreen)
+            GalleryIntent.OnRetryTap -> loadImages()
         }
     }
 
@@ -59,20 +66,40 @@ class GalleryViewModel(
         _uiState.update { it.copy(title = title) }
     }
 
-    private fun loadImages() = viewModelScope.launch {
+    private fun loadImages() {
+        loadJob?.cancel()
+        loadJob = viewModelScope.launch { fetchImages() }
+    }
 
-        _uiState.update { it.copy(state = State.Loading) }
+    private suspend fun fetchImages() {
+
+        val hasContent = _uiState.value.state is State.Content
+
+        // Keep the images already displayed visible while retrying
+        _uiState.update { if (hasContent) it.copy(failure = null) else it.copy(state = State.Loading, failure = null) }
+
+        if (!connectivityRepository.currentlyOnline()) {
+            fail(GalleryFailure.OFFLINE)
+            return
+        }
 
         val images = try {
             getGalleryImages(artworkId = artworkId, contentType = contentType)
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             Trace.error("GalleryViewModel", "Fail to get images for artworkId:$artworkId", e)
-            _uiState.update { it.copy(state = State.Error()) }
-            return@launch
+            fail(if (connectivityRepository.currentlyOnline()) GalleryFailure.ERROR else GalleryFailure.OFFLINE)
+            return
         }
 
-        _uiState.update { it.copy(state = State.Content(GalleryContent(images = images))) }
+        _uiState.update { it.copy(state = State.Content(GalleryContent(images = images)), failure = null) }
 
+    }
+
+    // Without displayed images the whole page is in error, otherwise the images stay and only the failure is flagged
+    private fun fail(failure: GalleryFailure) = _uiState.update {
+        if (it.state is State.Content) it.copy(failure = failure) else it.copy(state = State.Error(), failure = failure)
     }
 
     //endregion

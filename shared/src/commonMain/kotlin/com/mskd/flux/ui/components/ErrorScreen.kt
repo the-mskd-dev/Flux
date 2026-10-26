@@ -17,6 +17,7 @@ import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.oups_an_error_occured
+import flux.shared.generated.resources.retry
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -24,6 +25,7 @@ fun ErrorScreen(
     modifier: Modifier = Modifier,
     message: String,
     description: String? = null,
+    onRetryClick: (() -> Unit)? = null,
     onBackButtonClick: () -> Unit
 ) {
 
@@ -58,6 +60,13 @@ fun ErrorScreen(
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onBackground.copy(alpha = .7f)
                 )
+
+                if (onRetryClick != null) {
+                    FluxTextButton(
+                        text = stringResource(Res.string.retry),
+                        onClick = onRetryClick
+                    )
+                }
 
             }
 

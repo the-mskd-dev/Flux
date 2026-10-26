@@ -240,4 +240,7 @@
     <string name="known_for_department">Conocido/a por: %1$s</string>
     <string name="original_name">Nombre original: %1$s</string>
     <string name="also_in">También en</string>
+    <string name="retry">Reintentar</string>
+    <string name="unavailable_check_connection">No disponible, comprueba tu conexión</string>
+    <string name="gallery_empty">No hay imágenes disponibles</string>
 </resources>

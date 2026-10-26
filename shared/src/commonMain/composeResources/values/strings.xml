@@ -258,4 +258,7 @@
     <string name="known_for_department">Known for : %1$s</string>
     <string name="original_name">Original name : %1$s</string>
     <string name="also_in">Also in</string>
+    <string name="retry">Retry</string>
+    <string name="unavailable_check_connection">Unavailable, check your connection</string>
+    <string name="gallery_empty">No images available</string>
 </resources>

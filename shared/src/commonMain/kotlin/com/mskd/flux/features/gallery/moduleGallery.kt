@@ -16,6 +16,7 @@ val moduleGallery = module {
             contentType = params.get(),
             getGalleryImages = get(),
             databaseRepository = get(),
+            connectivityRepository = get(),
         )
     }
 

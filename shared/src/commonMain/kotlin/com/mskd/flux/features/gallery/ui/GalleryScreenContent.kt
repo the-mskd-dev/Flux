@@ -7,6 +7,21 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.text.style.TextAlign
+import com.mskd.flux.ui.components.FluxTextButton
+import com.mskd.flux.ui.text.Text
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.gallery_empty
+import flux.shared.generated.resources.oups_an_error_occured
+import flux.shared.generated.resources.retry
+import flux.shared.generated.resources.unavailable_check_connection
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -19,6 +34,7 @@ import coil3.request.crossfade
 import com.mskd.flux.features.gallery.domain.model.GalleryImage
 import com.mskd.flux.features.gallery.domain.model.GalleryImageType
 import com.mskd.flux.features.gallery.domain.model.thumbnailUrl
+import com.mskd.flux.features.gallery.presentation.GalleryFailure
 import com.mskd.flux.features.gallery.presentation.GalleryIntent
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.FluxThemePreview
@@ -31,6 +47,7 @@ import com.mskd.flux.ui.theme.FluxUI
 fun GalleryScreenContent(
     title: String,
     images: List<GalleryImage>,
+    failure: GalleryFailure? = null,
     sendIntent: (GalleryIntent) -> Unit,
 ) {
 
@@ -40,6 +57,20 @@ fun GalleryScreenContent(
         title = title,
         onBackTap = { sendIntent(GalleryIntent.OnBackTap) }
     ) { innerPadding ->
+
+        if (images.isEmpty() && failure == null) {
+            Box(
+                modifier = Modifier.fillMaxSize().padding(innerPadding),
+                contentAlignment = Alignment.Center
+            ) {
+                Text.Content.Title(
+                    text = stringResource(Res.string.gallery_empty),
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            }
+            return@FluxScaffold
+        }
 
         LazyVerticalStaggeredGrid(
             modifier = Modifier.fillMaxSize(),
@@ -53,6 +84,28 @@ fun GalleryScreenContent(
             horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
             verticalItemSpacing = FluxUI.Space.small,
         ) {
+
+            if (failure != null) {
+                item(span = StaggeredGridItemSpan.FullLine) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text.Content.Body(
+                            text = stringResource(
+                                if (failure == GalleryFailure.OFFLINE) Res.string.unavailable_check_connection
+                                else Res.string.oups_an_error_occured
+                            ),
+                            textAlign = TextAlign.Center,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                        FluxTextButton(
+                            text = stringResource(Res.string.retry),
+                            onClick = { sendIntent(GalleryIntent.OnRetryTap) }
+                        )
+                    }
+                }
+            }
 
             items(items = images, key = { "${it.type}${it.path}" }) { image ->
 

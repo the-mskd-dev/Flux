@@ -9,14 +9,16 @@ import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.features.files.data.FileExtensions
 import com.mskd.flux.features.files.domain.datasource.FilesDataSource
 import com.mskd.flux.features.sources.domain.model.UserFolder
-import com.mskd.flux.features.sources.domain.repository.SourcesRepository
 import com.mskd.flux.report.Trace
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
+/**
+ * Source of a custom folder: available as long as the folder can be accessed.
+ */
 class SafFilesDataSource(
     private val context: Context,
-    private val sources: SourcesRepository,
+    private val folder: UserFolder,
 ) : FilesDataSource {
 
     companion object {
@@ -29,31 +31,27 @@ class SafFilesDataSource(
         )
     }
 
-    override suspend fun getFiles(): List<UserFile> = withContext(Dispatchers.IO) {
-        val folders = sources.getFolders()
+    override suspend fun isAvailable(): Boolean = folder.isAvailable
 
-        folders.flatMap { folder ->
-            getFilesFromFolder(folder = folder)
-        }
+    override fun contains(file: UserFile): Boolean =
+        file.source == FileSource.SAF && file.path.startsWith(folder.path)
+
+    override suspend fun getFiles(): List<UserFile> = withContext(Dispatchers.IO) {
+        getFilesFromFolder(folder = folder)
     }
 
     override suspend fun filterExistingFiles(files: List<UserFile>): List<UserFile> = withContext(Dispatchers.IO) {
 
-        val safFiles = files.filter { it.source == FileSource.SAF }
+        val safFiles = files.filter { contains(it) }
         if (safFiles.isEmpty()) return@withContext emptyList()
+
+        // The files of an unavailable folder are kept
+        if (!folder.isAvailable) return@withContext safFiles
 
         val existingFiles = mutableListOf<UserFile>()
         val missingFiles = mutableListOf<UserFile>()
 
-        val availableFolders = sources.getFolders().filter { it.isAvailable }
-
-        val (fromAvailableFolders, fromUnavailableFolders) = safFiles.partition { file ->
-            availableFolders.any { file.path.startsWith(it.path) }
-        }
-
-        existingFiles.addAll(fromUnavailableFolders)
-
-        for (file in fromAvailableFolders) {
+        for (file in safFiles) {
             val fileUri = file.path.toUri()
             var exists = false
 
@@ -89,7 +87,7 @@ class SafFilesDataSource(
     }
 
     override suspend fun getSubtitlesFor(file: UserFile): String? = withContext(Dispatchers.IO) {
-        if (file.source != FileSource.SAF) return@withContext null
+        if (!contains(file)) return@withContext null
 
         val videoUri = file.path.toUri()
 

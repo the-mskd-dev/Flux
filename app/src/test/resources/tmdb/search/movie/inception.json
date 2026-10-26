@@ -1,0 +1,21 @@
+{
+  "page": 1,
+  "results": [
+    {
+      "id": 27205,
+      "title": "Inception",
+      "original_title": "Inception",
+      "overview": "Cobb, a skilled thief, steals secrets from deep within the subconscious during the dream state.",
+      "poster_path": "/inception-poster.jpg",
+      "backdrop_path": "/inception-backdrop.jpg",
+      "genre_ids": [28, 878],
+      "popularity": 80.5,
+      "release_date": "2010-07-15",
+      "vote_average": 8.4,
+      "vote_count": 36000,
+      "adult": false
+    }
+  ],
+  "total_pages": 1,
+  "total_results": 1
+}

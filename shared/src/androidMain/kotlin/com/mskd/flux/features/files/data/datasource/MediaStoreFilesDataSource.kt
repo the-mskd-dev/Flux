@@ -32,6 +32,11 @@ class MediaStoreFilesDataSource(
         )
     }
 
+    // The device storage is always readable
+    override suspend fun isAvailable(): Boolean = true
+
+    override fun contains(file: UserFile): Boolean = file.source == FileSource.LOCAL
+
     override suspend fun getFiles(): List<UserFile> {
 
         updateMediaFolders()
@@ -123,7 +128,7 @@ class MediaStoreFilesDataSource(
     override suspend fun filterExistingFiles(files: List<UserFile>): List<UserFile> =
         withContext(Dispatchers.IO) {
 
-            val mediaStoreFiles = files.filter { it.source == FileSource.LOCAL }
+            val mediaStoreFiles = files.filter { contains(it) }
             val paths = mediaStoreFiles.map { it.path }
             val ids = paths.mapNotNull { it.toUri().lastPathSegment }
 

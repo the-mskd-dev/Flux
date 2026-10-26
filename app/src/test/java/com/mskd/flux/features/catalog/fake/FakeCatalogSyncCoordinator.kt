@@ -34,6 +34,8 @@ internal class FakeCatalogSyncCoordinator(
     override fun launch(full: Boolean, block: suspend CoroutineScope.() -> Unit) {
         launchCallCount++
         lastFull = full
+        // Like the real coordinator, a new Synchro cancels the running one
+        job?.cancel()
         _state.update { SyncState.Syncing(full = full) }
         job = scope.launch {
             block()

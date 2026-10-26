@@ -1,6 +1,5 @@
 package com.mskd.flux.features.files
 
-import com.mskd.flux.core.model.files.FileSource
 import com.mskd.flux.features.files.data.datasource.MediaStoreFilesDataSource
 import com.mskd.flux.features.files.data.datasource.SafFilesDataSource
 import com.mskd.flux.features.files.data.usecase.AndroidGetFileDurationUseCase
@@ -28,10 +27,10 @@ val moduleFilesAndroid = module {
         )
     }
 
-    single<FilesDataSource>(SAF_SOURCES) {
+    factory<FilesDataSource>(SAF_SOURCES) { params ->
         SafFilesDataSource(
             context = get(),
-            sources = get()
+            folder = params.get()
         )
     }
 
@@ -53,10 +52,6 @@ val moduleFilesAndroid = module {
 
     single<GetSubtitlesUseCase> {
         GetSubtitlesUseCaseImpl(
-            sources = mapOf(
-                FileSource.LOCAL to get(MEDIASTORE_SOURCES),
-                FileSource.SAF to get(SAF_SOURCES),
-            ),
             sourcesProvider = get()
         )
     }

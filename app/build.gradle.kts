@@ -1,6 +1,7 @@
 import com.android.build.api.dsl.ApplicationExtension
 import java.io.FileInputStream
 import java.util.Properties
+import javax.inject.Inject
 
 plugins {
     alias(libs.plugins.android.application)
@@ -177,8 +178,37 @@ dependencies {
     debugImplementation(libs.bundles.android.compose.debug)
 }
 
+// Room runs in memory in the unit tests: the Android BundledSQLiteDriver has no host binary,
+// so the host one is taken from the JVM artifact and put on the library path.
+// The JVM artifact stays on 2.6.2, the last one shipping an Intel Mac (osx_x64) binary.
+val sqliteHostNatives: Configuration by configurations.creating { isTransitive = false }
+
+dependencies { sqliteHostNatives(libs.androidx.sqlite.bundled.jvm) }
+
+interface ArchiveServices { @get:Inject val archives: ArchiveOperations }
+
+val extractSqliteHostNatives by tasks.registering(Sync::class) {
+    val archives = objects.newInstance<ArchiveServices>().archives
+    val jars = sqliteHostNatives.elements
+    from(jars.map { files -> files.map { archives.zipTree(it.asFile) } }) { include("natives/**") }
+    into(layout.buildDirectory.dir("sqlite-host-natives"))
+}
+
+val sqliteHostNativesDir: String = run {
+    val os = System.getProperty("os.name").lowercase()
+    val arch = if (System.getProperty("os.arch") in listOf("aarch64", "arm64")) "arm64" else "x64"
+    val platform = when {
+        "mac" in os -> "osx"
+        "windows" in os -> "windows"
+        else -> "linux"
+    }
+    layout.buildDirectory.dir("sqlite-host-natives/natives/${platform}_$arch").get().asFile.absolutePath
+}
+
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
+    dependsOn(extractSqliteHostNatives)
+    systemProperty("java.library.path", sqliteHostNativesDir)
     testLogging {
         events("passed", "skipped", "failed")
         showStandardStreams = true

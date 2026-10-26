@@ -1,0 +1,21 @@
+{
+  "page": 1,
+  "results": [
+    {
+      "id": 1396,
+      "name": "Breaking Bad",
+      "original_name": "Breaking Bad",
+      "overview": "Walter White, a chemistry teacher, turns to manufacturing methamphetamine.",
+      "poster_path": "/breaking-bad-poster.jpg",
+      "backdrop_path": "/breaking-bad-backdrop.jpg",
+      "genre_ids": [18, 80],
+      "popularity": 120.1,
+      "first_air_date": "2008-01-20",
+      "vote_average": 8.9,
+      "vote_count": 15000,
+      "adult": false
+    }
+  ],
+  "total_pages": 1,
+  "total_results": 1
+}

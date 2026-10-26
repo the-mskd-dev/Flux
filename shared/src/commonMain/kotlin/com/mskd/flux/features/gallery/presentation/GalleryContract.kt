@@ -15,12 +15,16 @@ enum class GalleryFailure { OFFLINE, ERROR }
 
 @Immutable
 data class GalleryContent(
-    val images: List<GalleryImage>
+    val images: List<GalleryImage>,
+    val viewerIndex: Int? = null,
 )
 
 sealed interface GalleryIntent {
     data object OnBackTap : GalleryIntent
     data object OnRetryTap : GalleryIntent
+    data class OnImageTap(val index: Int) : GalleryIntent
+    data class OnViewerPageChange(val index: Int) : GalleryIntent
+    data object OnViewerClose : GalleryIntent
 }
 
 sealed interface GalleryEvent {

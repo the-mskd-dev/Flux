@@ -22,7 +22,8 @@ import flux.shared.generated.resources.oups_an_error_occured
 import flux.shared.generated.resources.retry
 import flux.shared.generated.resources.unavailable_check_connection
 import org.jetbrains.compose.resources.stringResource
-import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.lazy.staggeredgrid.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,84 +49,100 @@ fun GalleryScreenContent(
     title: String,
     images: List<GalleryImage>,
     failure: GalleryFailure? = null,
+    viewerIndex: Int? = null,
     sendIntent: (GalleryIntent) -> Unit,
 ) {
 
     val columns = if (rememberScreenDimensions().isLarge) 3 else 2
 
-    FluxScaffold(
-        title = title,
-        onBackTap = { sendIntent(GalleryIntent.OnBackTap) }
-    ) { innerPadding ->
+    Box(modifier = Modifier.fillMaxSize()) {
 
-        if (images.isEmpty() && failure == null) {
-            Box(
-                modifier = Modifier.fillMaxSize().padding(innerPadding),
-                contentAlignment = Alignment.Center
-            ) {
-                Text.Content.Title(
-                    text = stringResource(Res.string.gallery_empty),
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
+        FluxScaffold(
+            title = title,
+            onBackTap = { sendIntent(GalleryIntent.OnBackTap) }
+        ) { innerPadding ->
+
+            if (images.isEmpty() && failure == null) {
+                Box(
+                    modifier = Modifier.fillMaxSize().padding(innerPadding),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text.Content.Title(
+                        text = stringResource(Res.string.gallery_empty),
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                }
+                return@FluxScaffold
             }
-            return@FluxScaffold
-        }
 
-        LazyVerticalStaggeredGrid(
-            modifier = Modifier.fillMaxSize(),
-            columns = StaggeredGridCells.Fixed(columns),
-            contentPadding = PaddingValues(
-                start = FluxUI.Space.medium,
-                end = FluxUI.Space.medium,
-                top = innerPadding.calculateTopPadding() + FluxUI.Space.small,
-                bottom = innerPadding.calculateBottomPadding() + FluxUI.Space.medium,
-            ),
-            horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
-            verticalItemSpacing = FluxUI.Space.small,
-        ) {
+            LazyVerticalStaggeredGrid(
+                    modifier = Modifier.fillMaxSize(),
+                columns = StaggeredGridCells.Fixed(columns),
+                contentPadding = PaddingValues(
+                    start = FluxUI.Space.medium,
+                    end = FluxUI.Space.medium,
+                    top = innerPadding.calculateTopPadding() + FluxUI.Space.small,
+                    bottom = innerPadding.calculateBottomPadding() + FluxUI.Space.medium,
+                ),
+                horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
+                verticalItemSpacing = FluxUI.Space.small,
+            ) {
 
-            if (failure != null) {
-                item(span = StaggeredGridItemSpan.FullLine) {
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text.Content.Body(
-                            text = stringResource(
-                                if (failure == GalleryFailure.OFFLINE) Res.string.unavailable_check_connection
-                                else Res.string.oups_an_error_occured
-                            ),
-                            textAlign = TextAlign.Center,
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
-                        FluxTextButton(
-                            text = stringResource(Res.string.retry),
-                            onClick = { sendIntent(GalleryIntent.OnRetryTap) }
-                        )
+                if (failure != null) {
+                    item(span = StaggeredGridItemSpan.FullLine) {
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text.Content.Body(
+                                text = stringResource(
+                                    if (failure == GalleryFailure.OFFLINE) Res.string.unavailable_check_connection
+                                    else Res.string.oups_an_error_occured
+                                ),
+                                textAlign = TextAlign.Center,
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+                            FluxTextButton(
+                                text = stringResource(Res.string.retry),
+                                onClick = { sendIntent(GalleryIntent.OnRetryTap) }
+                            )
+                        }
                     }
                 }
+
+                itemsIndexed(items = images, key = { _, it -> "${it.type}${it.path}" }) { index, image ->
+
+                    AsyncImage(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(FluxUI.shapes.corners)
+                            .clickable { sendIntent(GalleryIntent.OnImageTap(index)) }
+                            .aspectRatio(image.ratio.takeIf { it > 0f } ?: 1f),
+                        model = ImageRequest.Builder(LocalPlatformContext.current)
+                            .data(image.thumbnailUrl)
+                            .crossfade(true)
+                            .build(),
+                        contentScale = ContentScale.Fit,
+                        placeholder = Image.placeholder,
+                        error = Image.error,
+                        contentDescription = null
+                    )
+
+                }
+
             }
 
-            items(items = images, key = { "${it.type}${it.path}" }) { image ->
+        }
 
-                AsyncImage(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(FluxUI.shapes.corners)
-                        .aspectRatio(image.ratio.takeIf { it > 0f } ?: 1f),
-                    model = ImageRequest.Builder(LocalPlatformContext.current)
-                        .data(image.thumbnailUrl)
-                        .crossfade(true)
-                        .build(),
-                    contentScale = ContentScale.Fit,
-                    placeholder = Image.placeholder,
-                    error = Image.error,
-                    contentDescription = null
-                )
-
-            }
-
+        // Drawn over the scaffold; the grid stays composed underneath so it keeps its scroll position
+        if (viewerIndex != null) {
+            GalleryViewer(
+                images = images,
+                initialIndex = viewerIndex,
+                onPageChange = { sendIntent(GalleryIntent.OnViewerPageChange(it)) },
+                onClose = { sendIntent(GalleryIntent.OnViewerClose) }
+            )
         }
 
     }

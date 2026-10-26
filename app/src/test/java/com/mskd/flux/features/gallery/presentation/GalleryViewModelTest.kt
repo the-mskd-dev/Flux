@@ -86,6 +86,9 @@ class GalleryViewModelTest : FunSpec({
     fun contentImages(): List<GalleryImage> =
         (viewModel.uiState.value.state as State.Content).content.images
 
+    fun contentViewerIndex(): Int? =
+        (viewModel.uiState.value.state as State.Content).content.viewerIndex
+
     test("offline gives the unavailable state without requesting the images") {
 
         clearMocks(apiRepository, answers = false)
@@ -153,6 +156,63 @@ class GalleryViewModelTest : FunSpec({
 
         viewModel.uiState.value.failure shouldBe null
         contentImages() shouldBe emptyList()
+
+    }
+
+    test("tapping an image opens the viewer on it and closing returns to the grid") {
+
+        testDispatcher.scheduler.advanceUntilIdle()
+        contentViewerIndex() shouldBe null
+
+        viewModel.handleIntent(GalleryIntent.OnImageTap(index = 1))
+        testDispatcher.scheduler.advanceUntilIdle()
+        contentViewerIndex() shouldBe 1
+
+        viewModel.handleIntent(GalleryIntent.OnViewerClose)
+        testDispatcher.scheduler.advanceUntilIdle()
+        contentViewerIndex() shouldBe null
+
+    }
+
+    test("swiping the viewer updates the current index") {
+
+        testDispatcher.scheduler.advanceUntilIdle()
+        viewModel.handleIntent(GalleryIntent.OnImageTap(index = 0))
+        viewModel.handleIntent(GalleryIntent.OnViewerPageChange(index = 2))
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        contentViewerIndex() shouldBe 2
+
+    }
+
+    test("back closes the viewer first then leaves the gallery") {
+
+        testDispatcher.scheduler.advanceUntilIdle()
+        viewModel.handleIntent(GalleryIntent.OnImageTap(index = 0))
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.event.test {
+
+            viewModel.handleIntent(GalleryIntent.OnBackTap)
+            testDispatcher.scheduler.advanceUntilIdle()
+            contentViewerIndex() shouldBe null
+            expectNoEvents()
+
+            viewModel.handleIntent(GalleryIntent.OnBackTap)
+            testDispatcher.scheduler.advanceUntilIdle()
+            awaitItem() shouldBe GalleryEvent.BackToPreviousScreen
+
+        }
+
+    }
+
+    test("tapping an out of range image does not open the viewer") {
+
+        testDispatcher.scheduler.advanceUntilIdle()
+        viewModel.handleIntent(GalleryIntent.OnImageTap(index = 10))
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        contentViewerIndex() shouldBe null
 
     }
 

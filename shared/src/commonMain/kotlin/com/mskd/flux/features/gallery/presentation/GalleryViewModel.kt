@@ -50,16 +50,30 @@ class GalleryViewModel(
 
     //region Public Methods
 
-    fun handleIntent(intent: GalleryIntent) = viewModelScope.launch {
+    fun handleIntent(intent: GalleryIntent) {
         when (intent) {
-            GalleryIntent.OnBackTap -> _event.emit(GalleryEvent.BackToPreviousScreen)
+            GalleryIntent.OnBackTap ->
+                if (viewerIndex() != null) setViewerIndex(null)
+                else viewModelScope.launch { _event.emit(GalleryEvent.BackToPreviousScreen) }
             GalleryIntent.OnRetryTap -> loadImages()
+            is GalleryIntent.OnImageTap -> setViewerIndex(intent.index)
+            is GalleryIntent.OnViewerPageChange -> if (viewerIndex() != null) setViewerIndex(intent.index)
+            GalleryIntent.OnViewerClose -> setViewerIndex(null)
         }
     }
 
     //endregion
 
     //region Private Methods
+
+    private fun viewerIndex(): Int? = (_uiState.value.state as? State.Content)?.content?.viewerIndex
+
+    // Ignores indexes outside the list, null closes the viewer
+    private fun setViewerIndex(index: Int?) = _uiState.update { ui ->
+        val content = (ui.state as? State.Content)?.content ?: return@update ui
+        if (index != null && index !in content.images.indices) return@update ui
+        ui.copy(state = State.Content(content.copy(viewerIndex = index)))
+    }
 
     private fun loadTitle() = viewModelScope.launch {
         val title = databaseRepository.getArtwork(artworkId = artworkId)?.title ?: return@launch
@@ -93,7 +107,14 @@ class GalleryViewModel(
             return
         }
 
-        _uiState.update { it.copy(state = State.Content(GalleryContent(images = images)), failure = null) }
+        _uiState.update {
+            // Keep the viewer open on the same image when a retry reloads the list, close it if the image is gone
+            val previous = (it.state as? State.Content)?.content
+            val viewed = previous?.viewerIndex?.let { index -> previous.images.getOrNull(index) }
+            val viewerIndex = viewed?.let { image -> images.indexOfFirst { it.type == image.type && it.path == image.path } }
+                ?.takeIf { index -> index >= 0 }
+            it.copy(state = State.Content(GalleryContent(images = images, viewerIndex = viewerIndex)), failure = null)
+        }
 
     }
 

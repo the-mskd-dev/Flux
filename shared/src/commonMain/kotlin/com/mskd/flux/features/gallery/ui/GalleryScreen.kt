@@ -71,6 +71,7 @@ fun GalleryScreen(
                     title = uiState.title,
                     images = state.content.images,
                     failure = uiState.failure,
+                    viewerIndex = state.content.viewerIndex,
                     sendIntent = { viewModel.handleIntent(it) }
                 )
             }

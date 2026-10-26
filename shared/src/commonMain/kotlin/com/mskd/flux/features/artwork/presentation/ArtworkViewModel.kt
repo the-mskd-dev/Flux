@@ -2,7 +2,6 @@ package com.mskd.flux.features.artwork.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Media
@@ -166,7 +165,7 @@ class ArtworkViewModel(
     }
 
     private suspend fun navigateToGallery() {
-        val artwork = fullArtwork?.artwork?.takeIf { it.type == ContentType.MOVIE } ?: return
+        val artwork = fullArtwork?.artwork ?: return
         _event.emit(ArtworkEvent.NavigateToGallery(artworkId = artwork.id, contentType = artwork.type))
     }
 

@@ -58,6 +58,9 @@ internal class ApiRepositoryImpl(
 
     //region Show
 
+    override suspend fun getShowImages(artworkId: Long): List<GalleryImage> =
+        tmdb.getShowImages(artworkId = artworkId).toDomain()
+
     override suspend fun getSeasonAndEpisodes(
         artworkId: Long,
         season: Int,

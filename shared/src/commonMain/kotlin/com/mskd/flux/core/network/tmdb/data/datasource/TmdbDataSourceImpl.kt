@@ -158,11 +158,10 @@ class TmdbDataSourceImpl(
     }
 
     override suspend fun getMovieImages(artworkId: Long): ImagesDto {
-        val imagesDto = tmdbService.getMovieImages(
-        artworkId = artworkId,
-        language = tmdbLanguage().toTmdbFormat()
-    ).getOrThrow()
-        return imagesDto
+        return tmdbService.getMovieImages(
+            artworkId = artworkId,
+            language = tmdbLanguage().toTmdbFormat()
+        ).getOrThrow()
     }
 
     override suspend fun getMoviePeople(artworkId: Long): PeopleDto? {
@@ -223,6 +222,13 @@ class TmdbDataSourceImpl(
             null
         }
 
+    }
+
+    override suspend fun getShowImages(artworkId: Long): ImagesDto {
+        return tmdbService.getShowImages(
+            artworkId = artworkId,
+            language = tmdbLanguage().toTmdbFormat()
+        ).getOrThrow()
     }
 
     override suspend fun getShowPeople(artworkId: Long): PeopleDto? {

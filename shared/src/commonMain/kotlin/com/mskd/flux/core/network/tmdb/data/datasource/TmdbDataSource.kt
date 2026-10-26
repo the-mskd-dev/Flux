@@ -27,6 +27,8 @@ interface TmdbDataSource {
 
     suspend fun getShow(artworkId: Long) : ShowDto?
 
+    suspend fun getShowImages(artworkId: Long) : ImagesDto
+
     suspend fun getShowPeople(artworkId: Long) : PeopleDto?
 
     suspend fun getPersonInfo(personId: Int) : PersonInfoDto?

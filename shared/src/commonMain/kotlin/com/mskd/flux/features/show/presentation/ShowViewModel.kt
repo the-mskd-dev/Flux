@@ -2,6 +2,7 @@ package com.mskd.flux.features.show.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.core.State
@@ -78,6 +79,7 @@ class ShowViewModel(
             ShowIntent.OnBackTap -> _event.emit(ShowEvent.BackToPreviousScreen)
             is ShowIntent.OnSeasonClick -> navigateToSeason(season = intent.season, rgb = intent.rgb)
             is ShowIntent.OnPersonClick -> _event.emit(ShowEvent.NavigateToPerson(person = intent.person))
+            ShowIntent.OnArtworkImageClick -> _event.emit(ShowEvent.NavigateToGallery(artworkId = artworkId, contentType = ContentType.SHOW))
 
             // Dialogs
             ShowIntent.CloseDialog -> closeDialog()

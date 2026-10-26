@@ -27,6 +27,8 @@ interface ApiRepository {
 
     suspend fun getMovieImages(artworkId: Long): List<GalleryImage>
 
+    suspend fun getShowImages(artworkId: Long): List<GalleryImage>
+
     suspend fun getShowPeople(artworkId: Long): List<Person>
 
     suspend fun getPersonInfo(personId: Int): PersonInfo?

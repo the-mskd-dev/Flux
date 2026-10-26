@@ -216,4 +216,24 @@ class GalleryViewModelTest : FunSpec({
 
     }
 
+    test("a show requests only the show images, sorted by rating descending") {
+
+        val show = MediaMockups.showArtwork
+        // The movie view model of beforeTest has already loaded its images
+        clearMocks(apiRepository, answers = false)
+        coEvery { apiRepository.getShowImages(show.id) } returns listOf(lowBackdrop, highPoster, midBackdrop)
+        viewModel = GalleryViewModel(
+            artworkId = show.id,
+            contentType = ContentType.SHOW,
+            getGalleryImages = GetGalleryImagesUseCase(apiRepository = apiRepository),
+            databaseRepository = FakeDatabaseRepository(),
+            connectivityRepository = connectivityRepository,
+        )
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        contentImages() shouldBe listOf(highPoster, midBackdrop, lowBackdrop)
+        coVerify(exactly = 0) { apiRepository.getMovieImages(any()) }
+
+    }
+
 })

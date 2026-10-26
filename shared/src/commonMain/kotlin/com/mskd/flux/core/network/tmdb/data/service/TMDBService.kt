@@ -75,6 +75,11 @@ interface TMDBService {
         language: String
     ) : PeopleDto
 
+    suspend fun getShowImages(
+        artworkId: Long,
+        language: String
+    ) : Result<ImagesDto>
+
     //endregion
 
     //region Episode

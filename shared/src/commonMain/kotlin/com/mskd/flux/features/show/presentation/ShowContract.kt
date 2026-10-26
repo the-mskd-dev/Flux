@@ -1,6 +1,7 @@
 package com.mskd.flux.features.show.presentation
 
 import androidx.compose.runtime.Immutable
+import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.artwork.Season
@@ -30,6 +31,7 @@ sealed class ShowIntent {
     object OnBackTap: ShowIntent()
     data class OnSeasonClick(val season: Int, val rgb: Int?) : ShowIntent()
     data class OnPersonClick(val person: Person) : ShowIntent()
+    data object OnArtworkImageClick : ShowIntent()
 
     // Dialogs
     data object CloseDialog : ShowIntent()
@@ -45,4 +47,5 @@ sealed class ShowEvent {
     object BackToPreviousScreen : ShowEvent()
     data class NavigateToSeason(val artworkId: Long, val season: Int, val rgb: Int?) : ShowEvent()
     data class NavigateToPerson(val person: Person) : ShowEvent()
+    data class NavigateToGallery(val artworkId: Long, val contentType: ContentType) : ShowEvent()
 }

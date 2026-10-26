@@ -15,7 +15,7 @@ class GetGalleryImagesUseCase(
 
         val images = when (contentType) {
             ContentType.MOVIE -> apiRepository.getMovieImages(artworkId = artworkId)
-            ContentType.SHOW -> throw UnsupportedOperationException("The Gallery of a show is not available yet")
+            ContentType.SHOW -> apiRepository.getShowImages(artworkId = artworkId)
         }
 
         return images.sortedByDescending { it.rating }

@@ -74,6 +74,7 @@ class TMDBServiceImpl(private val client: HttpClient) : TMDBService {
         Result.success(
             client.get("movie/$artworkId/images") {
                 parameter("language", language)
+                parameter("include_image_language", imageLanguages(language))
             }.body<ImagesDto>()
         )
     } catch (e: CancellationException) {
@@ -122,6 +123,22 @@ class TMDBServiceImpl(private val client: HttpClient) : TMDBService {
         .get("tv/$artworkId/credits") {
             parameter("language", language)
         }.body()
+
+    override suspend fun getShowImages(
+        artworkId: Long,
+        language: String
+    ): Result<ImagesDto> = try {
+        Result.success(
+            client.get("tv/$artworkId/images") {
+                parameter("language", language)
+                parameter("include_image_language", imageLanguages(language))
+            }.body<ImagesDto>()
+        )
+    } catch (e: CancellationException) {
+        throw e
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
 
     //endregion
 
@@ -178,5 +195,10 @@ class TMDBServiceImpl(private val client: HttpClient) : TMDBService {
         }.body()
 
     //endregion
+
+    // Also asks for the English and language-less images, TMDB drops them otherwise
+    private fun imageLanguages(language: String) = listOf(language.substringBefore("-"), "en", "null")
+        .distinct()
+        .joinToString(",")
 
 }

@@ -238,7 +238,7 @@ class TMDBServiceTest : FunSpec({
 
         // The server is shared by all tests: the request of this test is the last one recorded
         val requests = generateSequence { apiConfig.mockWebServer.takeRequest(10, TimeUnit.MILLISECONDS) }.toList()
-        requests.last().path shouldBe "/movie/372058/images?language=${Language.ENGLISH.code}"
+        requests.last().path shouldBe "/movie/372058/images?language=${Language.ENGLISH.code}&include_image_language=en%2Cnull"
 
     }
 
@@ -249,6 +249,31 @@ class TMDBServiceTest : FunSpec({
         apiConfig.mockWebServer.enqueue(mockResponse)
 
         apiConfig.api.getMovieImages(0L, language = Language.ENGLISH.code).isFailure shouldBe true
+
+    }
+
+    test("get show images maps backdrops and posters and ignores logos") {
+
+        val mockResponse = MockResponse()
+            .setBody(TMDBResponseMockups.showImages)
+            .setResponseCode(200)
+        apiConfig.mockWebServer.enqueue(mockResponse)
+
+        val result = apiConfig.api.getShowImages(46260L, language = Language.ENGLISH.code).getOrThrow()
+
+        result.backdrops.map { it.filePath } shouldBe listOf("/showBackdrop1.jpg")
+        result.posters.map { it.filePath } shouldBe listOf("/showPoster1.jpg", "/showPoster2.jpg")
+
+        val requests = generateSequence { apiConfig.mockWebServer.takeRequest(10, TimeUnit.MILLISECONDS) }.toList()
+        requests.last().path shouldBe "/tv/46260/images?language=${Language.ENGLISH.code}&include_image_language=en%2Cnull"
+
+    }
+
+    test("get show images fail") {
+
+        apiConfig.mockWebServer.enqueue(MockResponse().setResponseCode(404))
+
+        apiConfig.api.getShowImages(0L, language = Language.ENGLISH.code).isFailure shouldBe true
 
     }
 

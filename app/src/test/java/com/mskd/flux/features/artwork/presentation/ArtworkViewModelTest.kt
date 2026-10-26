@@ -4,6 +4,7 @@ import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.FullArtwork
+import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.artwork.PersonType
 import com.mskd.flux.core.model.artwork.Status
@@ -20,6 +21,7 @@ import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.PeopleMockup
+import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.system.FilesLauncher
 import com.mskd.flux.system.UrlLauncher
 import io.kotest.core.spec.style.FunSpec
@@ -47,6 +49,7 @@ class ArtworkViewModelTest : FunSpec({
 
     lateinit var viewModel: ArtworkViewModel
     lateinit var settingsDataStore: SettingsDataStore
+    lateinit var tokenDataStore: TokenDataStore
     lateinit var filesLauncher: FilesLauncher
     lateinit var urlLauncher: UrlLauncher
     lateinit var observeArtworkUseCase: ObserveArtworkUseCase
@@ -76,6 +79,7 @@ class ArtworkViewModelTest : FunSpec({
             observeArtworkUseCase = observeArtworkUseCase,
             getPeopleUseCase = getPeopleUseCase,
             settingsDataStore = settingsDataStore,
+            tokenDataStore = tokenDataStore,
             changeMediaStatus = changeMediaStatus,
             markPreviousAsWatched = markPreviousAsWatched,
             resetProgress = resetProgress,
@@ -94,6 +98,8 @@ class ArtworkViewModelTest : FunSpec({
         observeArtworkUseCase = FakeObserveArtworkUseCase()
         getPeopleUseCase = mockk()
         every { getPeopleUseCase(any()) } returns MutableStateFlow(emptyList<Person>().toImmutableList())
+
+        tokenDataStore = mockk(relaxed = true) { coEvery { tokenIsAvailable() } returns true }
 
         settingsDataStore = mockk(relaxed = true) {
             every { flow } returns MutableStateFlow(SettingsDataStore.State())
@@ -443,6 +449,28 @@ class ArtworkViewModelTest : FunSpec({
             val content = (state.state as State.Content).content
             content.expandedEpisodeId shouldBe null
         }
+    }
+
+    context("OnArtworkImageClick") {
+
+        test("navigates to the gallery when a token is available") {
+            viewModel.uiState.test {
+                awaitItem()
+                viewModel.event.test {
+                    viewModel.handleIntent(ArtworkIntent.OnArtworkImageClick)
+                    awaitItem() shouldBe ArtworkEvent.NavigateToGallery(artworkId = MediaMockups.showArtwork.id, contentType = ContentType.SHOW)
+                }
+            }
+        }
+
+        test("does nothing without token") {
+            coEvery { tokenDataStore.tokenIsAvailable() } returns false
+            viewModel.event.test {
+                viewModel.handleIntent(ArtworkIntent.OnArtworkImageClick)
+                expectNoEvents()
+            }
+        }
+
     }
 
     context("OnPersonClick") {

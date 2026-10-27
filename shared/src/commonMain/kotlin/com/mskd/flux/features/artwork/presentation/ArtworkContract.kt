@@ -3,7 +3,9 @@ package com.mskd.flux.features.artwork.presentation
 import androidx.compose.runtime.Immutable
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.FullArtwork
+import com.mskd.flux.core.model.artwork.Genre
 import com.mskd.flux.core.model.artwork.Media
+import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.core.State
@@ -29,11 +31,20 @@ data class ArtworkContent(
     val fullArtwork: FullArtwork,
     val selectedMedia: Media,
     val selectedSeason: Int?,
+    val overview: ArtworkOverviewContent,
     val expandedEpisodeId: Long? = null,
     val useExternalPlayer: Boolean,
     val people: ImmutableList<Person> = persistentListOf(),
     val dialog: ArtworkDialog?,
 )
+
+@Immutable
+sealed interface ArtworkOverviewContent {
+    data class MovieOverview(val movie: Movie, val genres: ImmutableList<Genre>) : ArtworkOverviewContent
+    data class EpisodeOverview(val episode: Episode) : ArtworkOverviewContent
+    /** [description] is null when there is no summary to show. */
+    data class Summary(val description: String?) : ArtworkOverviewContent
+}
 
 @Immutable
 data class ArtworkUiState(

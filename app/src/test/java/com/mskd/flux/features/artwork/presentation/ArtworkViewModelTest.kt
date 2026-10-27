@@ -7,6 +7,7 @@ import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.artwork.PersonType
+import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
@@ -41,6 +42,7 @@ import io.mockk.verify
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flowOf
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ArtworkViewModelTest : FunSpec({
@@ -489,6 +491,79 @@ class ArtworkViewModelTest : FunSpec({
                 awaitItem() shouldBe ArtworkEvent.NavigateToPerson(person = person)
 
             }
+        }
+
+    }
+
+    context("overview") {
+
+        suspend fun overviewFor(fullArtwork: FullArtwork): ArtworkOverviewContent {
+            every { observeArtworkUseCase(any()) } returns flowOf(State.Content(fullArtwork))
+            updateVm(fullArtwork.artwork.id)
+            var overview: ArtworkOverviewContent? = null
+            viewModel.uiState.test {
+                var state = awaitItem().state
+                while (state !is State.Content) state = awaitItem().state
+                overview = state.content.overview
+            }
+            return overview!!
+        }
+
+        fun show(
+            episodes: List<Episode> = MediaMockups.episodes,
+            seasons: List<Season> = MediaMockups.seasons,
+            description: String = "Show description",
+        ) = MediaMockups.fullShow.copy(
+            artwork = MediaMockups.showArtwork.copy(description = description),
+            seasons = seasons.toImmutableList(),
+            episodes = episodes.toImmutableList(),
+        )
+
+        test("movie shows the movie description with its genres") {
+            observeArtworkUseCase = mockk()
+            overviewFor(MediaMockups.fullMovie) shouldBe ArtworkOverviewContent.MovieOverview(
+                movie = MediaMockups.fullMovie.movie,
+                genres = MediaMockups.fullMovie.genres,
+            )
+        }
+
+        test("show with an in-progress episode shows that episode") {
+            observeArtworkUseCase = mockk()
+            overviewFor(show(episodes = MediaMockups.episodesWithStatus)) shouldBe
+                ArtworkOverviewContent.EpisodeOverview(MediaMockups.episodesWithStatus[1])
+        }
+
+        test("season entirely to watch shows the season description") {
+            observeArtworkUseCase = mockk()
+            overviewFor(show()) shouldBe ArtworkOverviewContent.Summary(MediaMockups.season1.description)
+        }
+
+        test("season partially watched without an in-progress episode shows the season description") {
+            observeArtworkUseCase = mockk()
+            val episodes = listOf(
+                MediaMockups.episode1.copy(status = Status.WATCHED),
+                MediaMockups.episode2,
+                MediaMockups.episode3,
+            )
+            overviewFor(show(episodes = episodes)) shouldBe ArtworkOverviewContent.Summary(MediaMockups.season1.description)
+        }
+
+        test("season entirely watched shows the season description") {
+            observeArtworkUseCase = mockk()
+            val episodes = MediaMockups.episodes.map { it.copy(status = Status.WATCHED) }
+            overviewFor(show(episodes = episodes)) shouldBe ArtworkOverviewContent.Summary(MediaMockups.season1.description)
+        }
+
+        test("season without description falls back to the show description") {
+            observeArtworkUseCase = mockk()
+            val seasons = listOf(MediaMockups.season1.copy(description = ""))
+            overviewFor(show(seasons = seasons)) shouldBe ArtworkOverviewContent.Summary("Show description")
+        }
+
+        test("no description at all yields no summary") {
+            observeArtworkUseCase = mockk()
+            val seasons = listOf(MediaMockups.season1.copy(description = ""))
+            overviewFor(show(seasons = seasons, description = "")) shouldBe ArtworkOverviewContent.Summary(null)
         }
 
     }

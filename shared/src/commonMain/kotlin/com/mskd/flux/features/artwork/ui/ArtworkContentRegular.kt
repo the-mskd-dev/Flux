@@ -18,7 +18,8 @@ import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.features.artwork.presentation.ArtworkIntent
-import com.mskd.flux.features.artwork.ui.composables.ArtworkDescriptionsPager
+import com.mskd.flux.features.artwork.presentation.ArtworkOverviewContent
+import com.mskd.flux.features.artwork.ui.composables.ArtworkOverview
 import com.mskd.flux.features.artwork.ui.composables.ArtworkHeader
 import com.mskd.flux.features.people.ui.components.people.PeopleList
 import com.mskd.flux.mockups.MediaMockups
@@ -39,6 +40,7 @@ fun ArtworkContentRegular(
     people: List<Person>,
     selectedMedia: Media,
     selectedSeason: Int?,
+    overview: ArtworkOverviewContent,
     expandedEpisodeId: Long?,
     scaffoldInnerPadding: PaddingValues,
     sendIntent: (ArtworkIntent) -> Unit,
@@ -70,11 +72,7 @@ fun ArtworkContentRegular(
 
         item {
 
-            ArtworkDescriptionsPager(
-                fullArtwork = fullArtwork,
-                season = selectedSeason,
-                currentMedia = selectedMedia
-            )
+            ArtworkOverview(overview = overview)
 
         }
 
@@ -167,6 +165,7 @@ fun ArtworkContentMovie_Preview() {
             people = PeopleMockup.all,
             selectedMedia = MediaMockups.movie,
             selectedSeason = null,
+            overview = ArtworkOverviewContent.MovieOverview(MediaMockups.fullMovie.movie, MediaMockups.fullMovie.genres),
             expandedEpisodeId = null,
             scaffoldInnerPadding = PaddingValues.Zero,
             sendIntent = {}
@@ -183,6 +182,7 @@ fun ArtworkContentShow_Preview() {
             people = PeopleMockup.all,
             selectedMedia = MediaMockups.episode1,
             selectedSeason = 1,
+            overview = ArtworkOverviewContent.Summary(MediaMockups.season1.description),
             expandedEpisodeId = null,
             scaffoldInnerPadding = PaddingValues.Zero,
             sendIntent = {}

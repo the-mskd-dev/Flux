@@ -143,12 +143,37 @@ class ArtworkViewModel(
                 fullArtwork = dataState.fullArtwork,
                 selectedMedia = selectedMedia,
                 selectedSeason = season,
+                overview = resolveOverview(dataState.fullArtwork, selectedMedia, season),
                 expandedEpisodeId = userState.expandedEpisodeId,
                 useExternalPlayer = dataState.useExternalPlayer,
                 people = dataState.people,
                 dialog = userState.dialog,
             )
         )
+    }
+
+    private fun resolveOverview(
+        fullArtwork: FullArtwork,
+        selectedMedia: Media,
+        season: Int?,
+    ): ArtworkOverviewContent {
+        return when (fullArtwork) {
+            is FullArtwork.FullMovie -> ArtworkOverviewContent.MovieOverview(
+                movie = fullArtwork.movie,
+                genres = fullArtwork.genres,
+            )
+            is FullArtwork.FullShow -> {
+                val episode = selectedMedia as? Episode
+                if (episode != null && episode.status == Status.IS_WATCHING) {
+                    ArtworkOverviewContent.EpisodeOverview(episode = episode)
+                } else {
+                    val description = fullArtwork.seasons.find { it.season == season }?.description
+                        ?.takeIf { it.isNotEmpty() }
+                        ?: fullArtwork.artwork.description.takeIf { it.isNotEmpty() }
+                    ArtworkOverviewContent.Summary(description = description)
+                }
+            }
+        }
     }
 
     private fun resolveSelectedMedia(

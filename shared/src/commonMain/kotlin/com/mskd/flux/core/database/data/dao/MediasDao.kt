@@ -41,7 +41,13 @@ interface MediasDao {
 
         if (stalePaths.isNotEmpty()) deleteByPaths(paths = stalePaths)
 
-        upsert(medias = incoming)
+        // Update in place the rows already saved (a REPLACE would cascade on the history), insert the others
+        val existingIdentities = findByArtworkIds(artworkIds = incoming.map { it.artworkId }.distinct())
+            .mapTo(HashSet()) { it.id to it.artworkId }
+        val (toUpdate, toInsert) = incoming.partition { (it.id to it.artworkId) in existingIdentities }
+
+        if (toUpdate.isNotEmpty()) update(medias = toUpdate)
+        if (toInsert.isNotEmpty()) insert(medias = toInsert)
     }
 
     //endregion
@@ -83,6 +89,9 @@ interface MediasDao {
 
     @Query("SELECT * FROM medias WHERE artworkId = ${Artwork.UNKNOWN_ID}")
     suspend fun getUnknownMedias() : List<MediaEntity>
+
+    @Query("SELECT * FROM medias WHERE artworkId IN (:artworkIds)")
+    suspend fun findByArtworkIds(artworkIds: List<Long>): List<MediaEntity>
 
     @Query("SELECT * FROM medias WHERE path IN (:paths)")
     suspend fun findByPaths(paths: List<String>): List<MediaEntity>

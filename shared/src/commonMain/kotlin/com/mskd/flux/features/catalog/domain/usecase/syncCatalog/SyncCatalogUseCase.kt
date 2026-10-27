@@ -90,18 +90,11 @@ class SyncCatalogUseCase(
             )
             catalog = applyCurrentMediaProgress(catalog, dbMedias = dbMedias)
 
-            // Capture private ids before full wipe (restored after save)
-            val privateArtworkIds = if (!onlyNew) database.getPrivateArtworkIds() else emptyList()
-
-            // Save new content
-            if (!onlyNew) database.deleteAll()
+            // Upsert: nothing is wiped, private flags are kept by the save
             database.saveArtworks(catalog.artworks)
             database.saveSeasons(catalog.seasons)
             // The primary key of medias is (id, artworkId): never save twice the same media identity
             database.saveMedias((catalog.movies + catalog.episodes).distinctBy { it.mediaId to it.artworkId })
-
-            // Restore private flags wiped by full sync
-            privateArtworkIds.forEach { database.setArtworkPrivate(artworkId = it, isPrivate = true) }
 
             // Move NSFW artworks to the private folder when included
             val privateFolderState = privateFolder.flow.first()

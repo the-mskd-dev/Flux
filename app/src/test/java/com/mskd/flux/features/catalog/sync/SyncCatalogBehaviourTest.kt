@@ -259,6 +259,26 @@ class SyncCatalogBehaviourTest : FunSpec({
 
     }
 
+    test("the files of a Source indisponible are kept by a Synchro complète") {
+
+        // Given
+        val root = "content://custom/tree/sd"
+        val pilot = harness.customFile(root, "Breaking Bad S01E01.mkv")
+        val source = harness.addCustomSource(root = root, files = listOf(pilot))
+        harness.deviceStorage.availableFiles = listOf(harness.deviceFile("Inception (2010).mkv"))
+        harness.lightSync()
+
+        // When
+        source.available = false
+        harness.fullSync()
+
+        // Then
+        harness.catalog.getMedias().map { it.title } shouldContainExactlyInAnyOrder listOf("Inception", "Pilot")
+        harness.catalog.getSeasons().map { it.title } shouldContainExactlyInAnyOrder listOf("Season 1")
+        harness.catalog.getArtworks(includePrivates = true).map { it.title } shouldContainExactlyInAnyOrder listOf("Inception", "Breaking Bad")
+
+    }
+
     test("a Fichier manquant is deleted even if the rest of the Synchro does not end") {
 
         // Given

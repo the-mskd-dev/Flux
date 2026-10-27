@@ -47,9 +47,9 @@ class CatalogSyncCoordinatorImplTest : FunSpec({
         coordinator.isBusy shouldBe false
     }
 
-    test("incrementProgress calculates progress correctly") {
+    test("setProgress exposes the progress while syncing") {
         val coordinator = CatalogSyncCoordinatorImpl(scope = testScope)
-        
+
         coordinator.launch(full = false) {
             delay(1000.milliseconds)
         }
@@ -58,13 +58,11 @@ class CatalogSyncCoordinatorImplTest : FunSpec({
         coordinator.state.value.shouldBeInstanceOf<SyncState.Syncing>()
         (coordinator.state.value as SyncState.Syncing).progress shouldBe 0f
 
-        coordinator.setTotalSteps(4)
-        
-        coordinator.incrementProgress()
+        coordinator.setProgress(0.25f)
         (coordinator.state.value as SyncState.Syncing).progress shouldBe 0.25f
 
-        coordinator.incrementProgress()
-        (coordinator.state.value as SyncState.Syncing).progress shouldBe 0.50f
+        coordinator.setProgress(0.5f)
+        (coordinator.state.value as SyncState.Syncing).progress shouldBe 0.5f
     }
 
 })

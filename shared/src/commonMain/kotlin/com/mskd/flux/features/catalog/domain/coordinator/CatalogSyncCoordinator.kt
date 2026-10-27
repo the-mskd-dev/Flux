@@ -1,6 +1,5 @@
 package com.mskd.flux.features.catalog.domain.coordinator
 
-import androidx.room.concurrent.AtomicInt
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.report.Trace
 import com.mskd.flux.ui.text.TextProvider
@@ -20,9 +19,8 @@ interface CatalogSyncCoordinator {
     val state: StateFlow<SyncState>
     val isBusy: Boolean
     fun launch(full: Boolean, block: suspend CoroutineScope.() -> Unit)
-    fun setTotalSteps(steps: Int)
     fun setFailedFiles(count: Int)
-    fun incrementProgress()
+    fun setProgress(progress: Float)
 }
 
 class CatalogSyncCoordinatorImpl(
@@ -37,8 +35,6 @@ class CatalogSyncCoordinatorImpl(
     override val state: StateFlow<SyncState> = _state.asStateFlow()
 
     private var activeJob: Job? = null
-    private val completedSteps = AtomicInt(0)
-    private var totalSteps = 1
     private var failedFiles = 0
 
     override val isBusy: Boolean get() = _state.value is SyncState.Syncing
@@ -46,8 +42,6 @@ class CatalogSyncCoordinatorImpl(
     @OptIn(InternalCoroutinesApi::class)
     override fun launch(full: Boolean, block: suspend CoroutineScope.() -> Unit) {
         activeJob?.cancel()
-        completedSteps.set(0)
-        totalSteps = 1
         failedFiles = 0
         _state.value = SyncState.Syncing(full = full)
 
@@ -58,30 +52,22 @@ class CatalogSyncCoordinatorImpl(
 
     }
 
-    override fun setTotalSteps(steps: Int) {
-        totalSteps = steps.coerceAtLeast(1)
-
-        Trace.info(tag = TAG, message = "Set up for $steps steps")
-    }
-
     override fun setFailedFiles(count: Int) {
         failedFiles = count
     }
 
-    override fun incrementProgress() {
-        val completed = completedSteps.incrementAndGet().toFloat()
-        val progress = (completed / totalSteps).coerceIn(0f, 1f)
+    override fun setProgress(progress: Float) {
         _state.update { current ->
             if (current is SyncState.Syncing) {
                 current.copy(
-                    progress = progress,
+                    progress = progress.coerceIn(0f, 1f),
                     description = TextProvider.Resource(Res.string.sync_in_progress)
                 )
             } else {
                 current
             }
         }
-        Trace.info(tag = TAG, message = "Progress: ${completed.roundToInt()}/$totalSteps (${progress.times(100).roundToInt()}%)")
+        Trace.info(tag = TAG, message = "Progress: ${progress.times(100).roundToInt()}%")
     }
 
 }

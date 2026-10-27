@@ -1,0 +1,31 @@
+package com.mskd.flux.features.catalog.domain.sync.enrichment
+
+import com.mskd.flux.core.model.artwork.Artwork
+import com.mskd.flux.core.model.artwork.Media
+import com.mskd.flux.core.model.artwork.Movie
+import com.mskd.flux.core.model.artwork.Season
+import com.mskd.flux.core.model.catalog.CatalogFolder
+import com.mskd.flux.core.model.files.UserFile
+
+/** What the Enrichissements have gathered so far for a folder. */
+class FolderDraft(val folder: CatalogFolder) {
+
+    var artwork: Artwork? = null
+
+    val seasons = mutableListOf<Season>()
+
+    var medias: List<Media> = emptyList()
+
+    /** Fichiers en échec: not persisted, retried by the next Synchro. */
+    val failedFiles = mutableListOf<UserFile>()
+
+    val isUnknown: Boolean get() = artwork?.isUnknown == true
+
+    /** An Artwork none of whose files could be fetched is not saved either. */
+    val isSavable: Boolean
+        get() {
+            val artwork = artwork ?: return false
+            return artwork.isUnknown || seasons.isNotEmpty() || medias.any { it is Movie }
+        }
+
+}

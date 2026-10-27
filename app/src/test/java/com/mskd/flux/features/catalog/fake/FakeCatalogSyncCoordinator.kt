@@ -24,10 +24,6 @@ internal class FakeCatalogSyncCoordinator(
         private set
     var lastFull: Boolean? = null
         private set
-    var totalSteps: Int? = null
-        private set
-    var progressCount = 0
-        private set
     var job: Job? = null
         private set
 
@@ -47,6 +43,7 @@ internal class FakeCatalogSyncCoordinator(
         private set
 
     override fun setFailedFiles(count: Int) { failedFiles = count }
-    override fun setTotalSteps(steps: Int) { totalSteps = steps }
-    override fun incrementProgress() { progressCount++ }
+    override fun setProgress(progress: Float) {
+        _state.update { if (it is SyncState.Syncing) it.copy(progress = progress) else it }
+    }
 }

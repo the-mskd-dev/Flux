@@ -8,6 +8,8 @@ import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
+import io.kotest.matchers.longs.shouldBeGreaterThan as shouldBeGreaterThanLong
+import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import kotlinx.coroutines.delay
@@ -397,6 +399,40 @@ class SyncCatalogBehaviourTest : FunSpec({
         harness.catalog.getMedias().map { it.title } shouldContainExactlyInAnyOrder listOf("Inception", "Pilot")
         harness.catalog.getSeasons().map { it.title } shouldContainExactlyInAnyOrder listOf("Season 1")
         harness.catalog.getArtworks(includePrivates = true).map { it.title } shouldContainExactlyInAnyOrder listOf("Inception", "Breaking Bad")
+
+    }
+
+    test("the progress never goes backwards and only reaches 100 % when the Synchro ends") {
+
+        // Given
+        harness.deviceStorage.availableFiles = listOf(
+            harness.deviceFile("Inception (2010).mkv"),
+            harness.deviceFile("Breaking Bad S01E01.mkv"),
+            harness.deviceFile("Breaking Bad S01E02.mkv"),
+            harness.deviceFile("Breaking Bad S02E01.mkv"),
+            harness.deviceFile("Holidays in Brittany.mkv"),
+        )
+
+        // When
+        harness.fullSync()
+
+        // Then
+        val progresses = harness.states.filterIsInstance<SyncState.Syncing>().map { it.progress }
+        progresses.zipWithNext().all { (previous, next) -> next >= previous } shouldBe true
+        progresses.distinct().size shouldBeGreaterThan 1
+        progresses.dropLast(1).all { it < 1f } shouldBe true
+        harness.states.last().shouldBeInstanceOf<SyncState.Idle>()
+
+    }
+
+    test("the Synchro time and the version code are saved even when there is no new file") {
+
+        // When
+        harness.lightSync()
+
+        // Then
+        harness.user.getSyncTime() shouldBeGreaterThanLong 0L
+        harness.user.getVersionCode() shouldBe 1
 
     }
 

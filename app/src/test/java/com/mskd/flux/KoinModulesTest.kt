@@ -7,6 +7,8 @@ import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.core.AppInfo
 import com.mskd.flux.di.moduleAndroidApp
 import com.mskd.flux.di.modulePlatform
+import com.mskd.flux.features.catalog.domain.sync.SyncPipeline
+import com.mskd.flux.features.catalog.domain.sync.step.CatalogStep
 import com.mskd.flux.features.gallery.presentation.GalleryViewModel
 import com.mskd.flux.features.people.presentation.PersonViewModel
 import com.mskd.flux.features.player.domain.model.PlayerParams
@@ -42,7 +44,9 @@ class KoinModulesTest : FunSpec({
             injections = injectedParameters(
                 definition<PlayerViewModel<*>>(PlayerParams::class),
                 definition<PersonViewModel>(Person::class),
-                definition<GalleryViewModel>(Long::class, ContentType::class)
+                definition<GalleryViewModel>(Long::class, ContentType::class),
+                definition<CatalogStep>(List::class),
+                definition<SyncPipeline>(List::class)
             )
         )
 

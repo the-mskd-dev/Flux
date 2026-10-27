@@ -540,6 +540,7 @@ class SyncCatalogBehaviourTest : FunSpec({
         episodes.getValue(2).title shouldBe ""
         harness.catalog.getSeasons().single().title shouldBe "Saison 1"
         harness.states.last() shouldBe SyncState.Idle(failedFiles = 0)
+        harness.tmdb.callCount("tv/{id}/season/{season}/episode/{episode}/translations") shouldBe 0
 
     }
 

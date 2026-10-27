@@ -10,7 +10,6 @@ import com.mskd.flux.features.catalog.domain.sync.enrichment.DetailsEnrichment
 import com.mskd.flux.features.catalog.domain.sync.enrichment.DurationsEnrichment
 import com.mskd.flux.features.catalog.domain.sync.enrichment.IdentificationEnrichment
 import com.mskd.flux.features.catalog.domain.sync.enrichment.SeasonsEnrichment
-import com.mskd.flux.features.catalog.domain.sync.enrichment.TranslationsEnrichment
 import com.mskd.flux.features.catalog.domain.sync.step.CatalogStep
 import com.mskd.flux.features.catalog.domain.sync.step.FinalizationStep
 import com.mskd.flux.features.catalog.domain.sync.step.GenresStep
@@ -48,7 +47,6 @@ val moduleCatalog = module {
                 IdentificationEnrichment(api = get()),
                 DetailsEnrichment(api = get()),
                 SeasonsEnrichment(api = get()),
-                TranslationsEnrichment(api = get(), settings = get()),
                 DurationsEnrichment(getFileDurationUseCase = get()),
             ),
             dispatcher = get(named("catalogSyncDispatcher"))

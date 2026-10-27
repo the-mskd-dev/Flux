@@ -815,6 +815,10 @@ class ArtworkViewModelTest : FunSpec({
             blurredOf(show(), blurSpoilers = false) shouldBe false
         }
 
+        test("unknown artwork episodes never blur the overview") {
+            blurredOf(show(episodes = listOf(MediaMockups.unknownEpisode.copy(season = 1)))) shouldBe false
+        }
+
         test("toggling reveals then hides the overview") {
             open(show())
             viewModel.uiState.test {

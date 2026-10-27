@@ -94,7 +94,8 @@ fun OverviewItem(
                 modifier = Modifier
                     .fillMaxWidth()
                     .spoilerToggle(
-                        isSpoiler = isSpoiler,
+                        // Expanded text is readable without being revealed: a tap must not reveal it for good.
+                        isSpoiler = isSpoiler && !(expanded && isBlurred),
                         isBlurred = isBlurred && !expanded,
                         onToggle = onToggleSpoiler
                     )

@@ -436,6 +436,56 @@ class SyncCatalogBehaviourTest : FunSpec({
 
     }
 
+    test("an Artwork is saved as soon as its folder is fetched, before the end of the Synchro") {
+
+        // Given
+        harness.deviceStorage.availableFiles = listOf(
+            harness.deviceFile("Inception (2010).mkv"),
+            harness.deviceFile("Breaking Bad S01E01.mkv"),
+        )
+        harness.tmdb.pause("tv/{id}/season/{season}")
+
+        // When
+        harness.requestLightSync()
+
+        // Then
+        withTimeout(10.seconds) {
+            while (harness.catalog.getArtworks(includePrivates = true).isEmpty()) delay(10)
+        }
+        harness.states.last().shouldBeInstanceOf<SyncState.Syncing>()
+        harness.catalog.getArtworks(includePrivates = true).map { it.title } shouldBe listOf("Inception")
+        harness.catalog.getMedias().map { it.title } shouldBe listOf("Inception")
+
+        harness.tmdb.resume()
+        harness.awaitIdle()
+        harness.catalog.getArtworks(includePrivates = true).map { it.title } shouldContainExactlyInAnyOrder listOf("Inception", "Breaking Bad")
+
+    }
+
+    test("the folders already saved are kept when a Synchro complète cancels a Synchro légère") {
+
+        // Given
+        harness.deviceStorage.availableFiles = listOf(
+            harness.deviceFile("Inception (2010).mkv"),
+            harness.deviceFile("Breaking Bad S01E01.mkv"),
+        )
+        harness.tmdb.pause("tv/{id}/season/{season}")
+        harness.requestLightSync()
+        withTimeout(10.seconds) {
+            while (harness.catalog.getArtworks(includePrivates = true).isEmpty()) delay(10)
+        }
+
+        // When
+        harness.requestFullSync()
+        harness.tmdb.resume()
+        harness.awaitIdle()
+
+        // Then
+        harness.catalog.getArtworks(includePrivates = true).map { it.title } shouldContainExactlyInAnyOrder listOf("Inception", "Breaking Bad")
+        harness.catalog.getMedias().map { it.title } shouldContainExactlyInAnyOrder listOf("Inception", "Pilot")
+
+    }
+
     test("a Fichier manquant is deleted even if the rest of the Synchro does not end") {
 
         // Given

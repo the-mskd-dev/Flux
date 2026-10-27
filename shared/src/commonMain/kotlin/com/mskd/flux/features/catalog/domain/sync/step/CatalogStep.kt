@@ -14,7 +14,7 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.supervisorScope
 
 /**
- * Applies the chain of [enrichments] to every folder of the files to fetch, in parallel, then saves the Catalogue.
+ * Applies the chain of [enrichments] to every folder of the files to fetch, in parallel, saving each folder in a transaction as soon as it is fetched.
  * A folder that fails never stops the others: its files are Fichiers en échec, not persisted.
  */
 class CatalogStep(
@@ -37,16 +37,8 @@ class CatalogStep(
             context.foldersToFetch.map { folder -> async(dispatcher) { process(folder, context) } }.awaitAll()
         }
 
-        val saved = drafts.filter { it.isSavable }
-
-        context.savedArtworks = saved.mapNotNull { it.artwork }
+        context.savedArtworks = drafts.filter { it.isSavable }.mapNotNull { it.artwork }
         context.failedFiles = drafts.sumOf { it.failedFiles }
-
-        // Upsert: nothing is wiped, private flags and user state (by file path) are kept by the save
-        database.saveArtworks(context.savedArtworks)
-        database.saveSeasons(saved.flatMap { it.seasons })
-        // The primary key of medias is (id, artworkId): never save twice the same media identity
-        database.saveSyncedMedias(saved.flatMap { it.medias }.distinctBy { it.mediaId to it.artworkId })
 
         context.progress.complete(SAVE_UNITS)
 
@@ -76,7 +68,29 @@ class CatalogStep(
 
         }
 
+        if (draft.isSavable) save(draft)
+
         return draft
 
+    }
+
+    /** Saved as soon as the folder is fetched: the Catalogue fills up and the work done survives an interruption. */
+    private suspend fun save(draft: FolderDraft) {
+        val artwork = draft.artwork ?: return
+        try {
+            // Upsert: nothing is wiped, private flags and user state (by file path) are kept by the save
+            // The primary key of medias is (id, artworkId): never save twice the same media identity
+            database.saveSyncedFolder(
+                artwork = artwork,
+                seasons = draft.seasons,
+                medias = draft.medias.distinctBy { it.mediaId to it.artworkId }
+            )
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            Trace.error(TAG, "Fail to save ${draft.folder.files.first().name}", e)
+            draft.artwork = null
+            draft.failedFiles += draft.folder.files.size
+        }
     }
 }

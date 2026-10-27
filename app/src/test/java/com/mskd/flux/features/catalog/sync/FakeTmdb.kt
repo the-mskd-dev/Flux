@@ -31,6 +31,9 @@ class FakeTmdb {
     private var gate: CompletableDeferred<Unit>? = null
 
     @Volatile
+    private var endpointGate: Pair<Regex, CompletableDeferred<Unit>>? = null
+
+    @Volatile
     private var networkDown = false
 
     private val failingEndpoints = CopyOnWriteArrayList<Regex>()
@@ -40,6 +43,7 @@ class FakeTmdb {
         val path = request.url.encodedPath.removePrefix(BASE_PATH)
         calls += path
         gate?.await()
+        endpointGate?.let { (endpoint, gate) -> if (endpoint.matches(path)) gate.await() }
 
         if (networkDown) throw IOException("network down")
         if (failingEndpoints.any { it.matches(path) }) return@MockEngine respond(content = "", status = HttpStatusCode.InternalServerError)
@@ -74,9 +78,16 @@ class FakeTmdb {
         gate = CompletableDeferred()
     }
 
+    /** Holds only the responses of [endpoint] (see [callCount]) until [resume]. */
+    fun pause(endpoint: String) {
+        endpointGate = Regex(endpoint.split("/").joinToString("/") { if (it.startsWith("{")) "[^/]+" else Regex.escape(it) }) to CompletableDeferred()
+    }
+
     fun resume() {
         gate?.complete(Unit)
         gate = null
+        endpointGate?.second?.complete(Unit)
+        endpointGate = null
     }
 
     /** Makes every request fail like a network error, until [restoreNetwork]. */

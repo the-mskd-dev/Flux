@@ -26,6 +26,9 @@ interface DatabaseRepository {
     suspend fun saveSyncedMedias(medias: List<Media>)
     suspend fun saveSeasons(seasons: List<Season>)
 
+    /** Saves an Artwork with its seasons and medias in a single transaction: a folder is never saved halfway. */
+    suspend fun saveSyncedFolder(artwork: Artwork, seasons: List<Season>, medias: List<Media>)
+
     // Artworks
     suspend fun getArtwork(artworkId: Long) : Artwork?
     suspend fun getArtworks(includePrivates: Boolean = false) : List<Artwork>

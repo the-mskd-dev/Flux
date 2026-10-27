@@ -1,5 +1,8 @@
 package com.mskd.flux.core.database.data.repository
 
+import androidx.room.immediateTransaction
+import androidx.room.useWriterConnection
+import com.mskd.flux.core.database.data.FluxDatabase
 import com.mskd.flux.core.database.data.dao.ArtworkDao
 import com.mskd.flux.core.database.data.dao.MediasDao
 import com.mskd.flux.core.database.data.dao.SeasonsDao
@@ -19,6 +22,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class DatabaseRepositoryImpl(
+    private val database: FluxDatabase,
     private val artworksDao: ArtworkDao,
     private val mediasDao: MediasDao,
     private val seasonsDao: SeasonsDao
@@ -54,6 +58,16 @@ class DatabaseRepositoryImpl(
 
     override suspend fun saveSeasons(seasons: List<Season>) {
         seasonsDao.insert(seasons.map { it.toEntity() })
+    }
+
+    override suspend fun saveSyncedFolder(artwork: Artwork, seasons: List<Season>, medias: List<Media>) {
+        database.useWriterConnection { transactor ->
+            transactor.immediateTransaction {
+                saveArtworks(listOf(artwork))
+                saveSeasons(seasons)
+                saveSyncedMedias(medias)
+            }
+        }
     }
 
     override suspend fun getArtwork(artworkId: Long): Artwork? {

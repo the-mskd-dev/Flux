@@ -90,7 +90,7 @@ fun ArtworkDescriptionsPager(
 
                         OverviewItem(
                             title = stringResource(Res.string.summary),
-                            description = fullArtwork.artwork.description.ifEmpty { stringResource(Res.string.no_summary) },
+                            description = fullArtwork.seasons.find { it.season == season }?.description ?: fullArtwork.artwork.description.ifEmpty { stringResource(Res.string.no_summary) },
                         )
 
                     } else {

@@ -24,9 +24,8 @@ import com.mskd.flux.features.files.domain.datasource.FilesDataSource
 import com.mskd.flux.features.files.domain.usecase.GetDeviceFilesUseCase
 import com.mskd.flux.features.files.domain.usecase.GetDeviceFilesUseCaseImpl
 import com.mskd.flux.features.files.domain.usecase.GetFileDurationUseCase
-import com.mskd.flux.features.files.domain.usecase.ScanSourcesUseCase
-import com.mskd.flux.features.files.data.usecase.ScanSourcesUseCaseImpl
 import com.mskd.flux.features.files.fake.FakeFilesDataSource
+import com.mskd.flux.features.files.moduleFiles
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import com.mskd.flux.features.images.fake.FakeImagesPrefetchManager
 import com.mskd.flux.features.people.modulePeople
@@ -89,6 +88,7 @@ internal class SyncHarness(tmdbToken: String = "test-token") : AutoCloseable {
             moduleDatabase,
             moduleTmdb,
             moduleCatalog,
+            moduleFiles,
             modulePeople,
             module {
                 single<RoomDatabase.Builder<FluxDatabase>> {
@@ -112,7 +112,6 @@ internal class SyncHarness(tmdbToken: String = "test-token") : AutoCloseable {
                     }
                 }
                 single<GetDeviceFilesUseCase> { GetDeviceFilesUseCaseImpl(sourcesProvider = get()) }
-                single<ScanSourcesUseCase> { ScanSourcesUseCaseImpl(sourcesProvider = get()) }
                 single<HttpClient> { tmdbHttpClient(engine = tmdb.engine, json = get(), tokenDataStore = get()) }
                 single<CatalogSyncCoordinator> { FakeCatalogSyncCoordinator(scope = scope) }
             }

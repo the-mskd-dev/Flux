@@ -21,8 +21,6 @@ import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseC
 import com.mskd.flux.features.catalog.fake.FakeCatalogSyncCoordinator
 import com.mskd.flux.features.catalog.moduleCatalog
 import com.mskd.flux.features.files.domain.datasource.FilesDataSource
-import com.mskd.flux.features.files.domain.usecase.GetDeviceFilesUseCase
-import com.mskd.flux.features.files.domain.usecase.GetDeviceFilesUseCaseImpl
 import com.mskd.flux.features.files.domain.usecase.GetFileDurationUseCase
 import com.mskd.flux.features.files.fake.FakeFilesDataSource
 import com.mskd.flux.features.files.moduleFiles
@@ -111,7 +109,6 @@ internal class SyncHarness(tmdbToken: String = "test-token") : AutoCloseable {
                         override suspend fun getSources(): List<FilesDataSource> = listOf(deviceStorage) + customSources
                     }
                 }
-                single<GetDeviceFilesUseCase> { GetDeviceFilesUseCaseImpl(sourcesProvider = get()) }
                 single<HttpClient> { tmdbHttpClient(engine = tmdb.engine, json = get(), tokenDataStore = get()) }
                 single<CatalogSyncCoordinator> { FakeCatalogSyncCoordinator(scope = scope) }
             }

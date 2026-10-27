@@ -14,8 +14,10 @@ import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Movie
+import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.files.UserFile
+import com.mskd.flux.features.people.data.mapper.toEntity as toPersonEntity
 import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.utils.extensions.sort
 import kotlinx.coroutines.flow.Flow
@@ -60,12 +62,13 @@ class DatabaseRepositoryImpl(
         seasonsDao.insert(seasons.map { it.toEntity() })
     }
 
-    override suspend fun saveSyncedFolder(artwork: Artwork, seasons: List<Season>, medias: List<Media>) {
+    override suspend fun saveSyncedFolder(artwork: Artwork, seasons: List<Season>, medias: List<Media>, people: List<Person>) {
         database.useWriterConnection { transactor ->
             transactor.immediateTransaction {
                 saveArtworks(listOf(artwork))
                 saveSeasons(seasons)
                 saveSyncedMedias(medias)
+                if (people.isNotEmpty()) database.personDao().insert(people = people.map { it.toPersonEntity() })
             }
         }
     }

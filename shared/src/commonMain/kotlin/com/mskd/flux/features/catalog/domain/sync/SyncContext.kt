@@ -1,6 +1,5 @@
 package com.mskd.flux.features.catalog.domain.sync
 
-import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.catalog.CatalogFolder
 import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.features.files.domain.model.SourcesScan
@@ -23,9 +22,6 @@ class SyncContext(
     var filesToFetch: List<UserFile> = emptyList()
 
     val foldersToFetch: List<CatalogFolder> get() = filesToFetch.groupInFolders()
-
-    /** The Artworks saved by the catalogue step. */
-    var savedArtworks: List<Artwork> = emptyList()
 
     /** Number of Fichiers en échec of the catalogue step. */
     var failedFiles: Int = 0

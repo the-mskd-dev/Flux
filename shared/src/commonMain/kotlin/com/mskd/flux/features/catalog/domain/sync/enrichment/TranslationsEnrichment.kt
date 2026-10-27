@@ -10,7 +10,10 @@ import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.report.Trace
 import kotlinx.coroutines.CancellationException
 
-/** Title and description in the user language for the Médias that miss them. A failure keeps the Média as it is. */
+/**
+ * Title and description in the user language for the Episodes that miss them. A failure keeps the Média as it is.
+ * The Artwork and the Movie are translated by the details.
+ */
 class TranslationsEnrichment(
     private val api: ApiRepository,
     private val settings: SettingsDataStore,
@@ -18,7 +21,7 @@ class TranslationsEnrichment(
 
     private companion object { const val TAG = "TranslationsEnrichment" }
 
-    override fun units(folder: CatalogFolder) = folder.files.size
+    override fun units(folder: CatalogFolder) = if (folder.files.first().isEpisode) folder.files.size else 0
 
     override suspend fun enrich(draft: FolderDraft) {
 
@@ -26,19 +29,16 @@ class TranslationsEnrichment(
 
         draft.medias = draft.medias.map { media ->
 
-            if (draft.isUnknown || (media.title.isNotBlank() && media.description.isNotBlank())) return@map media
+            if (draft.isUnknown || media is Movie || (media.title.isNotBlank() && media.description.isNotBlank())) return@map media
 
             try {
 
-                val request = when (media) {
-                    is Episode -> TranslationRequest.Episode(
-                        artworkId = media.artworkId,
-                        season = media.season,
-                        number = media.number,
-                        language = language
-                    )
-                    is Movie -> TranslationRequest.Movie(artworkId = media.artworkId, language = language)
-                }
+                val request = TranslationRequest.Episode(
+                    artworkId = media.artworkId,
+                    season = (media as Episode).season,
+                    number = media.number,
+                    language = language
+                )
 
                 val translation = api.getTranslation(request = request) ?: return@map media
                 media.withText(

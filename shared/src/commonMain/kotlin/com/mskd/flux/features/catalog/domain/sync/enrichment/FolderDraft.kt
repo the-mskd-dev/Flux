@@ -3,6 +3,7 @@ package com.mskd.flux.features.catalog.domain.sync.enrichment
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Movie
+import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.catalog.CatalogFolder
 
@@ -14,6 +15,9 @@ class FolderDraft(val folder: CatalogFolder) {
     val seasons = mutableListOf<Season>()
 
     var medias: List<Media> = emptyList()
+
+    /** Cast and crew of the Artwork, saved with it. */
+    var people: List<Person> = emptyList()
 
     /** Number of Fichiers en échec: not persisted, retried by the next Synchro. */
     var failedFiles = 0

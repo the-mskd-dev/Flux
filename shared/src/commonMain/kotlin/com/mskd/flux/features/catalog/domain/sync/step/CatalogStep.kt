@@ -37,7 +37,6 @@ class CatalogStep(
             context.foldersToFetch.map { folder -> async(dispatcher) { process(folder, context) } }.awaitAll()
         }
 
-        context.savedArtworks = drafts.filter { it.isSavable }.mapNotNull { it.artwork }
         context.failedFiles = drafts.sumOf { it.failedFiles }
 
         context.progress.complete(SAVE_UNITS)
@@ -83,6 +82,7 @@ class CatalogStep(
             database.saveSyncedFolder(
                 artwork = artwork,
                 seasons = draft.seasons,
+                people = draft.people,
                 medias = draft.medias.distinctBy { it.mediaId to it.artworkId }
             )
         } catch (e: CancellationException) {

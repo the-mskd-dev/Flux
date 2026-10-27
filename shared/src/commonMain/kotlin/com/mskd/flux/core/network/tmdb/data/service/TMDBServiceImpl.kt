@@ -19,6 +19,11 @@ import kotlin.coroutines.cancellation.CancellationException
 
 class TMDBServiceImpl(private val client: HttpClient) : TMDBService {
 
+    private companion object {
+        /** Translations and credits come with the details: no separate call. */
+        const val APPENDED_DETAILS = "translations,credits"
+    }
+
     //region Auth
 
     override suspend fun authenticate(): AuthenticationDto = client
@@ -48,6 +53,7 @@ class TMDBServiceImpl(private val client: HttpClient) : TMDBService {
     ): MovieDto = client
         .get("movie/$id") {
             parameter("language", language)
+            parameter("append_to_response", APPENDED_DETAILS)
         }.body()
 
     override suspend fun getMovieTranslations(artworkId: Long): TranslationsDto = client
@@ -105,6 +111,7 @@ class TMDBServiceImpl(private val client: HttpClient) : TMDBService {
     ): ShowDto = client
         .get("tv/$artworkId") {
             parameter("language", language)
+            parameter("append_to_response", APPENDED_DETAILS)
         }.body()
 
     override suspend fun getShowTranslations(artworkId: Long): TranslationsDto = client

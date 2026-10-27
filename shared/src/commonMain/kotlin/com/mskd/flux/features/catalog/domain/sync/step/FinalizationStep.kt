@@ -23,12 +23,8 @@ class FinalizationStep(
         user.setSyncTime(Clock.System.now().toEpochMilliseconds())
         user.setVersionCode(appInfo.versionCode)
 
-        // Background cast sync: only new artworks on light sync, everything on full sync
-        when {
-            context.full -> syncPeopleUseCase(force = true)
-            context.filesToFetch.isEmpty() -> syncPeopleUseCase(force = false)
-            else -> syncPeopleUseCase(artworks = context.savedArtworks)
-        }
+        // The credits of the Artworks fetched by this Synchro are already saved with them: only the periodic refresh remains
+        if (context.filesToFetch.isEmpty()) syncPeopleUseCase(force = false)
 
         imagesPrefetchManager.prefetchImages()
 

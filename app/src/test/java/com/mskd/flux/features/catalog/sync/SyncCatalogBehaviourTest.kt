@@ -13,6 +13,7 @@ import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withTimeout
 import kotlin.time.Duration.Companion.seconds
 
@@ -422,6 +423,74 @@ class SyncCatalogBehaviourTest : FunSpec({
         progresses.distinct().size shouldBeGreaterThan 1
         progresses.dropLast(1).all { it < 1f } shouldBe true
         harness.states.last().shouldBeInstanceOf<SyncState.Idle>()
+
+    }
+
+    test("a new movie costs exactly one search and one details call") {
+
+        // Given
+        harness.deviceStorage.availableFiles = listOf(harness.deviceFile("Inception (2010).mkv"))
+
+        // When
+        harness.lightSync()
+
+        // Then
+        harness.tmdb.callCount("search/movie") shouldBe 1
+        harness.tmdb.callCount("movie/{id}") shouldBe 1
+        harness.tmdb.totalCallCount shouldBe 2
+
+    }
+
+    test("a new show costs a single show details call and no separate translation call") {
+
+        // Given
+        harness.deviceStorage.availableFiles = listOf(harness.deviceFile("Breaking Bad S01E01.mkv"))
+
+        // When
+        harness.lightSync()
+
+        // Then
+        harness.tmdb.callCount("tv/{id}") shouldBe 1
+        harness.tmdb.callCount("tv/{id}/translations") shouldBe 0
+        harness.tmdb.callCount("tv/{id}/credits") shouldBe 0
+
+    }
+
+    test("an empty title and description in the user language are completed by English") {
+
+        // Given
+        harness.deviceStorage.availableFiles = listOf(harness.deviceFile("Forgotten Tale (2015).mkv"))
+
+        // When
+        harness.lightSync()
+
+        // Then
+        val artwork = harness.catalog.getArtworks(includePrivates = true).single()
+        artwork.title shouldBe "Forgotten Tale"
+        artwork.description shouldBe "A tale nobody translated."
+        val movie = harness.catalog.getMedias().single()
+        movie.title shouldBe "Forgotten Tale"
+        movie.description shouldBe "A tale nobody translated."
+        harness.tmdb.callCount("movie/{id}/translations") shouldBe 0
+
+    }
+
+    test("the credits of new Artworks are in database at the end of the Synchro without a separate credits call") {
+
+        // Given
+        harness.deviceStorage.availableFiles = listOf(
+            harness.deviceFile("Inception (2010).mkv"),
+            harness.deviceFile("Breaking Bad S01E01.mkv"),
+        )
+
+        // When
+        harness.lightSync()
+
+        // Then
+        harness.people.flowPeople(artworkId = 27205L).first().map { it.name } shouldContainExactlyInAnyOrder listOf("Leonardo DiCaprio", "Christopher Nolan")
+        harness.people.flowPeople(artworkId = 1396L).first().map { it.name } shouldContainExactlyInAnyOrder listOf("Bryan Cranston")
+        harness.tmdb.callCount("movie/{id}/credits") shouldBe 0
+        harness.tmdb.callCount("tv/{id}/credits") shouldBe 0
 
     }
 

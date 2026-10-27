@@ -26,6 +26,7 @@ import com.mskd.flux.features.files.fake.FakeFilesDataSource
 import com.mskd.flux.features.files.moduleFiles
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import com.mskd.flux.features.images.fake.FakeImagesPrefetchManager
+import com.mskd.flux.features.people.domain.repository.PeopleRepository
 import com.mskd.flux.features.people.modulePeople
 import com.mskd.flux.features.privateFolder.data.datastore.PrivateFolderDataStoreImpl
 import com.mskd.flux.features.privateFolder.domain.datastore.PrivateFolderDataStore
@@ -127,6 +128,8 @@ internal class SyncHarness(tmdbToken: String = "test-token") : AutoCloseable {
 
     /** The Catalogue, as persisted in the database. */
     val catalog: DatabaseRepository = koin.get()
+
+    val people: PeopleRepository = koin.get()
 
     val privateFolder: PrivateFolderDataStore = koin.get()
 

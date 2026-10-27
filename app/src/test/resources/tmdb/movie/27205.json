@@ -8,6 +8,53 @@
   "vote_average": 8.4,
   "vote_count": 36000,
   "release_date": "2010-07-15",
-  "genres": [{ "id": 28, "name": "Action" }, { "id": 878, "name": "Science Fiction" }],
-  "adult": false
+  "genres": [
+    {
+      "id": 28,
+      "name": "Action"
+    },
+    {
+      "id": 878,
+      "name": "Science Fiction"
+    }
+  ],
+  "adult": false,
+  "translations": {
+    "translations": [
+      {
+        "iso_639_1": "en",
+        "iso_3166_1": "US",
+        "name": "English",
+        "english_name": "English",
+        "data": {
+          "title": "Inception",
+          "overview": "Cobb, a skilled thief, steals secrets from deep within the subconscious during the dream state."
+        }
+      }
+    ]
+  },
+  "credits": {
+    "cast": [
+      {
+        "id": 6193,
+        "name": "Leonardo DiCaprio",
+        "original_name": "Leonardo DiCaprio",
+        "profile_path": "/dicaprio.jpg",
+        "credit_id": "52fe4534c3a368484e04de03",
+        "character": "Cobb",
+        "order": 0
+      }
+    ],
+    "crew": [
+      {
+        "id": 525,
+        "name": "Christopher Nolan",
+        "original_name": "Christopher Nolan",
+        "profile_path": "/nolan.jpg",
+        "credit_id": "52fe4534c3a368484e04de3d",
+        "job": "Director",
+        "department": "Directing"
+      }
+    ]
+  }
 }

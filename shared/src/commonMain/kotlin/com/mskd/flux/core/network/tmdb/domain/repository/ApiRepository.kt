@@ -9,6 +9,7 @@ import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.features.gallery.domain.model.GalleryImage
+import com.mskd.flux.core.network.tmdb.domain.model.ArtworkDetails
 import com.mskd.flux.core.network.tmdb.domain.model.PersonInfo
 import com.mskd.flux.core.network.tmdb.domain.model.Translation
 import com.mskd.flux.core.network.tmdb.domain.model.TranslationRequest
@@ -19,6 +20,9 @@ interface ApiRepository {
     suspend fun getArtwork(file: UserFile): Artwork
 
     suspend fun getArtworkById(id: Long, type: ContentType): Artwork?
+
+    /** Details, translations and credits of the Artwork in one call; null when TMDB has no details (or no token). */
+    suspend fun getDetails(artworkId: Long, type: ContentType, file: UserFile): ArtworkDetails?
 
     suspend fun getGenres() : List<Genre>
 

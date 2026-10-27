@@ -495,6 +495,111 @@ class ArtworkViewModelTest : FunSpec({
 
     }
 
+    context("spoiler blur") {
+
+        val settingsFlow = MutableStateFlow(SettingsDataStore.State())
+
+        suspend fun blurredIds(
+            blurSpoilers: Boolean = true,
+            episodes: List<Episode> = MediaMockups.episodes,
+        ): Set<Long> {
+            settingsFlow.value = SettingsDataStore.State(blurSpoilers = blurSpoilers)
+            every { settingsDataStore.flow } returns settingsFlow
+            every { observeArtworkUseCase(any()) } returns flowOf(
+                State.Content(MediaMockups.fullShow.copy(episodes = episodes.toImmutableList()))
+            )
+            updateVm(MediaMockups.showArtwork.id)
+            var ids: Set<Long>? = null
+            viewModel.uiState.test {
+                var state = awaitItem().state
+                while (state !is State.Content) state = awaitItem().state
+                ids = state.content.blurredEpisodeIds
+            }
+            return ids!!
+        }
+
+        test("nothing is blurred when the option is disabled") {
+            observeArtworkUseCase = mockk()
+            blurredIds(blurSpoilers = false) shouldBe emptySet()
+        }
+
+        test("episodes to watch are blurred") {
+            observeArtworkUseCase = mockk()
+            blurredIds() shouldBe MediaMockups.episodes.map { it.id }.toSet()
+        }
+
+        test("watching and watched episodes are readable") {
+            observeArtworkUseCase = mockk()
+            val episodes = listOf(
+                MediaMockups.episode1,
+                MediaMockups.episode2.copy(status = Status.IS_WATCHING),
+                MediaMockups.episode3.copy(status = Status.WATCHED),
+            )
+            blurredIds(episodes = episodes) shouldBe setOf(MediaMockups.episode1.id)
+        }
+
+        test("unknown artwork episodes are never blurred") {
+            observeArtworkUseCase = mockk()
+            blurredIds(episodes = listOf(MediaMockups.unknownEpisode.copy(season = 1))) shouldBe emptySet()
+        }
+
+        test("movie is never blurred") {
+            observeArtworkUseCase = mockk()
+            settingsFlow.value = SettingsDataStore.State(blurSpoilers = true)
+            every { settingsDataStore.flow } returns settingsFlow
+            every { observeArtworkUseCase(any()) } returns flowOf(State.Content(MediaMockups.fullMovie))
+            updateVm(MediaMockups.fullMovie.artwork.id)
+            viewModel.uiState.test {
+                var state = awaitItem().state
+                while (state !is State.Content) state = awaitItem().state
+                state.content.blurredEpisodeIds shouldBe emptySet()
+            }
+        }
+
+        test("episode becomes readable when its status changes to watching") {
+            observeArtworkUseCase = mockk()
+            val artwork = MutableStateFlow<State<FullArtwork>>(State.Content(MediaMockups.fullShow))
+            settingsFlow.value = SettingsDataStore.State(blurSpoilers = true)
+            every { settingsDataStore.flow } returns settingsFlow
+            every { observeArtworkUseCase(any()) } returns artwork
+            updateVm(MediaMockups.showArtwork.id)
+
+            viewModel.uiState.test {
+                (expectMostRecentItem().state as State.Content).content.blurredEpisodeIds shouldBe
+                    MediaMockups.episodes.map { it.id }.toSet()
+
+                artwork.value = State.Content(
+                    MediaMockups.fullShow.copy(
+                        episodes = MediaMockups.episodes.map {
+                            if (it.id == MediaMockups.episode2.id) it.copy(status = Status.IS_WATCHING) else it
+                        }.toImmutableList()
+                    )
+                )
+
+                (expectMostRecentItem().state as State.Content).content.blurredEpisodeIds shouldBe
+                    setOf(MediaMockups.episode1.id, MediaMockups.episode3.id)
+            }
+        }
+
+        test("toggling the option while the page is open updates the state") {
+            observeArtworkUseCase = mockk()
+            settingsFlow.value = SettingsDataStore.State(blurSpoilers = false)
+            every { settingsDataStore.flow } returns settingsFlow
+            every { observeArtworkUseCase(any()) } returns flowOf(State.Content(MediaMockups.fullShow))
+            updateVm(MediaMockups.showArtwork.id)
+
+            viewModel.uiState.test {
+                (expectMostRecentItem().state as State.Content).content.blurredEpisodeIds shouldBe emptySet()
+
+                settingsFlow.value = SettingsDataStore.State(blurSpoilers = true)
+
+                (expectMostRecentItem().state as State.Content).content.blurredEpisodeIds shouldBe
+                    MediaMockups.episodes.map { it.id }.toSet()
+            }
+        }
+
+    }
+
     context("overview") {
 
         suspend fun overviewFor(fullArtwork: FullArtwork): ArtworkOverviewContent {

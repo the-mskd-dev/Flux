@@ -2,8 +2,10 @@ package com.mskd.flux.ui
 
 import androidx.annotation.FloatRange
 import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
@@ -77,6 +79,32 @@ fun Modifier.blurForeground(
     performanceMode = performanceMode,
     expandLayerBounds = expandLayerBounds
 )
+
+/**
+ * Blurs the content of the composable itself (no source/effect pair). The blur is forced on so that
+ * Haze falls back to its RenderScript delegate on API 29-30, and its radius is animated.
+ */
+@Composable
+fun Modifier.blurContent(
+    blurred: Boolean,
+    radius: Dp = 24.dp,
+): Modifier {
+    val animatedRadius by animateDpAsState(
+        targetValue = if (blurred) radius else 0.dp,
+        animationSpec = tween(durationMillis = 300),
+        label = "blur_content_radius"
+    )
+    return if (animatedRadius > 0.dp) {
+        this.hazeBlur(
+            input = HazeInput.Content,
+            style = HazeBlurStyle {
+                blurEnabled(true)
+                blurRadius(animatedRadius)
+            },
+            expandLayerBounds = false
+        )
+    } else this
+}
 
 @Composable
 fun Modifier.fillMaxWidthWithLimit(

@@ -116,6 +116,7 @@ fun ArtworkScreen(
                         selectedSeason = content.selectedSeason,
                         overview = content.overview,
                         expandedEpisodeId = content.expandedEpisodeId,
+                        blurredEpisodeIds = content.blurredEpisodeIds,
                         dialog = content.dialog,
                         sendIntent = viewModel::handleIntent
                     )
@@ -136,6 +137,7 @@ fun ArtworkScreenContent(
     selectedSeason: Int?,
     overview: ArtworkOverviewContent,
     expandedEpisodeId: Long?,
+    blurredEpisodeIds: Set<Long>,
     dialog: ArtworkDialog?,
     sendIntent: (ArtworkIntent) -> Unit
 ) {
@@ -186,6 +188,7 @@ fun ArtworkScreenContent(
                 selectedSeason = selectedSeason,
                 overview = overview,
                 expandedEpisodeId = expandedEpisodeId,
+                blurredEpisodeIds = blurredEpisodeIds,
                 scaffoldInnerPadding = innerPadding,
                 sendIntent = sendIntent,
             )
@@ -197,6 +200,7 @@ fun ArtworkScreenContent(
                 selectedSeason = selectedSeason,
                 overview = overview,
                 expandedEpisodeId = expandedEpisodeId,
+                blurredEpisodeIds = blurredEpisodeIds,
                 scaffoldInnerPadding = innerPadding,
                 sendIntent = sendIntent,
             )
@@ -232,6 +236,7 @@ fun ArtworkScreenContent_Preview() {
             selectedSeason = MediaMockups.episode1.season,
             overview = ArtworkOverviewContent.Summary(MediaMockups.season1.description),
             expandedEpisodeId = null,
+            blurredEpisodeIds = emptySet(),
             dialog = null,
             sendIntent = {}
         )

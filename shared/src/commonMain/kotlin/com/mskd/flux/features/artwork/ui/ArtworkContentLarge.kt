@@ -47,6 +47,7 @@ fun ArtworkContentLarge(
     selectedSeason: Int?,
     overview: ArtworkOverviewContent,
     expandedEpisodeId: Long?,
+    blurredEpisodeIds: Set<Long>,
     scaffoldInnerPadding: PaddingValues,
     sendIntent: (ArtworkIntent) -> Unit,
 ) {
@@ -152,6 +153,7 @@ fun ArtworkContentLarge(
                             episode = episode,
                             isSelected = episode.id == selectedMedia.mediaId,
                             isExpanded = episode.id == expandedEpisodeId,
+                            isBlurred = episode.id in blurredEpisodeIds,
                             onClick = { sendIntent(ArtworkIntent.PlayMedia(media = episode)) },
                             onReadMoreTap = {
                                 if (it) {
@@ -207,6 +209,7 @@ fun ArtworkContentLargeMovie_Preview() {
             selectedSeason = null,
             overview = ArtworkOverviewContent.MovieOverview(MediaMockups.fullMovie.movie, MediaMockups.fullMovie.genres),
             expandedEpisodeId = null,
+            blurredEpisodeIds = emptySet(),
             scaffoldInnerPadding = PaddingValues.Zero,
             sendIntent = {}
         )
@@ -224,6 +227,7 @@ fun ArtworkContentLargeShow_Preview() {
             selectedSeason = 1,
             overview = ArtworkOverviewContent.Summary(MediaMockups.season1.description),
             expandedEpisodeId = null,
+            blurredEpisodeIds = emptySet(),
             scaffoldInnerPadding = PaddingValues.Zero,
             sendIntent = {}
         )

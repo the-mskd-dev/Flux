@@ -32,6 +32,7 @@ import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.PortraitPreview
 import com.mskd.flux.ui.components.FixedChip
 import com.mskd.flux.ui.components.ReadMoreButton
+import com.mskd.flux.ui.blurContent
 import com.mskd.flux.ui.grayScale
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxUI
@@ -46,6 +47,7 @@ fun EpisodeItem(
     episode: Episode,
     isSelected: Boolean,
     isExpanded: Boolean = false,
+    isBlurred: Boolean = false,
     onClick: (Episode) -> Unit,
     onReadMoreTap: (Boolean) -> Unit = {},
     dropDownMenu: @Composable ((isVisible: Boolean, onDismissRequest: () -> Unit) -> Unit)? = null
@@ -61,6 +63,7 @@ fun EpisodeItem(
                 episode = episode,
                 isSelected = isSelected,
                 isExpanded = isExpanded,
+                isBlurred = isBlurred,
                 onClick = onClick,
                 onReadMoreTap = onReadMoreTap,
                 dropDownMenu = dropDownMenu
@@ -70,6 +73,7 @@ fun EpisodeItem(
                 episode = episode,
                 isSelected = isSelected,
                 isExpanded = isExpanded,
+                isBlurred = isBlurred,
                 onClick = onClick,
                 onReadMoreTap = onReadMoreTap,
                 dropDownMenu = dropDownMenu
@@ -93,6 +97,7 @@ fun EpisodeItemLarge(
     episode: Episode,
     isSelected: Boolean,
     isExpanded: Boolean,
+    isBlurred: Boolean = false,
     onClick: (Episode) -> Unit,
     onReadMoreTap: (Boolean) -> Unit,
     dropDownMenu: @Composable ((isVisible: Boolean, onDismissRequest: () -> Unit) -> Unit)? = null
@@ -126,7 +131,9 @@ fun EpisodeItemLarge(
     ) {
 
         MediaThumbnail(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .blurContent(blurred = isBlurred),
             media = episode,
         )
 
@@ -161,7 +168,8 @@ fun EpisodeItemLarge(
             Text.Card.Body(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .animateContentSize(),
+                    .animateContentSize()
+                    .blurContent(blurred = isBlurred),
                 text = episode.description,
                 color = if (isSelected) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onBackground,
                 maxLines = if (isExpanded) Int.MAX_VALUE else 3,
@@ -198,6 +206,7 @@ fun EpisodeItemSmall(
     episode: Episode,
     isSelected: Boolean,
     isExpanded: Boolean,
+    isBlurred: Boolean = false,
     onClick: (Episode) -> Unit,
     onReadMoreTap: (Boolean) -> Unit,
     dropDownMenu: @Composable ((isVisible: Boolean, onDismissRequest: () -> Unit) -> Unit)? = null
@@ -239,6 +248,7 @@ fun EpisodeItemSmall(
             MediaThumbnail(
                 modifier = Modifier
                     .clip(MaterialTheme.shapes.small)
+                    .blurContent(blurred = isBlurred)
                     .weight(.4f),
                 media = episode,
             )
@@ -272,7 +282,8 @@ fun EpisodeItemSmall(
         Text.Card.Body(
             modifier = Modifier
                 .fillMaxWidth()
-                .animateContentSize(),
+                .animateContentSize()
+                .blurContent(blurred = isBlurred),
             text = episode.description,
             color = if (isSelected) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onBackground,
             maxLines = if (isExpanded) Int.MAX_VALUE else 2,

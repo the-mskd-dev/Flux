@@ -177,6 +177,27 @@ class SettingsDataStoreImplTest : FunSpec({
 
     }
 
+    test("blurSpoilers is disabled by default") {
+        settingsDataStore.flow.test {
+            awaitItem().blurSpoilers shouldBe false
+            cancelAndConsumeRemainingEvents()
+        }
+    }
+
+    test("setBlurSpoilers should update value in flow") {
+
+        settingsDataStore.flow.test {
+            awaitItem()
+
+            settingsDataStore.setBlurSpoilers(true)
+
+            awaitItem().blurSpoilers shouldBe true
+
+            cancelAndConsumeRemainingEvents()
+        }
+
+    }
+
     test("setPrefetchHdImages should update value in flow") {
 
         // Given

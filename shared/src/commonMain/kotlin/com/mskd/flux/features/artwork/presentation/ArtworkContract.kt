@@ -8,12 +8,15 @@ import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.core.State
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.persistentSetOf
 
 @Immutable
 data class ArtworkDataState(
     val fullArtwork: FullArtwork,
     val useExternalPlayer: Boolean,
+    val blurSpoilers: Boolean,
     val people: ImmutableList<Person> = persistentListOf()
 )
 
@@ -31,6 +34,7 @@ data class ArtworkContent(
     val selectedSeason: Int?,
     val overview: ArtworkOverviewContent,
     val expandedEpisodeId: Long? = null,
+    val blurredEpisodeIds: ImmutableSet<Long> = persistentSetOf(),
     val useExternalPlayer: Boolean,
     val people: ImmutableList<Person> = persistentListOf(),
     val dialog: ArtworkDialog?,

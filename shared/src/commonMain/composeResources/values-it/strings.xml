@@ -244,4 +244,6 @@
     <string name="retry">Riprova</string>
     <string name="unavailable_check_connection">Non disponibile, controlla la connessione</string>
     <string name="gallery_empty">Nessuna immagine disponibile</string>
+    <string name="blur_spoilers">Nascondi spoiler</string>
+    <string name="blur_spoilers_desc">Sfoca la descrizione e l\'immagine degli episodi non ancora visti</string>
 </resources>

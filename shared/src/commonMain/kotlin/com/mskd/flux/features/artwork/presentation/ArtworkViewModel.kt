@@ -22,6 +22,9 @@ import com.mskd.flux.system.UrlLauncher
 import com.mskd.flux.utils.extensions.firstEpisode
 import com.mskd.flux.utils.extensions.firstEpisodeToWatch
 import com.mskd.flux.utils.extensions.getPreviousEpisodesFor
+import kotlinx.collections.immutable.ImmutableSet
+import kotlinx.collections.immutable.persistentSetOf
+import kotlinx.collections.immutable.toImmutableSet
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -78,6 +81,7 @@ class ArtworkViewModel(
                 val dataState = ArtworkDataState(
                     fullArtwork = artworkState.content,
                     useExternalPlayer = settings.externalPlayer,
+                    blurSpoilers = settings.blurSpoilers,
                     people = people,
                 )
 
@@ -145,11 +149,21 @@ class ArtworkViewModel(
                 selectedSeason = season,
                 overview = resolveOverview(dataState.fullArtwork, selectedMedia, season),
                 expandedEpisodeId = userState.expandedEpisodeId,
+                blurredEpisodeIds = resolveBlurredEpisodeIds(dataState),
                 useExternalPlayer = dataState.useExternalPlayer,
                 people = dataState.people,
                 dialog = userState.dialog,
             )
         )
+    }
+
+    private fun resolveBlurredEpisodeIds(dataState: ArtworkDataState): ImmutableSet<Long> {
+        if (!dataState.blurSpoilers) return persistentSetOf()
+        val episodes = (dataState.fullArtwork as? FullArtwork.FullShow)?.episodes ?: return persistentSetOf()
+        return episodes
+            .filter { it.status == Status.TO_WATCH && !it.isUnknown }
+            .map { it.id }
+            .toImmutableSet()
     }
 
     private fun resolveOverview(

@@ -450,6 +450,22 @@ class SettingsViewModelTest : FunSpec({
             }
         }
 
+        test("OnBlurSpoilersCheck should set value in datastore") {
+
+            viewModel.uiState.test {
+                awaitItem().blurSpoilers shouldBe false
+
+                viewModel.handleIntent(SettingsIntent.OnBlurSpoilersCheck(true))
+                dataStoreFlow.value = dataStoreFlow.value.copy(blurSpoilers = true)
+
+                val state = awaitItem()
+                coVerify { settingsDataStore.setBlurSpoilers(true) }
+                state.blurSpoilers shouldBe true
+
+                cancelAndConsumeRemainingEvents()
+            }
+        }
+
         test("OnExternalPlayerCheck should set value in datastore and then close dialog") {
 
             // Given

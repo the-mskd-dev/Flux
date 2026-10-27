@@ -22,12 +22,6 @@ internal class FakeFilesDataSource(
         return if (available) availableFiles else emptyList()
     }
 
-    override suspend fun filterExistingFiles(files: List<UserFile>): List<UserFile> {
-        val ownFiles = files.filter { contains(it) }
-        if (!available) return ownFiles
-        return ownFiles.filter { file -> availableFiles.any { it.path == file.path } }
-    }
-
     override suspend fun getSubtitlesFor(file: UserFile): String? {
         return FilesMockups.subtitles.find { it.equals(file.name, ignoreCase = true) }
     }

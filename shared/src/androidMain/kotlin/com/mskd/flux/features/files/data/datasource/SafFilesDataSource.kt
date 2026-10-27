@@ -40,52 +40,6 @@ class SafFilesDataSource(
         getFilesFromFolder(folder = folder)
     }
 
-    override suspend fun filterExistingFiles(files: List<UserFile>): List<UserFile> = withContext(Dispatchers.IO) {
-
-        val safFiles = files.filter { contains(it) }
-        if (safFiles.isEmpty()) return@withContext emptyList()
-
-        // The files of an unavailable folder are kept
-        if (!folder.isAvailable) return@withContext safFiles
-
-        val existingFiles = mutableListOf<UserFile>()
-        val missingFiles = mutableListOf<UserFile>()
-
-        for (file in safFiles) {
-            val fileUri = file.path.toUri()
-            var exists = false
-
-            try {
-                context.contentResolver.query(
-                    fileUri,
-                    arrayOf(DocumentsContract.Document.COLUMN_DOCUMENT_ID),
-                    null,
-                    null,
-                    null
-                )?.use { cursor ->
-                    if (cursor.moveToFirst()) {
-                        exists = true
-                    }
-                }
-            } catch (e: Exception) {
-                Trace.error(TAG, "File no longer accessible or missing: ${file.name}", e)
-            }
-
-            if (exists) {
-                existingFiles.add(file)
-            } else {
-                missingFiles.add(file)
-            }
-        }
-
-        if (missingFiles.isNotEmpty()) {
-            Trace.info(TAG, "${missingFiles.size} SAF file(s) not found or revoked")
-            missingFiles.forEach { Trace.info(TAG, it.name) }
-        }
-
-        existingFiles
-    }
-
     override suspend fun getSubtitlesFor(file: UserFile): String? = withContext(Dispatchers.IO) {
         if (!contains(file)) return@withContext null
 

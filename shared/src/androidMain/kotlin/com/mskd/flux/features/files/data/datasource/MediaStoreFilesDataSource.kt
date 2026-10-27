@@ -125,49 +125,6 @@ class MediaStoreFilesDataSource(
 
     }
 
-    override suspend fun filterExistingFiles(files: List<UserFile>): List<UserFile> =
-        withContext(Dispatchers.IO) {
-
-            val mediaStoreFiles = files.filter { contains(it) }
-            val paths = mediaStoreFiles.map { it.path }
-            val ids = paths.mapNotNull { it.toUri().lastPathSegment }
-
-            val idPlaceholders = ids.joinToString(",") { "?" }
-            val (pathCondition, pathArgs) = buildRelativePathSelection()
-
-            val selection = "${MediaStore.Video.Media._ID} IN ($idPlaceholders) AND ($pathCondition)"
-            val selectionArgs = ids.toTypedArray() + pathArgs
-
-            val existingIds = mutableSetOf<String>()
-
-            context.contentResolver.query(
-                MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
-                arrayOf(MediaStore.Video.Media._ID),
-                selection,
-                selectionArgs,
-                null
-            )?.use { cursor ->
-                val idCol = cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID)
-                while (cursor.moveToNext()) {
-                    existingIds.add(cursor.getString(idCol))
-                }
-            }
-
-            val existingFiles = mediaStoreFiles.filter { file ->
-                val id = file.path.toUri().lastPathSegment
-                id in existingIds
-            }
-
-            val missingFiles = mediaStoreFiles - existingFiles.toSet()
-            if (missingFiles.isNotEmpty()) {
-                Trace.info(TAG, "$missingFiles file(s) not founded")
-                missingFiles.forEach { Trace.info(TAG, it.name) }
-            }
-
-            existingFiles
-
-        }
-
     override suspend fun getSubtitlesFor(file: UserFile): String? = withContext(Dispatchers.IO) {
 
         try {

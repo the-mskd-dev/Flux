@@ -16,7 +16,6 @@ import com.mskd.flux.features.catalog.domain.sync.step.GenresStep
 import com.mskd.flux.features.catalog.domain.sync.step.MissingFilesStep
 import com.mskd.flux.features.catalog.domain.sync.step.NsfwPrivateStep
 import com.mskd.flux.features.catalog.domain.sync.step.ScanStep
-import com.mskd.flux.features.catalog.domain.usecase.cleanCatalog.CleanCatalogUseCase
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.catalog.domain.usecase.syncGenres.SyncGenresUseCase
 import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
@@ -62,7 +61,6 @@ val moduleCatalog = module {
         CatalogSyncCoordinatorImpl(scope = get(Qualifiers.APPLICATION_SCOPE))
     }
 
-    singleOf(::CleanCatalogUseCase)
     singleOf(::SyncCatalogUseCase)
     singleOf(::SyncGenresUseCase)
 

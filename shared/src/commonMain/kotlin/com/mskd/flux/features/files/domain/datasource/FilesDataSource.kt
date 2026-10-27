@@ -6,6 +6,5 @@ interface FilesDataSource {
     suspend fun isAvailable() : Boolean
     fun contains(file: UserFile) : Boolean
     suspend fun getFiles() : List<UserFile>
-    suspend fun filterExistingFiles(files: List<UserFile>) : List<UserFile>
     suspend fun getSubtitlesFor(file: UserFile) : String?
 }

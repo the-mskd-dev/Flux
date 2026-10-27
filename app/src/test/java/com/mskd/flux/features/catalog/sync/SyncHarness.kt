@@ -21,11 +21,11 @@ import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseC
 import com.mskd.flux.features.catalog.fake.FakeCatalogSyncCoordinator
 import com.mskd.flux.features.catalog.moduleCatalog
 import com.mskd.flux.features.files.domain.datasource.FilesDataSource
-import com.mskd.flux.features.files.domain.usecase.FilterExistingFilesUseCase
-import com.mskd.flux.features.files.domain.usecase.FilterExistingFilesUseCaseImpl
 import com.mskd.flux.features.files.domain.usecase.GetDeviceFilesUseCase
 import com.mskd.flux.features.files.domain.usecase.GetDeviceFilesUseCaseImpl
 import com.mskd.flux.features.files.domain.usecase.GetFileDurationUseCase
+import com.mskd.flux.features.files.domain.usecase.ScanSourcesUseCase
+import com.mskd.flux.features.files.domain.usecase.ScanSourcesUseCaseImpl
 import com.mskd.flux.features.files.fake.FakeFilesDataSource
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import com.mskd.flux.features.images.fake.FakeImagesPrefetchManager
@@ -112,7 +112,7 @@ internal class SyncHarness(tmdbToken: String = "test-token") : AutoCloseable {
                     }
                 }
                 single<GetDeviceFilesUseCase> { GetDeviceFilesUseCaseImpl(sourcesProvider = get()) }
-                single<FilterExistingFilesUseCase> { FilterExistingFilesUseCaseImpl(sourcesProvider = get()) }
+                single<ScanSourcesUseCase> { ScanSourcesUseCaseImpl(sourcesProvider = get()) }
                 single<HttpClient> { tmdbHttpClient(engine = tmdb.engine, json = get(), tokenDataStore = get()) }
                 single<CatalogSyncCoordinator> { FakeCatalogSyncCoordinator(scope = scope) }
             }

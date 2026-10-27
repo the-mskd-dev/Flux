@@ -4,10 +4,10 @@ import com.mskd.flux.features.files.data.datasource.MediaStoreFilesDataSource
 import com.mskd.flux.features.files.data.datasource.SafFilesDataSource
 import com.mskd.flux.features.files.data.usecase.AndroidGetFileDurationUseCase
 import com.mskd.flux.features.files.domain.datasource.FilesDataSource
-import com.mskd.flux.features.files.domain.usecase.FilterExistingFilesUseCase
-import com.mskd.flux.features.files.domain.usecase.FilterExistingFilesUseCaseImpl
 import com.mskd.flux.features.files.domain.usecase.GetDeviceFilesUseCase
 import com.mskd.flux.features.files.domain.usecase.GetDeviceFilesUseCaseImpl
+import com.mskd.flux.features.files.domain.usecase.ScanSourcesUseCase
+import com.mskd.flux.features.files.domain.usecase.ScanSourcesUseCaseImpl
 import com.mskd.flux.features.files.domain.usecase.GetFileDurationUseCase
 import com.mskd.flux.features.files.domain.usecase.GetSubtitlesUseCase
 import com.mskd.flux.features.files.domain.usecase.GetSubtitlesUseCaseImpl
@@ -44,8 +44,8 @@ val moduleFilesAndroid = module {
         )
     }
 
-    single<FilterExistingFilesUseCase> {
-        FilterExistingFilesUseCaseImpl(
+    single<ScanSourcesUseCase> {
+        ScanSourcesUseCaseImpl(
             sourcesProvider = get()
         )
     }

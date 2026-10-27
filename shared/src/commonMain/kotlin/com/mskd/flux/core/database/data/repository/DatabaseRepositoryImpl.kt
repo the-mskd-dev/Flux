@@ -183,8 +183,8 @@ class DatabaseRepositoryImpl(
 
     override suspend fun deleteMediasNotInFiles(files: List<UserFile>) {
 
-        val mediasToDelete = getMediasNotInFiles(files = files)
-        deleteMedias(medias = mediasToDelete)
+        val existingPaths = files.mapTo(HashSet()) { it.path }
+        deleteMedias(medias = getMedias().filter { it.file.path !in existingPaths })
     }
 
     override suspend fun deleteMediasInFolder(folder: UserFolder) {

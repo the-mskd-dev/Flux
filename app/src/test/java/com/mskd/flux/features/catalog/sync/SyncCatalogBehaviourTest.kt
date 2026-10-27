@@ -8,6 +8,9 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withTimeout
+import kotlin.time.Duration.Companion.seconds
 
 /**
  * Behaviour of the Synchro, observed through the Catalogue in database, the successive Synchro
@@ -196,6 +199,87 @@ class SyncCatalogBehaviourTest : FunSpec({
             "Inception" to false,
             "Forbidden Film" to true,
         )
+
+    }
+
+    test("a Fichier manquant of an available Source is deleted by a Synchro légère") {
+
+        // Given
+        val inception = harness.deviceFile("Inception (2010).mkv")
+        val pilot = harness.deviceFile("Breaking Bad S01E01.mkv")
+        harness.deviceStorage.availableFiles = listOf(inception, pilot)
+        harness.lightSync()
+
+        // When
+        harness.deviceStorage.availableFiles = listOf(inception)
+        harness.lightSync()
+
+        // Then
+        harness.catalog.getMedias().map { it.title } shouldContainExactlyInAnyOrder listOf("Inception")
+        harness.catalog.getArtworks(includePrivates = true).map { it.title } shouldContainExactlyInAnyOrder listOf("Inception")
+        harness.catalog.getSeasons() shouldBe emptyList()
+
+    }
+
+    test("a Fichier manquant of an available Source is deleted by a Synchro complète") {
+
+        // Given
+        val inception = harness.deviceFile("Inception (2010).mkv")
+        val pilot = harness.deviceFile("Breaking Bad S01E01.mkv")
+        harness.deviceStorage.availableFiles = listOf(inception, pilot)
+        harness.lightSync()
+
+        // When
+        harness.deviceStorage.availableFiles = listOf(pilot)
+        harness.fullSync()
+
+        // Then
+        harness.catalog.getMedias().map { it.title } shouldContainExactlyInAnyOrder listOf("Pilot")
+        harness.catalog.getArtworks(includePrivates = true).map { it.title } shouldContainExactlyInAnyOrder listOf("Breaking Bad")
+
+    }
+
+    test("the files of a Source indisponible are kept by a Synchro légère") {
+
+        // Given
+        val root = "content://custom/tree/sd"
+        val pilot = harness.customFile(root, "Breaking Bad S01E01.mkv")
+        val source = harness.addCustomSource(root = root, files = listOf(pilot))
+        harness.deviceStorage.availableFiles = listOf(harness.deviceFile("Inception (2010).mkv"))
+        harness.lightSync()
+
+        // When
+        source.available = false
+        harness.deviceStorage.availableFiles = emptyList()
+        harness.lightSync()
+
+        // Then
+        harness.catalog.getMedias().map { it.title } shouldContainExactlyInAnyOrder listOf("Pilot")
+        harness.catalog.getSeasons().map { it.title } shouldContainExactlyInAnyOrder listOf("Season 1")
+
+    }
+
+    test("a Fichier manquant is deleted even if the rest of the Synchro does not end") {
+
+        // Given
+        val inception = harness.deviceFile("Inception (2010).mkv")
+        harness.deviceStorage.availableFiles = listOf(inception)
+        harness.lightSync()
+
+        harness.deviceStorage.availableFiles = listOf(harness.deviceFile("Breaking Bad S01E01.mkv"))
+        harness.tmdb.pause()
+
+        // When
+        harness.requestLightSync()
+
+        // Then
+        withTimeout(10.seconds) {
+            while (harness.catalog.getArtworks(includePrivates = true).isNotEmpty()) delay(10)
+        }
+        harness.catalog.getMedias() shouldBe emptyList()
+
+        harness.tmdb.resume()
+        harness.awaitIdle()
 
     }
 

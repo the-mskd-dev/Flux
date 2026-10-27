@@ -7,8 +7,7 @@ import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.fetcher.CatalogContentFetcher
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncGenres.SyncGenresUseCase
-import com.mskd.flux.features.files.domain.usecase.FilterExistingFilesUseCase
-import com.mskd.flux.features.files.domain.usecase.GetDeviceFilesUseCase
+import com.mskd.flux.features.files.domain.usecase.ScanSourcesUseCase
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import com.mskd.flux.features.people.domain.usecase.SyncPeopleUseCase
 import com.mskd.flux.features.privateFolder.domain.datastore.PrivateFolderDataStore
@@ -24,8 +23,7 @@ class SyncCatalogUseCase(
     private val imagesPrefetchManager: ImagesPrefetchManager,
     private val appInfo: AppInfo,
     private val coordinator: CatalogSyncCoordinator,
-    private val getDeviceFilesUseCase: GetDeviceFilesUseCase,
-    private val filterExistingFilesUseCase: FilterExistingFilesUseCase,
+    private val scanSourcesUseCase: ScanSourcesUseCase,
     private val syncGenresUseCase: SyncGenresUseCase,
     private val catalogFetcher: CatalogContentFetcher,
     private val syncPeopleUseCase: SyncPeopleUseCase,
@@ -43,15 +41,17 @@ class SyncCatalogUseCase(
         coordinator.launch(full = !onlyNew) {
 
             val dbMedias = database.getMedias()
-            val deviceFiles = getDeviceFilesUseCase()
-            val existingFiles = filterExistingFilesUseCase(files = (dbMedias).map { it.file })
+            val scan = scanSourcesUseCase()
+            val deviceFiles = scan.files
+
+            // Fichiers manquants: removed right after the scan, whatever happens next
+            database.deleteMediasNotInFiles(scan.existingFiles(knownFiles = dbMedias.map { it.file }))
 
             val newFiles = if (!onlyNew) deviceFiles else {
-                deviceFiles.filter { file -> existingFiles.none { it.path == file.path && it.name == file.name } }
+                deviceFiles.filter { file -> dbMedias.none { it.file.path == file.path && it.file.name == file.name } }
             }
 
             if (newFiles.isEmpty()) {
-                database.deleteMediasNotInFiles(existingFiles)
                 user.setSyncTime(Clock.System.now().toEpochMilliseconds())
                 user.setVersionCode(appInfo.versionCode)
                 syncPeopleUseCase(force = !onlyNew)
@@ -94,7 +94,7 @@ class SyncCatalogUseCase(
             val privateArtworkIds = if (!onlyNew) database.getPrivateArtworkIds() else emptyList()
 
             // Save new content
-            if (onlyNew) database.deleteMediasNotInFiles((deviceFiles + existingFiles).distinct()) else database.deleteAll()
+            if (!onlyNew) database.deleteAll()
             database.saveArtworks(catalog.artworks)
             database.saveSeasons(catalog.seasons)
             // The primary key of medias is (id, artworkId): never save twice the same media identity

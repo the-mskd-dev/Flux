@@ -6,8 +6,14 @@
 
 **Status:** ready-for-agent
 
-- [ ] Un fichier absent d'une Source disponible est supprimé du Catalogue, en Synchro légère comme complète
-- [ ] Les Saisons et Artworks sans Média restant sont supprimés
-- [ ] Les fichiers d'une Source indisponible sont conservés en Synchro légère
-- [ ] La suppression a lieu même si la suite de la Synchro échoue ou est annulée
-- [ ] La Synchro n'utilise plus le filtrage des fichiers existants (plus de requête par fichier)
+- [x] Un fichier absent d'une Source disponible est supprimé du Catalogue, en Synchro légère comme complète
+- [x] Les Saisons et Artworks sans Média restant sont supprimés
+- [x] Les fichiers d'une Source indisponible sont conservés en Synchro légère
+- [x] La suppression a lieu même si la suite de la Synchro échoue ou est annulée
+- [x] La Synchro n'utilise plus le filtrage des fichiers existants (plus de requête par fichier)
+
+**Notes:**
+
+- `ScanSourcesUseCase` remplace `GetDeviceFilesUseCase` dans la Synchro : il retourne les fichiers vus et les Sources indisponibles. `FilterExistingFilesUseCase` n'est plus utilisé par la Synchro (suppression du code au ticket 11).
+- `deleteMediasNotInFiles` compare désormais par chemin, en Kotlin (plus de `NOT IN (…)` par nom, qui dépasse la limite SQLite sur les gros catalogues).
+- La Synchro complète efface toujours le Catalogue avant de le reconstruire (ticket 03) ; les Fichiers manquants sont supprimés juste après le scan dans les deux modes.

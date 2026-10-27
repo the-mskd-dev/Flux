@@ -7,7 +7,6 @@ import com.mskd.flux.core.network.tmdb.data.service.TMDBService
 import com.mskd.flux.core.network.tmdb.data.service.TMDBServiceImpl
 import com.mskd.flux.core.network.tmdb.domain.repository.ApiRepository
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.okhttp.OkHttp
 import kotlinx.serialization.json.Json
 import org.koin.dsl.module
 
@@ -17,7 +16,7 @@ val moduleTmdb = module {
 
     single<HttpClient> {
         tmdbHttpClient(
-            engine = OkHttp.create(),
+            engine = tmdbEngine(),
             json = get(),
             tokenDataStore = get()
         )

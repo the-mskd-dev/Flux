@@ -33,6 +33,7 @@ import com.mskd.flux.ui.PortraitPreview
 import com.mskd.flux.ui.components.FixedChip
 import com.mskd.flux.ui.components.ReadMoreButton
 import com.mskd.flux.ui.blurContent
+import com.mskd.flux.ui.blurText
 import com.mskd.flux.ui.grayScale
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxUI
@@ -169,7 +170,7 @@ fun EpisodeItemLarge(
                 modifier = Modifier
                     .fillMaxWidth()
                     .animateContentSize()
-                    .blurContent(blurred = isBlurred),
+                    .blurText(blurred = isBlurred),
                 text = episode.description,
                 color = if (isSelected) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onBackground,
                 maxLines = if (isExpanded) Int.MAX_VALUE else 3,
@@ -283,7 +284,7 @@ fun EpisodeItemSmall(
             modifier = Modifier
                 .fillMaxWidth()
                 .animateContentSize()
-                .blurContent(blurred = isBlurred),
+                .blurText(blurred = isBlurred),
             text = episode.description,
             color = if (isSelected) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onBackground,
             maxLines = if (isExpanded) Int.MAX_VALUE else 2,

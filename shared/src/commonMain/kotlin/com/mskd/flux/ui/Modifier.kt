@@ -15,10 +15,16 @@ import androidx.compose.foundation.layout.displayCutoutPadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
@@ -87,7 +93,7 @@ fun Modifier.blurForeground(
 @Composable
 fun Modifier.blurContent(
     blurred: Boolean,
-    radius: Dp = 24.dp,
+    radius: Dp = 4.dp,
 ): Modifier {
     val animatedRadius by animateDpAsState(
         targetValue = if (blurred) radius else 0.dp,
@@ -104,6 +110,54 @@ fun Modifier.blurContent(
             expandLayerBounds = false
         )
     } else this
+}
+
+/**
+ * Hides text. On API 31+ it uses Compose's native blur, which fades out past the bounds without
+ * tearing; below, where that blur is a no-op, the text is cross-faded with redaction bars.
+ */
+@Composable
+fun Modifier.blurText(
+    blurred: Boolean,
+    radius: Dp = 8.dp,
+): Modifier {
+    val progress by animateFloatAsState(
+        targetValue = if (blurred) 1f else 0f,
+        animationSpec = tween(durationMillis = 300),
+        label = "blur_text_progress"
+    )
+
+    if (supportsNativeBlur) {
+        return if (progress > 0f) this.blur(radius * progress, BlurredEdgeTreatment.Unbounded) else this
+    }
+
+    val barColor = MaterialTheme.colorScheme.onSurface.copy(alpha = .2f)
+    return this.drawWithContent {
+        if (progress < 1f) {
+            if (progress > 0f) {
+                drawIntoCanvas {
+                    it.saveLayer(Rect(Offset.Zero, size), Paint().apply { alpha = 1f - progress })
+                    drawContent()
+                    it.restore()
+                }
+            } else drawContent()
+        }
+        if (progress > 0f) {
+            val barHeight = 12.dp.toPx()
+            val spacing = 6.dp.toPx()
+            val lines = ((size.height + spacing) / (barHeight + spacing)).toInt().coerceAtLeast(1)
+            repeat(lines) { line ->
+                val width = if (line == lines - 1 && lines > 1) size.width * .6f else size.width
+                drawRoundRect(
+                    color = barColor,
+                    topLeft = Offset(0f, line * (barHeight + spacing)),
+                    size = Size(width, barHeight),
+                    cornerRadius = CornerRadius(barHeight / 2),
+                    alpha = progress
+                )
+            }
+        }
+    }
 }
 
 @Composable

@@ -37,7 +37,7 @@ class SeasonsEnrichment(private val api: ApiRepository) : Enrichment {
                 throw e
             } catch (e: Exception) {
                 Trace.error(TAG, "Fail to get season for artworkId ${artwork.id} - season $season", e)
-                draft.failedFiles += seasonFiles
+                draft.failedFiles += seasonFiles.size
             }
 
         }

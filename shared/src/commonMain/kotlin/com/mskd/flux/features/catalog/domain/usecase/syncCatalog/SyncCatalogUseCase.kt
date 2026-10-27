@@ -27,7 +27,7 @@ class SyncCatalogUseCase(
 
             pipeline.run(context)
 
-            coordinator.setFailedFiles(context.failedFiles.size)
+            coordinator.setFailedFiles(context.failedFiles)
 
         }
 

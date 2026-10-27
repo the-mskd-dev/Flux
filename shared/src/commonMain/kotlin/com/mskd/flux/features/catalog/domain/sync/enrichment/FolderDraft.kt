@@ -5,7 +5,6 @@ import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.catalog.CatalogFolder
-import com.mskd.flux.core.model.files.UserFile
 
 /** What the Enrichissements have gathered so far for a folder. */
 class FolderDraft(val folder: CatalogFolder) {
@@ -16,8 +15,8 @@ class FolderDraft(val folder: CatalogFolder) {
 
     var medias: List<Media> = emptyList()
 
-    /** Fichiers en échec: not persisted, retried by the next Synchro. */
-    val failedFiles = mutableListOf<UserFile>()
+    /** Number of Fichiers en échec: not persisted, retried by the next Synchro. */
+    var failedFiles = 0
 
     val isUnknown: Boolean get() = artwork?.isUnknown == true
 

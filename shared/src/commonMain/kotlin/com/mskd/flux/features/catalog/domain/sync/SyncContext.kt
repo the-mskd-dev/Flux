@@ -27,6 +27,7 @@ class SyncContext(
     /** The Artworks saved by the catalogue step. */
     var savedArtworks: List<Artwork> = emptyList()
 
-    var failedFiles: List<UserFile> = emptyList()
+    /** Number of Fichiers en échec of the catalogue step. */
+    var failedFiles: Int = 0
 
 }

@@ -40,7 +40,7 @@ class CatalogStep(
         val saved = drafts.filter { it.isSavable }
 
         context.savedArtworks = saved.mapNotNull { it.artwork }
-        context.failedFiles = drafts.flatMap { it.failedFiles }
+        context.failedFiles = drafts.sumOf { it.failedFiles }
 
         // Upsert: nothing is wiped, private flags and user state (by file path) are kept by the save
         database.saveArtworks(context.savedArtworks)
@@ -68,7 +68,7 @@ class CatalogStep(
                     Trace.error(TAG, "Fail to fetch ${folder.files.first().name}", e)
                     failed = true
                     draft.artwork = null
-                    draft.failedFiles += folder.files
+                    draft.failedFiles += folder.files.size
                 }
             }
 

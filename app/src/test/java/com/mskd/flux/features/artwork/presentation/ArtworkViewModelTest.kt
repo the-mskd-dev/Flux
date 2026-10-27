@@ -1,5 +1,6 @@
 package com.mskd.flux.features.artwork.presentation
 
+import app.cash.turbine.ReceiveTurbine
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.model.artwork.Episode
@@ -595,6 +596,84 @@ class ArtworkViewModelTest : FunSpec({
 
                 (expectMostRecentItem().state as State.Content).content.blurredEpisodeIds shouldBe
                     MediaMockups.episodes.map { it.id }.toSet()
+            }
+        }
+
+    }
+
+    context("spoiler reveal") {
+
+        val settingsFlow = MutableStateFlow(SettingsDataStore.State(blurSpoilers = true))
+        val ep1 = MediaMockups.episode1
+        val allIds = MediaMockups.episodes.map { it.id }.toSet()
+
+        fun openShow() {
+            observeArtworkUseCase = mockk()
+            every { settingsDataStore.flow } returns settingsFlow
+            every { observeArtworkUseCase(any()) } returns flowOf(State.Content(MediaMockups.fullShow))
+            updateVm(MediaMockups.showArtwork.id)
+        }
+
+        suspend fun ReceiveTurbine<ArtworkUiState>.blurred() =
+            (expectMostRecentItem().state as State.Content).content.blurredEpisodeIds
+
+        test("toggling reveals then hides an episode") {
+            openShow()
+            viewModel.uiState.test {
+                blurred() shouldBe allIds
+
+                viewModel.handleIntent(ArtworkIntent.ToggleEpisodeSpoiler(ep1))
+                blurred() shouldBe allIds - ep1.id
+
+                viewModel.handleIntent(ArtworkIntent.ToggleEpisodeSpoiler(ep1))
+                blurred() shouldBe allIds
+            }
+        }
+
+        test("expanding a hidden episode makes it readable, collapsing hides it again") {
+            openShow()
+            viewModel.uiState.test {
+                blurred() shouldBe allIds
+
+                viewModel.handleIntent(ArtworkIntent.ExpandEpisodeDescription(ep1))
+                blurred() shouldBe allIds - ep1.id
+
+                viewModel.handleIntent(ArtworkIntent.CollapseEpisodeDescription)
+                blurred() shouldBe allIds
+            }
+        }
+
+        test("an episode revealed by tap stays readable after expand then collapse") {
+            openShow()
+            viewModel.uiState.test {
+                blurred() shouldBe allIds
+
+                viewModel.handleIntent(ArtworkIntent.ToggleEpisodeSpoiler(ep1))
+                viewModel.handleIntent(ArtworkIntent.ExpandEpisodeDescription(ep1))
+                viewModel.handleIntent(ArtworkIntent.CollapseEpisodeDescription)
+                blurred() shouldBe allIds - ep1.id
+            }
+        }
+
+        test("a new view model starts without revealed episodes") {
+            openShow()
+            viewModel.uiState.test {
+                blurred()
+                viewModel.handleIntent(ArtworkIntent.ToggleEpisodeSpoiler(ep1))
+                blurred() shouldBe allIds - ep1.id
+            }
+            updateVm(MediaMockups.showArtwork.id)
+            viewModel.uiState.test {
+                blurred() shouldBe allIds
+            }
+        }
+
+        test("spoiler ids stay listed when an episode is revealed") {
+            openShow()
+            viewModel.uiState.test {
+                expectMostRecentItem()
+                viewModel.handleIntent(ArtworkIntent.ToggleEpisodeSpoiler(ep1))
+                (expectMostRecentItem().state as State.Content).content.spoilerEpisodeIds shouldBe allIds
             }
         }
 

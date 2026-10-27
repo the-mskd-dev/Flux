@@ -246,4 +246,6 @@
     <string name="gallery_empty">Nessuna immagine disponibile</string>
     <string name="blur_spoilers">Nascondi spoiler</string>
     <string name="blur_spoilers_desc">Sfoca la descrizione e l\'immagine degli episodi non ancora visti</string>
+    <string name="spoiler_hidden">Spoiler nascosto</string>
+    <string name="spoiler_reveal">Mostra</string>
 </resources>

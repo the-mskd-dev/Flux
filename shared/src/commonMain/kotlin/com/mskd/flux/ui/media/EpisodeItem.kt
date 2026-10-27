@@ -5,7 +5,9 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,6 +24,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -40,6 +45,8 @@ import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.extensions.minToMs
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.content_unavailable
+import flux.shared.generated.resources.spoiler_hidden
+import flux.shared.generated.resources.spoiler_reveal
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -49,8 +56,10 @@ fun EpisodeItem(
     isSelected: Boolean,
     isExpanded: Boolean = false,
     isBlurred: Boolean = false,
+    isSpoiler: Boolean = false,
     onClick: (Episode) -> Unit,
     onReadMoreTap: (Boolean) -> Unit = {},
+    onToggleSpoiler: () -> Unit = {},
     dropDownMenu: @Composable ((isVisible: Boolean, onDismissRequest: () -> Unit) -> Unit)? = null
 ) {
 
@@ -65,8 +74,10 @@ fun EpisodeItem(
                 isSelected = isSelected,
                 isExpanded = isExpanded,
                 isBlurred = isBlurred,
+                isSpoiler = isSpoiler,
                 onClick = onClick,
                 onReadMoreTap = onReadMoreTap,
+                onToggleSpoiler = onToggleSpoiler,
                 dropDownMenu = dropDownMenu
             )
         } else {
@@ -75,8 +86,10 @@ fun EpisodeItem(
                 isSelected = isSelected,
                 isExpanded = isExpanded,
                 isBlurred = isBlurred,
+                isSpoiler = isSpoiler,
                 onClick = onClick,
                 onReadMoreTap = onReadMoreTap,
+                onToggleSpoiler = onToggleSpoiler,
                 dropDownMenu = dropDownMenu
             )
         }
@@ -92,6 +105,33 @@ fun EpisodeItem(
     }
 
 }
+/**
+ * Tapping the description of a spoiler reveals or hides it instead of playing the episode. A hidden
+ * description is announced as hidden, with a "reveal" action, rather than read out.
+ */
+@Composable
+private fun Modifier.spoilerToggle(
+    isSpoiler: Boolean,
+    isBlurred: Boolean,
+    onToggle: () -> Unit,
+): Modifier {
+    if (!isSpoiler) return this
+    val hiddenLabel = stringResource(Res.string.spoiler_hidden)
+    val revealLabel = stringResource(Res.string.spoiler_reveal)
+    return this
+        .clickable(
+            interactionSource = remember { MutableInteractionSource() },
+            indication = null,
+            onClick = onToggle
+        )
+        .then(
+            if (isBlurred) Modifier.clearAndSetSemantics {
+                contentDescription = hiddenLabel
+                onClick(label = revealLabel) { onToggle(); true }
+            } else Modifier
+        )
+}
+
 @Composable
 fun EpisodeItemLarge(
     modifier: Modifier = Modifier,
@@ -99,8 +139,10 @@ fun EpisodeItemLarge(
     isSelected: Boolean,
     isExpanded: Boolean,
     isBlurred: Boolean = false,
+    isSpoiler: Boolean = false,
     onClick: (Episode) -> Unit,
     onReadMoreTap: (Boolean) -> Unit,
+    onToggleSpoiler: () -> Unit = {},
     dropDownMenu: @Composable ((isVisible: Boolean, onDismissRequest: () -> Unit) -> Unit)? = null
 ) {
 
@@ -169,6 +211,7 @@ fun EpisodeItemLarge(
             Text.Card.Body(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .spoilerToggle(isSpoiler = isSpoiler, isBlurred = isBlurred, onToggle = onToggleSpoiler)
                     .animateContentSize()
                     .blurText(blurred = isBlurred),
                 text = episode.description,
@@ -208,8 +251,10 @@ fun EpisodeItemSmall(
     isSelected: Boolean,
     isExpanded: Boolean,
     isBlurred: Boolean = false,
+    isSpoiler: Boolean = false,
     onClick: (Episode) -> Unit,
     onReadMoreTap: (Boolean) -> Unit,
+    onToggleSpoiler: () -> Unit = {},
     dropDownMenu: @Composable ((isVisible: Boolean, onDismissRequest: () -> Unit) -> Unit)? = null
 ) {
 
@@ -283,6 +328,7 @@ fun EpisodeItemSmall(
         Text.Card.Body(
             modifier = Modifier
                 .fillMaxWidth()
+                .spoilerToggle(isSpoiler = isSpoiler, isBlurred = isBlurred, onToggle = onToggleSpoiler)
                 .animateContentSize()
                 .blurText(blurred = isBlurred),
             text = episode.description,

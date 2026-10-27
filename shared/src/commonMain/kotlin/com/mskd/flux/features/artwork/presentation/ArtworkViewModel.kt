@@ -125,6 +125,7 @@ class ArtworkViewModel(
             is ArtworkIntent.OnExternalPlayerResult -> onExternalPlayerResult(intent.progress)
             is ArtworkIntent.ExpandEpisodeDescription -> expandEpisodeDescription(episode = intent.episode)
             ArtworkIntent.CollapseEpisodeDescription -> collapseEpisodeDescription()
+            is ArtworkIntent.ToggleEpisodeSpoiler -> toggleEpisodeSpoiler(episode = intent.episode)
         }
     }
 
@@ -142,6 +143,9 @@ class ArtworkViewModel(
             userState = userState
         ) ?: return State.Error()
 
+        val spoilerIds = resolveSpoilerEpisodeIds(dataState)
+        val readableIds = userState.revealedEpisodeIds + listOfNotNull(userState.expandedEpisodeId)
+
         return State.Content(
             ArtworkContent(
                 fullArtwork = dataState.fullArtwork,
@@ -149,7 +153,8 @@ class ArtworkViewModel(
                 selectedSeason = season,
                 overview = resolveOverview(dataState.fullArtwork, selectedMedia, season),
                 expandedEpisodeId = userState.expandedEpisodeId,
-                blurredEpisodeIds = resolveBlurredEpisodeIds(dataState),
+                spoilerEpisodeIds = spoilerIds,
+                blurredEpisodeIds = (spoilerIds - readableIds).toImmutableSet(),
                 useExternalPlayer = dataState.useExternalPlayer,
                 people = dataState.people,
                 dialog = userState.dialog,
@@ -157,7 +162,7 @@ class ArtworkViewModel(
         )
     }
 
-    private fun resolveBlurredEpisodeIds(dataState: ArtworkDataState): ImmutableSet<Long> {
+    private fun resolveSpoilerEpisodeIds(dataState: ArtworkDataState): ImmutableSet<Long> {
         if (!dataState.blurSpoilers) return persistentSetOf()
         val episodes = (dataState.fullArtwork as? FullArtwork.FullShow)?.episodes ?: return persistentSetOf()
         return episodes
@@ -310,6 +315,16 @@ class ArtworkViewModel(
 
     private fun expandEpisodeDescription(episode: Episode) {
         _userState.update { it.copy(expandedEpisodeId = episode.id) }
+    }
+
+    private fun toggleEpisodeSpoiler(episode: Episode) {
+        _userState.update {
+            val revealed = it.revealedEpisodeIds
+            it.copy(
+                revealedEpisodeIds = (if (episode.id in revealed) revealed - episode.id else revealed + episode.id)
+                    .toImmutableSet()
+            )
+        }
     }
 
     private fun collapseEpisodeDescription() {

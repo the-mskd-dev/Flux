@@ -244,4 +244,6 @@
     <string name="gallery_empty">사용 가능한 이미지가 없습니다</string>
     <string name="blur_spoilers">스포일러 가리기</string>
     <string name="blur_spoilers_desc">아직 보지 않은 에피소드의 설명과 이미지를 흐리게 처리합니다</string>
+    <string name="spoiler_hidden">스포일러 숨김</string>
+    <string name="spoiler_reveal">보기</string>
 </resources>

@@ -25,7 +25,7 @@ import com.mskd.flux.features.files.domain.usecase.GetDeviceFilesUseCase
 import com.mskd.flux.features.files.domain.usecase.GetDeviceFilesUseCaseImpl
 import com.mskd.flux.features.files.domain.usecase.GetFileDurationUseCase
 import com.mskd.flux.features.files.domain.usecase.ScanSourcesUseCase
-import com.mskd.flux.features.files.domain.usecase.ScanSourcesUseCaseImpl
+import com.mskd.flux.features.files.data.usecase.ScanSourcesUseCaseImpl
 import com.mskd.flux.features.files.fake.FakeFilesDataSource
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import com.mskd.flux.features.images.fake.FakeImagesPrefetchManager

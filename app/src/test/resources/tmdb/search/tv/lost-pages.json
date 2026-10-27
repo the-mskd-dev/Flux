@@ -1,0 +1,21 @@
+{
+  "page": 1,
+  "results": [
+    {
+      "id": 990003,
+      "name": "Lost Pages",
+      "original_name": "Lost Pages",
+      "overview": "Pages nobody translated.",
+      "poster_path": "/lost-pages-poster.jpg",
+      "backdrop_path": "/lost-pages-backdrop.jpg",
+      "genre_ids": [18],
+      "popularity": 10.0,
+      "first_air_date": "2020-01-01",
+      "vote_average": 7.0,
+      "vote_count": 100,
+      "adult": false
+    }
+  ],
+  "total_pages": 1,
+  "total_results": 1
+}

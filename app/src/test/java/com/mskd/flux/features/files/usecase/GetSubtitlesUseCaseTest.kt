@@ -1,6 +1,5 @@
 package com.mskd.flux.features.files.usecase
 
-import com.mskd.flux.core.model.files.FileSource
 import com.mskd.flux.features.files.domain.usecase.GetSubtitlesUseCaseImpl
 import com.mskd.flux.features.files.fake.FakeFilesDataSource
 import com.mskd.flux.features.sources.domain.provider.SourcesProvider
@@ -30,23 +29,33 @@ class GetSubtitlesUseCaseTest: FunSpec ({
             Arb.element(FilesMockups.mediaStoreFiles + FilesMockups.safFiles),
         ) { file ->
 
-            val mediaStoreDataSource = FakeFilesDataSource(availableFiles = FilesMockups.mediaStoreFiles)
-            val safDataSource = FakeFilesDataSource(availableFiles = FilesMockups.safFiles)
+            val mediaStoreDataSource = FakeFilesDataSource(availableFiles = FilesMockups.mediaStoreFiles, root = "mediaStore/")
+            val safDataSource = FakeFilesDataSource(availableFiles = FilesMockups.safFiles, root = "saf/")
             coEvery { sourcesProvider.getSources() } returns listOf(mediaStoreDataSource, safDataSource)
 
-            val useCase = GetSubtitlesUseCaseImpl(
-                sources = mapOf(
-                    FileSource.LOCAL to mediaStoreDataSource,
-                    FileSource.SAF to safDataSource,
-                ),
-                sourcesProvider = sourcesProvider
-            )
+            val useCase = GetSubtitlesUseCaseImpl(sourcesProvider = sourcesProvider)
 
             val result = useCase(file)
 
             result shouldBe FilesMockups.subtitles.find { it.equals(file.name, ignoreCase = true) }
 
         }
+
+    }
+
+    test("no subtitle for a file outside of the active sources") {
+
+        // Given
+        val safDataSource = FakeFilesDataSource(availableFiles = FilesMockups.safFiles, root = "saf/")
+        coEvery { sourcesProvider.getSources() } returns listOf(safDataSource)
+
+        val useCase = GetSubtitlesUseCaseImpl(sourcesProvider = sourcesProvider)
+
+        // When
+        val result = useCase(FilesMockups.mediaStoreFiles.first())
+
+        // Then
+        result shouldBe null
 
     }
 

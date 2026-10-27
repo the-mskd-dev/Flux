@@ -12,7 +12,7 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class PeopleDto(
-    val id: Long,
+    val id: Long = 0,
     val cast: List<CastMemberDto>,
     val crew: List<CrewMemberDto>,
 )

@@ -21,6 +21,7 @@ import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.report.Trace
 import io.github.aakira.napier.Napier
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 
@@ -40,8 +41,8 @@ class TmdbDataSourceImpl(
         file: UserFile
     ): ArtworkDto? {
 
-        if (!tokenDataStore.tokenIsAvailable())
-            return null
+        // A missing token or a failing request is a failure, not a file that TMDB cannot identify
+        check(tokenDataStore.tokenIsAvailable()) { "No TMDB token available" }
 
         val language = tmdbLanguage()
 
@@ -61,32 +62,15 @@ class TmdbDataSourceImpl(
                 )
             }
 
-            var tmdbArtwork = searchResults.artworkFor(fileName = file.nameProperties.title)?.also {
+            val tmdbArtwork = searchResults.artworkFor(fileName = file.nameProperties.title)?.also {
                 it.type = if (file.isEpisode) MediaTypeDto.SHOW else MediaTypeDto.MOVIE
-            }
-
-            // Get translation for show if needed
-            if (tmdbArtwork?.type == MediaTypeDto.SHOW && (tmdbArtwork.description.isBlank() || tmdbArtwork.title.isBlank())) {
-
-                getTranslation(
-                    request = TranslationRequest.Show(
-                        artworkId = tmdbArtwork.id,
-                        language = language
-                    ),
-                )?.let {
-                    tmdbArtwork = tmdbArtwork.copy(
-                        title = it.data.name ?: tmdbArtwork.title,
-                        description = it.data.overview ?: tmdbArtwork.description
-                    )
-                }
-
             }
 
             tmdbArtwork
 
         } catch (e: Exception) {
             Napier.e(tag = TAG, message = "getTmdbArtwork - Fail to get TMDBArtwork for file:${file.name} (${language.toTmdbFormat()})", throwable = e)
-            null
+            throw e
         }
 
     }
@@ -127,28 +111,23 @@ class TmdbDataSourceImpl(
 
         return try {
 
-            var tmdbMovie = tmdbService.getMovieDetails(
+            val tmdbMovie = tmdbService.getMovieDetails(
                 id = artworkId,
                 language = language.toTmdbFormat()
             )
 
-            if (tmdbMovie.description.isBlank() || tmdbMovie.title.isBlank()) {
+            val translation = tmdbMovie.translations
+                ?.takeIf { tmdbMovie.description.isBlank() || tmdbMovie.title.isBlank() }
+                ?.translationFor(language)
 
-                getTranslation(
-                    request = TranslationRequest.Movie(
-                        artworkId = artworkId,
-                        language = language
-                    ),
-                )?.let {
-                    tmdbMovie = tmdbMovie.copy(
-                        title = it.data.name ?: tmdbMovie.title,
-                        description = it.data.overview ?: tmdbMovie.description
-                    )
-                }
-
+            if (translation != null) {
+                tmdbMovie.copy(
+                    title = translation.data.text?.takeIf { it.isNotBlank() } ?: tmdbMovie.title,
+                    description = translation.data.overview?.takeIf { it.isNotBlank() } ?: tmdbMovie.description
+                )
+            } else {
+                tmdbMovie
             }
-
-            tmdbMovie
 
         } catch (e: Exception) {
             Napier.e(tag = TAG, message = "getTmdbMovie - Fail to get TMDBMovie for artworkId:$artworkId (${language.toTmdbFormat()})", throwable = e)
@@ -194,28 +173,23 @@ class TmdbDataSourceImpl(
 
         return try {
 
-            var tmdbShow = tmdbService.getShowDetails(
+            val tmdbShow = tmdbService.getShowDetails(
                 artworkId = artworkId,
                 language = language.toTmdbFormat()
             )
 
-            if (tmdbShow.description.isBlank() || tmdbShow.title.isBlank()) {
+            val translation = tmdbShow.translations
+                ?.takeIf { tmdbShow.description.isBlank() || tmdbShow.title.isBlank() }
+                ?.translationFor(language)
 
-                getTranslation(
-                    request = TranslationRequest.Show(
-                        artworkId = artworkId,
-                        language = language
-                    ),
-                )?.let {
-                    tmdbShow = tmdbShow.copy(
-                        title = it.data.name ?: tmdbShow.title,
-                        description = it.data.overview ?: tmdbShow.description
-                    )
-                }
-
+            if (translation != null) {
+                tmdbShow.copy(
+                    title = translation.data.text?.takeIf { it.isNotBlank() } ?: tmdbShow.title,
+                    description = translation.data.overview?.takeIf { it.isNotBlank() } ?: tmdbShow.description
+                )
+            } else {
+                tmdbShow
             }
-
-            tmdbShow
 
         } catch (e: Exception) {
             Trace.error(tag = TAG, message = "getTmdbMovie - Fail to get TMDBShow for artworkId:$artworkId (${language.toTmdbFormat()})", throwable = e)
@@ -327,37 +301,55 @@ class TmdbDataSourceImpl(
 
         return try {
 
-            var tmdbSeason = tmdbService.getSeason(
-                id = artworkId,
-                season = season,
-                language = language.toTmdbFormat()
-            )
+            coroutineScope {
 
-            if (tmdbSeason.description.isBlank() || tmdbSeason.title.isBlank()) {
+                val english = Language.ENGLISH.toString()
 
-                getTranslation(
-                    request = TranslationRequest.Season(
-                        artworkId = artworkId,
-                        season = season,
-                        language = language
-                    ),
-                )?.let {
-                    tmdbSeason = tmdbSeason.copy(
-                        title = it.data.name ?: tmdbSeason.title,
-                        description = it.data.overview ?: tmdbSeason.description
-                    )
+                // English only completes the blanks of the user language: its failure is not the season's
+                val englishSeason = language.takeUnless { it.languageCode() == Language.ENGLISH.code }?.let {
+                    async {
+                        try {
+                            tmdbService.getSeason(id = artworkId, season = season, language = english)
+                        } catch (e: CancellationException) {
+                            throw e
+                        } catch (e: Exception) {
+                            Trace.error(TAG, "getTmdbSeason - Fail to get the English TMDBSeason for artworkId:$artworkId, season:$season", e)
+                            null
+                        }
+                    }
                 }
+
+                val tmdbSeason = tmdbService.getSeason(
+                    id = artworkId,
+                    season = season,
+                    language = language.toTmdbFormat()
+                )
+
+                englishSeason?.await()?.let { tmdbSeason.completedBy(it) } ?: tmdbSeason
 
             }
 
-            tmdbSeason
-
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             Napier.e(tag = TAG, message = "getTmdbSeason - Fail to get TMDBSeason for artworkId:$artworkId, season:$season (${language.toTmdbFormat()})", throwable = e)
             null
         }
 
     }
+
+    /** Each blank title and description of the season and of its episodes completed by [fallback]. */
+    private fun SeasonDto.completedBy(fallback: SeasonDto): SeasonDto = copy(
+        title = title.ifBlank { fallback.title },
+        description = description.ifBlank { fallback.description },
+        episodes = episodes.map { episode ->
+            val fallbackEpisode = fallback.episodes.find { it.number == episode.number }
+            episode.copy(
+                title = episode.title.ifBlank { fallbackEpisode?.title.orEmpty() },
+                description = episode.description.ifBlank { fallbackEpisode?.description.orEmpty() }
+            )
+        }
+    )
 
     override suspend fun getTranslation(request: TranslationRequest): TranslationsDto.Translation? {
 
@@ -373,34 +365,31 @@ class TmdbDataSourceImpl(
                 is TranslationRequest.Episode -> tmdbService.getEpisodeTranslations(artworkId = request.artworkId, season = request.season, number = request.number)
             }
 
-            val requestedTranslation = result.translations.find { it.language.equals(request.language.languageCode(), true) && !it.data.overview.isNullOrBlank() }
-            val fallbackTranslation = result.translations.find { it.language.equals(Language.ENGLISH.code, true) && !it.data.overview.isNullOrBlank() }
-
-            val translation = when {
-                requestedTranslation != null -> {
-
-                    val data = TranslationsDto.Data(
-                        name = requestedTranslation.data.name?.ifBlank { fallbackTranslation?.data?.name } ?: "",
-                        overview = requestedTranslation.data.overview?.ifBlank { fallbackTranslation?.data?.overview } ?: ""
-                    )
-
-                    requestedTranslation.copy(data = data)
-
-                }
-                fallbackTranslation != null -> fallbackTranslation
-                else -> null
-            }
-
-            if (request.artworkId == 94245L && request is TranslationRequest.Show) {
-                Trace.debug("$requestedTranslation")
-                Trace.debug("$fallbackTranslation")
-            }
+            val translation = result.translationFor(request.language)
 
             return translation
 
         } catch (e: Exception) {
             Napier.e(tag = TAG, message = "getTmdbTranslations - Fail to get translations for $request", throwable = e)
             null
+        }
+
+    }
+
+    /** Translation in [language], each blank field completed by English; English when there is none in [language]. */
+    private fun TranslationsDto.translationFor(language: String): TranslationsDto.Translation? {
+
+        val requestedTranslation = translations.find { it.language.equals(language.languageCode(), true) && !it.data.overview.isNullOrBlank() }
+        val fallbackTranslation = translations.find { it.language.equals(Language.ENGLISH.code, true) && !it.data.overview.isNullOrBlank() }
+
+        return when {
+            requestedTranslation != null -> requestedTranslation.copy(
+                data = TranslationsDto.Data(
+                    name = requestedTranslation.data.text?.ifBlank { fallbackTranslation?.data?.text } ?: "",
+                    overview = requestedTranslation.data.overview?.ifBlank { fallbackTranslation?.data?.overview } ?: ""
+                )
+            )
+            else -> fallbackTranslation
         }
 
     }

@@ -4,4 +4,4 @@ package com.mskd.flux.core.model.language
 fun String.languageCode(): String = substringBefore('-')
 
 
-fun String.toTmdbFormat(): String = Language.fromCode(this).toString()
+fun String.toTmdbFormat(): String = Language.fromCode(languageCode()).toString()

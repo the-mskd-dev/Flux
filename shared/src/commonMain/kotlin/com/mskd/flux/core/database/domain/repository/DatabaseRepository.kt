@@ -3,6 +3,7 @@ package com.mskd.flux.core.database.domain.repository
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Media
+import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.files.UserFile
@@ -21,7 +22,13 @@ interface DatabaseRepository {
     // Save
     suspend fun saveArtworks(artworks: List<Artwork>, overrideLastModification: Boolean = true)
     suspend fun saveMedias(medias: List<Media>)
+
+    /** Saves medias coming from TMDB: their user state (current time, status) is kept from the existing file path. */
+    suspend fun saveSyncedMedias(medias: List<Media>)
     suspend fun saveSeasons(seasons: List<Season>)
+
+    /** Saves an Artwork with its seasons, medias and people in a single transaction: a folder is never saved halfway. */
+    suspend fun saveSyncedFolder(artwork: Artwork, seasons: List<Season>, medias: List<Media>, people: List<Person>)
 
     // Artworks
     suspend fun getArtwork(artworkId: Long) : Artwork?

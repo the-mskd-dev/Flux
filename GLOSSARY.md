@@ -146,3 +146,63 @@ _Avoid_: Bottom sheet, menu
 **Track**:
 Piste audio ou de sous-titres sélectionnable d'un Media.
 _Avoid_: Stream, langue
+
+## Language
+
+**Catalogue**:
+L'ensemble des Artworks, Saisons et Médias connus de l'application pour les fichiers de l'utilisateur.
+_Avoid_: Bibliothèque, library
+
+**Source**:
+Un emplacement d'où proviennent les fichiers de l'utilisateur (stockage de l'appareil ou dossier personnalisé).
+_Avoid_: Provider, dossier racine
+
+**Source indisponible**:
+Une Source custom qui ne peut pas être lue pour l'instant ; ses données sont conservées.
+_Avoid_: Source supprimée
+
+**Fichier manquant**:
+Un fichier connu du Catalogue qui n'existe plus alors que sa Source est disponible ; ses données sont supprimées.
+_Avoid_: Fichier perdu, fichier orphelin
+
+**Artwork**:
+La fiche TMDB d'un film ou d'une série à laquelle des fichiers sont rattachés.
+_Avoid_: Affiche, poster, titre
+
+**Artwork privé**:
+Un Artwork masqué du Catalogue public et placé dans le dossier privé ; il le reste tant qu'il existe.
+_Avoid_: Artwork caché, hidden
+
+**Média**:
+Un fichier lisible rattaché à un Artwork : un film ou un épisode.
+
+**Synchro**:
+Le processus qui aligne le Catalogue sur les fichiers des Sources et les données TMDB.
+_Avoid_: Sync, rafraîchissement
+
+**Synchro légère**:
+Une Synchro qui ne traite que les nouveaux fichiers et retire les Fichiers manquants.
+_Avoid_: Synchro incrémentale, onlyNew
+
+**Synchro complète**:
+Une Synchro demandée explicitement qui récupère à nouveau les données TMDB de tous les fichiers.
+_Avoid_: Full sync, resynchronisation
+
+**Progression de synchro**:
+Le pourcentage d'avancement d'une Synchro, calculé sur les unités de travail déclarées par ses Étapes et Enrichissements ; elle ne recule jamais.
+
+**Étape de synchro**:
+Un traitement global de la Synchro (scan, suppression des Fichiers manquants, genres, catalogue, finalisation…) qui déclare son travail, l'exécute et signale sa progression.
+_Avoid_: Fetcher, resolver, step
+
+**Enrichissement**:
+Une donnée récupérée pour un Artwork pendant l'Étape catalogue (identification, détails, saisons, traductions, credits, durées) ; ajouter une donnée TMDB revient presque toujours à ajouter un Enrichissement.
+_Avoid_: Resolver, metadata fetcher
+
+**Fichier en échec**:
+Un fichier dont la récupération TMDB a échoué (réseau, API, token absent) ; rien n'est enregistré et il est retenté à la Synchro suivante.
+_Avoid_: Fichier inconnu, UNKNOWN
+
+**Fichier non reconnu**:
+Un fichier que TMDB ne permet pas d'identifier ; il est enregistré comme Média sans Artwork connu.
+_Avoid_: Fichier en échec

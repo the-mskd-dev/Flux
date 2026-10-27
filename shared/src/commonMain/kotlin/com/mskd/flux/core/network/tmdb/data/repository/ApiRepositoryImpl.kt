@@ -12,6 +12,7 @@ import com.mskd.flux.features.gallery.domain.model.GalleryImage
 import com.mskd.flux.core.network.tmdb.data.datasource.TmdbDataSource
 import com.mskd.flux.core.network.tmdb.data.mapper.toArtwork
 import com.mskd.flux.core.network.tmdb.data.mapper.toDomain
+import com.mskd.flux.core.network.tmdb.domain.model.ArtworkDetails
 import com.mskd.flux.core.network.tmdb.domain.model.PersonInfo
 import com.mskd.flux.core.network.tmdb.domain.model.Translation
 import com.mskd.flux.core.network.tmdb.domain.model.TranslationRequest
@@ -28,6 +29,23 @@ internal class ApiRepositoryImpl(
     override suspend fun getArtworkById(id: Long, type: ContentType): Artwork? = when (type) {
         ContentType.MOVIE -> tmdb.getMovie(artworkId = id)?.toArtwork()
         ContentType.SHOW -> tmdb.getShow(artworkId = id)?.toArtwork()
+    }
+
+    override suspend fun getDetails(artworkId: Long, type: ContentType, file: UserFile): ArtworkDetails? = when (type) {
+        ContentType.MOVIE -> tmdb.getMovie(artworkId = artworkId)?.let { movie ->
+            ArtworkDetails(
+                artwork = movie.toArtwork(),
+                movie = movie.toDomain(file = file, duration = movie.duration ?: 0),
+                people = movie.credits?.toDomain(artworkId = movie.id).orEmpty()
+            )
+        }
+        ContentType.SHOW -> tmdb.getShow(artworkId = artworkId)?.let { show ->
+            ArtworkDetails(
+                artwork = show.toArtwork(),
+                movie = null,
+                people = show.credits?.toDomain(artworkId = show.id).orEmpty()
+            )
+        }
     }
 
     override suspend fun getGenres(): List<Genre> = tmdb.getGenres().map { it.toDomain() }
@@ -101,7 +119,7 @@ internal class ApiRepositoryImpl(
     override suspend fun getTranslation(request: TranslationRequest): Translation? {
         return tmdb.getTranslation(request = request)?.let {
                 Translation(
-                    title = it.data.name,
+                    title = it.data.text,
                     description = it.data.overview
                 )
             }

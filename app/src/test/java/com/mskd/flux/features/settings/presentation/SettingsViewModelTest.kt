@@ -55,7 +55,7 @@ class SettingsViewModelTest : FunSpec({
     val dataStoreFlow = MutableStateFlow(SettingsDataStore.State())
     val privateFolderFlow = MutableStateFlow(PrivateFolderDataStore.State())
     val imagesPrefetchFlow = MutableStateFlow(ImagesPrefetchManager.State.Idle)
-    val syncCatalogFlow = MutableStateFlow(SyncState.Idle)
+    val syncCatalogFlow = MutableStateFlow(SyncState.Idle())
 
     beforeTest {
 

@@ -1,0 +1,49 @@
+{
+  "id": 1396,
+  "name": "Breaking Bad",
+  "overview": "Walter White, a chemistry teacher, turns to manufacturing methamphetamine.",
+  "poster_path": "/breaking-bad-poster.jpg",
+  "backdrop_path": "/breaking-bad-backdrop.jpg",
+  "vote_average": 8.9,
+  "vote_count": 15000,
+  "first_air_date": "2008-01-20",
+  "genres": [
+    {
+      "id": 18,
+      "name": "Drama"
+    },
+    {
+      "id": 80,
+      "name": "Crime"
+    }
+  ],
+  "adult": false,
+  "translations": {
+    "translations": [
+      {
+        "iso_639_1": "en",
+        "iso_3166_1": "US",
+        "name": "English",
+        "english_name": "English",
+        "data": {
+          "name": "Breaking Bad",
+          "overview": "Walter White, a chemistry teacher, turns to manufacturing methamphetamine."
+        }
+      }
+    ]
+  },
+  "credits": {
+    "cast": [
+      {
+        "id": 17419,
+        "name": "Bryan Cranston",
+        "original_name": "Bryan Cranston",
+        "profile_path": "/cranston.jpg",
+        "credit_id": "52542282760ee313280017f9",
+        "character": "Walter White",
+        "order": 0
+      }
+    ],
+    "crew": []
+  }
+}

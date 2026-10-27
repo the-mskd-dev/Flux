@@ -38,6 +38,7 @@ val moduleDatabase = module {
 
     single<DatabaseRepository> {
         DatabaseRepositoryImpl(
+            database = get(),
             artworksDao = get(),
             mediasDao = get(),
             seasonsDao = get()

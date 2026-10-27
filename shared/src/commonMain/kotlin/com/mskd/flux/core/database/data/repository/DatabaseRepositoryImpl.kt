@@ -1,5 +1,8 @@
 package com.mskd.flux.core.database.data.repository
 
+import androidx.room.immediateTransaction
+import androidx.room.useWriterConnection
+import com.mskd.flux.core.database.data.FluxDatabase
 import com.mskd.flux.core.database.data.dao.ArtworkDao
 import com.mskd.flux.core.database.data.dao.MediasDao
 import com.mskd.flux.core.database.data.dao.SeasonsDao
@@ -11,14 +14,17 @@ import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Movie
+import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.files.UserFile
+import com.mskd.flux.features.people.data.mapper.toEntity as toPersonEntity
 import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.utils.extensions.sort
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class DatabaseRepositoryImpl(
+    private val database: FluxDatabase,
     private val artworksDao: ArtworkDao,
     private val mediasDao: MediasDao,
     private val seasonsDao: SeasonsDao
@@ -48,8 +54,29 @@ class DatabaseRepositoryImpl(
         mediasDao.insertOrUpdate(medias = medias.map { it.toEntity() })
     }
 
+    override suspend fun saveSyncedMedias(medias: List<Media>) {
+        mediasDao.upsertFromSync(medias = medias.map { it.toEntity() })
+    }
+
     override suspend fun saveSeasons(seasons: List<Season>) {
         seasonsDao.insert(seasons.map { it.toEntity() })
+    }
+
+    override suspend fun saveSyncedFolder(artwork: Artwork, seasons: List<Season>, medias: List<Media>, people: List<Person>) {
+        database.useWriterConnection { transactor ->
+            transactor.immediateTransaction {
+                saveArtworks(listOf(artwork))
+                saveSeasons(seasons)
+                saveSyncedMedias(medias)
+                if (people.isNotEmpty()) {
+                    // TMDB returns the whole credits: the ones it dropped must not stay
+                    database.personDao().apply {
+                        delete(artworkId = artwork.id)
+                        insert(people = people.map { it.toPersonEntity() })
+                    }
+                }
+            }
+        }
     }
 
     override suspend fun getArtwork(artworkId: Long): Artwork? {
@@ -183,8 +210,8 @@ class DatabaseRepositoryImpl(
 
     override suspend fun deleteMediasNotInFiles(files: List<UserFile>) {
 
-        val mediasToDelete = getMediasNotInFiles(files = files)
-        deleteMedias(medias = mediasToDelete)
+        val existingPaths = files.mapTo(HashSet()) { it.path }
+        deleteMedias(medias = getMedias().filter { it.file.path !in existingPaths })
     }
 
     override suspend fun deleteMediasInFolder(folder: UserFolder) {

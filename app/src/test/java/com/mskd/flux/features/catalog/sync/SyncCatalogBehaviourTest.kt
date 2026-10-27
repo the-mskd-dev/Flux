@@ -107,6 +107,82 @@ class SyncCatalogBehaviourTest : FunSpec({
 
     }
 
+    test("a file whose search fails because of the network is not saved and is fetched again by the next Synchro légère") {
+
+        // Given
+        harness.deviceStorage.availableFiles = listOf(harness.deviceFile("Inception (2010).mkv"))
+        harness.tmdb.cutNetwork()
+
+        // When
+        harness.lightSync()
+
+        // Then
+        harness.catalog.getMedias() shouldBe emptyList()
+        harness.catalog.getArtworks(includePrivates = true) shouldBe emptyList()
+        harness.states.last() shouldBe SyncState.Idle(failedFiles = 1)
+
+        // When
+        harness.tmdb.restoreNetwork()
+        harness.lightSync()
+
+        // Then
+        harness.catalog.getMedias().map { it.title } shouldContainExactlyInAnyOrder listOf("Inception")
+        harness.states.last() shouldBe SyncState.Idle(failedFiles = 0)
+
+    }
+
+    test("a file is a Fichier en échec, not a Fichier non reconnu, when no TMDB token is available") {
+
+        // Given
+        harness.close()
+        harness = SyncHarness(tmdbToken = "")
+        harness.deviceStorage.availableFiles = listOf(harness.deviceFile("Inception (2010).mkv"))
+
+        // When
+        harness.lightSync()
+
+        // Then
+        harness.catalog.getMedias() shouldBe emptyList()
+        harness.states.last() shouldBe SyncState.Idle(failedFiles = 1)
+
+    }
+
+    test("a failure while fetching the details of one Artwork does not prevent the others from being saved") {
+
+        // Given
+        harness.deviceStorage.availableFiles = listOf(
+            harness.deviceFile("Inception (2010).mkv"),
+            harness.deviceFile("Breaking Bad S01E01.mkv"),
+        )
+        harness.tmdb.failEndpoint("movie/{id}")
+
+        // When
+        harness.lightSync()
+
+        // Then
+        harness.catalog.getArtworks(includePrivates = true).map { it.title } shouldContainExactlyInAnyOrder listOf("Breaking Bad")
+        harness.catalog.getMedias().map { it.title } shouldContainExactlyInAnyOrder listOf("Pilot")
+        harness.states.last() shouldBe SyncState.Idle(failedFiles = 1)
+
+    }
+
+    test("a failure while reading the duration of a Média does not prevent the others from being saved") {
+
+        // Given
+        harness.deviceStorage.availableFiles = listOf(
+            harness.deviceFile("Breaking Bad S01E01.mkv"),
+            harness.deviceFile("Breaking Bad S01E02.mkv"),
+        )
+        harness.unreadableDurations += "Breaking Bad S01E01.mkv"
+
+        // When
+        harness.lightSync()
+
+        // Then
+        harness.catalog.getMedias().map { it.title } shouldContainExactlyInAnyOrder listOf("Pilot", "Cat's in the Bag...")
+
+    }
+
     test("the state goes from Idle to Syncing and back to Idle") {
 
         // Given
@@ -116,9 +192,9 @@ class SyncCatalogBehaviourTest : FunSpec({
         harness.lightSync()
 
         // Then
-        harness.states.first() shouldBe SyncState.Idle
+        harness.states.first() shouldBe SyncState.Idle()
         harness.states.filterIsInstance<SyncState.Syncing>().map { it.full }.distinct() shouldBe listOf(false)
-        harness.states.last() shouldBe SyncState.Idle
+        harness.states.last() shouldBe SyncState.Idle()
 
     }
 

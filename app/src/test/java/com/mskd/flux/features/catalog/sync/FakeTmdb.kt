@@ -6,6 +6,7 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
 import kotlinx.coroutines.CompletableDeferred
+import java.io.IOException
 import java.util.concurrent.CopyOnWriteArrayList
 
 /**
@@ -29,11 +30,19 @@ class FakeTmdb {
     @Volatile
     private var gate: CompletableDeferred<Unit>? = null
 
+    @Volatile
+    private var networkDown = false
+
+    private val failingEndpoints = CopyOnWriteArrayList<Regex>()
+
     val engine = MockEngine { request ->
 
         val path = request.url.encodedPath.removePrefix(BASE_PATH)
         calls += path
         gate?.await()
+
+        if (networkDown) throw IOException("network down")
+        if (failingEndpoints.any { it.matches(path) }) return@MockEngine respond(content = "", status = HttpStatusCode.InternalServerError)
 
         val fixturePath = when {
             path.startsWith("search/") -> "$path/${slug(request.url.parameters["query"].orEmpty())}"
@@ -68,6 +77,21 @@ class FakeTmdb {
     fun resume() {
         gate?.complete(Unit)
         gate = null
+    }
+
+    /** Makes every request fail like a network error, until [restoreNetwork]. */
+    fun cutNetwork() {
+        networkDown = true
+    }
+
+    fun restoreNetwork() {
+        networkDown = false
+        failingEndpoints.clear()
+    }
+
+    /** Answers [endpoint] (see [callCount]) with a server error, until [restoreNetwork]. */
+    fun failEndpoint(endpoint: String) {
+        failingEndpoints += Regex(endpoint.split("/").joinToString("/") { if (it.startsWith("{")) "[^/]+" else Regex.escape(it) })
     }
 
     fun resetCalls() = calls.clear()

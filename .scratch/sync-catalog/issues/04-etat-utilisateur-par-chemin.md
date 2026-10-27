@@ -6,8 +6,13 @@
 
 **Status:** ready-for-agent
 
-- [ ] Le temps de lecture et le statut d'un Média sont conservés après une Synchro légère et une Synchro complète
-- [ ] Ils sont conservés quand une Synchro complète rattache le fichier à un autre Artwork
-- [ ] Deux fichiers de même nom dans des dossiers différents gardent chacun leur propre progression
-- [ ] La fonction de reprise de progression par nom de fichier est supprimée
-- [ ] L'upsert partiel est couvert par un test sur la base (Room en mémoire ou `androidTest` selon le repli du ticket 01)
+- [x] Le temps de lecture et le statut d'un Média sont conservés après une Synchro légère et une Synchro complète
+- [x] Ils sont conservés quand une Synchro complète rattache le fichier à un autre Artwork
+- [x] Deux fichiers de même nom dans des dossiers différents gardent chacun leur propre progression
+- [x] La fonction de reprise de progression par nom de fichier est supprimée
+- [x] L'upsert partiel est couvert par un test sur la base (Room en mémoire ou `androidTest` selon le repli du ticket 01)
+
+**Notes:**
+
+- `saveMedias` reste l'écriture complète (utilisée par la progression, le statut, la langue). La Synchro passe par `saveSyncedMedias` → `MediasDao.upsertFromSync`, qui reprend `currentTime` et `status` de la ligne de même chemin.
+- Le cas « deux fichiers de même nom, dossiers différents » est couvert au niveau DAO (`MediasDaoTest`, `androidTest`, compilé mais non exécuté ici faute d'appareil) : le harnais ne peut pas le produire car TMDB identifie deux fichiers de même nom comme le même Média.

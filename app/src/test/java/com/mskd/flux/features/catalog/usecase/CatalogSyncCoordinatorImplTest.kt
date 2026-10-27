@@ -22,7 +22,7 @@ class CatalogSyncCoordinatorImplTest : FunSpec({
 
     test("initial state is Idle") {
         val coordinator = CatalogSyncCoordinatorImpl(scope = testScope)
-        coordinator.state.value shouldBe SyncState.Idle
+        coordinator.state.value shouldBe SyncState.Idle()
         coordinator.isBusy shouldBe false
     }
 
@@ -43,7 +43,7 @@ class CatalogSyncCoordinatorImplTest : FunSpec({
         testDispatcher.scheduler.advanceTimeBy(150)
         testDispatcher.scheduler.runCurrent()
 
-        coordinator.state.value shouldBe SyncState.Idle
+        coordinator.state.value shouldBe SyncState.Idle()
         coordinator.isBusy shouldBe false
     }
 

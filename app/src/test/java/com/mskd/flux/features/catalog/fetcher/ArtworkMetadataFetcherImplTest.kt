@@ -33,7 +33,7 @@ class ArtworkMetadataFetcherImplTest : FunSpec({
                 onProgress = {}
             )
 
-            result.single().artwork shouldBe idArtwork
+            result.found.single().artwork shouldBe idArtwork
             coVerify(exactly = 1) { api.getArtworkById(438631, ContentType.MOVIE) }
             coVerify(exactly = 0) { api.getArtwork(any()) }
         }
@@ -51,7 +51,7 @@ class ArtworkMetadataFetcherImplTest : FunSpec({
                 onProgress = {}
             )
 
-            result.single().artwork shouldBe showArtwork
+            result.found.single().artwork shouldBe showArtwork
             coVerify(exactly = 1) { api.getArtworkById(1399, ContentType.SHOW) }
             coVerify(exactly = 0) { api.getArtwork(any()) }
         }
@@ -69,7 +69,7 @@ class ArtworkMetadataFetcherImplTest : FunSpec({
                 onProgress = {}
             )
 
-            result.single().artwork shouldBe nameArtwork
+            result.found.single().artwork shouldBe nameArtwork
             coVerify(exactly = 1) { api.getArtworkById(438631, ContentType.MOVIE) }
             coVerify(exactly = 1) { api.getArtwork(movieFile) }
         }
@@ -87,7 +87,7 @@ class ArtworkMetadataFetcherImplTest : FunSpec({
                 onProgress = {}
             )
 
-            result.single().artwork shouldBe nameArtwork
+            result.found.single().artwork shouldBe nameArtwork
         }
     }
 
@@ -104,7 +104,7 @@ class ArtworkMetadataFetcherImplTest : FunSpec({
                 onProgress = { progress++ }
             )
 
-            result.single().artwork shouldBe nameArtwork
+            result.found.single().artwork shouldBe nameArtwork
             coVerify(exactly = 1) { api.getArtwork(movieFile) }
             progress shouldBe 1
         }
@@ -121,7 +121,7 @@ class ArtworkMetadataFetcherImplTest : FunSpec({
                 onProgress = {}
             )
 
-            result.single().artwork shouldBe nameArtwork
+            result.found.single().artwork shouldBe nameArtwork
             coVerify(exactly = 1) { api.getArtwork(movieFile) }
             coVerify(exactly = 0) { api.getArtworkById(any(), any()) }
         }

@@ -21,6 +21,7 @@ interface CatalogSyncCoordinator {
     val isBusy: Boolean
     fun launch(full: Boolean, block: suspend CoroutineScope.() -> Unit)
     fun setTotalSteps(steps: Int)
+    fun setFailedFiles(count: Int)
     fun incrementProgress()
 }
 
@@ -32,12 +33,13 @@ class CatalogSyncCoordinatorImpl(
         const val TAG = "CatalogSyncCoordinator"
     }
 
-    private val _state = MutableStateFlow<SyncState>(SyncState.Idle)
+    private val _state = MutableStateFlow<SyncState>(SyncState.Idle())
     override val state: StateFlow<SyncState> = _state.asStateFlow()
 
     private var activeJob: Job? = null
     private val completedSteps = AtomicInt(0)
     private var totalSteps = 1
+    private var failedFiles = 0
 
     override val isBusy: Boolean get() = _state.value is SyncState.Syncing
 
@@ -46,11 +48,12 @@ class CatalogSyncCoordinatorImpl(
         activeJob?.cancel()
         completedSteps.set(0)
         totalSteps = 1
+        failedFiles = 0
         _state.value = SyncState.Syncing(full = full)
 
         activeJob = scope.launch {
             block()
-            _state.value = SyncState.Idle
+            _state.value = SyncState.Idle(failedFiles = failedFiles)
         }
 
     }
@@ -59,6 +62,10 @@ class CatalogSyncCoordinatorImpl(
         totalSteps = steps.coerceAtLeast(1)
 
         Trace.info(tag = TAG, message = "Set up for $steps steps")
+    }
+
+    override fun setFailedFiles(count: Int) {
+        failedFiles = count
     }
 
     override fun incrementProgress() {

@@ -89,6 +89,8 @@ class SyncCatalogUseCase(
                 onProgress = { coordinator.incrementProgress() }
             )
 
+            coordinator.setFailedFiles(catalog.failedFiles.size)
+
             // Upsert: nothing is wiped, private flags and user state (by file path) are kept by the save
             database.saveArtworks(catalog.artworks)
             database.saveSeasons(catalog.seasons)

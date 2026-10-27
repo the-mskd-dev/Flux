@@ -15,6 +15,7 @@ import com.mskd.flux.core.network.tmdb.domain.model.TranslationRequest
 
 interface ApiRepository {
 
+    /** [Artwork.UNKNOWN] when TMDB cannot identify the file. Throws when the lookup fails (network, API, no token). */
     suspend fun getArtwork(file: UserFile): Artwork
 
     suspend fun getArtworkById(id: Long, type: ContentType): Artwork?

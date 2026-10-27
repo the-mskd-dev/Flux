@@ -6,8 +6,13 @@
 
 **Status:** ready-for-agent
 
-- [ ] Une erreur réseau sur la recherche d'un fichier ne le persiste pas ; la Synchro légère suivante le retente et le persiste s'il est trouvé
-- [ ] L'absence de token TMDB est traitée comme un échec, pas comme un Fichier non reconnu
-- [ ] Un fichier introuvable sur TMDB est persisté comme Fichier non reconnu et n'est pas retenté
-- [ ] Une exception sur un Média (traduction, durée) ou un dossier n'empêche pas les autres d'être persistés
-- [ ] Le nombre de Fichiers en échec de la dernière Synchro est disponible dans `SyncState`
+- [x] Une erreur réseau sur la recherche d'un fichier ne le persiste pas ; la Synchro légère suivante le retente et le persiste s'il est trouvé
+- [x] L'absence de token TMDB est traitée comme un échec, pas comme un Fichier non reconnu
+- [x] Un fichier introuvable sur TMDB est persisté comme Fichier non reconnu et n'est pas retenté
+- [x] Une exception sur un Média (traduction, durée) ou un dossier n'empêche pas les autres d'être persistés
+- [x] Le nombre de Fichiers en échec de la dernière Synchro est disponible dans `SyncState`
+
+**Notes:**
+
+- `TmdbDataSource.getArtwork` lève une exception sur échec ou token absent ; `null` reste « introuvable ». `ArtworkMetadataFetcher` retourne `ArtworkFetchResult(found, failedFolders)`.
+- Un film sans détails ou une saison absente rend le fichier « en échec » ; un Artwork sans aucun fichier récupéré n'est pas persisté. `Catalog.failedFiles` alimente `SyncState.Idle(failedFiles)` via `CatalogSyncCoordinator.setFailedFiles`.

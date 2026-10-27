@@ -42,10 +42,11 @@ class MovieMetadataFetcherImpl(
                             artwork.id == Artwork.UNKNOWN_ID -> Episode(file = file)
                             else -> {
 
+                                // No details is a failure: the file is retried by the next Synchro légère
                                 api.getMovie(
                                     artworkId = artwork.id,
                                     file = file,
-                                ) ?: Episode(file = file)
+                                ) ?: error("No details for movie ${artwork.id}")
 
                             }
                         }

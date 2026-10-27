@@ -66,6 +66,9 @@ internal class SyncHarness(tmdbToken: String = "test-token") : AutoCloseable {
 
     val tmdb = FakeTmdb()
 
+    /** Files whose duration cannot be read from the file. */
+    val unreadableDurations = CopyOnWriteArrayList<String>()
+
     /** The device storage, always available. */
     val deviceStorage = FakeFilesDataSource(availableFiles = emptyList(), root = DEVICE_ROOT)
 
@@ -101,7 +104,10 @@ internal class SyncHarness(tmdbToken: String = "test-token") : AutoCloseable {
                 single<ImagesPrefetchManager> { FakeImagesPrefetchManager() }
                 single<GetFileDurationUseCase> {
                     object : GetFileDurationUseCase {
-                        override suspend fun invoke(file: UserFile): Int = FILE_DURATION
+                        override suspend fun invoke(file: UserFile): Int {
+                            if (file.name in unreadableDurations) error("Cannot read ${file.name}")
+                            return FILE_DURATION
+                        }
                     }
                 }
                 single<SourcesProvider> {

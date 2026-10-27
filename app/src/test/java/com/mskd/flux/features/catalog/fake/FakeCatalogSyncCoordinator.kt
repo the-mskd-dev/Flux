@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 
 internal class FakeCatalogSyncCoordinator(
     private val scope: CoroutineScope,
-    initialState: SyncState = SyncState.Idle
+    initialState: SyncState = SyncState.Idle()
 ) : CatalogSyncCoordinator {
 
     private val _state = MutableStateFlow(initialState)
@@ -39,10 +39,14 @@ internal class FakeCatalogSyncCoordinator(
         _state.update { SyncState.Syncing(full = full) }
         job = scope.launch {
             block()
-            _state.update { SyncState.Idle }
+            _state.update { SyncState.Idle(failedFiles = failedFiles) }
         }
     }
 
+    var failedFiles = 0
+        private set
+
+    override fun setFailedFiles(count: Int) { failedFiles = count }
     override fun setTotalSteps(steps: Int) { totalSteps = steps }
     override fun incrementProgress() { progressCount++ }
 }

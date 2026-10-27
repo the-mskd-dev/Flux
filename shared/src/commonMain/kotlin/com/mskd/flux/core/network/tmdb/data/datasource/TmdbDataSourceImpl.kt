@@ -40,8 +40,8 @@ class TmdbDataSourceImpl(
         file: UserFile
     ): ArtworkDto? {
 
-        if (!tokenDataStore.tokenIsAvailable())
-            return null
+        // A missing token or a failing request is a failure, not a file that TMDB cannot identify
+        check(tokenDataStore.tokenIsAvailable()) { "No TMDB token available" }
 
         val language = tmdbLanguage()
 
@@ -86,7 +86,7 @@ class TmdbDataSourceImpl(
 
         } catch (e: Exception) {
             Napier.e(tag = TAG, message = "getTmdbArtwork - Fail to get TMDBArtwork for file:${file.name} (${language.toTmdbFormat()})", throwable = e)
-            null
+            throw e
         }
 
     }

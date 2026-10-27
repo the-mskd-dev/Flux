@@ -7,6 +7,8 @@ import com.mskd.flux.core.network.tmdb.domain.model.TranslationRequest
 import com.mskd.flux.core.network.tmdb.domain.repository.ApiRepository
 import com.mskd.flux.features.files.domain.usecase.GetFileDurationUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
+import com.mskd.flux.report.Trace
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -37,59 +39,69 @@ class MediaResolverImpl(
 
                 async(dispatcher) {
 
-                    // Get translation if needed
-                    val translation = when (media) {
-                        is Episode -> {
-                            if (!media.isUnknown && (media.title.isBlank() || media.description.isBlank())) {
-                                api.getTranslation(
-                                    request = TranslationRequest.Episode(
-                                        artworkId = media.artworkId,
-                                        season = media.season,
-                                        number = media.number,
-                                        language = language
+                    try {
+
+                        // Get translation if needed
+                        val translation = when (media) {
+                            is Episode -> {
+                                if (!media.isUnknown && (media.title.isBlank() || media.description.isBlank())) {
+                                    api.getTranslation(
+                                        request = TranslationRequest.Episode(
+                                            artworkId = media.artworkId,
+                                            season = media.season,
+                                            number = media.number,
+                                            language = language
+                                        )
                                     )
-                                )
-                            } else null
+                                } else null
+                            }
+
+                            is Movie -> {
+                                if (media.title.isBlank() || media.description.isBlank()) {
+                                    api.getTranslation(
+                                        request = TranslationRequest.Movie(
+                                            artworkId = media.artworkId,
+                                            language = language
+                                        )
+                                    )
+                                } else null
+                            }
                         }
 
-                        is Movie -> {
-                            if (media.title.isBlank() || media.description.isBlank()) {
-                                api.getTranslation(
-                                    request = TranslationRequest.Movie(
-                                        artworkId = media.artworkId,
-                                        language = language
-                                    )
+                        // Get new values
+                        val newTitle = translation?.title ?: media.title
+                        val newDescription = translation?.description ?: media.description
+                        val newDuration = if (media.duration > 0) media.duration else getFileDurationUseCase(file = media.file)
+
+                        // Create resolved media
+                        val resolvedMedia = if (newTitle == media.title && newDescription == media.description && newDuration == media.duration) {
+                            media
+                        } else {
+                            when (media) {
+                                is Episode -> media.copy(
+                                    title = newTitle,
+                                    description = newDescription,
+                                    duration = newDuration
                                 )
-                            } else null
+                                is Movie -> media.copy(
+                                    title = newTitle,
+                                    description = newDescription,
+                                    duration = newDuration
+                                )
+                            }
                         }
-                    }
 
-                    // Get new values
-                    val newTitle = translation?.title ?: media.title
-                    val newDescription = translation?.description ?: media.description
-                    val newDuration = if (media.duration > 0) media.duration else getFileDurationUseCase(file = media.file)
+                        resolvedMedia
 
-                    // Create resolved media
-                    val resolvedMedia = if (newTitle == media.title && newDescription == media.description && newDuration == media.duration) {
+                    } catch (e: CancellationException) {
+                        throw e
+                    } catch (e: Exception) {
+                        // The media is kept as it is: one failing media never stops the Synchro
+                        Trace.error(TAG, "Fail to resolve ${media.file.name}", e)
                         media
-                    } else {
-                        when (media) {
-                            is Episode -> media.copy(
-                                title = newTitle,
-                                description = newDescription,
-                                duration = newDuration
-                            )
-                            is Movie -> media.copy(
-                                title = newTitle,
-                                description = newDescription,
-                                duration = newDuration
-                            )
-                        }
+                    } finally {
+                        onProgress()
                     }
-
-                    onProgress()
-
-                    resolvedMedia
 
                 }
 

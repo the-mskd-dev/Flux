@@ -1,5 +1,6 @@
 package com.mskd.flux.features.catalog.domain.fetcher
 
+import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.catalog.Catalog
@@ -23,7 +24,8 @@ class CatalogContentFetcherImpl(
     override suspend fun fetch(folders: List<CatalogFolder>, onProgress: () -> Unit): Catalog {
 
         // Get artworks
-        val artworkFiles = artworkMetadataFetcher.fetch(folders = folders, onProgress = onProgress)
+        val artworkResult = artworkMetadataFetcher.fetch(folders = folders, onProgress = onProgress)
+        val artworkFiles = artworkResult.found
 
         // Get movies, seasons and episodes
         val (movies, seasonsAndEpisodes) = supervisorScope {
@@ -51,11 +53,29 @@ class CatalogContentFetcherImpl(
             onProgress = onProgress
         )
 
+        // Fichiers en échec: not persisted, retried by the next Synchro légère
+        val fetchedSeasons = seasonsAndEpisodes.map { it.first.artworkId to it.first.season }.toSet()
+        val fetchedMovies = movies.map { it.artworkId }.toSet()
+        val failedFiles = artworkResult.failedFolders.flatMap { it.files } + artworkFiles
+            .filterNot { it.artwork.isUnknown }
+            .flatMap { (artwork, files) ->
+                when (artwork.type) {
+                    ContentType.MOVIE -> if (artwork.id in fetchedMovies) emptyList() else files
+                    ContentType.SHOW -> files.filter { it.season != null && (artwork.id to it.season) !in fetchedSeasons }
+                }
+            }
+
+        // An Artwork none of whose files could be fetched is not saved either
+        val artworks = artworkFiles.map { it.artwork }.filter { artwork ->
+            artwork.isUnknown || artwork.id in fetchedMovies || fetchedSeasons.any { it.first == artwork.id }
+        }
+
         return Catalog(
-            artworks = artworkFiles.map { it.artwork },
+            artworks = artworks,
             movies = medias.filterIsInstance<Movie>(),
             seasons = seasonsAndEpisodes.map { it.first },
-            episodes = medias.filterIsInstance<Episode>()
+            episodes = medias.filterIsInstance<Episode>(),
+            failedFiles = failedFiles
         )
 
     }

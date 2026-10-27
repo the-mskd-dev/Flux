@@ -5,15 +5,17 @@ import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.catalog.CatalogFolder
 import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.core.network.tmdb.domain.repository.ApiRepository
+import com.mskd.flux.features.catalog.domain.model.ArtworkFetchResult
 import com.mskd.flux.features.catalog.domain.model.ArtworkWithFiles
 import com.mskd.flux.report.Trace
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.supervisorScope
 
 interface ArtworkMetadataFetcher {
-    suspend fun fetch(folders: List<CatalogFolder>, onProgress: () -> Unit): List<ArtworkWithFiles>
+    suspend fun fetch(folders: List<CatalogFolder>, onProgress: () -> Unit): ArtworkFetchResult
 }
 
 class ArtworkMetadataFetcherImpl(
@@ -46,9 +48,9 @@ class ArtworkMetadataFetcherImpl(
     override suspend fun fetch(
         folders: List<CatalogFolder>,
         onProgress: () -> Unit
-    ): List<ArtworkWithFiles> {
+    ): ArtworkFetchResult {
 
-        val artworkWithFiles = supervisorScope {
+        val results = supervisorScope {
 
             folders.map { folder ->
 
@@ -61,11 +63,14 @@ class ArtworkMetadataFetcherImpl(
                         // The TMDB ID has priority, then the name
                         val artwork = getArtworkById(folder = folder, file = file) ?: api.getArtwork(file = file)
 
-                        ArtworkWithFiles(artwork = artwork, files = folder.files)
+                        folder to ArtworkWithFiles(artwork = artwork, files = folder.files)
 
+                    } catch (e: CancellationException) {
+                        throw e
                     } catch (e: Exception) {
+                        // Not persisted: the folder is retried by the next Synchro légère
                         Trace.error(TAG, "Fail to get artwork for ${folder.files.first().name}", e)
-                        ArtworkWithFiles(artwork = Artwork.UNKNOWN, files = folder.files)
+                        folder to null
                     } finally {
                         onProgress()
                     }
@@ -76,9 +81,14 @@ class ArtworkMetadataFetcherImpl(
 
         }
 
-        Trace.info(TAG, "Found ${artworkWithFiles.size} artwork(s)")
+        val found = results.mapNotNull { it.second }
 
-        return artworkWithFiles
+        Trace.info(TAG, "Found ${found.size} artwork(s), ${results.size - found.size} failed folder(s)")
+
+        return ArtworkFetchResult(
+            found = found,
+            failedFolders = results.filter { it.second == null }.map { it.first }
+        )
 
     }
 

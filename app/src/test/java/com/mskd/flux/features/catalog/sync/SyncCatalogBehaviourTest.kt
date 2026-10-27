@@ -13,6 +13,8 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.longs.shouldBeGreaterThan as shouldBeGreaterThanLong
 import io.kotest.matchers.ints.shouldBeGreaterThan
+import io.kotest.matchers.ints.shouldBeLessThanOrEqual
+import com.mskd.flux.features.catalog.domain.sync.TmdbConcurrency
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import kotlinx.coroutines.delay
@@ -662,6 +664,21 @@ class SyncCatalogBehaviourTest : FunSpec({
 
         harness.tmdb.resume()
         harness.awaitIdle()
+
+    }
+
+    test("a large Catalogue never has more TMDB calls in flight than the limit") {
+
+        // Given
+        harness.deviceStorage.availableFiles = (1..300).map { harness.deviceFile("Movie $it (2000).mkv") }
+        harness.tmdb.latencyMillis = 5
+
+        // When
+        harness.lightSync()
+
+        // Then
+        harness.tmdb.callCount("search/movie") shouldBe 300
+        harness.tmdb.maxInFlight shouldBeLessThanOrEqual TmdbConcurrency.MAX_CALLS
 
     }
 

@@ -8,7 +8,7 @@ import com.mskd.flux.features.catalog.domain.sync.enrichment.Enrichment
 import com.mskd.flux.features.catalog.domain.sync.enrichment.FolderDraft
 import com.mskd.flux.report.Trace
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.supervisorScope
@@ -20,7 +20,6 @@ import kotlinx.coroutines.supervisorScope
 class CatalogStep(
     private val database: DatabaseRepository,
     private val enrichments: List<Enrichment>,
-    private val dispatcher: CoroutineDispatcher,
 ) : SyncStep {
 
     private companion object {
@@ -34,7 +33,7 @@ class CatalogStep(
     override suspend fun run(context: SyncContext) {
 
         val drafts = supervisorScope {
-            context.foldersToFetch.map { folder -> async(dispatcher) { process(folder, context) } }.awaitAll()
+            context.foldersToFetch.map { folder -> async(Dispatchers.IO) { process(folder, context) } }.awaitAll()
         }
 
         context.failedFiles = drafts.sumOf { it.failedFiles }

@@ -2,12 +2,13 @@ package com.mskd.flux.features.catalog.domain.sync.enrichment
 
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.catalog.CatalogFolder
+import com.mskd.flux.features.catalog.domain.sync.TmdbConcurrency
 import com.mskd.flux.core.network.tmdb.domain.repository.ApiRepository
 import com.mskd.flux.report.Trace
 import kotlinx.coroutines.CancellationException
 
 /** TMDB seasons and episodes of the show of a folder. The files of a season that fails are Fichiers en échec. */
-class SeasonsEnrichment(private val api: ApiRepository) : Enrichment {
+class SeasonsEnrichment(private val api: ApiRepository, private val tmdb: TmdbConcurrency) : Enrichment {
 
     private companion object { const val TAG = "SeasonsEnrichment" }
 
@@ -24,11 +25,13 @@ class SeasonsEnrichment(private val api: ApiRepository) : Enrichment {
 
             try {
 
-                val (fetchedSeason, episodes) = api.getSeasonAndEpisodes(
-                    artworkId = artwork.id,
-                    season = season,
-                    files = seasonFiles
-                ) ?: error("No details for season $season of ${artwork.id}")
+                val (fetchedSeason, episodes) = tmdb.limit {
+                    api.getSeasonAndEpisodes(
+                        artworkId = artwork.id,
+                        season = season,
+                        files = seasonFiles
+                    )
+                } ?: error("No details for season $season of ${artwork.id}")
 
                 draft.seasons += fetchedSeason
                 draft.medias += episodes

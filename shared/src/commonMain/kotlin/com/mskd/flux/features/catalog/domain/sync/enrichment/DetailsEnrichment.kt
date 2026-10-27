@@ -1,6 +1,7 @@
 package com.mskd.flux.features.catalog.domain.sync.enrichment
 
 import com.mskd.flux.core.model.catalog.CatalogFolder
+import com.mskd.flux.features.catalog.domain.sync.TmdbConcurrency
 import com.mskd.flux.core.network.tmdb.domain.repository.ApiRepository
 
 /**
@@ -8,7 +9,7 @@ import com.mskd.flux.core.network.tmdb.domain.repository.ApiRepository
  * The title and description in the user language, completed by English, replace those of the search.
  * No details is a failure.
  */
-class DetailsEnrichment(private val api: ApiRepository) : Enrichment {
+class DetailsEnrichment(private val api: ApiRepository, private val tmdb: TmdbConcurrency) : Enrichment {
 
     override fun units(folder: CatalogFolder) = 1
 
@@ -16,7 +17,7 @@ class DetailsEnrichment(private val api: ApiRepository) : Enrichment {
 
         val artwork = draft.artwork?.takeUnless { it.isUnknown } ?: return
 
-        val details = api.getDetails(artworkId = artwork.id, type = artwork.type, file = draft.folder.files.first())
+        val details = tmdb.limit { api.getDetails(artworkId = artwork.id, type = artwork.type, file = draft.folder.files.first()) }
             ?: error("No details for ${artwork.type} ${artwork.id}")
 
         draft.artwork = details.artwork

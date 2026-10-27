@@ -1,13 +1,18 @@
 package com.mskd.flux.features.catalog.sync
 
 import io.ktor.client.engine.mock.MockEngine
+import io.ktor.client.engine.mock.MockRequestHandleScope
 import io.ktor.client.engine.mock.respond
+import io.ktor.client.request.HttpRequestData
+import io.ktor.client.request.HttpResponseData
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.delay
 import java.io.IOException
 import java.util.concurrent.CopyOnWriteArrayList
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * TMDB simulated at the HTTP level: each request is answered with the JSON fixture found at
@@ -41,17 +46,39 @@ class FakeTmdb {
 
     private val failingEndpoints = CopyOnWriteArrayList<Pair<Regex, String?>>()
 
+    private val inFlight = AtomicInteger()
+
+    /** Most requests that were awaiting an answer at the same time. */
+    @Volatile
+    var maxInFlight = 0
+        private set
+
+    /** Time taken to answer each request, to let the requests overlap. */
+    @Volatile
+    var latencyMillis = 0L
+
     val engine = MockEngine { request ->
 
         val path = request.url.encodedPath.removePrefix(BASE_PATH)
         calls += path
+        val current = inFlight.incrementAndGet()
+        synchronized(this@FakeTmdb) { if (current > maxInFlight) maxInFlight = current }
+        try {
+            delay(latencyMillis)
+            respondTo(request, path)
+        } finally {
+            inFlight.decrementAndGet()
+        }
+    }
+
+    private suspend fun MockRequestHandleScope.respondTo(request: HttpRequestData, path: String): HttpResponseData {
         gate?.await()
         endpointGate?.let { (endpoint, gate) -> if (endpoint.matches(path)) gate.await() }
 
         if (networkDown) throw IOException("network down")
         val language = request.url.parameters["language"]?.substringBefore('-')
 
-        if (failingEndpoints.any { (endpoint, failingLanguage) -> endpoint.matches(path) && (failingLanguage == null || failingLanguage == language) }) return@MockEngine respond(content = "", status = HttpStatusCode.InternalServerError)
+        if (failingEndpoints.any { (endpoint, failingLanguage) -> endpoint.matches(path) && (failingLanguage == null || failingLanguage == language) }) return respond(content = "", status = HttpStatusCode.InternalServerError)
 
         val fixturePath = when {
             path.startsWith("search/") -> "$path/${slug(request.url.parameters["query"].orEmpty())}"
@@ -60,7 +87,7 @@ class FakeTmdb {
 
         val fixture = language?.let { fixture("$fixturePath.$it") } ?: fixture(fixturePath)
 
-        when {
+        return when {
             fixture != null -> respond(content = fixture, status = HttpStatusCode.OK, headers = JSON_HEADERS)
             path.startsWith("search/") -> respond(content = EMPTY_SEARCH, status = HttpStatusCode.OK, headers = JSON_HEADERS)
             else -> respond(content = NOT_FOUND, status = HttpStatusCode.NotFound, headers = JSON_HEADERS)

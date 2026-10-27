@@ -24,9 +24,6 @@ class ScanStep(
         context.filesToFetch = if (context.full) scan.files else {
             scan.files.filter { file -> known.none { it.path == file.path && it.name == file.name } }
         }
-
-        context.progress.complete()
-
     }
 
 }

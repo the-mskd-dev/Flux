@@ -19,6 +19,9 @@ class SyncPipeline(
         val enabled = steps.filter { it.isEnabled(context) }
         enabled.forEach { context.progress.declare(it.units(context)) }
 
+        // Completed only now: the progress must not reach the end of the declared work before every step declared its own
+        context.progress.complete(scanStep.units(context))
+
         enabled.forEach { it.run(context) }
 
         context.progress.finish()

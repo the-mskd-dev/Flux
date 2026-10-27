@@ -7,6 +7,7 @@ import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.artwork.PersonType
 import com.mskd.flux.core.model.artwork.Status
+import com.mskd.flux.core.model.language.Language
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
@@ -68,7 +69,7 @@ class SyncCatalogBehaviourTest : FunSpec({
         harness.tmdb.callCount("search/movie") shouldBe 0
         harness.tmdb.callCount("movie/{id}") shouldBe 0
         harness.tmdb.callCount("search/tv") shouldBe 1
-        harness.tmdb.callCount("tv/{id}/season/{season}") shouldBe 1
+        harness.tmdb.callCount("tv/{id}/season/{season}") shouldBe 2
         harness.catalog.getArtworks(includePrivates = true).map { it.title } shouldContainExactlyInAnyOrder listOf("Inception", "Breaking Bad")
         harness.catalog.getMedias().map { it.title } shouldContainExactlyInAnyOrder listOf("Inception", "Pilot")
 
@@ -474,6 +475,71 @@ class SyncCatalogBehaviourTest : FunSpec({
         movie.title shouldBe "Forgotten Tale"
         movie.description shouldBe "A tale nobody translated."
         harness.tmdb.callCount("movie/{id}/translations") shouldBe 0
+
+    }
+
+    test("a season costs two season calls, in the user language and in English, and no translation call per episode") {
+
+        // Given
+        harness.settings.setDataLanguage(Language.FRENCH)
+        harness.deviceStorage.availableFiles = listOf(
+            harness.deviceFile("Lost Pages S01E01.mkv"),
+            harness.deviceFile("Lost Pages S01E02.mkv"),
+        )
+
+        // When
+        harness.lightSync()
+
+        // Then
+        harness.tmdb.callCount("tv/{id}/season/{season}") shouldBe 2
+        harness.tmdb.callCount("tv/{id}/season/{season}/translations") shouldBe 0
+        harness.tmdb.callCount("tv/{id}/season/{season}/episode/{episode}") shouldBe 0
+        harness.tmdb.callCount("tv/{id}/season/{season}/episode/{episode}/translations") shouldBe 0
+
+    }
+
+    test("an episode without title or description in the user language gets the English ones and a translated episode keeps its own") {
+
+        // Given
+        harness.settings.setDataLanguage(Language.FRENCH)
+        harness.deviceStorage.availableFiles = listOf(
+            harness.deviceFile("Lost Pages S01E01.mkv"),
+            harness.deviceFile("Lost Pages S01E02.mkv"),
+        )
+
+        // When
+        harness.lightSync()
+
+        // Then
+        val episodes = harness.catalog.getMedias().filterIsInstance<Episode>().associateBy { it.number }
+        episodes.getValue(1).title shouldBe "Le début"
+        episodes.getValue(1).description shouldBe "Le premier épisode."
+        episodes.getValue(2).title shouldBe "The Missing Page"
+        episodes.getValue(2).description shouldBe "The second episode."
+        harness.catalog.getSeasons().single().title shouldBe "Saison 1"
+
+    }
+
+    test("a failure of the English season call keeps the data in the user language") {
+
+        // Given
+        harness.settings.setDataLanguage(Language.FRENCH)
+        harness.deviceStorage.availableFiles = listOf(
+            harness.deviceFile("Lost Pages S01E01.mkv"),
+            harness.deviceFile("Lost Pages S01E02.mkv"),
+        )
+        harness.tmdb.failEndpoint("tv/{id}/season/{season}", language = "en")
+
+        // When
+        harness.lightSync()
+
+        // Then
+        val episodes = harness.catalog.getMedias().filterIsInstance<Episode>().associateBy { it.number }
+        episodes.keys shouldBe setOf(1, 2)
+        episodes.getValue(1).title shouldBe "Le début"
+        episodes.getValue(2).title shouldBe ""
+        harness.catalog.getSeasons().single().title shouldBe "Saison 1"
+        harness.states.last() shouldBe SyncState.Idle(failedFiles = 0)
 
     }
 

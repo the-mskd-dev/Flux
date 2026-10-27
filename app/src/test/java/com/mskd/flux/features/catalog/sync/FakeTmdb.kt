@@ -13,6 +13,9 @@ import java.util.concurrent.CopyOnWriteArrayList
  * TMDB simulated at the HTTP level: each request is answered with the JSON fixture found at
  * `tmdb/<path>.json` in the test resources, and recorded to count the calls per endpoint.
  *
+ * A request with a `language` parameter is first looked up at `tmdb/<path>.<language code>.json` (`.en.json`),
+ * so that the same endpoint can answer differently per language.
+ *
  * A search is answered with `tmdb/search/<movie|tv>/<query slug>.json`, or with no result.
  * Any other request without fixture is answered with a TMDB "not found" error.
  */
@@ -36,7 +39,7 @@ class FakeTmdb {
     @Volatile
     private var networkDown = false
 
-    private val failingEndpoints = CopyOnWriteArrayList<Regex>()
+    private val failingEndpoints = CopyOnWriteArrayList<Pair<Regex, String?>>()
 
     val engine = MockEngine { request ->
 
@@ -46,14 +49,16 @@ class FakeTmdb {
         endpointGate?.let { (endpoint, gate) -> if (endpoint.matches(path)) gate.await() }
 
         if (networkDown) throw IOException("network down")
-        if (failingEndpoints.any { it.matches(path) }) return@MockEngine respond(content = "", status = HttpStatusCode.InternalServerError)
+        val language = request.url.parameters["language"]?.substringBefore('-')
+
+        if (failingEndpoints.any { (endpoint, failingLanguage) -> endpoint.matches(path) && (failingLanguage == null || failingLanguage == language) }) return@MockEngine respond(content = "", status = HttpStatusCode.InternalServerError)
 
         val fixturePath = when {
             path.startsWith("search/") -> "$path/${slug(request.url.parameters["query"].orEmpty())}"
             else -> path
         }
 
-        val fixture = fixture(fixturePath)
+        val fixture = language?.let { fixture("$fixturePath.$it") } ?: fixture(fixturePath)
 
         when {
             fixture != null -> respond(content = fixture, status = HttpStatusCode.OK, headers = JSON_HEADERS)
@@ -100,9 +105,9 @@ class FakeTmdb {
         failingEndpoints.clear()
     }
 
-    /** Answers [endpoint] (see [callCount]) with a server error, until [restoreNetwork]. */
-    fun failEndpoint(endpoint: String) {
-        failingEndpoints += Regex(endpoint.split("/").joinToString("/") { if (it.startsWith("{")) "[^/]+" else Regex.escape(it) })
+    /** Answers [endpoint] (see [callCount]) with a server error, until [restoreNetwork]; only the requests in [language] (`en`) when given. */
+    fun failEndpoint(endpoint: String, language: String? = null) {
+        failingEndpoints += Regex(endpoint.split("/").joinToString("/") { if (it.startsWith("{")) "[^/]+" else Regex.escape(it) }) to language
     }
 
     fun resetCalls() = calls.clear()

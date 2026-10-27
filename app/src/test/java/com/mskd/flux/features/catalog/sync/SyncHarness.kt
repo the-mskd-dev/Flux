@@ -133,6 +133,8 @@ internal class SyncHarness(tmdbToken: String = "test-token") : AutoCloseable {
 
     val privateFolder: PrivateFolderDataStore = koin.get()
 
+    val settings: SettingsDataStore = koin.get()
+
     val user: UserDataStore = koin.get()
 
     init {

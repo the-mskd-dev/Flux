@@ -21,6 +21,7 @@ import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.report.Trace
 import io.github.aakira.napier.Napier
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 
@@ -300,37 +301,55 @@ class TmdbDataSourceImpl(
 
         return try {
 
-            var tmdbSeason = tmdbService.getSeason(
-                id = artworkId,
-                season = season,
-                language = language.toTmdbFormat()
-            )
+            coroutineScope {
 
-            if (tmdbSeason.description.isBlank() || tmdbSeason.title.isBlank()) {
+                val english = Language.ENGLISH.toString()
 
-                getTranslation(
-                    request = TranslationRequest.Season(
-                        artworkId = artworkId,
-                        season = season,
-                        language = language
-                    ),
-                )?.let {
-                    tmdbSeason = tmdbSeason.copy(
-                        title = it.data.name ?: tmdbSeason.title,
-                        description = it.data.overview ?: tmdbSeason.description
-                    )
+                // English only completes the blanks of the user language: its failure is not the season's
+                val englishSeason = language.takeUnless { it.languageCode() == Language.ENGLISH.code }?.let {
+                    async {
+                        try {
+                            tmdbService.getSeason(id = artworkId, season = season, language = english)
+                        } catch (e: CancellationException) {
+                            throw e
+                        } catch (e: Exception) {
+                            Trace.error(TAG, "getTmdbSeason - Fail to get the English TMDBSeason for artworkId:$artworkId, season:$season", e)
+                            null
+                        }
+                    }
                 }
+
+                val tmdbSeason = tmdbService.getSeason(
+                    id = artworkId,
+                    season = season,
+                    language = language.toTmdbFormat()
+                )
+
+                englishSeason?.await()?.let { tmdbSeason.completedBy(it) } ?: tmdbSeason
 
             }
 
-            tmdbSeason
-
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             Napier.e(tag = TAG, message = "getTmdbSeason - Fail to get TMDBSeason for artworkId:$artworkId, season:$season (${language.toTmdbFormat()})", throwable = e)
             null
         }
 
     }
+
+    /** Each blank title and description of the season and of its episodes completed by [fallback]. */
+    private fun SeasonDto.completedBy(fallback: SeasonDto): SeasonDto = copy(
+        title = title.ifBlank { fallback.title },
+        description = description.ifBlank { fallback.description },
+        episodes = episodes.map { episode ->
+            val fallbackEpisode = fallback.episodes.find { it.number == episode.number }
+            episode.copy(
+                title = episode.title.ifBlank { fallbackEpisode?.title.orEmpty() },
+                description = episode.description.ifBlank { fallbackEpisode?.description.orEmpty() }
+            )
+        }
+    )
 
     override suspend fun getTranslation(request: TranslationRequest): TranslationsDto.Translation? {
 

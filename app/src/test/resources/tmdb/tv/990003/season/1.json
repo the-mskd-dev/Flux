@@ -1,0 +1,19 @@
+{
+  "id": 7001,
+  "name": "Saison 1",
+  "overview": "La première saison.",
+  "poster_path": "/lost-pages-s1.jpg",
+  "season_number": 1,
+  "episodes": [
+    {
+      "id": 70011, "show_id": 990003, "name": "Le début", "overview": "Le premier épisode.",
+      "runtime": 40, "episode_number": 1, "season_number": 1, "still_path": "/lp1.jpg",
+      "vote_average": 7.0, "vote_count": 10, "air_date": "2020-01-01", "crew": []
+    },
+    {
+      "id": 70012, "show_id": 990003, "name": "", "overview": "",
+      "runtime": 41, "episode_number": 2, "season_number": 1, "still_path": "/lp2.jpg",
+      "vote_average": 7.0, "vote_count": 10, "air_date": "2020-01-08", "crew": []
+    }
+  ]
+}

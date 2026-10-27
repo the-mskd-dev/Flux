@@ -13,6 +13,9 @@ import kotlinx.serialization.json.Json
 
 private const val BASE_URL = "https://api.themoviedb.org/3/"
 
+/** Most TMDB requests in flight at the same time, whatever their origin (Synchro, language change, genres). */
+const val TMDB_MAX_REQUESTS = 8
+
 fun tmdbJson(): Json = Json {
     ignoreUnknownKeys = true
     explicitNulls = false
@@ -25,7 +28,11 @@ fun tmdbHttpClient(
     engine: HttpClientEngine,
     json: Json,
     tokenDataStore: TokenDataStore,
+    maxRequests: Int = TMDB_MAX_REQUESTS,
 ): HttpClient = HttpClient(engine) {
+
+    // Installed before the retry so that each attempt takes a place, and the wait between two attempts does not
+    install(RequestLimiter) { limit = maxRequests }
 
     install(ContentNegotiation) {
         json(json)

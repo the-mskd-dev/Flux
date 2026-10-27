@@ -13,6 +13,7 @@ import com.mskd.flux.core.model.core.AppInfo
 import com.mskd.flux.core.model.files.FileSource
 import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.core.network.tmdb.data.moduleTmdb
+import com.mskd.flux.core.network.tmdb.data.TMDB_MAX_REQUESTS
 import com.mskd.flux.core.network.tmdb.data.tmdbHttpClient
 import com.mskd.flux.di.Qualifiers
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
@@ -58,7 +59,7 @@ import kotlin.time.Duration.Companion.seconds
  *
  * Observe the result through [catalog], [states] and [tmdb] call counts.
  */
-internal class SyncHarness(tmdbToken: String = "test-token") : AutoCloseable {
+internal class SyncHarness(tmdbToken: String = "test-token", tmdbMaxRequests: Int = TMDB_MAX_REQUESTS) : AutoCloseable {
 
     companion object {
         const val DEVICE_ROOT = "content://media/external/video/"
@@ -116,7 +117,7 @@ internal class SyncHarness(tmdbToken: String = "test-token") : AutoCloseable {
                         override suspend fun getSources(): List<FilesDataSource> = listOf(deviceStorage) + customSources
                     }
                 }
-                single<HttpClient> { tmdbHttpClient(engine = tmdb.engine, json = get(), tokenDataStore = get()) }
+                single<HttpClient> { tmdbHttpClient(engine = tmdb.engine, json = get(), tokenDataStore = get(), maxRequests = tmdbMaxRequests) }
                 single<CatalogSyncCoordinator> { FakeCatalogSyncCoordinator(scope = scope) }
             }
         )

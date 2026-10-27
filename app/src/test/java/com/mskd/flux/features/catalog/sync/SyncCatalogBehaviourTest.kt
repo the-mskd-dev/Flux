@@ -14,7 +14,7 @@ import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.longs.shouldBeGreaterThan as shouldBeGreaterThanLong
 import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.ints.shouldBeLessThanOrEqual
-import com.mskd.flux.features.catalog.domain.sync.TmdbConcurrency
+import com.mskd.flux.core.network.tmdb.data.TMDB_MAX_REQUESTS
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import kotlinx.coroutines.delay
@@ -678,7 +678,43 @@ class SyncCatalogBehaviourTest : FunSpec({
 
         // Then
         harness.tmdb.callCount("search/movie") shouldBe 300
-        harness.tmdb.maxInFlight shouldBeLessThanOrEqual TmdbConcurrency.MAX_CALLS
+        harness.tmdb.maxInFlight shouldBeLessThanOrEqual TMDB_MAX_REQUESTS
+
+    }
+
+    test("the two requests of a Saison are bounded by the limit, each one taking a place") {
+
+        // Given
+        harness.close()
+        harness = SyncHarness(tmdbMaxRequests = 1)
+        harness.settings.setDataLanguage(Language.FRENCH)
+        harness.deviceStorage.availableFiles = listOf(harness.deviceFile("Breaking Bad S01E01.mkv"))
+        harness.tmdb.latencyMillis = 20
+
+        // When
+        harness.lightSync()
+
+        // Then
+        harness.tmdb.callCount("tv/{id}/season/{season}") shouldBe 2
+        harness.tmdb.maxInFlight shouldBe 1
+
+    }
+
+    test("the retries after a 429 response stay under the limit") {
+
+        // Given
+        harness.close()
+        harness = SyncHarness(tmdbMaxRequests = 1)
+        harness.tmdb.latencyMillis = 20
+        harness.tmdb.tooManyRequests(times = 2)
+        harness.deviceStorage.availableFiles = listOf(harness.deviceFile("Inception (2010).mkv"))
+
+        // When
+        harness.lightSync()
+
+        // Then
+        harness.catalog.getArtworks(includePrivates = true).map { it.title } shouldBe listOf("Inception")
+        harness.tmdb.maxInFlight shouldBe 1
 
     }
 

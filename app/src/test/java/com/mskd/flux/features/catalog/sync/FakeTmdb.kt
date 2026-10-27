@@ -46,12 +46,17 @@ class FakeTmdb {
 
     private val failingEndpoints = CopyOnWriteArrayList<Pair<Regex, String?>>()
 
+    private val remainingTooManyRequests = AtomicInteger()
+
     private val inFlight = AtomicInteger()
 
     /** Most requests that were awaiting an answer at the same time. */
     @Volatile
     var maxInFlight = 0
         private set
+
+    /** Answers the next [times] requests with a 429 response. */
+    fun tooManyRequests(times: Int) = remainingTooManyRequests.set(times)
 
     /** Time taken to answer each request, to let the requests overlap. */
     @Volatile
@@ -74,6 +79,8 @@ class FakeTmdb {
     private suspend fun MockRequestHandleScope.respondTo(request: HttpRequestData, path: String): HttpResponseData {
         gate?.await()
         endpointGate?.let { (endpoint, gate) -> if (endpoint.matches(path)) gate.await() }
+
+        if (remainingTooManyRequests.getAndUpdate { if (it > 0) it - 1 else it } > 0) return respond(content = "", status = HttpStatusCode.TooManyRequests)
 
         if (networkDown) throw IOException("network down")
         val language = request.url.parameters["language"]?.substringBefore('-')

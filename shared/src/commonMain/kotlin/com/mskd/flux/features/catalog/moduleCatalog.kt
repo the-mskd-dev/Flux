@@ -6,7 +6,6 @@ import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinatorImpl
 import com.mskd.flux.features.catalog.domain.datastore.CatalogDataStore
 import com.mskd.flux.features.catalog.domain.sync.SyncPipeline
-import com.mskd.flux.features.catalog.domain.sync.TmdbConcurrency
 import com.mskd.flux.features.catalog.domain.sync.enrichment.DetailsEnrichment
 import com.mskd.flux.features.catalog.domain.sync.enrichment.DurationsEnrichment
 import com.mskd.flux.features.catalog.domain.sync.enrichment.IdentificationEnrichment
@@ -28,8 +27,6 @@ import org.koin.dsl.module
 
 val moduleCatalog = module {
 
-    singleOf(::TmdbConcurrency)
-
     singleOf(::ScanStep)
     singleOf(::MissingFilesStep)
     singleOf(::GenresStep)
@@ -40,9 +37,9 @@ val moduleCatalog = module {
         CatalogStep(
             database = get(),
             enrichments = listOf(
-                IdentificationEnrichment(api = get(), tmdb = get()),
-                DetailsEnrichment(api = get(), tmdb = get()),
-                SeasonsEnrichment(api = get(), tmdb = get()),
+                IdentificationEnrichment(api = get()),
+                DetailsEnrichment(api = get()),
+                SeasonsEnrichment(api = get()),
                 DurationsEnrichment(getFileDurationUseCase = get()),
             ),
         )

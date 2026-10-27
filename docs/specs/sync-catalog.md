@@ -109,7 +109,7 @@ Pour l'utilisateur :
 - `SyncState` peut exposer le nombre de Fichiers en échec de la dernière Synchro (pour un affichage futur).
 
 **Concurrence**
-- Un sémaphore unique, partagé par tous les Enrichissements, borne les appels TMDB simultanés (8 à 10). Il remplace le dispatcher à parallélisme limité, qui borne les threads et non les requêtes en vol.
+- Un sémaphore unique, dans le client HTTP TMDB, borne les requêtes TMDB simultanées (8), relances après un 429 comprises. Les Enrichissements ne connaissent pas la limite. Il remplace le dispatcher à parallélisme limité, qui borne les threads et non les requêtes en vol.
 
 **People**
 - Les credits des Artworks traités arrivent avec l'Enrichissement Détails. Le rafraîchissement périodique des people (tous les 7 jours) est supprimé : les credits d'un Artwork sont remplacés à chaque fois que la Synchro le retraite (nouveau Média, Synchro complète).

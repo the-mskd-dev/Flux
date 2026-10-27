@@ -48,6 +48,10 @@ class DatabaseRepositoryImpl(
         mediasDao.insertOrUpdate(medias = medias.map { it.toEntity() })
     }
 
+    override suspend fun saveSyncedMedias(medias: List<Media>) {
+        mediasDao.upsertFromSync(medias = medias.map { it.toEntity() })
+    }
+
     override suspend fun saveSeasons(seasons: List<Season>) {
         seasonsDao.insert(seasons.map { it.toEntity() })
     }

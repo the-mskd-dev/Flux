@@ -2,7 +2,9 @@ package com.mskd.flux.features.catalog.sync
 
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.Episode
+import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Movie
+import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
@@ -181,6 +183,49 @@ class SyncCatalogBehaviourTest : FunSpec({
 
     }
 
+    test("the playback progress and the status of a Média are kept after a Synchro légère and a Synchro complète") {
+
+        // Given
+        harness.deviceStorage.availableFiles = listOf(
+            harness.deviceFile("Inception (2010).mkv"),
+            harness.deviceFile("Breaking Bad S01E01.mkv"),
+        )
+        harness.lightSync()
+        harness.catalog.saveMedias(harness.catalog.getMedias().map { it.withProgress(time = 5_000L, status = Status.IS_WATCHING) })
+
+        // When
+        harness.deviceStorage.availableFiles += harness.deviceFile("Breaking Bad S01E02.mkv")
+        harness.lightSync()
+        val afterLight = harness.catalog.getMedias().filter { it.title != "Cat's in the Bag..." }
+        harness.fullSync()
+
+        // Then
+        afterLight.map { it.currentTime to it.status }.distinct() shouldBe listOf(5_000L to Status.IS_WATCHING)
+        harness.catalog.getMedias().filter { it.title != "Cat's in the Bag..." }
+            .map { it.currentTime to it.status }.distinct() shouldBe listOf(5_000L to Status.IS_WATCHING)
+
+    }
+
+    test("the playback progress follows the file when a Synchro complète attaches it to another Artwork") {
+
+        // Given
+        harness.deviceStorage.availableFiles = listOf(harness.deviceFile("Inception (2010).mkv"))
+        harness.lightSync()
+        val movie = harness.catalog.getMedias().single() as Movie
+        // The file was previously identified as another Artwork
+        harness.catalog.saveMedias(listOf(movie.copy(artworkId = 999L, currentTime = 7_000L, status = Status.IS_WATCHING)))
+
+        // When
+        harness.fullSync()
+
+        // Then
+        val result = harness.catalog.getMedias().single()
+        result.artworkId shouldBe 27205L
+        result.currentTime shouldBe 7_000L
+        result.status shouldBe Status.IS_WATCHING
+
+    }
+
     test("NSFW Artworks are moved to the private folder when it includes them") {
 
         // Given
@@ -304,3 +349,8 @@ class SyncCatalogBehaviourTest : FunSpec({
     }
 
 })
+
+private fun Media.withProgress(time: Long, status: Status): Media = when (this) {
+    is Movie -> copy(currentTime = time, status = status)
+    is Episode -> copy(currentTime = time, status = status)
+}

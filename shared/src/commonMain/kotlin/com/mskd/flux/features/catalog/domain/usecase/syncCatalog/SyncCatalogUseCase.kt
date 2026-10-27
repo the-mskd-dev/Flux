@@ -84,17 +84,16 @@ class SyncCatalogUseCase(
             if (!onlyNew) syncGenresUseCase()
             coordinator.incrementProgress()
 
-            var catalog = catalogFetcher.fetch(
+            val catalog = catalogFetcher.fetch(
                 folders = folders,
                 onProgress = { coordinator.incrementProgress() }
             )
-            catalog = applyCurrentMediaProgress(catalog, dbMedias = dbMedias)
 
-            // Upsert: nothing is wiped, private flags are kept by the save
+            // Upsert: nothing is wiped, private flags and user state (by file path) are kept by the save
             database.saveArtworks(catalog.artworks)
             database.saveSeasons(catalog.seasons)
             // The primary key of medias is (id, artworkId): never save twice the same media identity
-            database.saveMedias((catalog.movies + catalog.episodes).distinctBy { it.mediaId to it.artworkId })
+            database.saveSyncedMedias((catalog.movies + catalog.episodes).distinctBy { it.mediaId to it.artworkId })
 
             // Move NSFW artworks to the private folder when included
             val privateFolderState = privateFolder.flow.first()

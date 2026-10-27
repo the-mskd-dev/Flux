@@ -21,6 +21,9 @@ interface DatabaseRepository {
     // Save
     suspend fun saveArtworks(artworks: List<Artwork>, overrideLastModification: Boolean = true)
     suspend fun saveMedias(medias: List<Media>)
+
+    /** Saves medias coming from TMDB: their user state (current time, status) is kept from the existing file path. */
+    suspend fun saveSyncedMedias(medias: List<Media>)
     suspend fun saveSeasons(seasons: List<Season>)
 
     // Artworks

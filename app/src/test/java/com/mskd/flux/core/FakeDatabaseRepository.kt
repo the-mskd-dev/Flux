@@ -121,6 +121,8 @@ class FakeDatabaseRepository : DatabaseRepository {
     override suspend fun saveArtworks(artworks: List<Artwork>, overrideLastModification: Boolean) {}
     override suspend fun saveMedias(medias: List<Media>) {}
 
+    override suspend fun saveSyncedMedias(medias: List<Media>) {}
+
     override suspend fun saveSeasons(seasons: List<Season>) {}
 
     override suspend fun deleteArtworks(artworks: List<Artwork>) {}

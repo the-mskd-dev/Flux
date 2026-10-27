@@ -50,6 +50,23 @@ interface MediasDao {
         if (toInsert.isNotEmpty()) insert(medias = toInsert)
     }
 
+    /**
+     * Saves the TMDB data of the medias. The user state (current time and status) belongs to the file path:
+     * it is taken from the row already saved on the same path, even when the TMDB identity of the media changed.
+     */
+    @Transaction
+    suspend fun upsertFromSync(medias: List<MediaEntity>) {
+        if (medias.isEmpty()) return
+
+        val existingByPath = findByPaths(paths = medias.map { it.path }).associateBy { it.path }
+
+        insertOrUpdate(
+            medias = medias.map { media ->
+                existingByPath[media.path]?.let { media.copy(currentTime = it.currentTime, status = it.status) } ?: media
+            }
+        )
+    }
+
     //endregion
 
     //region Update

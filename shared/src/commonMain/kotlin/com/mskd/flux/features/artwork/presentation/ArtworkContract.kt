@@ -25,6 +25,7 @@ data class ArtworkUserState(
     val selectedMedia: Media? = null,
     val expandedEpisodeId: Long? = null,
     val revealedEpisodeIds: ImmutableSet<Long> = persistentSetOf(),
+    val isOverviewRevealed: Boolean = false,
     val dialog: ArtworkDialog? = null,
 )
 
@@ -34,6 +35,8 @@ data class ArtworkContent(
     val selectedMedia: Media,
     val selectedSeason: Int?,
     val overview: ArtworkOverviewContent,
+    val isOverviewSpoiler: Boolean = false,
+    val isOverviewBlurred: Boolean = false,
     val expandedEpisodeId: Long? = null,
     val spoilerEpisodeIds: ImmutableSet<Long> = persistentSetOf(),
     val blurredEpisodeIds: ImmutableSet<Long> = persistentSetOf(),
@@ -76,6 +79,7 @@ sealed interface ArtworkIntent {
     data class ExpandEpisodeDescription(val episode: Episode) : ArtworkIntent
     data object CollapseEpisodeDescription : ArtworkIntent
     data class ToggleEpisodeSpoiler(val episode: Episode) : ArtworkIntent
+    data object ToggleOverviewSpoiler : ArtworkIntent
 }
 
 sealed interface ArtworkEvent {

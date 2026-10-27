@@ -16,7 +16,12 @@ import flux.shared.generated.resources.summary
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun ArtworkOverview(overview: ArtworkOverviewContent) {
+fun ArtworkOverview(
+    overview: ArtworkOverviewContent,
+    isSpoiler: Boolean = false,
+    isBlurred: Boolean = false,
+    onToggleSpoiler: () -> Unit = {},
+) {
 
     Card(shape = FluxUI.shapes.corners) {
 
@@ -44,6 +49,9 @@ fun ArtworkOverview(overview: ArtworkOverviewContent) {
                 OverviewItem(
                     title = stringResource(Res.string.summary),
                     description = overview.description ?: stringResource(Res.string.no_summary),
+                    isSpoiler = isSpoiler,
+                    isBlurred = isBlurred,
+                    onToggleSpoiler = onToggleSpoiler,
                 )
             }
 

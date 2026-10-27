@@ -110,7 +110,7 @@ fun EpisodeItem(
  * description is announced as hidden, with a "reveal" action, rather than read out.
  */
 @Composable
-private fun Modifier.spoilerToggle(
+fun Modifier.spoilerToggle(
     isSpoiler: Boolean,
     isBlurred: Boolean,
     onToggle: () -> Unit,

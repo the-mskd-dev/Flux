@@ -22,6 +22,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.ui.blurText
 import com.mskd.flux.ui.components.ReadMoreButton
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
@@ -39,6 +40,9 @@ fun OverviewItem(
     title: String,
     description: String,
     fixedSize: Boolean = false,
+    isSpoiler: Boolean = false,
+    isBlurred: Boolean = false,
+    onToggleSpoiler: () -> Unit = {},
     topDetails: @Composable () -> Unit = {},
     subtitle: @Composable () -> Unit = {}
 ) {
@@ -89,7 +93,13 @@ fun OverviewItem(
             Text.Content.Body(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .animateContentSize(),
+                    .spoilerToggle(
+                        isSpoiler = isSpoiler,
+                        isBlurred = isBlurred && !expanded,
+                        onToggle = onToggleSpoiler
+                    )
+                    .animateContentSize()
+                    .blurText(blurred = isBlurred && !expanded),
                 text = description,
                 textAlign = TextAlign.Left,
                 color = MaterialTheme.colorScheme.onSurface,

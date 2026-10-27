@@ -41,6 +41,8 @@ fun ArtworkContentRegular(
     selectedMedia: Media,
     selectedSeason: Int?,
     overview: ArtworkOverviewContent,
+    isOverviewSpoiler: Boolean,
+    isOverviewBlurred: Boolean,
     expandedEpisodeId: Long?,
     spoilerEpisodeIds: Set<Long>,
     blurredEpisodeIds: Set<Long>,
@@ -74,7 +76,12 @@ fun ArtworkContentRegular(
 
         item {
 
-            ArtworkOverview(overview = overview)
+            ArtworkOverview(
+                overview = overview,
+                isSpoiler = isOverviewSpoiler,
+                isBlurred = isOverviewBlurred,
+                onToggleSpoiler = { sendIntent(ArtworkIntent.ToggleOverviewSpoiler) },
+            )
 
         }
 
@@ -171,6 +178,8 @@ fun ArtworkContentMovie_Preview() {
             selectedMedia = MediaMockups.movie,
             selectedSeason = null,
             overview = ArtworkOverviewContent.MovieOverview(MediaMockups.fullMovie.movie, MediaMockups.fullMovie.genres),
+            isOverviewSpoiler = false,
+            isOverviewBlurred = false,
             expandedEpisodeId = null,
             spoilerEpisodeIds = emptySet(),
             blurredEpisodeIds = emptySet(),
@@ -190,6 +199,8 @@ fun ArtworkContentShow_Preview() {
             selectedMedia = MediaMockups.episode1,
             selectedSeason = 1,
             overview = ArtworkOverviewContent.Summary(MediaMockups.season1.description),
+            isOverviewSpoiler = false,
+            isOverviewBlurred = false,
             expandedEpisodeId = null,
             spoilerEpisodeIds = emptySet(),
             blurredEpisodeIds = emptySet(),

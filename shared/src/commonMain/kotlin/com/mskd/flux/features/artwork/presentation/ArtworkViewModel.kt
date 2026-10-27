@@ -126,6 +126,7 @@ class ArtworkViewModel(
             is ArtworkIntent.ExpandEpisodeDescription -> expandEpisodeDescription(episode = intent.episode)
             ArtworkIntent.CollapseEpisodeDescription -> collapseEpisodeDescription()
             is ArtworkIntent.ToggleEpisodeSpoiler -> toggleEpisodeSpoiler(episode = intent.episode)
+            ArtworkIntent.ToggleOverviewSpoiler -> _userState.update { it.copy(isOverviewRevealed = !it.isOverviewRevealed) }
         }
     }
 
@@ -144,6 +145,7 @@ class ArtworkViewModel(
         ) ?: return State.Error()
 
         val spoilerIds = resolveSpoilerEpisodeIds(dataState)
+        val isOverviewSpoiler = resolveIsOverviewSpoiler(dataState)
         val readableIds = userState.revealedEpisodeIds + listOfNotNull(userState.expandedEpisodeId)
 
         return State.Content(
@@ -152,6 +154,8 @@ class ArtworkViewModel(
                 selectedMedia = selectedMedia,
                 selectedSeason = season,
                 overview = resolveOverview(dataState.fullArtwork, selectedMedia, season),
+                isOverviewSpoiler = isOverviewSpoiler,
+                isOverviewBlurred = isOverviewSpoiler && !userState.isOverviewRevealed,
                 expandedEpisodeId = userState.expandedEpisodeId,
                 spoilerEpisodeIds = spoilerIds,
                 blurredEpisodeIds = (spoilerIds - readableIds).toImmutableSet(),
@@ -160,6 +164,15 @@ class ArtworkViewModel(
                 dialog = userState.dialog,
             )
         )
+    }
+
+    /** Only a Season description whose Episodes are all still to watch is a spoiler. */
+    private fun resolveIsOverviewSpoiler(dataState: ArtworkDataState): Boolean {
+        if (!dataState.blurSpoilers) return false
+        val show = dataState.fullArtwork as? FullArtwork.FullShow ?: return false
+        if (show.seasons.find { it.season == season }?.description.isNullOrEmpty()) return false
+        val episodes = show.episodes.filter { it.season == season && !it.isUnknown }
+        return episodes.isNotEmpty() && episodes.all { it.status == Status.TO_WATCH }
     }
 
     private fun resolveSpoilerEpisodeIds(dataState: ArtworkDataState): ImmutableSet<Long> {

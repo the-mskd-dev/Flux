@@ -752,6 +752,84 @@ class ArtworkViewModelTest : FunSpec({
 
     }
 
+    context("overview spoiler") {
+
+        val settingsFlow = MutableStateFlow(SettingsDataStore.State(blurSpoilers = true))
+
+        fun show(
+            episodes: List<Episode> = MediaMockups.episodes,
+            seasons: List<Season> = MediaMockups.seasons,
+        ) = MediaMockups.fullShow.copy(
+            artwork = MediaMockups.showArtwork.copy(description = "Show description"),
+            seasons = seasons.toImmutableList(),
+            episodes = episodes.toImmutableList(),
+        )
+
+        fun open(fullArtwork: FullArtwork, blurSpoilers: Boolean = true) {
+            observeArtworkUseCase = mockk()
+            settingsFlow.value = SettingsDataStore.State(blurSpoilers = blurSpoilers)
+            every { settingsDataStore.flow } returns settingsFlow
+            every { observeArtworkUseCase(any()) } returns flowOf(State.Content(fullArtwork))
+            updateVm(fullArtwork.artwork.id)
+        }
+
+        suspend fun ReceiveTurbine<ArtworkUiState>.overviewBlurred() =
+            (expectMostRecentItem().state as State.Content).content.isOverviewBlurred
+
+        suspend fun blurredOf(fullArtwork: FullArtwork, blurSpoilers: Boolean = true): Boolean {
+            open(fullArtwork, blurSpoilers)
+            var blurred: Boolean? = null
+            viewModel.uiState.test {
+                var state = awaitItem().state
+                while (state !is State.Content) state = awaitItem().state
+                blurred = state.content.isOverviewBlurred
+            }
+            return blurred!!
+        }
+
+        test("season entirely to watch is blurred") {
+            blurredOf(show()) shouldBe true
+        }
+
+        test("season with a watching episode is readable") {
+            blurredOf(show(episodes = MediaMockups.episodes.mapIndexed { i, e ->
+                if (i == 0) e.copy(status = Status.IS_WATCHING) else e
+            })) shouldBe false
+        }
+
+        test("season with a watched episode is readable") {
+            blurredOf(show(episodes = MediaMockups.episodes.mapIndexed { i, e ->
+                if (i == 0) e.copy(status = Status.WATCHED) else e
+            })) shouldBe false
+        }
+
+        test("show description fallback is readable") {
+            blurredOf(show(seasons = listOf(MediaMockups.season1.copy(description = "")))) shouldBe false
+        }
+
+        test("movie to watch is readable") {
+            blurredOf(MediaMockups.fullMovie) shouldBe false
+        }
+
+        test("option disabled is readable") {
+            blurredOf(show(), blurSpoilers = false) shouldBe false
+        }
+
+        test("toggling reveals then hides the overview") {
+            open(show())
+            viewModel.uiState.test {
+                overviewBlurred() shouldBe true
+
+                viewModel.handleIntent(ArtworkIntent.ToggleOverviewSpoiler)
+                overviewBlurred() shouldBe false
+
+                viewModel.handleIntent(ArtworkIntent.ToggleOverviewSpoiler)
+                overviewBlurred() shouldBe true
+            }
+        }
+
+    }
+
     test("error state") {
 
         updateVm(-999L)

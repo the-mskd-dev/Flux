@@ -4,6 +4,8 @@ import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Movie
+import com.mskd.flux.core.model.artwork.Person
+import com.mskd.flux.core.model.artwork.PersonType
 import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import io.kotest.core.spec.style.FunSpec
@@ -491,6 +493,23 @@ class SyncCatalogBehaviourTest : FunSpec({
         harness.people.flowPeople(artworkId = 1396L).first().map { it.name } shouldContainExactlyInAnyOrder listOf("Bryan Cranston")
         harness.tmdb.callCount("movie/{id}/credits") shouldBe 0
         harness.tmdb.callCount("tv/{id}/credits") shouldBe 0
+
+    }
+
+    test("the credits that TMDB no longer returns are removed by the next Synchro of the Artwork") {
+
+        // Given
+        harness.deviceStorage.availableFiles = listOf(harness.deviceFile("Inception (2010).mkv"))
+        harness.lightSync()
+        harness.people.savePeople(
+            listOf(Person(id = 1, creditId = "stale", artworkId = 27205L, name = "Former Actor", profilePath = null, role = "Cobb", type = PersonType.CAST))
+        )
+
+        // When
+        harness.fullSync()
+
+        // Then
+        harness.people.flowPeople(artworkId = 27205L).first().map { it.name } shouldContainExactlyInAnyOrder listOf("Leonardo DiCaprio", "Christopher Nolan")
 
     }
 

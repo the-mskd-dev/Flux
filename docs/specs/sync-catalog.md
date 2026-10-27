@@ -112,7 +112,7 @@ Pour l'utilisateur :
 - Un sémaphore unique, partagé par tous les Enrichissements, borne les appels TMDB simultanés (8 à 10). Il remplace le dispatcher à parallélisme limité, qui borne les threads et non les requêtes en vol.
 
 **People**
-- Les credits des Artworks traités arrivent avec l'Enrichissement Détails. Le rafraîchissement périodique des people (tous les 7 jours) reste séparé de la Synchro.
+- Les credits des Artworks traités arrivent avec l'Enrichissement Détails. Le rafraîchissement périodique des people (tous les 7 jours) est supprimé : les credits d'un Artwork sont remplacés à chaque fois que la Synchro le retraite (nouveau Média, Synchro complète).
 
 **Code supprimé**
 - Le use case de nettoyage du Catalogue (non appelé, et ne respectant pas la règle des Sources indisponibles).
@@ -142,7 +142,6 @@ Pour l'utilisateur :
 ## Out of Scope
 
 - Le changement de langue du Catalogue reste dans son use case actuel. La conception des Enrichissements doit permettre d'en faire plus tard un troisième mode de Synchro (tous les fichiers, Enrichissements de traduction uniquement).
-- Le rafraîchissement périodique des people.
 - Tout changement d'UI : l'affichage de la Progression de synchro et du nombre de Fichiers en échec reste tel quel.
 - L'algorithme de regroupement des fichiers en dossiers et l'analyse des noms de fichiers.
 - Le backoff ou la limitation des retries des Fichiers en échec.

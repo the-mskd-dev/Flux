@@ -8,8 +8,6 @@ interface UserDataStore {
 
     suspend fun setSyncTime(syncTime: Long)
     suspend fun getSyncTime() : Long
-    suspend fun setPeopleSyncTime(syncTime: Long)
-    suspend fun getPeopleSyncTime() : Long
     suspend fun getVersionCode() : Int
     suspend fun setVersionCode(versionCode: Int)
     suspend fun setMessageAsWatched(messageId: Int)
@@ -18,7 +16,6 @@ interface UserDataStore {
     data class State(
         val watchedMessagesIds: List<Int> = listOf(),
         val syncTime: Long = 0L,
-        val peopleSyncTime: Long = 0L,
         val versionCode: Int = -1,
         val pipIsEnabled: Boolean = true,
     )

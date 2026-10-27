@@ -68,7 +68,13 @@ class DatabaseRepositoryImpl(
                 saveArtworks(listOf(artwork))
                 saveSeasons(seasons)
                 saveSyncedMedias(medias)
-                if (people.isNotEmpty()) database.personDao().insert(people = people.map { it.toPersonEntity() })
+                if (people.isNotEmpty()) {
+                    // TMDB returns the whole credits: the ones it dropped must not stay
+                    database.personDao().apply {
+                        delete(artworkId = artwork.id)
+                        insert(people = people.map { it.toPersonEntity() })
+                    }
+                }
             }
         }
     }

@@ -41,11 +41,9 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class ArtworkViewModelTest : FunSpec({
 
     fluxExtensions()
@@ -733,14 +731,14 @@ class ArtworkViewModelTest : FunSpec({
             overviewFor(show()) shouldBe ArtworkOverviewContent.Summary(MediaMockups.season1.description)
         }
 
-        test("season partially watched without an in-progress episode shows the season description") {
+        test("season partially watched without an in-progress episode shows first episode to watch description") {
             observeArtworkUseCase = mockk()
             val episodes = listOf(
                 MediaMockups.episode1.copy(status = Status.WATCHED),
                 MediaMockups.episode2,
                 MediaMockups.episode3,
             )
-            overviewFor(show(episodes = episodes)) shouldBe ArtworkOverviewContent.Summary(MediaMockups.season1.description)
+            overviewFor(show(episodes = episodes)) shouldBe ArtworkOverviewContent.EpisodeOverview(MediaMockups.episode2)
         }
 
         test("season entirely watched shows the season description") {

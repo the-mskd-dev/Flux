@@ -199,9 +199,10 @@ class ArtworkViewModel(
             is FullArtwork.FullShow -> {
                 val episode = selectedMedia as? Episode
                 val seasonStarted = fullArtwork.episodes.filter { it.season == season }.any { it.status != Status.TO_WATCH }
+                val seasonFinished = fullArtwork.episodes.filter { it.season == season }.all { it.status == Status.WATCHED }
 
                 when {
-                    episode != null && (episode.status == Status.IS_WATCHING || seasonStarted) -> {
+                    episode != null && (episode.status == Status.IS_WATCHING || seasonStarted) && !seasonFinished -> {
                         ArtworkOverviewContent.EpisodeOverview(episode = episode)
                     }
                     else -> {

@@ -402,6 +402,28 @@ class UserFileTest : FunSpec ({
                 expectedTitle = "dune",
                 expectedTmdbId = 438631
             ),
+            // No title next to the ID: the season and the episode still make it an episode
+            UserFileTestCases.FileProperties(
+                file = UserFile(name = "{tmdb-1399} S01E02.mkv", path = ""),
+                expectedTitle = "",
+                expectedSeason = 1,
+                expectedEpisode = 2,
+                expectedTmdbId = 1399
+            ),
+            UserFileTestCases.FileProperties(
+                file = UserFile(name = "S01E02 {tmdb-1399}.mkv", path = ""),
+                expectedTitle = "",
+                expectedSeason = 1,
+                expectedEpisode = 2,
+                expectedTmdbId = 1399
+            ),
+            UserFileTestCases.FileProperties(
+                file = UserFile(name = "{tmdb-1399} - 1x02.mkv", path = ""),
+                expectedTitle = "",
+                expectedSeason = 1,
+                expectedEpisode = 2,
+                expectedTmdbId = 1399
+            ),
         ) { testCase ->
 
             val nameProperties = testCase.file.nameProperties
@@ -447,6 +469,13 @@ class UserFileTest : FunSpec ({
                 expectedSeason = 1,
                 expectedEpisode = 2,
                 expectedTmdbId = null
+            ),
+            UserFileTestCases.FileProperties(
+                file = UserFile(name = "{tmdb-1399} S01E02.mkv", path = "", realPath = "Flux/{tmdb-1399} S01E02.mkv"),
+                expectedTitle = "",
+                expectedSeason = 1,
+                expectedEpisode = 2,
+                expectedTmdbId = 1399
             ),
         ) { testCase ->
 

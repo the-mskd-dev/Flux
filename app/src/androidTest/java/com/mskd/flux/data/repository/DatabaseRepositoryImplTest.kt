@@ -38,12 +38,7 @@ class DatabaseRepositoryImplTest {
                         .allowMainThreadQueries()
                         .build()
 
-        repository =
-            DatabaseRepositoryImpl(
-                artworksDao = database.artworkDao(),
-                mediasDao = database.mediasDao(),
-                seasonsDao = database.seasonsDao()
-            )
+        repository = DatabaseRepositoryImpl(database = database)
     }
 
     @After

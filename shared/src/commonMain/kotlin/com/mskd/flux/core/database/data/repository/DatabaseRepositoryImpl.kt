@@ -25,10 +25,11 @@ import com.mskd.flux.features.people.data.mapper.toEntity as toPersonEntity
 
 class DatabaseRepositoryImpl(
     private val database: FluxDatabase,
-    private val artworksDao: ArtworkDao,
-    private val mediasDao: MediasDao,
-    private val seasonsDao: SeasonsDao
 ) : DatabaseRepository {
+
+    private val artworksDao: ArtworkDao = database.artworkDao()
+    private val mediasDao: MediasDao = database.mediasDao()
+    private val seasonsDao: SeasonsDao = database.seasonsDao()
 
     override fun flowArtworks(includePrivates: Boolean): Flow<List<Artwork>> {
         return artworksDao.flowArtworks(includePrivates = includePrivates).map { entities -> entities.map { it.toDomain() } }

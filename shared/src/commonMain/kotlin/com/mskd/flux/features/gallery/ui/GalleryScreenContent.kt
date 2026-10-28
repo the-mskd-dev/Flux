@@ -1,5 +1,9 @@
 package com.mskd.flux.features.gallery.ui
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -135,14 +139,22 @@ fun GalleryScreenContent(
 
         }
 
-        // Drawn over the scaffold; the grid stays composed underneath so it keeps its scroll position
-        if (viewerIndex != null) {
-            GalleryViewer(
-                images = images,
-                initialIndex = viewerIndex,
-                onPageChange = { sendIntent(GalleryIntent.OnViewerPageChange(it)) },
-                onClose = { sendIntent(GalleryIntent.OnViewerClose) }
-            )
+        // Drawn over the scaffold; the grid stays composed underneath so it keeps its scroll position.
+        // Keyed on visibility only, so a page change doesn't animate and the closing viewer keeps its last index while fading out
+        AnimatedContent(
+            targetState = viewerIndex,
+            modifier = Modifier.fillMaxSize(),
+            contentKey = { it != null },
+            transitionSpec = { fadeIn() togetherWith fadeOut() using null }
+        ) { index ->
+            if (index != null) {
+                GalleryViewer(
+                    images = images,
+                    initialIndex = index,
+                    onPageChange = { sendIntent(GalleryIntent.OnViewerPageChange(it)) },
+                    onClose = { sendIntent(GalleryIntent.OnViewerClose) }
+                )
+            }
         }
 
     }

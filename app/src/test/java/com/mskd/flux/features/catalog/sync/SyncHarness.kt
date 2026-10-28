@@ -154,7 +154,7 @@ internal class SyncHarness(tmdbToken: String = "test-token", tmdbMaxRequests: In
     fun customFile(root: String, name: String): UserFile =
         UserFile(name = name, path = "$root/document/$name", realPath = name, source = FileSource.SAF)
 
-    /** Runs a Synchro légère and waits for its end. */
+    /** Runs a light sync and waits for its end. */
     suspend fun lightSync() {
         requestLightSync()
         awaitIdle()

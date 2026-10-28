@@ -54,7 +54,7 @@ class SyncCatalogBehaviourTest : FunSpec({
 
     }
 
-    test("a Synchro légère only fetches the new files") {
+    test("a light sync only fetches the new files") {
 
         // Given
         val inception = harness.deviceFile("Inception (2010).mkv")
@@ -115,7 +115,7 @@ class SyncCatalogBehaviourTest : FunSpec({
 
     }
 
-    test("a file whose search fails because of the network is not saved and is fetched again by the next Synchro légère") {
+    test("a file whose search fails because of the network is not saved and is fetched again by the next light sync") {
 
         // Given
         harness.deviceStorage.availableFiles = listOf(harness.deviceFile("Inception (2010).mkv"))
@@ -206,7 +206,7 @@ class SyncCatalogBehaviourTest : FunSpec({
 
     }
 
-    test("a Synchro légère requested during a Synchro complète is ignored") {
+    test("a light sync requested during a Synchro complète is ignored") {
 
         // Given
         harness.deviceStorage.availableFiles = listOf(harness.deviceFile("Inception (2010).mkv"))
@@ -225,7 +225,7 @@ class SyncCatalogBehaviourTest : FunSpec({
 
     }
 
-    test("a Synchro complète requested during a Synchro légère replaces it") {
+    test("a Synchro complète requested during a light sync replaces it") {
 
         // Given
         harness.deviceStorage.availableFiles = listOf(harness.deviceFile("Inception (2010).mkv"))
@@ -240,7 +240,7 @@ class SyncCatalogBehaviourTest : FunSpec({
         // Then
         harness.states.filterIsInstance<SyncState.Syncing>().map { it.full }.distinct() shouldBe listOf(false, true)
         harness.tmdb.callCount("genre/movie/list") shouldBe 1
-        // The cancelled Synchro légère never got further than its search
+        // The cancelled light sync never got further than its search
         harness.tmdb.callCount("movie/{id}") shouldBe 1
         harness.catalog.getMedias().map { it.title } shouldContainExactlyInAnyOrder listOf("Inception")
 
@@ -267,7 +267,7 @@ class SyncCatalogBehaviourTest : FunSpec({
 
     }
 
-    test("the playback progress and the status of a Média are kept after a Synchro légère and a Synchro complète") {
+    test("the playback progress and the status of a Média are kept after a light sync and a Synchro complète") {
 
         // Given
         harness.deviceStorage.availableFiles = listOf(
@@ -349,7 +349,7 @@ class SyncCatalogBehaviourTest : FunSpec({
 
     }
 
-    test("a Fichier manquant of an available Source is deleted by a Synchro légère") {
+    test("a Fichier manquant of an available Source is deleted by a light sync") {
 
         // Given
         val inception = harness.deviceFile("Inception (2010).mkv")
@@ -386,7 +386,7 @@ class SyncCatalogBehaviourTest : FunSpec({
 
     }
 
-    test("the files of a Source indisponible are kept by a Synchro légère") {
+    test("the files of a Source indisponible are kept by a light sync") {
 
         // Given
         val root = "content://custom/tree/sd"
@@ -637,7 +637,7 @@ class SyncCatalogBehaviourTest : FunSpec({
 
     }
 
-    test("the folders already saved are kept when a Synchro complète cancels a Synchro légère") {
+    test("the folders already saved are kept when a Synchro complète cancels a light sync") {
 
         // Given
         harness.deviceStorage.availableFiles = listOf(

@@ -243,4 +243,8 @@
     <string name="retry">Wiederholen</string>
     <string name="unavailable_check_connection">Nicht verfügbar, überprüfe deine Verbindung</string>
     <string name="gallery_empty">Keine Bilder verfügbar</string>
+    <string name="blur_spoilers">Spoiler verbergen</string>
+    <string name="blur_spoilers_desc">Beschreibung und Bild von noch nicht gesehenen Episoden verwischen</string>
+    <string name="spoiler_hidden">Spoiler verborgen</string>
+    <string name="spoiler_reveal">Anzeigen</string>
 </resources>

@@ -26,6 +26,7 @@ import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.presentation.ArtworkDialog
 import com.mskd.flux.features.artwork.presentation.ArtworkEvent
 import com.mskd.flux.features.artwork.presentation.ArtworkIntent
+import com.mskd.flux.features.artwork.presentation.ArtworkOverviewContent
 import com.mskd.flux.features.artwork.presentation.ArtworkViewModel
 import com.mskd.flux.features.artwork.ui.ArtworkContentLarge
 import com.mskd.flux.features.artwork.ui.ArtworkContentRegular
@@ -113,7 +114,12 @@ fun ArtworkScreen(
                         people = if (content.fullArtwork.contentType == ContentType.MOVIE) content.people else emptyList(),
                         selectedMedia = content.selectedMedia,
                         selectedSeason = content.selectedSeason,
+                        overview = content.overview,
+                        isOverviewSpoiler = content.isOverviewSpoiler,
+                        isOverviewBlurred = content.isOverviewBlurred,
                         expandedEpisodeId = content.expandedEpisodeId,
+                        spoilerEpisodeIds = content.spoilerEpisodeIds,
+                        blurredEpisodeIds = content.blurredEpisodeIds,
                         dialog = content.dialog,
                         sendIntent = viewModel::handleIntent
                     )
@@ -132,7 +138,12 @@ fun ArtworkScreenContent(
     people: List<Person> = emptyList(),
     selectedMedia: Media,
     selectedSeason: Int?,
+    overview: ArtworkOverviewContent,
+    isOverviewSpoiler: Boolean,
+    isOverviewBlurred: Boolean,
     expandedEpisodeId: Long?,
+    spoilerEpisodeIds: Set<Long>,
+    blurredEpisodeIds: Set<Long>,
     dialog: ArtworkDialog?,
     sendIntent: (ArtworkIntent) -> Unit
 ) {
@@ -181,7 +192,12 @@ fun ArtworkScreenContent(
                 people = people,
                 selectedMedia = selectedMedia,
                 selectedSeason = selectedSeason,
+                overview = overview,
+                isOverviewSpoiler = isOverviewSpoiler,
+                isOverviewBlurred = isOverviewBlurred,
                 expandedEpisodeId = expandedEpisodeId,
+                spoilerEpisodeIds = spoilerEpisodeIds,
+                blurredEpisodeIds = blurredEpisodeIds,
                 scaffoldInnerPadding = innerPadding,
                 sendIntent = sendIntent,
             )
@@ -191,7 +207,12 @@ fun ArtworkScreenContent(
                 people = people,
                 selectedMedia = selectedMedia,
                 selectedSeason = selectedSeason,
+                overview = overview,
+                isOverviewSpoiler = isOverviewSpoiler,
+                isOverviewBlurred = isOverviewBlurred,
                 expandedEpisodeId = expandedEpisodeId,
+                spoilerEpisodeIds = spoilerEpisodeIds,
+                blurredEpisodeIds = blurredEpisodeIds,
                 scaffoldInnerPadding = innerPadding,
                 sendIntent = sendIntent,
             )
@@ -225,7 +246,12 @@ fun ArtworkScreenContent_Preview() {
             fullArtwork = MediaMockups.fullShow,
             selectedMedia = MediaMockups.episode1,
             selectedSeason = MediaMockups.episode1.season,
+            overview = ArtworkOverviewContent.Summary(MediaMockups.season1.description),
+            isOverviewSpoiler = false,
+            isOverviewBlurred = false,
             expandedEpisodeId = null,
+            spoilerEpisodeIds = emptySet(),
+            blurredEpisodeIds = emptySet(),
             dialog = null,
             sendIntent = {}
         )

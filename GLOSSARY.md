@@ -66,6 +66,14 @@ _Avoid_: Header image, banner, bannière
 Page listant toutes les images TMDB d'un Artwork (Backdrop et Poster, toutes langues) dans une seule grille triée par note décroissante, avec un visualiseur plein écran zoomable. Pour un Show, uniquement les images du Show lui-même, pas celles des Season ni des Episode. Rien n'est stocké localement.
 _Avoid_: Galerie d'images, Images, Photos
 
+**Spoiler**:
+Description ou image d'un Episode à voir, ou description d'une Season dont tous les Episode sont à voir. Les Movie, le Show lui-même et l'Unknown Artwork n'ont pas de Spoiler.
+_Avoid_: Spoil
+
+**Masquage des spoilers**:
+Option facultative qui rend les Spoiler illisibles sur la page d'un Artwork, jusqu'à ce que l'utilisateur les révèle.
+_Avoid_: Flou, blur, anti-spoiler
+
 ## Personnes
 
 **Person**:

@@ -30,6 +30,7 @@ class SettingsDataStoreImpl(val settingsDataStore: DataStore<Preferences>) : Set
         val DATA_LANGUAGE = stringPreferencesKey("data_language")
         val PREFETCH_IMAGES = booleanPreferencesKey("prefetch_hd_images")
         val SYSTEM_FOLDERS_ENABLED = booleanPreferencesKey("system_folders_enabled")
+        val BLUR_SPOILERS = booleanPreferencesKey("blur_spoilers")
     }
 
     override val flow: Flow<SettingsDataStore.State> = settingsDataStore.data
@@ -47,6 +48,7 @@ class SettingsDataStoreImpl(val settingsDataStore: DataStore<Preferences>) : Set
             val dataLanguage = preferences[Keys.DATA_LANGUAGE]?.let { Language.fromCode(it) }
             val prefetchImages = preferences[Keys.PREFETCH_IMAGES] ?: false
             val systemFoldersEnabled = preferences[Keys.SYSTEM_FOLDERS_ENABLED] ?: true
+            val blurSpoilers = preferences[Keys.BLUR_SPOILERS] ?: false
 
             SettingsDataStore.State(
                 playerRewindValue = playerRewindValue,
@@ -60,6 +62,7 @@ class SettingsDataStoreImpl(val settingsDataStore: DataStore<Preferences>) : Set
                 dataLanguage = dataLanguage,
                 prefetchHdImages = prefetchImages,
                 systemFoldersEnabled = systemFoldersEnabled,
+                blurSpoilers = blurSpoilers,
             )
         }
 
@@ -92,6 +95,12 @@ class SettingsDataStoreImpl(val settingsDataStore: DataStore<Preferences>) : Set
     override suspend fun setSystemFolders(enabled: Boolean) {
         settingsDataStore.edit { preferences ->
             preferences[Keys.SYSTEM_FOLDERS_ENABLED] = enabled
+        }
+    }
+
+    override suspend fun setBlurSpoilers(enabled: Boolean) {
+        settingsDataStore.edit { preferences ->
+            preferences[Keys.BLUR_SPOILERS] = enabled
         }
     }
 

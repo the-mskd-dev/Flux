@@ -12,8 +12,8 @@ import com.mskd.flux.core.datastore.domain.UserDataStore
 import com.mskd.flux.core.model.core.AppInfo
 import com.mskd.flux.core.model.files.FileSource
 import com.mskd.flux.core.model.files.UserFile
-import com.mskd.flux.core.network.tmdb.data.moduleTmdb
 import com.mskd.flux.core.network.tmdb.data.TMDB_MAX_REQUESTS
+import com.mskd.flux.core.network.tmdb.data.moduleTmdb
 import com.mskd.flux.core.network.tmdb.data.tmdbHttpClient
 import com.mskd.flux.di.Qualifiers
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator

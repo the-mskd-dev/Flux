@@ -243,4 +243,8 @@
     <string name="retry">Reintentar</string>
     <string name="unavailable_check_connection">No disponible, comprueba tu conexión</string>
     <string name="gallery_empty">No hay imágenes disponibles</string>
+    <string name="blur_spoilers">Ocultar spoilers</string>
+    <string name="blur_spoilers_desc">Difuminar la descripción y la imagen de los episodios aún no vistos</string>
+    <string name="spoiler_hidden">Spoiler oculto</string>
+    <string name="spoiler_reveal">Mostrar</string>
 </resources>

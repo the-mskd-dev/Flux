@@ -14,7 +14,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusProperties
@@ -26,13 +25,14 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.features.player.presentation.PlayerIntent
 import com.mskd.flux.features.player.presentation.PlayerInterfaceState
 import com.mskd.flux.features.player.presentation.PlayerOverlays
 import com.mskd.flux.features.player.presentation.PlayerSession
 import com.mskd.flux.screens.player.composables.collectSelectedAsState
-import kotlinx.coroutines.flow.StateFlow
 import com.mskd.flux.ui.theme.FluxUI
+import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun PlayerInterface(

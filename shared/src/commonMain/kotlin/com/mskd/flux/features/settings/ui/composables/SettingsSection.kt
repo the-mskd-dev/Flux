@@ -26,6 +26,8 @@ import flux.shared.generated.resources.about_desc
 import flux.shared.generated.resources.app_version
 import flux.shared.generated.resources.auto_keyboard
 import flux.shared.generated.resources.auto_keyboard_desc
+import flux.shared.generated.resources.blur_spoilers
+import flux.shared.generated.resources.blur_spoilers_desc
 import flux.shared.generated.resources.button_forward
 import flux.shared.generated.resources.button_rewind
 import flux.shared.generated.resources.cache_images
@@ -47,6 +49,7 @@ import flux.shared.generated.resources.ic_help
 import flux.shared.generated.resources.ic_images
 import flux.shared.generated.resources.ic_info
 import flux.shared.generated.resources.ic_keyboard
+import flux.shared.generated.resources.ic_visibility
 import flux.shared.generated.resources.ic_language
 import flux.shared.generated.resources.ic_lock
 import flux.shared.generated.resources.ic_mail
@@ -124,6 +127,16 @@ fun SettingsCustomizationSection(
             checked = state.autoKeyboard,
             onCheckedChange = { sendIntent(SettingsIntent.OnAutoKeyboardCheck(it)) },
             painter = painterResource(Res.drawable.ic_keyboard),
+            iconColor = iconColor,
+            iconBackgroundColor = bgColor,
+        )
+
+        SettingsSwitch(
+            text = stringResource(Res.string.blur_spoilers),
+            subText = stringResource(Res.string.blur_spoilers_desc),
+            checked = state.blurSpoilers,
+            onCheckedChange = { sendIntent(SettingsIntent.OnBlurSpoilersCheck(it)) },
+            painter = painterResource(Res.drawable.ic_visibility),
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
         )

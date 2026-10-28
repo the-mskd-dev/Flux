@@ -244,4 +244,8 @@
     <string name="retry">Réessayer</string>
     <string name="unavailable_check_connection">Indisponible, vérifiez votre connexion</string>
     <string name="gallery_empty">Aucune image disponible</string>
+    <string name="blur_spoilers">Masquer les spoilers</string>
+    <string name="blur_spoilers_desc">Flouter la description et l'image des épisodes pas encore vus</string>
+    <string name="spoiler_hidden">Spoiler masqué</string>
+    <string name="spoiler_reveal">Révéler</string>
 </resources>

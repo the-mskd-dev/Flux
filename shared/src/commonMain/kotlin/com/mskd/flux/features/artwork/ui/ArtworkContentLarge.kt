@@ -23,14 +23,15 @@ import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.features.artwork.presentation.ArtworkIntent
 import com.mskd.flux.features.artwork.ui.composables.ArtworkButtons
-import com.mskd.flux.features.artwork.ui.composables.ArtworkDescriptionsPager
+import com.mskd.flux.features.artwork.presentation.ArtworkOverviewContent
+import com.mskd.flux.features.artwork.ui.composables.ArtworkOverview
 import com.mskd.flux.features.artwork.ui.composables.ArtworkImage
 import com.mskd.flux.features.people.ui.components.people.PeopleList
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.PeopleMockup
 import com.mskd.flux.ui.LandscapePreview
-import com.mskd.flux.ui.media.EpisodeDropDownMenu
-import com.mskd.flux.ui.media.EpisodeItem
+import com.mskd.flux.ui.media.episode.EpisodeDropDownMenu
+import com.mskd.flux.ui.media.episode.EpisodeItem
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
@@ -44,7 +45,12 @@ fun ArtworkContentLarge(
     people: List<Person>,
     selectedMedia: Media,
     selectedSeason: Int?,
+    overview: ArtworkOverviewContent,
+    isOverviewSpoiler: Boolean,
+    isOverviewBlurred: Boolean,
     expandedEpisodeId: Long?,
+    spoilerEpisodeIds: Set<Long>,
+    blurredEpisodeIds: Set<Long>,
     scaffoldInnerPadding: PaddingValues,
     sendIntent: (ArtworkIntent) -> Unit,
 ) {
@@ -108,10 +114,11 @@ fun ArtworkContentLarge(
 
             item {
 
-                ArtworkDescriptionsPager(
-                    fullArtwork = fullArtwork,
-                    season = selectedSeason,
-                    currentMedia = selectedMedia
+                ArtworkOverview(
+                    overview = overview,
+                    isSpoiler = isOverviewSpoiler,
+                    isBlurred = isOverviewBlurred,
+                    onToggleSpoiler = { sendIntent(ArtworkIntent.ToggleOverviewSpoiler) },
                 )
 
             }
@@ -154,6 +161,9 @@ fun ArtworkContentLarge(
                             episode = episode,
                             isSelected = episode.id == selectedMedia.mediaId,
                             isExpanded = episode.id == expandedEpisodeId,
+                            isBlurred = episode.id in blurredEpisodeIds,
+                            isSpoiler = episode.id in spoilerEpisodeIds,
+                            onToggleSpoiler = { sendIntent(ArtworkIntent.ToggleEpisodeSpoiler(episode = episode)) },
                             onClick = { sendIntent(ArtworkIntent.PlayMedia(media = episode)) },
                             onReadMoreTap = {
                                 if (it) {
@@ -207,7 +217,12 @@ fun ArtworkContentLargeMovie_Preview() {
             people = PeopleMockup.all,
             selectedMedia = MediaMockups.movie,
             selectedSeason = null,
+            overview = ArtworkOverviewContent.MovieOverview(MediaMockups.fullMovie.movie, MediaMockups.fullMovie.genres),
+            isOverviewSpoiler = false,
+            isOverviewBlurred = false,
             expandedEpisodeId = null,
+            spoilerEpisodeIds = emptySet(),
+            blurredEpisodeIds = emptySet(),
             scaffoldInnerPadding = PaddingValues.Zero,
             sendIntent = {}
         )
@@ -223,7 +238,12 @@ fun ArtworkContentLargeShow_Preview() {
             people = PeopleMockup.all,
             selectedMedia = MediaMockups.episode1,
             selectedSeason = 1,
+            overview = ArtworkOverviewContent.Summary(MediaMockups.season1.description),
+            isOverviewSpoiler = false,
+            isOverviewBlurred = false,
             expandedEpisodeId = null,
+            spoilerEpisodeIds = emptySet(),
+            blurredEpisodeIds = emptySet(),
             scaffoldInnerPadding = PaddingValues.Zero,
             sendIntent = {}
         )

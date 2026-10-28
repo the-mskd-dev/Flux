@@ -59,13 +59,12 @@ import com.mskd.flux.features.player.presentation.PlayerIntent
 import com.mskd.flux.features.player.presentation.PlayerInterfaceState
 import com.mskd.flux.features.player.presentation.PlayerOverlays
 import com.mskd.flux.features.player.presentation.PlayerSession
-import com.mskd.flux.screens.player.composables.collectSelectedAsState
-import kotlinx.coroutines.flow.StateFlow
 import com.mskd.flux.features.player.presentation.PlayerViewModel
 import com.mskd.flux.features.player.presentation.WindowStateHolder
 import com.mskd.flux.features.player.presentation.rememberPlayerScaleEffects
 import com.mskd.flux.features.player.presentation.rememberWindowStateHolder
 import com.mskd.flux.screens.player.composables.PlayerSideEffects
+import com.mskd.flux.screens.player.composables.collectSelectedAsState
 import com.mskd.flux.screens.player.composables.playerInterface.PlayerAmbientOverlay
 import com.mskd.flux.screens.player.composables.playerInterface.PlayerInterface
 import com.mskd.flux.screens.player.composables.playerInterface.PlayerSeekOverlay
@@ -82,6 +81,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource

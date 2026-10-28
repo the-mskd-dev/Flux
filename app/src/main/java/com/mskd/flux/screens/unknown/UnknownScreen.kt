@@ -42,7 +42,7 @@ import com.mskd.flux.ui.components.ErrorScreen
 import com.mskd.flux.ui.components.FluxScaffold
 import com.mskd.flux.ui.components.FluxSearchField
 import com.mskd.flux.ui.components.LoadingScreen
-import com.mskd.flux.ui.media.EpisodeItem
+import com.mskd.flux.ui.media.episode.EpisodeItem
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI

@@ -11,5 +11,4 @@ data class CatalogPreferences(
     val viewMode: CatalogViewMode,
     val token: String,
     val privateFolderEnabled: Boolean,
-    val hideMessage: Boolean
 )

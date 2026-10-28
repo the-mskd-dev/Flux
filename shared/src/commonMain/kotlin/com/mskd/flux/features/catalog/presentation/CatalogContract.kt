@@ -80,9 +80,6 @@ sealed interface CatalogIntent {
     data class PlayMedia(val media: Media, val forceInternal: Boolean = false): CatalogIntent
     data class OnExternalPlayerResult(val progress: Long) : CatalogIntent
 
-    // Message
-    data object OnMessageTap: CatalogIntent
-    data object HideMessage: CatalogIntent
 }
 
 sealed interface CatalogEvent {
@@ -97,7 +94,6 @@ sealed interface CatalogEvent {
     data object NavigateToHowTo: CatalogEvent
     data object NavigateToSources: CatalogEvent
     data object NavigateToPrivateFolder: CatalogEvent
-    data object NavigateToMessage: CatalogEvent
 
     // Player
     data class PlayMedia(val media: Media, val externalPlayer: Boolean) : CatalogEvent

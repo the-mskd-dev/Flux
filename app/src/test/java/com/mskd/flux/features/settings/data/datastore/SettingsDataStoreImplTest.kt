@@ -108,6 +108,19 @@ class SettingsDataStoreImplTest : FunSpec({
         }
     }
 
+    test("subtitlesEnabled is true by default and setSubtitlesEnabled updates flow") {
+
+        settingsDataStore.flow.test {
+            awaitItem().subtitlesEnabled shouldBe true
+
+            settingsDataStore.setSubtitlesEnabled(false)
+
+            awaitItem().subtitlesEnabled shouldBe false
+
+            cancelAndConsumeRemainingEvents()
+        }
+    }
+
     test("setAudioLanguage should update value in flow") {
 
         // Given
@@ -158,6 +171,27 @@ class SettingsDataStoreImplTest : FunSpec({
             // Then
             val updated = awaitItem()
             updated.autoKeyboard shouldBe newValue
+
+            cancelAndConsumeRemainingEvents()
+        }
+
+    }
+
+    test("blurSpoilers is disabled by default") {
+        settingsDataStore.flow.test {
+            awaitItem().blurSpoilers shouldBe false
+            cancelAndConsumeRemainingEvents()
+        }
+    }
+
+    test("setBlurSpoilers should update value in flow") {
+
+        settingsDataStore.flow.test {
+            awaitItem()
+
+            settingsDataStore.setBlurSpoilers(true)
+
+            awaitItem().blurSpoilers shouldBe true
 
             cancelAndConsumeRemainingEvents()
         }

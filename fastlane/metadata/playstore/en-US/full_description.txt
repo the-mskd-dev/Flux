@@ -1,0 +1,22 @@
+Transform your video collection into a clean, organized personal library for all your movies, TV shows, and anime. Flux scans your local media files and automatically fetches rich metadata—including official posters, plot synopses, episode guides, release dates, ratings, and cast details—powered by The Movie Database (TMDB).
+
+Whether you want to organize an offline movie collection, track your favorite TV show seasons, or manage your anime library, Flux delivers a modern and seamless media experience.
+
+### 💙 Support Independent Development
+By purchasing Flux on Google Play, you directly support independent open-source software development and help cover maintenance costs. Enjoy an ad-free, subscription-free experience with seamless automatic updates. Thanks a lot 🙏.
+
+### 🎬 Key Features
+
+- 📂 Complete Media Catalog: Organize and browse your local movies, TV shows, and anime in one unified interface.
+- 🍿 Rich TMDB Metadata: Automatically retrieve high-resolution posters, plot summaries, episode details, genres, and cast info.
+- ▶️ Built-in Video Player: Smooth playback with automatic progress tracking, playback history, and resume options for episodes and movies.
+- 🔗 External Player Integration: Easily open your media files with third-party video players if preferred.
+- 🎨 Material 3 Design: A clean, intuitive Material 3 Expressive library optimized for browsing cinema and TV content.
+- 🔒 Privacy-First: No ads, no paywalls, no recurring subscriptions, and zero user tracking.
+
+---
+
+### 📜 Legal & Credits
+
+This product uses the TMDB API but is not endorsed or certified by TMDB.
+Flux is open-source software licensed under the GNU General Public License v3.0 (GPL-3.0).

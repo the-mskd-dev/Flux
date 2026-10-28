@@ -20,7 +20,6 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.dp
-import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.fillMaxWidthWithLimit
@@ -35,7 +34,8 @@ import org.jetbrains.compose.resources.stringResource
 
     @Composable
 fun CatalogMessage(
-    sendIntent: (CatalogIntent) -> Unit
+    onClick: () -> Unit,
+    onHide: () -> Unit
 ) {
 
     Row(
@@ -62,7 +62,7 @@ fun CatalogMessage(
                         fontWeight = FontWeight.Bold
                     )
                 ),
-                linkInteractionListener = { sendIntent(CatalogIntent.OnMessageTap) }
+                linkInteractionListener = { onClick() }
             )
 
             withLink(linkAnnotation) {
@@ -80,7 +80,7 @@ fun CatalogMessage(
 
         IconButton(
             modifier = Modifier.testTag("CatalogMessage.Close"),
-            onClick = { sendIntent(CatalogIntent.HideMessage) }
+            onClick = onHide
         ) {
             Icon(
                 painter = painterResource(Res.drawable.ic_close),
@@ -97,6 +97,6 @@ fun CatalogMessage(
 @Composable
 fun CatalogMessage_Preview() {
     FluxThemePreview {
-        CatalogMessage {}
+        CatalogMessage({}, {})
     }
 }

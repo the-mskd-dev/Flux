@@ -4,13 +4,14 @@ import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.player.PlayerTrack
 import com.mskd.flux.features.player.domain.model.VideoChapter
-import com.mskd.flux.features.player.presentation.PlayerUiContent
+import com.mskd.flux.features.player.presentation.ChapterButton
+import com.mskd.flux.features.player.presentation.SettingsSheet
 
 object PlayerTestCases {
 
     data class ShowSettings(
         val description: String,
-        val sheet: PlayerUiContent.SettingsSheet
+        val sheet: SettingsSheet
     )
 
     data class SaveTime(
@@ -29,18 +30,12 @@ object PlayerTestCases {
         val description: String,
         val chapters: List<VideoChapter>,
         val progress: Long,
-        val expectedChapterButton: PlayerUiContent.ChapterButton?
+        val expectedChapterButton: ChapterButton?
     )
 
     data class SelectTrack(
         val description: String,
         val track: PlayerTrack,
-    )
-
-    data class UpdateAmbientOverlay(
-        val description: String,
-        val type: PlayerUiContent.AmbientOverlay.Type,
-        val value: Int
     )
 
 }

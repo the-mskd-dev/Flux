@@ -142,6 +142,55 @@ class MediasDaoTest {
         assertTrue(result.contains(movie))
     }
 
+    @Test
+    fun upsertFromSync_keeps_the_user_state_saved_on_the_same_path() = runTest {
+        // Given
+        val existing = MediaMockups.episode1.toEntity().copy(currentTime = 4200L, status = Status.IS_WATCHING)
+        mediasDao.insert(listOf(existing))
+        val refreshed = existing.copy(title = "New title", currentTime = 0L, status = Status.TO_WATCH)
+
+        // When
+        mediasDao.upsertFromSync(listOf(refreshed))
+
+        // Then
+        val result = mediasDao.getAll().single()
+        assertEquals("New title", result.title)
+        assertEquals(4200L, result.currentTime)
+        assertEquals(Status.IS_WATCHING, result.status)
+    }
+
+    @Test
+    fun upsertFromSync_keeps_the_user_state_when_the_path_gets_another_media_identity() = runTest {
+        // Given
+        val existing = MediaMockups.episode1.toEntity().copy(currentTime = 4200L, status = Status.WATCHED)
+        mediasDao.insert(listOf(existing))
+        val otherIdentity = MediaMockups.episode2.toEntity().copy(path = existing.path)
+
+        // When
+        mediasDao.upsertFromSync(listOf(otherIdentity))
+
+        // Then
+        val result = mediasDao.getAll().single()
+        assertEquals(otherIdentity.id, result.id)
+        assertEquals(4200L, result.currentTime)
+        assertEquals(Status.WATCHED, result.status)
+    }
+
+    @Test
+    fun upsertFromSync_does_not_share_the_user_state_between_files_with_the_same_name() = runTest {
+        // Given
+        val first = MediaMockups.episode1.toEntity().copy(path = "folderA/video.mkv", currentTime = 1000L)
+        val second = MediaMockups.episode2.toEntity().copy(path = "folderB/video.mkv", currentTime = 2000L)
+        mediasDao.insert(listOf(first, second))
+
+        // When
+        mediasDao.upsertFromSync(listOf(first.copy(currentTime = 0L), second.copy(currentTime = 0L)))
+
+        // Then
+        val result = mediasDao.getAll().associate { it.path to it.currentTime }
+        assertEquals(mapOf("folderA/video.mkv" to 1000L, "folderB/video.mkv" to 2000L), result)
+    }
+
     //endregion
 
     //region Flow

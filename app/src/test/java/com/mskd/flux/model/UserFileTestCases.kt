@@ -9,7 +9,13 @@ object UserFileTestCases {
         val expectedTitle: String,
         val expectedYear: Int? = null,
         val expectedSeason: Int? = null,
-        val expectedEpisode: Int? = null
+        val expectedEpisode: Int? = null,
+        val expectedTmdbId: Long? = null
+    )
+
+    data class TmdbId(
+        val file: UserFile,
+        val expectedTmdbId: Long?
     )
 
 }

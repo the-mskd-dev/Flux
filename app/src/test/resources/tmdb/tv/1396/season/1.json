@@ -1,0 +1,37 @@
+{
+  "id": 3572,
+  "name": "Season 1",
+  "overview": "High school chemistry teacher Walter White's life is suddenly transformed.",
+  "poster_path": "/breaking-bad-s1.jpg",
+  "season_number": 1,
+  "episodes": [
+    {
+      "id": 62085,
+      "show_id": 1396,
+      "name": "Pilot",
+      "overview": "Walter White learns that he has terminal lung cancer.",
+      "runtime": 58,
+      "episode_number": 1,
+      "season_number": 1,
+      "still_path": "/pilot.jpg",
+      "vote_average": 8.2,
+      "vote_count": 300,
+      "air_date": "2008-01-20",
+      "crew": []
+    },
+    {
+      "id": 62086,
+      "show_id": 1396,
+      "name": "Cat's in the Bag...",
+      "overview": "Walt and Jesse attempt to tie up loose ends.",
+      "runtime": 48,
+      "episode_number": 2,
+      "season_number": 1,
+      "still_path": "/cats-in-the-bag.jpg",
+      "vote_average": 8.0,
+      "vote_count": 250,
+      "air_date": "2008-01-27",
+      "crew": []
+    }
+  ]
+}

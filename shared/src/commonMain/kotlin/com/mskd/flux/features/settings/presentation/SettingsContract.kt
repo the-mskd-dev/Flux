@@ -12,6 +12,7 @@ data class SettingsUiState(
     val autoKeyboard: Boolean = false,
     val useExternalPlayer: Boolean = false,
     val pipIsEnabled: Boolean = true,
+    val blurSpoilers: Boolean = false,
     val optionsDialog: FluxOptionsDialogState<*, SettingsIntent>? = null,
     val settingsDialog: SettingsDialog? = null,
     val fullSyncInProgress: Boolean = false,
@@ -68,6 +69,7 @@ sealed interface SettingsIntent {
     data class OnExternalPlayerCheck(val checked: Boolean): SettingsIntent
     data class OnEnablePipCheck(val checked: Boolean): SettingsIntent
     data class OnPrefetchHdImagesCheck(val checked: Boolean): SettingsIntent
+    data class OnBlurSpoilersCheck(val checked: Boolean): SettingsIntent
     data class OpenUrl(val url: String): SettingsIntent
     data object SendEmail: SettingsIntent
 }

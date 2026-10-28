@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -18,14 +17,15 @@ import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.oups_an_error_occured
+import flux.shared.generated.resources.retry
 import org.jetbrains.compose.resources.stringResource
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ErrorScreen(
     modifier: Modifier = Modifier,
     message: String,
     description: String? = null,
+    onRetryClick: (() -> Unit)? = null,
     onBackButtonClick: () -> Unit
 ) {
 
@@ -60,6 +60,13 @@ fun ErrorScreen(
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onBackground.copy(alpha = .7f)
                 )
+
+                if (onRetryClick != null) {
+                    FluxTextButton(
+                        text = stringResource(Res.string.retry),
+                        onClick = onRetryClick
+                    )
+                }
 
             }
 

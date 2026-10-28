@@ -36,7 +36,7 @@ interface PlayerManager<out T> {
 
     fun pause()
 
-    fun seekTo(progress: Long)
+    fun seekTo(progress: Long, precision: SeekPrecision = SeekPrecision.EXACT)
 
     fun seekRewind(value: Long)
 
@@ -49,3 +49,5 @@ interface PlayerManager<out T> {
     fun selectTrack(track: PlayerTrack)
 
 }
+/** FAST snaps to the closest keyframe (cheap, for scrubbing); EXACT lands on the requested position. */
+enum class SeekPrecision { FAST, EXACT }

@@ -25,8 +25,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.features.player.domain.model.VideoChapter
 import com.mskd.flux.features.player.domain.model.VideoChapterType
+import com.mskd.flux.features.player.presentation.ChapterButton
 import com.mskd.flux.features.player.presentation.PlayerIntent
-import com.mskd.flux.features.player.presentation.PlayerUiContent
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
@@ -40,7 +40,7 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun PlayerChapterButton(
     modifier: Modifier,
-    chapterButton: PlayerUiContent.ChapterButton?,
+    chapterButton: ChapterButton?,
     bottomMargin: () -> Dp,
     sendIntent: (PlayerIntent) -> Unit
 ) {
@@ -54,8 +54,8 @@ fun PlayerChapterButton(
     val backgroundColor: Color = MaterialTheme.colorScheme.primaryContainer
     val size = ButtonDefaults.MediumContainerHeight
     val text = when (chapterButton) {
-        is PlayerUiContent.ChapterButton.NextEpisode -> stringResource(Res.string.next_episode)
-        is PlayerUiContent.ChapterButton.Skip -> when (chapterButton.chapter.type) {
+        is ChapterButton.NextEpisode -> stringResource(Res.string.next_episode)
+        is ChapterButton.Skip -> when (chapterButton.chapter.type) {
             VideoChapterType.OPENING -> stringResource(Res.string.skip_opening)
             VideoChapterType.ENDING -> stringResource(Res.string.skip_ending)
             VideoChapterType.CHAPTER -> stringResource(Res.string.skip)
@@ -114,7 +114,7 @@ fun PlayerChapterButton_Preview() {
         Box(modifier = Modifier.fillMaxWidth()) {
             PlayerChapterButton(
                 modifier = Modifier,
-                chapterButton = PlayerUiContent.ChapterButton.Skip(chapter = VideoChapter(0, 0L, 0L, type = VideoChapterType.OPENING)),
+                chapterButton = ChapterButton.Skip(chapter = VideoChapter(0, 0L, 0L, type = VideoChapterType.OPENING)),
                 bottomMargin = { 0.dp },
                 sendIntent = {}
             )

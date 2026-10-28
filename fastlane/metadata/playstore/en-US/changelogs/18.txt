@@ -1,0 +1,7 @@
+- Feature: Pre-fetch images
+- Feature: Support local subtitles files
+- Feature: Add player controls for external keyboards
+- Fix: Crash in metadata fetching
+- Fix: Bypass external progress when restart media
+- Fix: Coroutines management
+- UI: Title size in Artwork page

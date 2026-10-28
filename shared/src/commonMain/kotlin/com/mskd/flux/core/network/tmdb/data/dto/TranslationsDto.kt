@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class TranslationsDto(
-    val id: String,
+    val id: String = "",
     val translations: List<Translation>
 ) {
 
@@ -32,8 +32,12 @@ data class TranslationsDto(
 
     @Serializable
     data class Data(
-        val name: String?,
-        val overview: String?
-    )
+        val name: String? = null,
+        val overview: String? = null,
+        // Movies have a title where shows, seasons and episodes have a name
+        val title: String? = null,
+    ) {
+        val text: String? get() = name?.takeIf { it.isNotBlank() } ?: title
+    }
 
 }

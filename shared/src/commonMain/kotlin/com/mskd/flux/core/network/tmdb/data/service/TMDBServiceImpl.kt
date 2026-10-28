@@ -4,6 +4,7 @@ import com.mskd.flux.core.network.tmdb.data.dto.AuthenticationDto
 import com.mskd.flux.core.network.tmdb.data.dto.SearchResultsDto
 import com.mskd.flux.core.network.tmdb.data.dto.TranslationsDto
 import com.mskd.flux.core.network.tmdb.data.dto.genre.GenresResultDto
+import com.mskd.flux.core.network.tmdb.data.dto.images.ImagesDto
 import com.mskd.flux.core.network.tmdb.data.dto.movie.MovieDto
 import com.mskd.flux.core.network.tmdb.data.dto.people.PeopleDto
 import com.mskd.flux.core.network.tmdb.data.dto.people.PersonInfoDto
@@ -14,8 +15,14 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
+import kotlin.coroutines.cancellation.CancellationException
 
 class TMDBServiceImpl(private val client: HttpClient) : TMDBService {
+
+    private companion object {
+        /** Translations and credits come with the details: no separate call. */
+        const val APPENDED_DETAILS = "translations,credits"
+    }
 
     //region Auth
 
@@ -46,6 +53,7 @@ class TMDBServiceImpl(private val client: HttpClient) : TMDBService {
     ): MovieDto = client
         .get("movie/$id") {
             parameter("language", language)
+            parameter("append_to_response", APPENDED_DETAILS)
         }.body()
 
     override suspend fun getMovieTranslations(artworkId: Long): TranslationsDto = client
@@ -64,6 +72,22 @@ class TMDBServiceImpl(private val client: HttpClient) : TMDBService {
         .get("movie/$artworkId/credits") {
             parameter("language", language)
         }.body()
+
+    override suspend fun getMovieImages(
+        artworkId: Long,
+        language: String
+    ): Result<ImagesDto> = try {
+        Result.success(
+            client.get("movie/$artworkId/images") {
+                parameter("language", language)
+                parameter("include_image_language", imageLanguages(language))
+            }.body<ImagesDto>()
+        )
+    } catch (e: CancellationException) {
+        throw e
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
 
     //endregion
 
@@ -87,6 +111,7 @@ class TMDBServiceImpl(private val client: HttpClient) : TMDBService {
     ): ShowDto = client
         .get("tv/$artworkId") {
             parameter("language", language)
+            parameter("append_to_response", APPENDED_DETAILS)
         }.body()
 
     override suspend fun getShowTranslations(artworkId: Long): TranslationsDto = client
@@ -105,6 +130,22 @@ class TMDBServiceImpl(private val client: HttpClient) : TMDBService {
         .get("tv/$artworkId/credits") {
             parameter("language", language)
         }.body()
+
+    override suspend fun getShowImages(
+        artworkId: Long,
+        language: String
+    ): Result<ImagesDto> = try {
+        Result.success(
+            client.get("tv/$artworkId/images") {
+                parameter("language", language)
+                parameter("include_image_language", imageLanguages(language))
+            }.body<ImagesDto>()
+        )
+    } catch (e: CancellationException) {
+        throw e
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
 
     //endregion
 
@@ -161,5 +202,10 @@ class TMDBServiceImpl(private val client: HttpClient) : TMDBService {
         }.body()
 
     //endregion
+
+    // Also asks for the English and language-less images, TMDB drops them otherwise
+    private fun imageLanguages(language: String) = listOf(language.substringBefore("-"), "en", "null")
+        .distinct()
+        .joinToString(",")
 
 }

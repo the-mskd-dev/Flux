@@ -12,6 +12,7 @@ val moduleShow = module {
             urlLauncher = get(),
             observeArtworkUseCase = get(),
             getPeopleUseCase = get(),
+            tokenDataStore = get(),
             resetProgress = get(),
         )
     }

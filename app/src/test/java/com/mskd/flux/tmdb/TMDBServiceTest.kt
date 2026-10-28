@@ -8,6 +8,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import okhttp3.mockwebserver.MockResponse
+import java.util.concurrent.TimeUnit
 
 class TMDBServiceTest : FunSpec({
 
@@ -218,6 +219,61 @@ class TMDBServiceTest : FunSpec({
         shouldThrow<Exception> {
             apiConfig.api.getEpisodeTranslations(0L, 1, 1)
         }
+
+    }
+
+    test("get movie images maps backdrops and posters and ignores logos") {
+
+        val mockResponse = MockResponse()
+            .setBody(TMDBResponseMockups.movieImages)
+            .setResponseCode(200)
+        apiConfig.mockWebServer.enqueue(mockResponse)
+
+        val result = apiConfig.api.getMovieImages(372058L, language = Language.ENGLISH.code).getOrThrow()
+
+        result.backdrops.map { it.filePath } shouldBe listOf("/backdrop1.jpg", "/backdrop2.jpg")
+        result.posters.map { it.filePath } shouldBe listOf("/poster1.jpg")
+        result.backdrops.first().voteAverage shouldBe 5.3
+        result.posters.first().aspectRatio shouldBe 0.667
+
+        // The server is shared by all tests: the request of this test is the last one recorded
+        val requests = generateSequence { apiConfig.mockWebServer.takeRequest(10, TimeUnit.MILLISECONDS) }.toList()
+        requests.last().path shouldBe "/movie/372058/images?language=${Language.ENGLISH.code}&include_image_language=en%2Cnull"
+
+    }
+
+    test("get movie images fail") {
+
+        val mockResponse = MockResponse()
+            .setResponseCode(404)
+        apiConfig.mockWebServer.enqueue(mockResponse)
+
+        apiConfig.api.getMovieImages(0L, language = Language.ENGLISH.code).isFailure shouldBe true
+
+    }
+
+    test("get show images maps backdrops and posters and ignores logos") {
+
+        val mockResponse = MockResponse()
+            .setBody(TMDBResponseMockups.showImages)
+            .setResponseCode(200)
+        apiConfig.mockWebServer.enqueue(mockResponse)
+
+        val result = apiConfig.api.getShowImages(46260L, language = Language.ENGLISH.code).getOrThrow()
+
+        result.backdrops.map { it.filePath } shouldBe listOf("/showBackdrop1.jpg")
+        result.posters.map { it.filePath } shouldBe listOf("/showPoster1.jpg", "/showPoster2.jpg")
+
+        val requests = generateSequence { apiConfig.mockWebServer.takeRequest(10, TimeUnit.MILLISECONDS) }.toList()
+        requests.last().path shouldBe "/tv/46260/images?language=${Language.ENGLISH.code}&include_image_language=en%2Cnull"
+
+    }
+
+    test("get show images fail") {
+
+        apiConfig.mockWebServer.enqueue(MockResponse().setResponseCode(404))
+
+        apiConfig.api.getShowImages(0L, language = Language.ENGLISH.code).isFailure shouldBe true
 
     }
 

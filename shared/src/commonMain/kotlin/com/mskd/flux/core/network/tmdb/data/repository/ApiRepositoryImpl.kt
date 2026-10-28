@@ -9,11 +9,14 @@ import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.core.network.tmdb.data.datasource.TmdbDataSource
+import com.mskd.flux.core.network.tmdb.data.mapper.toArtwork
 import com.mskd.flux.core.network.tmdb.data.mapper.toDomain
+import com.mskd.flux.core.network.tmdb.domain.model.ArtworkDetails
 import com.mskd.flux.core.network.tmdb.domain.model.PersonInfo
 import com.mskd.flux.core.network.tmdb.domain.model.Translation
 import com.mskd.flux.core.network.tmdb.domain.model.TranslationRequest
 import com.mskd.flux.core.network.tmdb.domain.repository.ApiRepository
+import com.mskd.flux.features.gallery.domain.model.GalleryImage
 
 internal class ApiRepositoryImpl(
     private val tmdb: TmdbDataSource
@@ -22,6 +25,28 @@ internal class ApiRepositoryImpl(
     //region Artwork
 
     override suspend fun getArtwork(file: UserFile): Artwork = tmdb.getArtwork(file = file)?.toDomain() ?: Artwork.UNKNOWN
+
+    override suspend fun getArtworkById(id: Long, type: ContentType): Artwork? = when (type) {
+        ContentType.MOVIE -> tmdb.getMovie(artworkId = id)?.toArtwork()
+        ContentType.SHOW -> tmdb.getShow(artworkId = id)?.toArtwork()
+    }
+
+    override suspend fun getDetails(artworkId: Long, type: ContentType, file: UserFile): ArtworkDetails? = when (type) {
+        ContentType.MOVIE -> tmdb.getMovie(artworkId = artworkId)?.let { movie ->
+            ArtworkDetails(
+                artwork = movie.toArtwork(),
+                movie = movie.toDomain(file = file, duration = movie.duration ?: 0),
+                people = movie.credits?.toDomain(artworkId = movie.id).orEmpty()
+            )
+        }
+        ContentType.SHOW -> tmdb.getShow(artworkId = artworkId)?.let { show ->
+            ArtworkDetails(
+                artwork = show.toArtwork(),
+                movie = null,
+                people = show.credits?.toDomain(artworkId = show.id).orEmpty()
+            )
+        }
+    }
 
     override suspend fun getGenres(): List<Genre> = tmdb.getGenres().map { it.toDomain() }
 
@@ -44,9 +69,15 @@ internal class ApiRepositoryImpl(
         return tmdb.getMoviePeople(artworkId = artworkId)?.toDomain(artworkId = artworkId) ?: emptyList()
     }
 
+    override suspend fun getMovieImages(artworkId: Long): List<GalleryImage> =
+        tmdb.getMovieImages(artworkId = artworkId).toDomain()
+
     //endregion
 
     //region Show
+
+    override suspend fun getShowImages(artworkId: Long): List<GalleryImage> =
+        tmdb.getShowImages(artworkId = artworkId).toDomain()
 
     override suspend fun getSeasonAndEpisodes(
         artworkId: Long,
@@ -88,7 +119,7 @@ internal class ApiRepositoryImpl(
     override suspend fun getTranslation(request: TranslationRequest): Translation? {
         return tmdb.getTranslation(request = request)?.let {
                 Translation(
-                    title = it.data.name,
+                    title = it.data.text,
                     description = it.data.overview
                 )
             }

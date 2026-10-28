@@ -123,6 +123,7 @@
     <string name="information_language">정보 언어</string>
     <string name="sync_in_progress">동기화 진행 중…</string>
     <string name="by_default">기본값</string>
+    <string name="subtitles_disabled">사용 안 함</string>
     <string name="cache_images">HD 이미지 캐싱</string>
     <string name="images_cached">캐시된 이미지</string>
     <string name="caching_images_in_progress">이미지 캐싱 중… %1$d%</string>
@@ -238,4 +239,11 @@
     <string name="known_for_department">유명한 분야: %1$s</string>
     <string name="original_name">본명: %1$s</string>
     <string name="also_in">다른 출연작</string>
+    <string name="retry">다시 시도</string>
+    <string name="unavailable_check_connection">사용할 수 없습니다. 연결을 확인하세요</string>
+    <string name="gallery_empty">사용 가능한 이미지가 없습니다</string>
+    <string name="blur_spoilers">스포일러 가리기</string>
+    <string name="blur_spoilers_desc">아직 보지 않은 에피소드의 설명과 이미지를 흐리게 처리합니다</string>
+    <string name="spoiler_hidden">스포일러 숨김</string>
+    <string name="spoiler_reveal">보기</string>
 </resources>

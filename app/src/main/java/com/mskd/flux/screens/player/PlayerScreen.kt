@@ -24,7 +24,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
+import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -51,12 +54,17 @@ import androidx.media3.ui.compose.ContentFrame
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.core.model.enums.Side
 import com.mskd.flux.features.player.domain.model.PlayerParams
+import com.mskd.flux.features.player.presentation.AmbientOverlay
 import com.mskd.flux.features.player.presentation.PlayerIntent
-import com.mskd.flux.features.player.presentation.PlayerUiContent
+import com.mskd.flux.features.player.presentation.PlayerInterfaceState
+import com.mskd.flux.features.player.presentation.PlayerOverlays
+import com.mskd.flux.features.player.presentation.PlayerSession
 import com.mskd.flux.features.player.presentation.PlayerViewModel
+import com.mskd.flux.features.player.presentation.WindowStateHolder
 import com.mskd.flux.features.player.presentation.rememberPlayerScaleEffects
 import com.mskd.flux.features.player.presentation.rememberWindowStateHolder
 import com.mskd.flux.screens.player.composables.PlayerSideEffects
+import com.mskd.flux.screens.player.composables.collectSelectedAsState
 import com.mskd.flux.screens.player.composables.playerInterface.PlayerAmbientOverlay
 import com.mskd.flux.screens.player.composables.playerInterface.PlayerInterface
 import com.mskd.flux.screens.player.composables.playerInterface.PlayerSeekOverlay
@@ -69,7 +77,13 @@ import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.extensions.description
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.oups_an_error_occured
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -83,10 +97,9 @@ fun PlayerScreen(
     viewModel: PlayerViewModel<Player> = koinViewModel(parameters = { parametersOf(params) })
 ) {
 
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val session by viewModel.session.collectAsStateWithLifecycle()
     val subtitles by viewModel.subtitles.collectAsStateWithLifecycle()
     val progress by viewModel.progress.collectAsStateWithLifecycle()
-    val content = (uiState.state as? State.Content)?.content
 
     val windowStateHolder = rememberWindowStateHolder()
     var interfaceVisibilityCountdown by remember { mutableIntStateOf(3) }
@@ -94,14 +107,15 @@ fun PlayerScreen(
     PlayerSideEffects(
         viewModel = viewModel,
         windowStateHolder = windowStateHolder,
-        showInterface = content?.showInterface ?: false,
         onBack = onBack,
-        isPlayingContent = { content?.isPlaying == true },
     )
 
     // Automatically hide interface after 5 seconds
-    LaunchedEffect(content?.showInterface, content?.settingsSheet) {
-        if (content?.showInterface == true && content.settingsSheet == null) {
+    val showInterface by viewModel.interfaceState.collectSelectedAsState { it.showInterface }
+    val hasSettingsSheet by viewModel.interfaceState.collectSelectedAsState { it.settingsSheet != null }
+    val hasContent = session is State.Content
+    LaunchedEffect(hasContent, showInterface, hasSettingsSheet) {
+        if (hasContent && showInterface && !hasSettingsSheet) {
             while (interfaceVisibilityCountdown > 0) {
                 delay(1.seconds)
                 interfaceVisibilityCountdown--
@@ -116,7 +130,7 @@ fun PlayerScreen(
     }
 
     AnimatedContent(
-        targetState = uiState.state,
+        targetState = session,
         label = "CatalogScreenState",
         transitionSpec = { fadeIn() togetherWith fadeOut() },
         contentKey = { state ->
@@ -143,7 +157,12 @@ fun PlayerScreen(
                 val focusRequester = remember { FocusRequester() }
 
                 PlayerContent(
-                    content = state.content,
+                    session = state.content,
+                    interfaceState = viewModel.interfaceState,
+                    overlays = viewModel.overlays,
+                    isPlaying = viewModel.isPlaying,
+                    volume = viewModel.volume,
+                    windowStateHolder = windowStateHolder,
                     subtitles = { subtitles },
                     progress = { progress },
                     focusRequester = focusRequester,
@@ -162,7 +181,12 @@ fun PlayerScreen(
 @OptIn(UnstableApi::class)
 @Composable
 fun PlayerContent(
-    content: PlayerUiContent<Player>,
+    session: PlayerSession<Player>,
+    interfaceState: StateFlow<PlayerInterfaceState>,
+    overlays: StateFlow<PlayerOverlays>,
+    isPlaying: StateFlow<Boolean>,
+    volume: Flow<Int>,
+    windowStateHolder: WindowStateHolder,
     subtitles: () -> List<String?>,
     progress: () -> Long,
     focusRequester: FocusRequester,
@@ -173,20 +197,20 @@ fun PlayerContent(
     val configuration = LocalConfiguration.current
     val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
 
-    var currentVideoSize by remember { mutableStateOf(content.player.videoSize) }
+    var currentVideoSize by remember { mutableStateOf(session.player.videoSize) }
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
     }
 
-    DisposableEffect(content.player) {
+    DisposableEffect(session.player) {
         val listener = object : Player.Listener {
             override fun onVideoSizeChanged(videoSize: VideoSize) {
                 currentVideoSize = videoSize
             }
         }
-        content.player.addListener(listener)
-        onDispose { content.player.removeListener(listener) }
+        session.player.addListener(listener)
+        onDispose { session.player.removeListener(listener) }
     }
 
     val scaleState = rememberPlayerScaleEffects(
@@ -195,7 +219,7 @@ fun PlayerContent(
         isPortrait = isPortrait
     )
 
-    val animatedScale by animateFloatAsState(
+    val animatedScale = animateFloatAsState(
         targetValue = scaleState.targetScale,
         animationSpec = spring(
             dampingRatio = Spring.DampingRatioNoBouncy,
@@ -209,6 +233,36 @@ fun PlayerContent(
             zoomChange < 1f -> scaleState.toggleFill(false)
             zoomChange > 1f -> scaleState.toggleFill(true)
         }
+    }
+
+    val currentSendIntent by rememberUpdatedState(sendIntent)
+    val currentWindowStateHolder by rememberUpdatedState(windowStateHolder)
+    val isInPip by interfaceState.collectSelectedAsState { it.isInPip }
+    val seekOverlay by overlays.collectSelectedAsState { it.seekOverlay }
+
+    // The Ambient overlay is local to the screen: brightness is applied here, volume comes back from the VM
+    var ambientOverlay by remember { mutableStateOf<AmbientOverlay?>(null) }
+    var ambientTick by remember { mutableIntStateOf(0) }
+    val showAmbient = remember {
+        { type: AmbientOverlay.Type, value: Int ->
+            ambientOverlay = AmbientOverlay(type = type, value = value)
+            ambientTick++
+        }
+    }
+
+    // Read through snapshotFlow so that ticks do not recompose the screen
+    LaunchedEffect(Unit) {
+        snapshotFlow { ambientTick }.collectLatest {
+            if (it == 0) return@collectLatest
+            delay(1.seconds)
+            ambientOverlay = null
+        }
+    }
+
+    val currentShowAmbient by rememberUpdatedState(showAmbient)
+
+    LaunchedEffect(volume) {
+        volume.collect { showAmbient(AmbientOverlay.Type.VOLUME, it) }
     }
 
     ConstraintLayout(
@@ -244,35 +298,57 @@ fun PlayerContent(
                     onTap = { offset ->
                         val edgeMargin = 32.dp.toPx()
                         if (offset.x > edgeMargin && offset.x < (size.width - edgeMargin)) {
-                            sendIntent(PlayerIntent.ChangeInterfaceVisibility)
+                            currentSendIntent(PlayerIntent.ChangeInterfaceVisibility)
                         }
                     },
                     onDoubleTap = { offset ->
                         val width = size.width
                         if (offset.x < (width * .4f)) {
-                            sendIntent(PlayerIntent.OnFastRewind)
+                            currentSendIntent(PlayerIntent.OnFastRewind)
                         } else if (offset.x > (width * .6f)) {
-                            sendIntent(PlayerIntent.OnFastForward)
+                            currentSendIntent(PlayerIntent.OnFastForward)
                         }
                     }
                 )
             }
             .pointerInput(Unit) {
                 var side = Side.LEFT
-                detectVerticalDragGestures(
-                    onDragStart = { offset ->
-                        side = if (offset.x > size.width / 2) Side.RIGHT else Side.LEFT
-                    },
-                    onVerticalDrag = { change, dragAmount ->
-                        val delta = (-dragAmount / size.height) * 2
-                        when (side) {
-                            Side.LEFT -> sendIntent(PlayerIntent.OnBrightnessChange(delta))
-                            Side.RIGHT -> sendIntent(PlayerIntent.OnVolumeChange(delta))
-                        }
-                        change.consume()
-                    },
+                var pendingDelta = 0f
 
+                fun flush() {
+                    val delta = pendingDelta
+                    if (delta == 0f) return
+                    pendingDelta = 0f
+                    when (side) {
+                        Side.LEFT -> currentWindowStateHolder.changeBrightness(delta)
+                            ?.let { currentShowAmbient(AmbientOverlay.Type.BRIGHTNESS, it) }
+                        Side.RIGHT -> currentSendIntent(PlayerIntent.OnVolumeChange(delta))
+                    }
+                }
+
+                coroutineScope {
+                    // Finger moves are accumulated and applied at most once per frame
+                    val frameRequests = Channel<Unit>(Channel.CONFLATED)
+                    launch {
+                        for (request in frameRequests) {
+                            withFrameNanos { }
+                            flush()
+                        }
+                    }
+                    detectVerticalDragGestures(
+                        onDragStart = { offset ->
+                            side = if (offset.x > size.width / 2) Side.RIGHT else Side.LEFT
+                            pendingDelta = 0f
+                        },
+                        onDragEnd = { flush() },
+                        onDragCancel = { flush() },
+                        onVerticalDrag = { change, dragAmount ->
+                            pendingDelta += (-dragAmount / size.height) * 2
+                            frameRequests.trySend(Unit)
+                            change.consume()
+                        },
                     )
+                }
             },
         constraintSet = playerConstraintSet(videoSize = currentVideoSize)
     ) {
@@ -280,15 +356,15 @@ fun PlayerContent(
         ContentFrame(
             modifier = Modifier
                 .layoutId("player")
-                .graphicsLayer(
-                    scaleX = animatedScale,
-                    scaleY = animatedScale
-                )
-            ,
-            player = content.player
+                .graphicsLayer {
+                    val scale = animatedScale.value
+                    scaleX = scale
+                    scaleY = scale
+                },
+            player = session.player
         )
 
-        if (!content.isInPip) {
+        if (!isInPip) {
 
             PlayerSubtitles(
                 modifier = Modifier
@@ -300,8 +376,10 @@ fun PlayerContent(
 
             PlayerInterface(
                 modifier = Modifier.layoutId("playerInterface"),
-                media = content.media,
-                content = content,
+                session = session,
+                interfaceState = interfaceState,
+                overlays = overlays,
+                isPlaying = isPlaying,
                 progress = progress,
                 sendIntent = sendIntent,
             )
@@ -309,12 +387,12 @@ fun PlayerContent(
             PlayerSeekOverlay(
                 layoutIdLeft = "leftSeekOverlay",
                 layoutIdRight = "rightSeekOverlay",
-                seekOverlay = { content.seekOverlay }
+                seekOverlay = { seekOverlay }
             )
 
             PlayerAmbientOverlay(
                 modifier = Modifier.layoutId("ambientOverlay"),
-                ambientOverlay = { content.ambientOverlay }
+                ambientOverlay = { ambientOverlay }
             )
 
         }
@@ -322,7 +400,8 @@ fun PlayerContent(
     }
 
     PlayerSettings(
-        content = content,
+        session = session,
+        interfaceState = interfaceState,
         sendIntent = sendIntent
     )
 

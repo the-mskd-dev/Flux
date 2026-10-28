@@ -37,11 +37,7 @@ val moduleDatabase = module {
     }
 
     single<DatabaseRepository> {
-        DatabaseRepositoryImpl(
-            artworksDao = get(),
-            mediasDao = get(),
-            seasonsDao = get()
-        )
+        DatabaseRepositoryImpl(database = get(),)
     }
 
     single<DetailsRepository> {

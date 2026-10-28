@@ -23,7 +23,6 @@ class UserDataStoreImpl(
 
     object Keys {
         val LAST_SYNC_TIME = longPreferencesKey("last_sync_time")
-        val LAST_PEOPLE_SYNC_TIME = longPreferencesKey("last_people_sync_time")
         val CURRENT_VERSION_CODE = intPreferencesKey("version_code")
 
         val WATCHED_MESSAGES_IDS = stringPreferencesKey("watched_messages_ids")
@@ -36,7 +35,6 @@ class UserDataStoreImpl(
         .map { preferences ->
 
             val syncTime = preferences[Keys.LAST_SYNC_TIME] ?: 0L
-            val peopleSyncTime = preferences[Keys.LAST_PEOPLE_SYNC_TIME] ?: 0L
             val watchedMessagesIdsString = preferences[Keys.WATCHED_MESSAGES_IDS] ?: "[]"
             val watchedMessagesIds = json.decodeFromString<List<Int>>(watchedMessagesIdsString)
             val versionCode = preferences[Keys.CURRENT_VERSION_CODE] ?: -1
@@ -44,7 +42,6 @@ class UserDataStoreImpl(
 
             UserDataStore.State(
                 syncTime = syncTime,
-                peopleSyncTime = peopleSyncTime,
                 watchedMessagesIds = watchedMessagesIds,
                 versionCode = versionCode,
                 pipIsEnabled = pipIsEnabled,
@@ -59,16 +56,6 @@ class UserDataStoreImpl(
 
     override suspend fun getSyncTime() : Long {
         return flow.first().syncTime
-    }
-
-    override suspend fun setPeopleSyncTime(syncTime: Long) {
-        userDataStore.edit { preferences ->
-            preferences[Keys.LAST_PEOPLE_SYNC_TIME] = syncTime
-        }
-    }
-
-    override suspend fun getPeopleSyncTime(): Long {
-        return flow.first().peopleSyncTime
     }
 
     override suspend fun setVersionCode(versionCode: Int) {

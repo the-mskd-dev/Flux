@@ -4,6 +4,7 @@ import com.mskd.flux.core.network.tmdb.data.dto.AuthenticationDto
 import com.mskd.flux.core.network.tmdb.data.dto.SearchResultsDto
 import com.mskd.flux.core.network.tmdb.data.dto.TranslationsDto
 import com.mskd.flux.core.network.tmdb.data.dto.genre.GenresResultDto
+import com.mskd.flux.core.network.tmdb.data.dto.images.ImagesDto
 import com.mskd.flux.core.network.tmdb.data.dto.movie.MovieDto
 import com.mskd.flux.core.network.tmdb.data.dto.people.PeopleDto
 import com.mskd.flux.core.network.tmdb.data.dto.people.PersonInfoDto
@@ -43,6 +44,11 @@ interface TMDBService {
         language: String
     ) : PeopleDto
 
+    suspend fun getMovieImages(
+        artworkId: Long,
+        language: String
+    ) : Result<ImagesDto>
+
     //endregion
 
     //region Show
@@ -68,6 +74,11 @@ interface TMDBService {
         artworkId: Long,
         language: String
     ) : PeopleDto
+
+    suspend fun getShowImages(
+        artworkId: Long,
+        language: String
+    ) : Result<ImagesDto>
 
     //endregion
 

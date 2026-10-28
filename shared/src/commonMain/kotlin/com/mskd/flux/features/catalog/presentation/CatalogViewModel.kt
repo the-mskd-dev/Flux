@@ -9,7 +9,6 @@ import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.core.AppInfo
-import com.mskd.flux.core.model.core.Flavor
 import com.mskd.flux.features.catalog.domain.datastore.CatalogDataStore
 import com.mskd.flux.features.catalog.domain.model.CatalogPreferences
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
@@ -86,7 +85,6 @@ class CatalogViewModel(
             viewMode = catalog.viewMode,
             token = token,
             privateFolderEnabled = privateFolder.enabled,
-            hideMessage = catalog.hidePlayStoreMessage
         )
     }
 
@@ -138,10 +136,7 @@ class CatalogViewModel(
                     viewMode = preferences.viewMode,
                     showSortingSheet = showSortingSheet,
                     showViewSheet = showViewModeSheet,
-                    message = CatalogMessageState(
-                        showMessage = appInfo.flavor == Flavor.FOSS && !preferences.hideMessage,
-                        showDialog = showMessageDialog
-                    ),
+                    message = CatalogMessageState(),
                 ),
             )
 
@@ -174,10 +169,6 @@ class CatalogViewModel(
             CatalogIntent.OnSourcesClick -> _event.emit(NavigateToSources)
             CatalogIntent.OnTokenClick -> _event.emit(NavigateToToken)
             CatalogIntent.OnPrivateFolderClick -> _event.emit(NavigateToPrivateFolder)
-
-            // Message
-            is CatalogIntent.OnMessageTap -> onMessageClick()
-            CatalogIntent.HideMessage -> hideMessage()
 
             // Private folder
             is CatalogIntent.AddArtworkToPrivateFolder -> addArtworkToPrivateFolder(artwork = intent.artwork)
@@ -253,14 +244,6 @@ class CatalogViewModel(
 
         onArtworkClick(artwork = artwork, rgb = null)
 
-    }
-
-    private suspend fun onMessageClick() {
-        _event.emit(CatalogEvent.NavigateToMessage)
-    }
-
-    private suspend fun hideMessage() {
-        catalogDataStore.hidePlayStoreMessage()
     }
 
     private suspend fun addArtworkToPrivateFolder(artwork: Artwork) {

@@ -9,14 +9,16 @@ import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.features.files.data.FileExtensions
 import com.mskd.flux.features.files.domain.datasource.FilesDataSource
 import com.mskd.flux.features.sources.domain.model.UserFolder
-import com.mskd.flux.features.sources.domain.repository.SourcesRepository
 import com.mskd.flux.report.Trace
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
+/**
+ * Source of a custom folder: available as long as the folder can be accessed.
+ */
 class SafFilesDataSource(
     private val context: Context,
-    private val sources: SourcesRepository,
+    private val folder: UserFolder,
 ) : FilesDataSource {
 
     companion object {
@@ -29,67 +31,17 @@ class SafFilesDataSource(
         )
     }
 
+    override suspend fun isAvailable(): Boolean = folder.isAvailable
+
+    override fun contains(file: UserFile): Boolean =
+        file.source == FileSource.SAF && file.path.startsWith(folder.path)
+
     override suspend fun getFiles(): List<UserFile> = withContext(Dispatchers.IO) {
-        val folders = sources.getFolders()
-
-        folders.flatMap { folder ->
-            getFilesFromFolder(folder = folder)
-        }
-    }
-
-    override suspend fun filterExistingFiles(files: List<UserFile>): List<UserFile> = withContext(Dispatchers.IO) {
-
-        val safFiles = files.filter { it.source == FileSource.SAF }
-        if (safFiles.isEmpty()) return@withContext emptyList()
-
-        val existingFiles = mutableListOf<UserFile>()
-        val missingFiles = mutableListOf<UserFile>()
-
-        val availableFolders = sources.getFolders().filter { it.isAvailable }
-
-        val (fromAvailableFolders, fromUnavailableFolders) = safFiles.partition { file ->
-            availableFolders.any { file.path.startsWith(it.path) }
-        }
-
-        existingFiles.addAll(fromUnavailableFolders)
-
-        for (file in fromAvailableFolders) {
-            val fileUri = file.path.toUri()
-            var exists = false
-
-            try {
-                context.contentResolver.query(
-                    fileUri,
-                    arrayOf(DocumentsContract.Document.COLUMN_DOCUMENT_ID),
-                    null,
-                    null,
-                    null
-                )?.use { cursor ->
-                    if (cursor.moveToFirst()) {
-                        exists = true
-                    }
-                }
-            } catch (e: Exception) {
-                Trace.error(TAG, "File no longer accessible or missing: ${file.name}", e)
-            }
-
-            if (exists) {
-                existingFiles.add(file)
-            } else {
-                missingFiles.add(file)
-            }
-        }
-
-        if (missingFiles.isNotEmpty()) {
-            Trace.info(TAG, "${missingFiles.size} SAF file(s) not found or revoked")
-            missingFiles.forEach { Trace.info(TAG, it.name) }
-        }
-
-        existingFiles
+        getFilesFromFolder(folder = folder)
     }
 
     override suspend fun getSubtitlesFor(file: UserFile): String? = withContext(Dispatchers.IO) {
-        if (file.source != FileSource.SAF) return@withContext null
+        if (!contains(file)) return@withContext null
 
         val videoUri = file.path.toUri()
 

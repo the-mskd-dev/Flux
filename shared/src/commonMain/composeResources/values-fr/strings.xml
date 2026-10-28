@@ -123,6 +123,7 @@
     <string name="information_language">Langage des informations</string>
     <string name="sync_in_progress">Synchronisation en cours…</string>
     <string name="by_default">Par défaut</string>
+    <string name="subtitles_disabled">Désactivés</string>
     <string name="cache_images">Pré-charger les images en HD</string>
     <string name="images_cached">Images téléchargées</string>
     <string name="caching_images_in_progress">Téléchargement des images en cours (%1$d%)</string>
@@ -240,4 +241,11 @@
     <string name="known_for_department">Connu(e) pour : %1$s</string>
     <string name="original_name">Nom d\'origine : %1$s</string>
     <string name="also_in">Également dans</string>
+    <string name="retry">Réessayer</string>
+    <string name="unavailable_check_connection">Indisponible, vérifiez votre connexion</string>
+    <string name="gallery_empty">Aucune image disponible</string>
+    <string name="blur_spoilers">Masquer les spoilers</string>
+    <string name="blur_spoilers_desc">Flouter la description et l'image des épisodes pas encore vus</string>
+    <string name="spoiler_hidden">Spoiler masqué</string>
+    <string name="spoiler_reveal">Révéler</string>
 </resources>

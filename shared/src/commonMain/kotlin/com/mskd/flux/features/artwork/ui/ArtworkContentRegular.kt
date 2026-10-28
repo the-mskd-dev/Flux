@@ -25,8 +25,8 @@ import com.mskd.flux.features.people.ui.components.people.PeopleList
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.PeopleMockup
 import com.mskd.flux.ui.PortraitPreview
-import com.mskd.flux.ui.media.EpisodeDropDownMenu
-import com.mskd.flux.ui.media.EpisodeItem
+import com.mskd.flux.ui.media.episode.EpisodeDropDownMenu
+import com.mskd.flux.ui.media.episode.EpisodeItem
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI

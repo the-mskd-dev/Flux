@@ -93,7 +93,7 @@ fun Modifier.blurForeground(
 @Composable
 fun Modifier.blurContent(
     blurred: Boolean,
-    radius: Dp = 4.dp,
+    radius: Dp = 12.dp,
 ): Modifier {
     val animatedRadius by animateDpAsState(
         targetValue = if (blurred) radius else 0.dp,

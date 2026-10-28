@@ -1,4 +1,4 @@
-package com.mskd.flux.ui.media
+package com.mskd.flux.ui.media.episode
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done

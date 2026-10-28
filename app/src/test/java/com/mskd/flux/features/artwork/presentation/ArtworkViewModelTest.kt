@@ -539,6 +539,17 @@ class ArtworkViewModelTest : FunSpec({
             blurredIds(episodes = episodes) shouldBe setOf(MediaMockups.episode1.id)
         }
 
+        test("episode shown in the overview is not blurred, but is when a summary is shown") {
+            observeArtworkUseCase = mockk()
+            val started = listOf(
+                MediaMockups.episode1.copy(status = Status.WATCHED),
+                MediaMockups.episode2,
+                MediaMockups.episode3,
+            )
+            // Season started: the selected Episode is displayed as EpisodeOverview.
+            blurredIds(episodes = started) shouldBe setOf(MediaMockups.episode3.id)
+        }
+
         test("unknown artwork episodes are never blurred") {
             observeArtworkUseCase = mockk()
             blurredIds(episodes = listOf(MediaMockups.unknownEpisode.copy(season = 1))) shouldBe emptySet()

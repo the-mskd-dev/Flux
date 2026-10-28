@@ -144,7 +144,8 @@ class ArtworkViewModel(
             userState = userState
         ) ?: return State.Error()
 
-        val spoilerIds = resolveSpoilerEpisodeIds(dataState)
+        val overview = resolveOverview(dataState.fullArtwork, selectedMedia, season)
+        val spoilerIds = resolveSpoilerEpisodeIds(dataState, (overview as? ArtworkOverviewContent.EpisodeOverview)?.episode)
         val isOverviewSpoiler = resolveIsOverviewSpoiler(dataState)
         val readableIds = userState.revealedEpisodeIds + listOfNotNull(userState.expandedEpisodeId)
 
@@ -153,7 +154,7 @@ class ArtworkViewModel(
                 fullArtwork = dataState.fullArtwork,
                 selectedMedia = selectedMedia,
                 selectedSeason = season,
-                overview = resolveOverview(dataState.fullArtwork, selectedMedia, season),
+                overview = overview,
                 isOverviewSpoiler = isOverviewSpoiler,
                 isOverviewBlurred = isOverviewSpoiler && !userState.isOverviewRevealed,
                 expandedEpisodeId = userState.expandedEpisodeId,
@@ -175,11 +176,12 @@ class ArtworkViewModel(
         return episodes.isNotEmpty() && episodes.all { it.status == Status.TO_WATCH }
     }
 
-    private fun resolveSpoilerEpisodeIds(dataState: ArtworkDataState): ImmutableSet<Long> {
+    /** The Episode displayed in ArtworkOverview is excluded: its description is already visible there. */
+    private fun resolveSpoilerEpisodeIds(dataState: ArtworkDataState, overviewEpisode: Episode?): ImmutableSet<Long> {
         if (!dataState.blurSpoilers) return persistentSetOf()
         val episodes = (dataState.fullArtwork as? FullArtwork.FullShow)?.episodes ?: return persistentSetOf()
         return episodes
-            .filter { it.status == Status.TO_WATCH && !it.isUnknown }
+            .filter { it.status == Status.TO_WATCH && !it.isUnknown && it.id != overviewEpisode?.id }
             .map { it.id }
             .toImmutableSet()
     }

@@ -12,8 +12,8 @@ import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtwo
 import com.mskd.flux.features.artwork.fake.FakeObserveArtworkUseCase
 import com.mskd.flux.features.files.domain.usecase.GetSubtitlesUseCase
 import com.mskd.flux.features.player.data.PipIsEnabledUseCase
-import com.mskd.flux.features.player.domain.manager.SeekPrecision
 import com.mskd.flux.features.player.domain.manager.PlayerManager
+import com.mskd.flux.features.player.domain.manager.SeekPrecision
 import com.mskd.flux.features.player.domain.model.PlayerParams
 import com.mskd.flux.features.player.domain.model.VideoChapter
 import com.mskd.flux.features.player.domain.model.VideoChapterType

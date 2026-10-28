@@ -25,8 +25,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.features.player.domain.model.VideoChapter
 import com.mskd.flux.features.player.domain.model.VideoChapterType
-import com.mskd.flux.features.player.presentation.PlayerIntent
 import com.mskd.flux.features.player.presentation.ChapterButton
+import com.mskd.flux.features.player.presentation.PlayerIntent
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme

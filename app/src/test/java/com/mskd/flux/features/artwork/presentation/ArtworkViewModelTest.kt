@@ -3,9 +3,9 @@ package com.mskd.flux.features.artwork.presentation
 import app.cash.turbine.ReceiveTurbine
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
+import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.FullArtwork
-import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.artwork.PersonType
 import com.mskd.flux.core.model.artwork.Season
@@ -21,9 +21,9 @@ import com.mskd.flux.features.progress.domain.usecase.MarkPreviousAsWatchedUseCa
 import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
+import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.PeopleMockup
-import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.system.FilesLauncher
 import com.mskd.flux.system.UrlLauncher
 import io.kotest.core.spec.style.FunSpec

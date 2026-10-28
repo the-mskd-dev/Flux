@@ -8,19 +8,19 @@ import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.artwork.PersonType
 import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.core.model.language.Language
+import com.mskd.flux.core.network.tmdb.data.TMDB_MAX_REQUESTS
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
-import io.kotest.matchers.longs.shouldBeGreaterThan as shouldBeGreaterThanLong
 import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.ints.shouldBeLessThanOrEqual
-import com.mskd.flux.core.network.tmdb.data.TMDB_MAX_REQUESTS
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withTimeout
 import kotlin.time.Duration.Companion.seconds
+import io.kotest.matchers.longs.shouldBeGreaterThan as shouldBeGreaterThanLong
 
 /**
  * Behaviour of the Synchro, observed through the Catalogue in database, the successive Synchro

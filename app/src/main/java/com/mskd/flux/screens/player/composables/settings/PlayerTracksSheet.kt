@@ -33,8 +33,8 @@ import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.audio_tracks
 import flux.shared.generated.resources.by_default
-import flux.shared.generated.resources.subtitles_disabled
 import flux.shared.generated.resources.subtitles
+import flux.shared.generated.resources.subtitles_disabled
 import org.jetbrains.compose.resources.stringResource
 
 @Composable

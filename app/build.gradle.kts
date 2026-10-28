@@ -1,7 +1,6 @@
 import com.android.build.api.dsl.ApplicationExtension
 import java.io.FileInputStream
 import java.util.Properties
-import javax.inject.Inject
 
 plugins {
     alias(libs.plugins.android.application)

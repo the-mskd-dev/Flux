@@ -2,9 +2,8 @@ package com.mskd.flux.screens.player.composables.settings
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.mskd.flux.features.player.presentation.PlayerInterfaceState
 import com.mskd.flux.features.player.presentation.PlayerIntent
+import com.mskd.flux.features.player.presentation.PlayerInterfaceState
 import com.mskd.flux.features.player.presentation.PlayerSession
 import com.mskd.flux.features.player.presentation.SettingsSheet
 import com.mskd.flux.screens.player.composables.collectSelectedAsState

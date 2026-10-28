@@ -10,15 +10,15 @@ import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtwo
 import com.mskd.flux.features.artwork.fake.FakeObserveArtworkUseCase
 import com.mskd.flux.features.people.domain.usecase.GetPeopleUseCase
 import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
+import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.PeopleMockup
-import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.system.UrlLauncher
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
-import io.mockk.coVerify
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify

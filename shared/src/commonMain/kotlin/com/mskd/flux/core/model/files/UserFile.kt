@@ -18,9 +18,7 @@ data class UserFile(
         get() {
             val properties = FileProperties.extractFromName(name)
                 ?: FileProperties.extractFromPath(realPath)
-                ?: FileProperties(
-                    title = FileProperties.removeTmdbId(name).ifBlank { name }.replace("-", " ").trim().lowercase()
-                )
+                ?: FileProperties.extractFallback(name)
             // The ID of the file name has priority over the ID of the folder name
             return properties.copy(
                 tmdbId = FileProperties.findTmdbId(name) ?: FileProperties.extractTmdbIdFromPath(realPath)
@@ -167,6 +165,21 @@ data class FileProperties(
             // Try for movie
             val (title, year) = extractTitleAndYear(nameWithoutExt)
             return if (title.isNotBlank()) FileProperties(title, year, null, null, tmdbId) else null
+        }
+
+        /**
+         * Last resort when neither the name nor the path gives a title (ex: "{tmdb-1399} S01E02.mkv"):
+         * the season and the episode are kept, otherwise an episode would be taken for a movie.
+         */
+        fun extractFallback(filename: String): FileProperties {
+            val nameWithoutExt = removeTmdbId(filename.substringBeforeLast('.', filename))
+            val seasonEpisode = findSeasonEpisode(nameWithoutExt)
+            if (seasonEpisode != null) {
+                return FileProperties(title = "", season = seasonEpisode.first, episode = seasonEpisode.second)
+            }
+            return FileProperties(
+                title = removeTmdbId(filename).ifBlank { filename }.replace("-", " ").trim().lowercase()
+            )
         }
 
         /**

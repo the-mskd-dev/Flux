@@ -146,15 +146,15 @@ internal class SyncHarness(tmdbToken: String = "test-token", tmdbMaxRequests: In
     fun addCustomSource(root: String, files: List<UserFile> = emptyList(), available: Boolean = true): FakeFilesDataSource =
         FakeFilesDataSource(availableFiles = files, available = available, root = root).also { customSources += it }
 
-    /** A video file of the device storage. */
-    fun deviceFile(name: String): UserFile =
-        UserFile(name = name, path = "$DEVICE_ROOT$name", realPath = "Movies/$name", source = FileSource.LOCAL)
+    /** A video file of the device storage. Its [path] is kept when the file is renamed, like a MediaStore URI. */
+    fun deviceFile(name: String, path: String = "$DEVICE_ROOT$name"): UserFile =
+        UserFile(name = name, path = path, realPath = "Movies/$name", source = FileSource.LOCAL)
 
     /** A video file of a custom folder Source rooted at [root]. */
     fun customFile(root: String, name: String): UserFile =
         UserFile(name = name, path = "$root/document/$name", realPath = name, source = FileSource.SAF)
 
-    /** Runs a Synchro légère and waits for its end. */
+    /** Runs a light sync and waits for its end. */
     suspend fun lightSync() {
         requestLightSync()
         awaitIdle()

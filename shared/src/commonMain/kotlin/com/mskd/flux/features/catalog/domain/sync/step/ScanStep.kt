@@ -20,7 +20,7 @@ class ScanStep(
 
         context.scan = scan
         context.knownFiles = known
-        // Fichiers en échec are not persisted: they are not known, so a Synchro légère fetches them again
+        // Failed files are not persisted: they are not known, so a light synchro  fetches them again
         context.filesToFetch = if (context.full) scan.files else {
             scan.files.filter { file -> known.none { it.path == file.path && it.name == file.name } }
         }

@@ -196,13 +196,18 @@ class ArtworkViewModel(
             )
             is FullArtwork.FullShow -> {
                 val episode = selectedMedia as? Episode
-                if (episode != null && episode.status == Status.IS_WATCHING) {
-                    ArtworkOverviewContent.EpisodeOverview(episode = episode)
-                } else {
-                    val description = fullArtwork.seasons.find { it.season == season }?.description
-                        ?.takeIf { it.isNotEmpty() }
-                        ?: fullArtwork.artwork.description.takeIf { it.isNotEmpty() }
-                    ArtworkOverviewContent.Summary(description = description)
+                val seasonStarted = fullArtwork.episodes.filter { it.season == season }.any { it.status != Status.TO_WATCH }
+
+                when {
+                    episode != null && (episode.status == Status.IS_WATCHING || seasonStarted) -> {
+                        ArtworkOverviewContent.EpisodeOverview(episode = episode)
+                    }
+                    else -> {
+                        val description = fullArtwork.seasons.find { it.season == season }?.description
+                            ?.takeIf { it.isNotEmpty() }
+                            ?: fullArtwork.artwork.description.takeIf { it.isNotEmpty() }
+                        ArtworkOverviewContent.Summary(description = description)
+                    }
                 }
             }
         }

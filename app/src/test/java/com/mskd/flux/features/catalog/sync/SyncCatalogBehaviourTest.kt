@@ -310,6 +310,24 @@ class SyncCatalogBehaviourTest : FunSpec({
 
     }
 
+    test("an Artwork left without Média by a renamed file attached to another Artwork is deleted") {
+
+        // Given
+        val path = "${SyncHarness.DEVICE_ROOT}42"
+        harness.deviceStorage.availableFiles = listOf(harness.deviceFile("Breaking Bad S01E01.mkv", path = path))
+        harness.lightSync()
+
+        // When
+        harness.deviceStorage.availableFiles = listOf(harness.deviceFile("Forgotten Tale {tmdb-990002}.mkv", path = path))
+        harness.lightSync()
+
+        // Then
+        harness.catalog.getMedias().map { it.title } shouldBe listOf("Forgotten Tale")
+        harness.catalog.getArtworks(includePrivates = true).map { it.title } shouldBe listOf("Forgotten Tale")
+        harness.catalog.getSeasons() shouldBe emptyList()
+
+    }
+
     test("NSFW Artworks are moved to the private folder when it includes them") {
 
         // Given

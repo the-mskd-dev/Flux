@@ -65,9 +65,20 @@ class DatabaseRepositoryImpl(
     override suspend fun saveSyncedFolder(artwork: Artwork, seasons: List<Season>, medias: List<Media>, people: List<Person>) {
         database.useWriterConnection { transactor ->
             transactor.immediateTransaction {
+                // A renamed file keeps its path (MediaStore) but may now be another media: its previous one is replaced,
+                // and is no Fichier manquant, so the Artwork and Season it leaves empty must be cleaned here
+                val previousByPath = mediasDao.findByPaths(paths = medias.map { it.file.path }).associateBy { it.path }
+                val replacesMedias = medias.map { it.toEntity() }.any { media ->
+                    val previous = previousByPath[media.path] ?: return@any false
+                    previous.id != media.id || previous.artworkId != media.artworkId
+                }
                 saveArtworks(listOf(artwork))
                 saveSeasons(seasons)
                 saveSyncedMedias(medias)
+                if (replacesMedias) {
+                    seasonsDao.deleteEmptySeasons()
+                    artworksDao.deleteEmptyArtworks()
+                }
                 if (people.isNotEmpty()) {
                     // TMDB returns the whole credits: the ones it dropped must not stay
                     database.personDao().apply {

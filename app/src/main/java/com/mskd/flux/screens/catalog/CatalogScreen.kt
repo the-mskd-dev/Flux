@@ -56,7 +56,6 @@ import com.mskd.flux.screens.catalog.composable.CatalogHeader
 import com.mskd.flux.screens.catalog.composable.CatalogMenu
 import com.mskd.flux.screens.catalog.composable.CatalogViewMenu
 import com.mskd.flux.screens.catalog.composable.history.CatalogHistory
-import com.mskd.flux.screens.catalog.composable.message.CatalogMessage
 import com.mskd.flux.screens.catalog.composable.sorting.CatalogSortingSheet
 import com.mskd.flux.screens.catalog.composable.viewMode.CatalogViewModeSheet
 import com.mskd.flux.screens.catalog.composable.viewMode.catalogViewModeGenre
@@ -101,7 +100,6 @@ fun CatalogScreen(
                 CatalogEvent.NavigateToToken -> navigate(Route.Token(fromSetup = false))
                 CatalogEvent.NavigateToSources -> navigate(Route.Sources(fromSetup = false))
                 CatalogEvent.NavigateToPrivateFolder -> navigate(Route.PrivateFolder)
-                CatalogEvent.NavigateToMessage -> navigate(Route.Message)
 
                 is CatalogEvent.PlayMedia -> {
                     if (event.externalPlayer)
@@ -218,11 +216,11 @@ fun CatalogContent(
                         }
                     }
 
-                    if (state.message.showMessage) {
+                    /*if (state.message.showMessage) {
                         item(span = { GridItemSpan(maxLineSpan) }) {
                             CatalogMessage(sendIntent = sendIntent)
                         }
-                    }
+                    }*/
 
                     item(span = { GridItemSpan(maxLineSpan) }) {
 

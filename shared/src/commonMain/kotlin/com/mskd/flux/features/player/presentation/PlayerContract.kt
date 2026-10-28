@@ -1,11 +1,10 @@
 package com.mskd.flux.features.player.presentation
 
-import com.mskd.flux.features.player.domain.manager.SeekPrecision
 import androidx.compose.runtime.Immutable
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Media
-import com.mskd.flux.core.model.core.State
 import com.mskd.flux.core.model.player.PlayerTrack
+import com.mskd.flux.features.player.domain.manager.SeekPrecision
 import com.mskd.flux.features.player.domain.model.VideoChapter
 
 

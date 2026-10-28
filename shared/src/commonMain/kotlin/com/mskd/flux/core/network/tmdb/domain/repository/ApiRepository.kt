@@ -8,11 +8,11 @@ import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.files.UserFile
-import com.mskd.flux.features.gallery.domain.model.GalleryImage
 import com.mskd.flux.core.network.tmdb.domain.model.ArtworkDetails
 import com.mskd.flux.core.network.tmdb.domain.model.PersonInfo
 import com.mskd.flux.core.network.tmdb.domain.model.Translation
 import com.mskd.flux.core.network.tmdb.domain.model.TranslationRequest
+import com.mskd.flux.features.gallery.domain.model.GalleryImage
 
 interface ApiRepository {
 

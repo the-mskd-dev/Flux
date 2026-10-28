@@ -2,8 +2,8 @@ package com.mskd.flux.services
 
 import android.app.PendingIntent
 import android.os.Bundle
-import androidx.core.os.bundleOf
 import androidx.annotation.OptIn
+import androidx.core.os.bundleOf
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
@@ -14,9 +14,9 @@ import androidx.media3.session.SessionCommand
 import androidx.media3.session.SessionResult
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
-import com.mskd.flux.features.player.domain.manager.SeekPrecision
 import com.mskd.flux.di.QualifiersAndroid
 import com.mskd.flux.features.player.data.manager.DecoderManagerHolder
+import com.mskd.flux.features.player.domain.manager.SeekPrecision
 import com.mskd.flux.report.Trace
 import io.github.anilbeesetti.nextlib.media3ext.ffdecoder.DecoderManager
 import org.koin.android.scope.AndroidScopeComponent

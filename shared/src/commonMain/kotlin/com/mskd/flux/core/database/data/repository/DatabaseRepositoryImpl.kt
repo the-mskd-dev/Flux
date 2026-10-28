@@ -17,11 +17,11 @@ import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.files.UserFile
-import com.mskd.flux.features.people.data.mapper.toEntity as toPersonEntity
 import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.utils.extensions.sort
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import com.mskd.flux.features.people.data.mapper.toEntity as toPersonEntity
 
 class DatabaseRepositoryImpl(
     private val database: FluxDatabase,

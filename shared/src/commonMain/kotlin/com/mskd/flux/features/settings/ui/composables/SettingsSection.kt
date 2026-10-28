@@ -49,7 +49,6 @@ import flux.shared.generated.resources.ic_help
 import flux.shared.generated.resources.ic_images
 import flux.shared.generated.resources.ic_info
 import flux.shared.generated.resources.ic_keyboard
-import flux.shared.generated.resources.ic_visibility
 import flux.shared.generated.resources.ic_language
 import flux.shared.generated.resources.ic_lock
 import flux.shared.generated.resources.ic_mail
@@ -60,6 +59,7 @@ import flux.shared.generated.resources.ic_social_media
 import flux.shared.generated.resources.ic_sources
 import flux.shared.generated.resources.ic_sync
 import flux.shared.generated.resources.ic_version
+import flux.shared.generated.resources.ic_visibility
 import flux.shared.generated.resources.images_cached
 import flux.shared.generated.resources.information_language
 import flux.shared.generated.resources.make_a_donation

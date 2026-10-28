@@ -1,10 +1,10 @@
 package com.mskd.flux.features.artwork.presentation
 
 import androidx.compose.runtime.Immutable
+import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Media
-import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.core.State
 import kotlinx.collections.immutable.ImmutableList

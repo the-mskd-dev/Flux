@@ -46,6 +46,35 @@ class GetNextEpisodeUseCaseTest : FunSpec({
 
     }
 
+    test("returns null when the next episode is unavailable") {
+
+        // Given
+        val unavailableEpisode2 = MediaMockups.episode2.copy(isAvailable = false)
+        coEvery { database.getNextEpisodeFor(episode = MediaMockups.episode1) } returns unavailableEpisode2
+
+        // When
+        val nextEpisode = useCase(media = MediaMockups.episode1)
+
+        // Then
+        nextEpisode.shouldBeNull()
+
+    }
+
+    test("does not skip to a later available episode when the next one is unavailable") {
+
+        // Given
+        val unavailableEpisode2 = MediaMockups.episode2.copy(isAvailable = false)
+        coEvery { database.getNextEpisodeFor(episode = MediaMockups.episode1) } returns unavailableEpisode2
+        coEvery { database.getNextEpisodeFor(episode = unavailableEpisode2) } returns MediaMockups.episode3
+
+        // When
+        val nextEpisode = useCase(media = MediaMockups.episode1)
+
+        // Then
+        nextEpisode.shouldBeNull()
+
+    }
+
     test("returns null when no next episode exists (last episode)") {
 
         // Given

@@ -377,6 +377,17 @@ class PlayerViewModelTest : FunSpec({
         }
     }
 
+    test("media previous restarts the media exactly without touching play/pause") {
+        viewModel.event.test {
+            viewModel.handleIntent(PlayerIntent.OnMediaPrevious)
+
+            coVerify { playerManager.seekTo(progress = 0L, precision = SeekPrecision.EXACT) }
+            coVerify(exactly = 0) { playerManager.togglePlay() }
+            coVerify(exactly = 0) { playerManager.play() }
+            coVerify(exactly = 0) { playerManager.pause() }
+        }
+    }
+
     test("artwork re-emission without media change does not emit a new state") {
 
         // Given

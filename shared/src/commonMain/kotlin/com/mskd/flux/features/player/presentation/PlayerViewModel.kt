@@ -249,6 +249,7 @@ class PlayerViewModel<out T>(
             PlayerIntent.TogglePlayButton -> togglePlayButton()
             PlayerIntent.OnFastRewind -> onFastRewind()
             PlayerIntent.OnFastForward -> onFastForward()
+            PlayerIntent.OnMediaPrevious -> seekTo(progress = 0L, precision = SeekPrecision.EXACT)
             is PlayerIntent.SeekTo -> seekTo(progress = intent.progress, precision = intent.precision)
             is PlayerIntent.SelectTrack -> selectTrack(track = intent.track)
             is PlayerIntent.SelectChapter -> selectChapter(chapter = intent.chapter)

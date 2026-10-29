@@ -1,12 +1,12 @@
 package com.mskd.flux.features.artwork.ui.composables
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -38,25 +38,27 @@ import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.extensions.tmdbImage
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ArtworkImage(
     modifier: Modifier,
     fullArtwork: FullArtwork,
     currentMedia: Media? = null,
     selectedSeason: Int? = null,
-    orientation: Orientation = Orientation.Vertical
+    orientation: Orientation = Orientation.Vertical,
+    onClick: (() -> Unit)? = null
 ) {
+
+    val clickableModifier = if (onClick != null) modifier.clickable(onClick = onClick) else modifier
 
     if (FluxUI.global.oldBlurredHeader) {
         ArtworkImageBlurred(
-            modifier = modifier,
+            modifier = clickableModifier,
             fullArtwork = fullArtwork,
             selectedSeason = selectedSeason
         )
     } else {
         ArtworkImageFull(
-            modifier = modifier,
+            modifier = clickableModifier,
             fullArtwork = fullArtwork,
             currentMedia = currentMedia,
             orientation = orientation
@@ -65,7 +67,6 @@ fun ArtworkImage(
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ArtworkImageFull(
     modifier: Modifier,
@@ -118,7 +119,6 @@ fun ArtworkImageFull(
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ArtworkImageBlurred(
     modifier: Modifier,

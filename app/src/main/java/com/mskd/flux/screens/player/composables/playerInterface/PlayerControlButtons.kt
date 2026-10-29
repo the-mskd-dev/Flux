@@ -1,9 +1,6 @@
 package com.mskd.flux.screens.player.composables.playerInterface
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedVisibilityScope
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
@@ -16,6 +13,7 @@ import androidx.compose.material3.MediumExtendedFloatingActionButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.features.player.presentation.PlayerIntent
 import com.mskd.flux.ui.FluxPreview
@@ -34,10 +32,11 @@ import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun AnimatedVisibilityScope.PlayerControlButtons(
+fun PlayerControlButtons(
     modifier: Modifier,
     isPlaying: Boolean,
     rewindAndForward: Pair<Int, Int>,
+    slide: () -> Float,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
@@ -50,10 +49,7 @@ fun AnimatedVisibilityScope.PlayerControlButtons(
     ) {
 
         FloatingActionButton(
-            modifier = Modifier.animateEnterExit(
-                enter = slideInHorizontally{ fullWidth -> fullWidth },
-                exit = slideOutHorizontally { fullWidth -> fullWidth }
-            ),
+            modifier = Modifier.graphicsLayer { translationX = size.width * (1f - slide()) },
             onClick = { sendIntent(PlayerIntent.OnFastRewind) },
             shape = FloatingActionButtonDefaults.largeShape,
             containerColor = MaterialTheme.colorScheme.tertiaryContainer
@@ -81,10 +77,7 @@ fun AnimatedVisibilityScope.PlayerControlButtons(
         }
 
         FloatingActionButton(
-            modifier = Modifier.animateEnterExit(
-                enter = slideInHorizontally{ fullWidth -> -fullWidth },
-                exit = slideOutHorizontally { fullWidth -> -fullWidth }
-            ),
+            modifier = Modifier.graphicsLayer { translationX = -size.width * (1f - slide()) },
             onClick = { sendIntent(PlayerIntent.OnFastForward) },
             shape = FloatingActionButtonDefaults.largeShape,
             containerColor = MaterialTheme.colorScheme.tertiaryContainer
@@ -113,7 +106,8 @@ fun PlayerControlButtons_Preview() {
             PlayerControlButtons(
                 modifier = Modifier,
                 isPlaying = it,
-                rewindAndForward = 5 to 10 ,
+                rewindAndForward = 5 to 10,
+                slide = { 1f },
                 sendIntent = {}
             )
         }

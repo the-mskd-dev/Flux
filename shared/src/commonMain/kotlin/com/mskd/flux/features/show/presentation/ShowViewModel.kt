@@ -2,12 +2,14 @@ package com.mskd.flux.features.show.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.features.people.domain.usecase.GetPeopleUseCase
 import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
+import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.system.UrlLauncher
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,6 +26,7 @@ class ShowViewModel(
     private val urlLauncher: UrlLauncher,
     observeArtworkUseCase: ObserveArtworkUseCase,
     getPeopleUseCase: GetPeopleUseCase,
+    private val tokenDataStore: TokenDataStore,
     private val resetProgress: ResetProgressUseCase,
 ) : ViewModel() {
 
@@ -78,6 +81,7 @@ class ShowViewModel(
             ShowIntent.OnBackTap -> _event.emit(ShowEvent.BackToPreviousScreen)
             is ShowIntent.OnSeasonClick -> navigateToSeason(season = intent.season, rgb = intent.rgb)
             is ShowIntent.OnPersonClick -> _event.emit(ShowEvent.NavigateToPerson(person = intent.person))
+            ShowIntent.OnArtworkImageClick -> navigateToGallery()
 
             // Dialogs
             ShowIntent.CloseDialog -> closeDialog()
@@ -93,6 +97,11 @@ class ShowViewModel(
     //endregion
 
     //region Private Methods
+
+    private suspend fun navigateToGallery() {
+        if (!tokenDataStore.tokenIsAvailable()) return
+        _event.emit(ShowEvent.NavigateToGallery(artworkId = artworkId, contentType = ContentType.SHOW))
+    }
 
     private suspend fun navigateToSeason(season: Int, rgb: Int?) {
         _event.emit(ShowEvent.NavigateToSeason(artworkId = artworkId, season = season, rgb = rgb))

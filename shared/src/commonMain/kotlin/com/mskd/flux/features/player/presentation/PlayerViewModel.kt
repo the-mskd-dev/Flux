@@ -2,6 +2,7 @@ package com.mskd.flux.features.player.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.core.State
@@ -11,25 +12,29 @@ import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtwo
 import com.mskd.flux.features.files.domain.usecase.GetSubtitlesUseCase
 import com.mskd.flux.features.player.data.PipIsEnabledUseCase
 import com.mskd.flux.features.player.domain.manager.PlayerManager
+import com.mskd.flux.features.player.domain.manager.SeekPrecision
 import com.mskd.flux.features.player.domain.mapper.toPlayerTrack
 import com.mskd.flux.features.player.domain.model.PlayerParams
 import com.mskd.flux.features.player.domain.model.VideoChapter
 import com.mskd.flux.features.player.domain.model.VideoChapterType
+import com.mskd.flux.features.player.domain.model.currentAt
 import com.mskd.flux.features.player.domain.usecase.GetChaptersUseCase
 import com.mskd.flux.features.player.domain.usecase.GetNextEpisodeUseCase
 import com.mskd.flux.features.player.domain.usecase.SaveTrackLanguageUseCase
-import com.mskd.flux.features.player.presentation.PlayerUiContent.AmbientOverlay
-import com.mskd.flux.features.player.presentation.PlayerUiContent.SeekOverlay
-import com.mskd.flux.features.player.presentation.PlayerUiContent.SettingsSheet
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.ui.text.TextProvider
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -62,13 +67,12 @@ class PlayerViewModel<out T>(
     private val sessionId: String = Uuid.random().toString()
 
     private var seekResetJob: Job? = null
-    private var ambientResetJob: Job? = null
 
     private var wasPlayingBeforeBackground = false
 
-    private val content get() = (uiState.value.state as? State.Content<PlayerUiContent<T>>)?.content
+    private val currentSession get() = (session.value as? State.Content<PlayerSession<T>>)?.content
 
-    private var chapters: List<VideoChapter> = emptyList()
+    private var nextEpisodeCache: Pair<Long, Episode?>? = null
 
     //endregion
 
@@ -79,59 +83,84 @@ class PlayerViewModel<out T>(
     private val _event = Channel<PlayerEvent>(Channel.BUFFERED)
     val event = _event.receiveAsFlow()
 
-    private val _userState = MutableStateFlow(PlayerUserState(mediaId = params.mediaId))
+    private val mediaId = MutableStateFlow(params.mediaId)
+
+    // Volume actually applied to the player, for display
+    private val _volume = MutableSharedFlow<Int>(extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+    val volume: SharedFlow<Int> = _volume.asSharedFlow()
+
+    private val _interface = MutableStateFlow(PlayerInterfaceState())
+    val interfaceState: StateFlow<PlayerInterfaceState> = _interface.asStateFlow()
+
+    private val _overlays = MutableStateFlow(PlayerOverlays())
+    val overlays: StateFlow<PlayerOverlays> = _overlays.asStateFlow()
 
     private val _subtitles = MutableStateFlow<List<String?>>(emptyList())
     val subtitles: StateFlow<List<String?>> = _subtitles.asStateFlow()
 
+    // Chapters of the loaded Media, read once when it loads
+    private val chapters = MutableStateFlow<List<VideoChapter>>(emptyList())
+
     private val _progress = MutableStateFlow(0L)
     val progress: StateFlow<Long> = _progress.asStateFlow()
 
-    val uiState: StateFlow<PlayerUiState<T>> = combine(
+    // The full Artwork is only used to resolve the Media: only a Media change is propagated
+    private val mediaState: Flow<State<Media>> = combine(
         observeArtworkUseCase(artworkId = params.artworkId),
+        mediaId,
+    ) { artworkState, mediaId ->
+        when (artworkState) {
+            is State.Content -> resolveMedia(fullArtwork = artworkState.content, mediaId = mediaId)
+                ?.let { State.Content(it) }
+                ?: State.Error()
+            is State.Error -> State.Error()
+            else -> State.Loading
+        }
+    }.distinctUntilChanged { old, new ->
+        old is State.Content && new is State.Content && old.content.mediaId == new.content.mediaId
+    }
+
+    val isPlaying: StateFlow<Boolean> = playerManager.flow
+        .map { (it as? PlayerManager.State.Ready)?.isPlaying == true }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = false
+        )
+
+    val session: StateFlow<State<PlayerSession<T>>> = combine(
+        mediaState,
         settingsDataStore.flow,
         playerManager.flow,
-        _userState,
-    ) { artworkState, settings, playerState, userState ->
+        chapters,
+    ) { mediaState, settings, playerState, chapters ->
 
         when {
-            artworkState is State.Error -> {
-                PlayerUiState(state = State.Error())
-            }
+            mediaState is State.Error -> State.Error()
             playerState is PlayerManager.State.Error -> {
                 val (code, message) = playerState
-                PlayerUiState(state = State.Error(code = code, message = message?.let { TextProvider.Static(it) }))
+                State.Error(code = code, message = message?.let { TextProvider.Static(it) })
             }
-            artworkState !is State.Content || playerState !is PlayerManager.State.Ready ->
-                PlayerUiState(state = State.Loading)
-            else -> {
-
-                val media = resolveMedia(
-                    fullArtwork = artworkState.content,
-                    mediaId = userState.mediaId
-                ) ?: return@combine PlayerUiState(state = State.Error())
-
-                val dataState = PlayerDataState(
-                    fullArtwork = artworkState.content,
-                    media = media,
+            mediaState !is State.Content || playerState !is PlayerManager.State.Ready -> State.Loading
+            else -> State.Content(
+                PlayerSession(
+                    media = mediaState.content,
                     player = playerState.player,
                     playerRewind = settings.playerRewindValue,
                     playerForward = settings.playerForwardValue,
                     duration = playerState.duration,
                     tracks = listOf(PlayerTrack.NO_SUBTITLES) + playerState.tracks,
-                    isPlaying = playerState.isPlaying,
                     selectedAudio = playerState.selectedAudio,
                     selectedSubtitles = playerState.selectedSubtitles,
+                    chapters = chapters,
                 )
-
-                PlayerUiState(state = mergeStates(dataState, userState))
-            }
+            )
         }
 
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = PlayerUiState()
+        initialValue = State.Loading
     )
 
     //endregion
@@ -146,9 +175,8 @@ class PlayerViewModel<out T>(
 
             // Play when media and player are available
             launch {
-                uiState
-                    .map { it.state }
-                    .filterIsInstance<State.Content<PlayerUiContent<T>>>()
+                session
+                    .filterIsInstance<State.Content<PlayerSession<T>>>()
                     .map { it.content.media }
                     .distinctUntilChangedBy { it.mediaId }
                     .collect { playMedia(it) }
@@ -212,44 +240,20 @@ class PlayerViewModel<out T>(
         }
     }
 
-    private fun mergeStates(dataState: PlayerDataState<T>, userState: PlayerUserState) : State<PlayerUiContent<T>> {
-        return State.Content(
-            content = PlayerUiContent(
-                fullArtwork = dataState.fullArtwork,
-                media = dataState.media,
-                playerRewind = dataState.playerRewind,
-                playerForward = dataState.playerForward,
-                player = dataState.player,
-                isPlaying = dataState.isPlaying,
-                duration = dataState.duration,
-                tracks = dataState.tracks,
-                selectedAudio = dataState.selectedAudio,
-                selectedSubtitles = dataState.selectedSubtitles,
-                showInterface = userState.showInterface,
-                isInPip = userState.isInPip,
-                seekOverlay = userState.seekOverlay,
-                ambientOverlay = userState.ambientOverlay,
-                settingsSheet = userState.settingsSheet,
-                chapterButton = userState.chapterButton,
-            )
-        )
-    }
-
     private suspend fun processIntent(intent: PlayerIntent) {
         when (intent) {
-            is PlayerIntent.PlayMedia -> playMedia(media = intent.media)
             PlayerIntent.ChangeInterfaceVisibility -> changeInterfaceVisibility()
             is PlayerIntent.ShowSettings -> showSettingsSheet(sheet = intent.sheet)
-            PlayerIntent.SaveTime -> saveTime()
             PlayerIntent.OnBackTap -> onBackTap()
             PlayerIntent.TogglePlayButton -> togglePlayButton()
             PlayerIntent.OnFastRewind -> onFastRewind()
             PlayerIntent.OnFastForward -> onFastForward()
-            is PlayerIntent.UpdateProgress -> updateProgress(progress = intent.progress)
+            PlayerIntent.OnMediaPrevious -> seekTo(progress = 0L, precision = SeekPrecision.EXACT)
+            PlayerIntent.OnMediaNext -> onMediaNext()
+            is PlayerIntent.SeekTo -> seekTo(progress = intent.progress, precision = intent.precision)
             is PlayerIntent.SelectTrack -> selectTrack(track = intent.track)
+            is PlayerIntent.SelectChapter -> selectChapter(chapter = intent.chapter)
             is PlayerIntent.OnVolumeChange -> onVolumeChange(delta = intent.delta)
-            is PlayerIntent.OnBrightnessChange -> onBrightnessChange(delta = intent.delta)
-            is PlayerIntent.UpdateAmbientOverlay -> updateAmbientOverlay(type = intent.type, value = intent.value)
             is PlayerIntent.OnChapterButtonTap -> onChapterButtonTap(button = intent.button)
             PlayerIntent.GoToBackground -> onBackground()
             PlayerIntent.GoToForeground -> onForeground()
@@ -260,7 +264,7 @@ class PlayerViewModel<out T>(
 
     private suspend fun playMedia(media: Media) {
         val subtitlesPath = getSubtitlesUseCase(file = media.file)
-        chapters = getChaptersUseCase(media = media)
+        chapters.value = getChaptersUseCase(media = media)
         playerManager.playMedia(
             media = media,
             subtitlesPath = subtitlesPath
@@ -272,45 +276,40 @@ class PlayerViewModel<out T>(
     }
 
     private fun onFastRewind() {
-        val value = content?.playerRewind ?: return
+        val value = currentSession?.playerRewind ?: return
         playerManager.seekRewind(value.seconds.inWholeMilliseconds)
         updateSeekOverlay(type = SeekOverlay.Type.REWIND, value = value)
 
     }
 
     private fun onFastForward() {
-        val value = content?.playerForward ?: return
+        val value = currentSession?.playerForward ?: return
         playerManager.seekForward(value.seconds.inWholeMilliseconds)
         updateSeekOverlay(type = SeekOverlay.Type.FORWARD, value = value)
     }
 
     private fun onVolumeChange(delta: Float) {
-        val value = playerManager.changeVolume(delta)
-        updateAmbientOverlay(
-            type = AmbientOverlay.Type.VOLUME,
-            value = value
-        )
+        _volume.tryEmit(playerManager.changeVolume(delta))
     }
 
-    private suspend fun onBrightnessChange(delta: Float) {
-        _event.send(PlayerEvent.ChangeBrightness(delta = delta))
-    }
-
-    private fun updateProgress(progress: Long) {
-        playerManager.seekTo(progress = progress)
+    private fun seekTo(progress: Long, precision: SeekPrecision) {
+        playerManager.seekTo(progress = progress, precision = precision)
     }
 
     private fun changeInterfaceVisibility() {
-        _userState.update { it.copy(showInterface = !it.showInterface) }
+        _interface.update { it.copy(showInterface = !it.showInterface) }
     }
 
     private fun showSettingsSheet(sheet: SettingsSheet?) {
-        _userState.update { it.copy(settingsSheet = sheet) }
+        _interface.update { it.copy(settingsSheet = sheet) }
     }
 
     private suspend fun updateTracks() {
         val preferredAudio = saveTrackLanguageUseCase.getAudioLanguage().toPlayerTrack(type = Type.AUDIO)
-        val preferredSubtitles = saveTrackLanguageUseCase.getSubtitlesLanguage().toPlayerTrack(type = Type.SUBTITLES)
+        val preferredSubtitles = if (saveTrackLanguageUseCase.subtitlesEnabled())
+            saveTrackLanguageUseCase.getSubtitlesLanguage().toPlayerTrack(type = Type.SUBTITLES)
+        else
+            PlayerTrack.NO_SUBTITLES
 
         playerManager.selectTrack(track = preferredAudio)
         playerManager.selectTrack(track = preferredSubtitles)
@@ -321,17 +320,21 @@ class PlayerViewModel<out T>(
         saveTrackLanguageUseCase(track = track)
     }
 
+    private fun selectChapter(chapter: VideoChapter) {
+        seekTo(progress = chapter.start, precision = SeekPrecision.EXACT)
+        showSettingsSheet(sheet = null)
+    }
+
     private suspend fun listenProgress(progress: Long) {
         _progress.update { progress }
 
-        val currentChapter = chapters.find { progress in it.start..it.end }
-        val duration = content?.duration ?: 0L
+        val chapters = chapters.value
+        val currentChapter = chapters.currentAt(position = progress)
+        val duration = currentSession?.duration ?: 0L
 
-        when {
+        val chapterButton = when {
             // If it's intro or opening
-            currentChapter?.type == VideoChapterType.OPENING -> {
-                _userState.update { it.copy(chapterButton = PlayerUiContent.ChapterButton.Skip(chapter = currentChapter!!)) }
-            }
+            currentChapter?.type == VideoChapterType.OPENING -> ChapterButton.Skip(chapter = currentChapter)
 
             // If it's ending, and there's a next chapter
             currentChapter?.type == VideoChapterType.ENDING -> {
@@ -340,70 +343,92 @@ class PlayerViewModel<out T>(
 
                 // If there's a chapter after
                 if (currentChapter.index != lastChapterIndex) {
-                    _userState.update { it.copy(chapterButton = PlayerUiContent.ChapterButton.Skip(chapter = currentChapter)) }
+                    ChapterButton.Skip(chapter = currentChapter)
                 } else {
-                    showNextEpisode()
+                    nextEpisodeButton()
                 }
 
             }
 
             // If the media is ended
-            progress >= duration.minus(15.seconds.inWholeMilliseconds) -> {
-                showNextEpisode()
-            }
+            progress >= duration.minus(15.seconds.inWholeMilliseconds) -> nextEpisodeButton()
 
-            else -> {
-                _userState.update { it.copy(chapterButton = null) }
-            }
-
+            else -> null
         }
 
-    }
-
-    private suspend fun showNextEpisode() {
-
-        val nextEpisode = getNextEpisodeUseCase(media = content?.media) ?: return
-
-        _userState.update { it.copy(chapterButton = PlayerUiContent.ChapterButton.NextEpisode(nextEpisode = nextEpisode)) }
+        // One update, so that observers see the Chapter and the button change together
+        _overlays.update { it.copy(currentChapter = currentChapter, chapterButton = chapterButton) }
 
     }
 
-    private suspend fun onChapterButtonTap(button: PlayerUiContent.ChapterButton?) {
+    /** The button to the Next Episode, or the one already showing when there is none. */
+    private suspend fun nextEpisodeButton(): ChapterButton? {
+
+        val media = currentSession?.media ?: return _overlays.value.chapterButton
+        val nextEpisode = nextEpisodeOf(media) ?: return _overlays.value.chapterButton
+
+        return ChapterButton.NextEpisode(nextEpisode = nextEpisode)
+
+    }
+
+    // Next episode lookup, cached for the current media (null result included)
+    private suspend fun nextEpisodeOf(media: Media): Episode? {
+
+        val cache = nextEpisodeCache
+        if (cache?.first == media.mediaId) return cache.second
+
+        return getNextEpisodeUseCase(media = media).also { nextEpisodeCache = media.mediaId to it }
+
+    }
+
+    private suspend fun onMediaNext() {
+
+        val media = currentSession?.media ?: return
+        val nextEpisode = nextEpisodeOf(media) ?: return
+
+        moveToNextEpisode(
+            nextEpisode = nextEpisode,
+            forceWatched = _overlays.value.chapterButton is ChapterButton.NextEpisode
+        )
+
+    }
+
+    private suspend fun onChapterButtonTap(button: ChapterButton?) {
 
         when (button) {
-            is PlayerUiContent.ChapterButton.Skip -> {
+            is ChapterButton.Skip -> {
 
                 val endPosition = button.chapter.end
-                updateProgress(progress = endPosition)
+                seekTo(progress = endPosition, precision = SeekPrecision.EXACT)
 
             }
 
-            is PlayerUiContent.ChapterButton.NextEpisode -> {
-
-                saveTime()
-                _userState.update {
-                    it.copy(
-                        chapterButton = null,
-                        mediaId = button.nextEpisode.mediaId
-                    )
-                }
-
-            }
+            is ChapterButton.NextEpisode -> moveToNextEpisode(
+                nextEpisode = button.nextEpisode,
+                forceWatched = true
+            )
 
             null -> {}
         }
 
     }
 
+    /** Saves the current Media, then switches to [nextEpisode]. */
+    private suspend fun moveToNextEpisode(nextEpisode: Episode, forceWatched: Boolean) {
+
+        saveTime(forceWatched = forceWatched)
+        _overlays.update { it.copy(chapterButton = null) }
+        mediaId.value = nextEpisode.mediaId
+
+    }
+
     private suspend fun onBackTap() {
 
-        val content = content
-
         when {
-            content == null -> {
+            currentSession == null -> {
                 _event.send(PlayerEvent.BackToPreviousScreen)
             }
-            content.showInterface -> {
+            _interface.value.showInterface -> {
                 playerManager.pause()
                 saveTime()
                 _event.send(PlayerEvent.BackToPreviousScreen)
@@ -415,17 +440,17 @@ class PlayerViewModel<out T>(
 
     }
 
-    private suspend fun saveTime() {
-        val media = content?.media ?: return
+    private suspend fun saveTime(forceWatched: Boolean = false) {
+        val media = currentSession?.media ?: return
         val progress = _progress.value
 
-        saveProgressUseCase(media = media, progress = progress)
+        saveProgressUseCase(media = media, progress = progress, forceWatched = forceWatched)
     }
 
     private fun updateSeekOverlay(type: SeekOverlay.Type, value: Int) {
         seekResetJob?.cancel()
 
-        _userState.update { state ->
+        _overlays.update { state ->
             val current = state.seekOverlay
             val amount = if (current?.type == type) current.amount + value else value
             state.copy(seekOverlay = SeekOverlay(type = type, amount = amount))
@@ -433,22 +458,7 @@ class PlayerViewModel<out T>(
 
         seekResetJob = viewModelScope.launch {
             delay(1.seconds)
-            _userState.update { it.copy(seekOverlay = null) }
-        }
-    }
-
-    private fun updateAmbientOverlay(type: AmbientOverlay.Type, value: Int) {
-        ambientResetJob?.cancel()
-
-        _userState.update {
-            it.copy(ambientOverlay = AmbientOverlay(type = type, value = value))
-        }
-
-        ambientResetJob = viewModelScope.launch {
-            delay(1.seconds)
-            _userState.update {
-                it.copy(ambientOverlay = null)
-            }
+            _overlays.update { it.copy(seekOverlay = null) }
         }
     }
 
@@ -456,7 +466,8 @@ class PlayerViewModel<out T>(
 
         if (pipIsEnabledUseCase()) return
 
-        wasPlayingBeforeBackground = content?.isPlaying ?: return
+        if (currentSession == null) return
+        wasPlayingBeforeBackground = isPlaying.value
 
         if (wasPlayingBeforeBackground)
             playerManager.pause()
@@ -471,7 +482,7 @@ class PlayerViewModel<out T>(
     }
 
     private fun onPipChange(isInPip: Boolean) {
-        _userState.update { it.copy(isInPip = isInPip) }
+        _interface.update { it.copy(isInPip = isInPip) }
     }
 
     private suspend fun onClosePip() {

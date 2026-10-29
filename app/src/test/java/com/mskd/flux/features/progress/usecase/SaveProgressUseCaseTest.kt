@@ -175,6 +175,59 @@ class SaveProgressUseCaseTest : FunSpec({
 
         }
 
+        test("forced WATCHED saves the media WATCHED even when the last chapter is not an ENDING") {
+
+            // Given
+            saveProgress = buildSaveProgress(
+                chapters = listOf(openingChapter, chapterOne, endingChapter, chapterTwo)
+            )
+
+            // When : progress is in the last chapter, which is not an ending
+            saveProgress(media = MediaMockups.episode1, progress = 1_350_000L, forceWatched = true)
+
+            // Then
+            val expectedMedia = MediaMockups.episode1.copy(currentTime = 0L, status = Status.WATCHED)
+            coVerify { databaseRepository.saveMedias(listOf(expectedMedia)) }
+            coVerify { saveToHistory(expectedMedia) }
+
+        }
+
+        test("forced WATCHED saves the media WATCHED without chapters below the threshold") {
+
+            // Given
+            saveProgress = buildSaveProgress(chapters = emptyList())
+
+            // When
+            saveProgress(
+                media = MediaMockups.episode1,
+                progress = MediaMockups.episode1.duration.minToMs.times(0.5).toLong(),
+                forceWatched = true
+            )
+
+            // Then
+            val expectedMedia = MediaMockups.episode1.copy(currentTime = 0L, status = Status.WATCHED)
+            coVerify { databaseRepository.saveMedias(listOf(expectedMedia)) }
+            coVerify { saveToHistory(expectedMedia) }
+
+        }
+
+        test("not forced keeps the chapter rules") {
+
+            // Given
+            saveProgress = buildSaveProgress(
+                chapters = listOf(openingChapter, chapterOne, endingChapter, chapterTwo)
+            )
+
+            // When
+            saveProgress(media = MediaMockups.episode1, progress = 1_350_000L, forceWatched = false)
+
+            // Then
+            coVerify {
+                databaseRepository.saveMedias(listOf(MediaMockups.episode1.copy(currentTime = 1_350_000L, status = Status.IS_WATCHING)))
+            }
+
+        }
+
         test("status falls back to the threshold when there are no chapters") {
 
             // Given

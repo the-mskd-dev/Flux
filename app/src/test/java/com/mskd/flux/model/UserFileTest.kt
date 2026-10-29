@@ -49,6 +49,7 @@ class UserFileTest : FunSpec ({
             nameProperties.year.shouldBe(testCase.expectedYear, "Year mismatch")
             nameProperties.season.shouldBe(testCase.expectedSeason, "Season mismatch")
             nameProperties.episode.shouldBe(testCase.expectedEpisode, "Episode mismatch")
+            nameProperties.tmdbId.shouldBe(testCase.expectedTmdbId, "TMDB ID mismatch")
 
         }
     }
@@ -89,6 +90,7 @@ class UserFileTest : FunSpec ({
             nameProperties.year.shouldBe(testCase.expectedYear, "Year mismatch")
             nameProperties.season.shouldBe(testCase.expectedSeason, "Season mismatch")
             nameProperties.episode.shouldBe(testCase.expectedEpisode, "Episode mismatch")
+            nameProperties.tmdbId.shouldBe(testCase.expectedTmdbId, "TMDB ID mismatch")
 
         }
     }
@@ -258,6 +260,7 @@ class UserFileTest : FunSpec ({
             nameProperties.year.shouldBe(testCase.expectedYear, "Year mismatch")
             nameProperties.season.shouldBe(testCase.expectedSeason, "Season mismatch")
             nameProperties.episode.shouldBe(testCase.expectedEpisode, "Episode mismatch")
+            nameProperties.tmdbId.shouldBe(testCase.expectedTmdbId, "TMDB ID mismatch")
 
         }
     }
@@ -362,6 +365,156 @@ class UserFileTest : FunSpec ({
             nameProperties.year.shouldBe(testCase.expectedYear, "Year mismatch")
             nameProperties.season.shouldBe(testCase.expectedSeason, "Season mismatch")
             nameProperties.episode.shouldBe(testCase.expectedEpisode, "Episode mismatch")
+            nameProperties.tmdbId.shouldBe(testCase.expectedTmdbId, "TMDB ID mismatch")
+
+        }
+    }
+
+    context("TMDB ID - name properties from name") {
+        withData(
+            nameFn = { it.file.name },
+            UserFileTestCases.FileProperties(
+                file = UserFile(name = "Dune {tmdb-438631} (2021).mkv", path = ""),
+                expectedTitle = "dune",
+                expectedYear = 2021,
+                expectedTmdbId = 438631
+            ),
+            UserFileTestCases.FileProperties(
+                file = UserFile(name = "{tmdb-438631} Dune.mkv", path = ""),
+                expectedTitle = "dune",
+                expectedTmdbId = 438631
+            ),
+            UserFileTestCases.FileProperties(
+                file = UserFile(name = "Dune (2021) {tmdb-438631}.mkv", path = ""),
+                expectedTitle = "dune",
+                expectedYear = 2021,
+                expectedTmdbId = 438631
+            ),
+            UserFileTestCases.FileProperties(
+                file = UserFile(name = "Game of Thrones {tmdb-1399} S01E02.mkv", path = ""),
+                expectedTitle = "game of thrones",
+                expectedSeason = 1,
+                expectedEpisode = 2,
+                expectedTmdbId = 1399
+            ),
+            UserFileTestCases.FileProperties(
+                file = UserFile(name = "Dune {TMDB-438631}.mkv", path = ""),
+                expectedTitle = "dune",
+                expectedTmdbId = 438631
+            ),
+            // No title next to the ID: the season and the episode still make it an episode
+            UserFileTestCases.FileProperties(
+                file = UserFile(name = "{tmdb-1399} S01E02.mkv", path = ""),
+                expectedTitle = "",
+                expectedSeason = 1,
+                expectedEpisode = 2,
+                expectedTmdbId = 1399
+            ),
+            UserFileTestCases.FileProperties(
+                file = UserFile(name = "S01E02 {tmdb-1399}.mkv", path = ""),
+                expectedTitle = "",
+                expectedSeason = 1,
+                expectedEpisode = 2,
+                expectedTmdbId = 1399
+            ),
+            UserFileTestCases.FileProperties(
+                file = UserFile(name = "{tmdb-1399} - 1x02.mkv", path = ""),
+                expectedTitle = "",
+                expectedSeason = 1,
+                expectedEpisode = 2,
+                expectedTmdbId = 1399
+            ),
+        ) { testCase ->
+
+            val nameProperties = testCase.file.nameProperties
+            nameProperties.title.shouldBe(testCase.expectedTitle, "Title mismatch")
+            nameProperties.year.shouldBe(testCase.expectedYear, "Year mismatch")
+            nameProperties.season.shouldBe(testCase.expectedSeason, "Season mismatch")
+            nameProperties.episode.shouldBe(testCase.expectedEpisode, "Episode mismatch")
+            nameProperties.tmdbId.shouldBe(testCase.expectedTmdbId, "TMDB ID mismatch")
+
+        }
+    }
+
+    context("TMDB ID - name properties from path") {
+        withData(
+            nameFn = { it.file.realPath },
+            UserFileTestCases.FileProperties(
+                file = UserFile(name = "Dune.mkv", path = "", realPath = "movies/Dune {tmdb-438631}/Dune.mkv"),
+                expectedTitle = "dune",
+                expectedTmdbId = 438631
+            ),
+            UserFileTestCases.FileProperties(
+                file = UserFile(name = "Dune.mkv", path = "", realPath = "movies/{tmdb-438631}/Dune.mkv"),
+                expectedTitle = "dune",
+                expectedTmdbId = 438631
+            ),
+            UserFileTestCases.FileProperties(
+                file = UserFile(name = "02.mkv", path = "", realPath = "shows/Game of Thrones {tmdb-1399}/1/02.mkv"),
+                expectedTitle = "game of thrones",
+                expectedSeason = 1,
+                expectedEpisode = 2,
+                expectedTmdbId = 1399
+            ),
+            UserFileTestCases.FileProperties(
+                file = UserFile(name = "S01E02.mkv", path = "", realPath = "shows/Game of Thrones {tmdb-1399}/S01E02.mkv"),
+                expectedTitle = "game of thrones",
+                expectedSeason = 1,
+                expectedEpisode = 2,
+                expectedTmdbId = 1399
+            ),
+            UserFileTestCases.FileProperties(
+                file = UserFile(name = "02.mkv", path = "", realPath = "shows/show name/1/02.mkv"),
+                expectedTitle = "show name",
+                expectedSeason = 1,
+                expectedEpisode = 2,
+                expectedTmdbId = null
+            ),
+            UserFileTestCases.FileProperties(
+                file = UserFile(name = "{tmdb-1399} S01E02.mkv", path = "", realPath = "Flux/{tmdb-1399} S01E02.mkv"),
+                expectedTitle = "",
+                expectedSeason = 1,
+                expectedEpisode = 2,
+                expectedTmdbId = 1399
+            ),
+        ) { testCase ->
+
+            val nameProperties = testCase.file.nameProperties
+            nameProperties.title.shouldBe(testCase.expectedTitle, "Title mismatch")
+            nameProperties.year.shouldBe(testCase.expectedYear, "Year mismatch")
+            nameProperties.season.shouldBe(testCase.expectedSeason, "Season mismatch")
+            nameProperties.episode.shouldBe(testCase.expectedEpisode, "Episode mismatch")
+            nameProperties.tmdbId.shouldBe(testCase.expectedTmdbId, "TMDB ID mismatch")
+
+        }
+    }
+
+    context("TMDB ID - only the {tmdb-ID} notation is an ID") {
+        withData(
+            nameFn = { "${it.file.realPath.ifEmpty { "-" }} | ${it.file.name}" },
+            // Other notations in the file name
+            UserFileTestCases.TmdbId(UserFile(name = "Movie 438631.mkv", path = ""), null),
+            UserFileTestCases.TmdbId(UserFile(name = "Movie <438631>.mkv", path = ""), null),
+            UserFileTestCases.TmdbId(UserFile(name = "Movie {438631}.mkv", path = ""), null),
+            UserFileTestCases.TmdbId(UserFile(name = "Movie {tmdb-}.mkv", path = ""), null),
+            // Season guard: a season number in a folder name is never a TMDB ID
+            UserFileTestCases.TmdbId(UserFile(name = "02.mkv", path = "", realPath = "shows/show name/1/02.mkv"), null),
+            UserFileTestCases.TmdbId(UserFile(name = "S02E05.mkv", path = "", realPath = "shows/show name/2/S02E05.mkv"), null),
+            // Bare numeric folders
+            UserFileTestCases.TmdbId(UserFile(name = "Film.mkv", path = "", realPath = "movies/2001/Film.mkv"), null),
+            UserFileTestCases.TmdbId(UserFile(name = "02.mkv", path = "", realPath = "shows/1399/1/02.mkv"), null),
+            // Priority: ID in the file name before ID in the folder name
+            UserFileTestCases.TmdbId(
+                UserFile(
+                    name = "Other {tmdb-42} S01E01.mkv",
+                    path = "",
+                    realPath = "shows/Show {tmdb-1399}/Other {tmdb-42} S01E01.mkv"
+                ),
+                42
+            ),
+        ) { testCase ->
+
+            testCase.file.nameProperties.tmdbId.shouldBe(testCase.expectedTmdbId, "TMDB ID mismatch")
 
         }
     }

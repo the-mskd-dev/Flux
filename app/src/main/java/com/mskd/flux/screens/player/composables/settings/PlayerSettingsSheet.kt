@@ -12,7 +12,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.BasicAlertDialog
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
@@ -23,8 +22,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import com.mskd.flux.core.model.player.PlayerTrack
+import com.mskd.flux.features.player.domain.model.VideoChapter
 import com.mskd.flux.features.player.presentation.PlayerIntent
-import com.mskd.flux.features.player.presentation.PlayerUiContent
+import com.mskd.flux.features.player.presentation.SettingsSheet
 import com.mskd.flux.mockups.PlayerMockups
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.text.Text
@@ -32,13 +32,16 @@ import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.by_default
+import flux.shared.generated.resources.chapters
+import flux.shared.generated.resources.subtitles_disabled
 import org.jetbrains.compose.resources.stringResource
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlayerSettingsSheet(
     selectedAudio: PlayerTrack?,
     selectedSubtitles: PlayerTrack?,
+    chapters: List<VideoChapter>?,
+    currentChapter: VideoChapter?,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
@@ -62,7 +65,7 @@ fun PlayerSettingsSheet(
                     label = "Audio",
                     value = selectedAudio?.label.orEmpty().ifBlank { stringResource(Res.string.by_default) },
                     onClick = {
-                        val intent = PlayerUiContent.SettingsSheet.Tracks(type = PlayerTrack.Type.AUDIO)
+                        val intent = SettingsSheet.Tracks(type = PlayerTrack.Type.AUDIO)
                         sendIntent(PlayerIntent.ShowSettings(sheet = intent))
                     }
                 )
@@ -71,11 +74,26 @@ fun PlayerSettingsSheet(
 
                 PlayerSettingsItem(
                     label = "Subtitles",
-                    value = selectedSubtitles?.label.orEmpty().ifBlank { stringResource(Res.string.by_default) },
+                    value = selectedSubtitles?.label.orEmpty().ifBlank {
+                        stringResource(if (selectedSubtitles == PlayerTrack.NO_SUBTITLES) Res.string.subtitles_disabled else Res.string.by_default)
+                    },
                     onClick = {
-                        val intent = PlayerUiContent.SettingsSheet.Tracks(type = PlayerTrack.Type.SUBTITLES)
+                        val intent = SettingsSheet.Tracks(type = PlayerTrack.Type.SUBTITLES)
                         sendIntent(PlayerIntent.ShowSettings(sheet = intent)) }
                 )
+
+                // Only offered when the Media has at least 2 Chapters
+                if (chapters != null) {
+
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = FluxUI.Space.medium))
+
+                    PlayerSettingsItem(
+                        label = stringResource(Res.string.chapters),
+                        value = currentChapter?.let { chapterTitle(chapter = it, chapters = chapters) }.orEmpty(),
+                        onClick = { sendIntent(PlayerIntent.ShowSettings(sheet = SettingsSheet.Chapters)) }
+                    )
+
+                }
 
             }
 
@@ -129,6 +147,8 @@ fun PlayerSettingsSheet_Preview() {
         PlayerSettingsSheet(
             selectedAudio = PlayerMockups.Audio.japanese,
             selectedSubtitles = PlayerMockups.Subtitles.french,
+            chapters = PlayerMockups.chapters,
+            currentChapter = PlayerMockups.chapters[1],
             sendIntent = {}
         )
     }

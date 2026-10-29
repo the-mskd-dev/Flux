@@ -55,7 +55,7 @@ class SettingsViewModelTest : FunSpec({
     val dataStoreFlow = MutableStateFlow(SettingsDataStore.State())
     val privateFolderFlow = MutableStateFlow(PrivateFolderDataStore.State())
     val imagesPrefetchFlow = MutableStateFlow(ImagesPrefetchManager.State.Idle)
-    val syncCatalogFlow = MutableStateFlow(SyncState.Idle)
+    val syncCatalogFlow = MutableStateFlow(SyncState.Idle())
 
     beforeTest {
 
@@ -447,6 +447,22 @@ class SettingsViewModelTest : FunSpec({
 
                 cancelAndConsumeRemainingEvents()
 
+            }
+        }
+
+        test("OnBlurSpoilersCheck should set value in datastore") {
+
+            viewModel.uiState.test {
+                awaitItem().blurSpoilers shouldBe false
+
+                viewModel.handleIntent(SettingsIntent.OnBlurSpoilersCheck(true))
+                dataStoreFlow.value = dataStoreFlow.value.copy(blurSpoilers = true)
+
+                val state = awaitItem()
+                coVerify { settingsDataStore.setBlurSpoilers(true) }
+                state.blurSpoilers shouldBe true
+
+                cancelAndConsumeRemainingEvents()
             }
         }
 

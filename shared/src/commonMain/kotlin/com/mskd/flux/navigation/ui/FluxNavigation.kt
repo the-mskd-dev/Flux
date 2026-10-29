@@ -21,6 +21,7 @@ import com.mskd.flux.features.about.ui.AboutScreen
 import com.mskd.flux.features.customization.domain.datastore.CustomizationDataStore
 import com.mskd.flux.features.customization.domain.model.NavigationStyle
 import com.mskd.flux.features.customization.ui.CustomizationScreen
+import com.mskd.flux.features.gallery.ui.GalleryScreen
 import com.mskd.flux.features.howTo.ui.HowToScreen
 import com.mskd.flux.features.message.ui.MessageScreen
 import com.mskd.flux.features.people.ui.PersonScreen
@@ -136,6 +137,13 @@ fun FluxNavigation(
                     PersonScreen(
                         person = entry.person,
                         navigate = { route -> navigator.navigate(route) },
+                        onBack = { navigator.onBack() },
+                    )
+                }
+                entry<Route.Gallery> { entry ->
+                    GalleryScreen(
+                        artworkId = entry.artworkId,
+                        contentType = entry.contentType,
                         onBack = { navigator.onBack() },
                     )
                 }

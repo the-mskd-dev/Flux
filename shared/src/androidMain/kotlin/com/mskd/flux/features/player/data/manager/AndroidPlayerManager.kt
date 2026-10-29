@@ -3,6 +3,7 @@ package com.mskd.flux.features.player.data.manager
 import android.content.ComponentName
 import android.content.Context
 import android.net.Uri
+import android.os.Bundle
 import androidx.annotation.OptIn
 import androidx.core.net.toUri
 import androidx.media3.common.C
@@ -25,6 +26,7 @@ import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.player.PlayerTrack
 import com.mskd.flux.features.player.domain.manager.PlayerManager
+import com.mskd.flux.features.player.domain.manager.SeekPrecision
 import com.mskd.flux.features.player.domain.usecase.SaveTrackLanguageUseCase
 import com.mskd.flux.report.Trace
 import com.mskd.flux.services.PlayerService
@@ -45,7 +47,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import org.jetbrains.compose.resources.getString
 import java.util.Locale
 import kotlin.math.roundToInt
@@ -91,8 +92,13 @@ class AndroidPlayerManager(
 
     private var controllerFuture: ListenableFuture<MediaController>? = null
 
+    private var lastSeekPrecision = SeekPrecision.EXACT
+
     private var currentMediaId: Long = -1L
     private var currentSessionId: String? = null
+
+    /** Resolved once in [playMedia] (suspending) so [onTracksChanged] never blocks the main thread. */
+    private var defaultTrackLabel: String? = null
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private var progressJob: Job? = null
@@ -111,17 +117,23 @@ class AndroidPlayerManager(
             return
         }
 
-        val sessionToken = SessionToken(context, ComponentName(context, PlayerService::class.java))
-        controllerFuture = MediaController.Builder(context, sessionToken).buildAsync()
+        _state.value = PlayerManager.State.Connecting
 
-        controllerFuture?.addListener({
+        val sessionToken = SessionToken(context, ComponentName(context, PlayerService::class.java))
+        val future = MediaController.Builder(context, sessionToken).buildAsync()
+        controllerFuture = future
+
+        future.addListener({
+            // Ignore a connection completed after disconnect (or superseded)
+            if (_state.value !is PlayerManager.State.Connecting || controllerFuture !== future) return@addListener
             try {
-                val controller = controllerFuture?.get() ?: run {
+                val controller = future.get() ?: run {
                     _state.value = PlayerManager.State.Error()
                     return@addListener
                 }
 
                 controller.addListener(this@AndroidPlayerManager)
+                lastSeekPrecision = SeekPrecision.EXACT
                 _state.value = PlayerManager.State.Ready(player = controller)
             } catch (e: Exception) {
                 Trace.error(tag = TAG, message = "Failed to connect", throwable = e)
@@ -167,13 +179,24 @@ class AndroidPlayerManager(
         (_state.value as? PlayerManager.State.Ready)?.player?.pause()
     }
 
-    override fun seekTo(progress: Long) {
-        (_state.value as? PlayerManager.State.Ready)?.player?.seekTo(progress)
+    override fun seekTo(progress: Long, precision: SeekPrecision) {
+        val controller = (_state.value as? PlayerManager.State.Ready)?.player as? MediaController ?: return
+        applySeekPrecision(controller, precision)
+        controller.seekTo(progress)
+    }
+
+    // Seek parameters live on the service's ExoPlayer; commands are delivered in order,
+    // so the next seek is decoded with the precision just requested.
+    private fun applySeekPrecision(controller: MediaController, precision: SeekPrecision) {
+        if (precision == lastSeekPrecision) return
+        controller.sendCustomCommand(PlayerService.setSeekPrecisionCommand(precision), Bundle.EMPTY)
+        lastSeekPrecision = precision
     }
 
     override fun seekRewind(value: Long) {
         (_state.value as? PlayerManager.State.Ready)?.player?.let {
             val targetPosition = (it.currentPosition - value).coerceAtLeast(0L)
+            (it as? MediaController)?.let { c -> applySeekPrecision(c, SeekPrecision.EXACT) }
             it.seekTo(targetPosition)
         }
     }
@@ -181,6 +204,7 @@ class AndroidPlayerManager(
     override fun seekForward(value: Long) {
         (_state.value as? PlayerManager.State.Ready)?.player?.let {
             val targetPosition = (it.currentPosition + value).coerceAtMost(it.duration)
+            (it as? MediaController)?.let { c -> applySeekPrecision(c, SeekPrecision.EXACT) }
             it.seekTo(targetPosition)
         }
     }
@@ -194,6 +218,8 @@ class AndroidPlayerManager(
 
     override suspend fun playMedia(media: Media, subtitlesPath: String?) {
         val player = (_state.value as? PlayerManager.State.Ready)?.player ?: return
+
+        if (defaultTrackLabel == null) defaultTrackLabel = getString(Res.string.track)
 
         if (media.mediaId != currentMediaId) {
 
@@ -235,6 +261,7 @@ class AndroidPlayerManager(
                 .buildUpon()
                 .setPreferredAudioLanguage(saveTrackLanguageUseCase.getAudioLanguage())
                 .setPreferredTextLanguage(saveTrackLanguageUseCase.getSubtitlesLanguage())
+                .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, !saveTrackLanguageUseCase.subtitlesEnabled())
                 .build()
 
             player.prepare()
@@ -245,8 +272,7 @@ class AndroidPlayerManager(
     }
 
     override fun selectTrack(track: PlayerTrack) {
-        val current = _state.value as? PlayerManager.State.Ready ?: return
-        val player = current.player
+        val player = (_state.value as? PlayerManager.State.Ready)?.player ?: return
         val currentTracks = player.currentTracks
         var selectedTrack: PlayerTrack? = null
 
@@ -261,9 +287,12 @@ class AndroidPlayerManager(
             .build()
 
         selectedTrack?.let { t ->
-            when (t.type) {
-                PlayerTrack.Type.AUDIO -> _state.update { current.copy(selectedAudio = t) }
-                PlayerTrack.Type.SUBTITLES -> _state.update { current.copy(selectedSubtitles = t) }
+            _state.update { state ->
+                val ready = state as? PlayerManager.State.Ready ?: return@update state
+                when (t.type) {
+                    PlayerTrack.Type.AUDIO -> ready.copy(selectedAudio = t)
+                    PlayerTrack.Type.SUBTITLES -> ready.copy(selectedSubtitles = t)
+                }
             }
         }
     }
@@ -273,26 +302,43 @@ class AndroidPlayerManager(
     //region Player events
 
     override fun onEvents(player: Player, events: Player.Events) {
-        val currentState = _state.value as? PlayerManager.State.Ready ?: return
+        if (_state.value !is PlayerManager.State.Ready) return
 
-        if (events.containsAny(
-                Player.EVENT_PLAY_WHEN_READY_CHANGED,
-                Player.EVENT_PLAYBACK_STATE_CHANGED,
-                Player.EVENT_IS_PLAYING_CHANGED
-            )
-        ) {
-            _state.update { currentState.copy(isPlaying = player.playWhenReady) }
+        val playingChanged = events.containsAny(
+            Player.EVENT_PLAY_WHEN_READY_CHANGED,
+            Player.EVENT_PLAYBACK_STATE_CHANGED,
+            Player.EVENT_IS_PLAYING_CHANGED
+        )
+        val duration = if (
+            events.contains(Player.EVENT_PLAYBACK_STATE_CHANGED)
+            && player.playbackState == Player.STATE_READY
+        ) player.duration.coerceAtLeast(0L) else null
+
+        if (playingChanged || duration != null) {
+            _state.update { state ->
+                val ready = state as? PlayerManager.State.Ready ?: return@update state
+                ready.copy(
+                    isPlaying = if (playingChanged) player.playWhenReady else ready.isPlaying,
+                    duration = duration ?: ready.duration
+                )
+            }
+        }
+
+        if (playingChanged) {
             if (player.isPlaying) startProgressMonitoring() else stopProgressMonitoring()
         }
 
-        if (
-            events.contains(Player.EVENT_PLAYBACK_STATE_CHANGED)
-            && player.playbackState == Player.STATE_READY
-        ) {
-            val duration = player.duration.coerceAtLeast(0L)
-            _state.update { currentState.copy(duration = duration) }
-        }
+    }
 
+    // Progress is only polled while playing: publish seeks directly so a paused seek is reflected.
+    override fun onPositionDiscontinuity(
+        oldPosition: Player.PositionInfo,
+        newPosition: Player.PositionInfo,
+        reason: Int
+    ) {
+        if (reason == Player.DISCONTINUITY_REASON_SEEK) {
+            _progress.update { newPosition.positionMs }
+        }
     }
 
     override fun onCues(cueGroup: CueGroup) {
@@ -402,12 +448,12 @@ class AndroidPlayerManager(
     }
 
     override fun onTracksChanged(tracks: Tracks) {
-        val current = _state.value as? PlayerManager.State.Ready ?: return
+        if (_state.value !is PlayerManager.State.Ready) return
 
-        val defaultLabel = runBlocking { getString(Res.string.track) }
+        val defaultLabel = defaultTrackLabel ?: ""
 
-        var selectedAudio: PlayerTrack? = current.selectedAudio
-        var selectedSubtitles: PlayerTrack? = current.selectedSubtitles
+        var selectedAudio: PlayerTrack? = null
+        var selectedSubtitles: PlayerTrack? = null
 
         val tracks = tracks.groups
             .filter { it.type == C.TRACK_TYPE_AUDIO || it.type == C.TRACK_TYPE_TEXT }
@@ -435,11 +481,12 @@ class AndroidPlayerManager(
                 }
             }
 
-        _state.update {
-            current.copy(
+        _state.update { state ->
+            val ready = state as? PlayerManager.State.Ready ?: return@update state
+            ready.copy(
                 tracks = tracks,
-                selectedAudio = selectedAudio,
-                selectedSubtitles = selectedSubtitles
+                selectedAudio = selectedAudio ?: ready.selectedAudio,
+                selectedSubtitles = selectedSubtitles ?: ready.selectedSubtitles
             )
         }
 

@@ -1,6 +1,8 @@
-## Version 1.8.4
+## Version 1.9.0
 
-- Feature: Add credits
-- Feature: Bypass openings and endings, and more relevant "next episode" button
-- Fix: Player crash
-- Fix: Improve image caching and rendering
+- Feature: Blurred spoilers
+- Feature: Posters gallery
+- Feature: Support TMDB ID in file name
+- Core: Refacto synchro
+- Core: Improve player UI performances
+- Fix : Save when no subtitle is selected

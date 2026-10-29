@@ -123,6 +123,7 @@
     <string name="information_language">情報の言語</string>
     <string name="sync_in_progress">同期中…</string>
     <string name="by_default">デフォルト</string>
+    <string name="subtitles_disabled">オフ</string>
     <string name="cache_images">HD画像をキャッシュ</string>
     <string name="images_cached">キャッシュ済み画像</string>
     <string name="caching_images_in_progress">画像をキャッシュ中… %1$d%</string>
@@ -238,4 +239,17 @@
     <string name="known_for_department">担当: %1$s</string>
     <string name="original_name">本名: %1$s</string>
     <string name="also_in">その他の出演作</string>
+    <string name="retry">再試行</string>
+    <string name="unavailable_check_connection">利用できません。接続を確認してください</string>
+    <string name="gallery_empty">利用できる画像がありません</string>
+    <string name="blur_spoilers">ネタバレを隠す</string>
+    <string name="blur_spoilers_desc">まだ見ていないエピソードの説明と画像をぼかします</string>
+    <string name="spoiler_hidden">ネタバレは非表示</string>
+    <string name="spoiler_reveal">表示</string>
+    <string name="chapters">チャプター</string>
+    <string name="chapter_number">チャプター %1$d</string>
+    <string name="gallery_image_download">画像をダウンロード</string>
+    <string name="gallery_image_download_succeeded">画像を保存しました</string>
+    <string name="gallery_image_download_failed">画像をダウンロードできませんでした</string>
+    <string name="gallery_image_download_show">表示</string>
 </resources>

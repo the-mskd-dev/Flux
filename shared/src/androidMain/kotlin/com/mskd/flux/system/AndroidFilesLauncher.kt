@@ -17,6 +17,10 @@ class AndroidFilesLauncher(private val context: Context) : FilesLauncher {
         launchExplorer(targetUri)
     }
 
+    override fun openDownloadedImages() {
+        launchExplorer(DocumentsContract.buildDocumentUri(EXTERNAL_STORAGE_AUTHORITY, "primary:$DOWNLOADED_IMAGES_PATH"))
+    }
+
     private fun resolveTargetUri(file: UserFile): Uri? {
         return when (file.source) {
             FileSource.SAF -> file.path.toUri()
@@ -26,7 +30,7 @@ class AndroidFilesLauncher(private val context: Context) : FilesLauncher {
                 if (folder.isEmpty()) return null
 
                 DocumentsContract.buildDocumentUri(
-                    "com.android.externalstorage.documents",
+                    EXTERNAL_STORAGE_AUTHORITY,
                     "primary:$folder",
                 )
             }
@@ -53,7 +57,7 @@ class AndroidFilesLauncher(private val context: Context) : FilesLauncher {
         val fallbackIntent = Intent(Intent.ACTION_VIEW).apply {
             addCategory(Intent.CATEGORY_DEFAULT)
             setDataAndType(
-                DocumentsContract.buildRootsUri("com.android.externalstorage.documents"),
+                DocumentsContract.buildRootsUri(EXTERNAL_STORAGE_AUTHORITY),
                 DocumentsContract.Root.MIME_TYPE_ITEM,
             )
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -64,6 +68,10 @@ class AndroidFilesLauncher(private val context: Context) : FilesLauncher {
         } catch (e: ActivityNotFoundException) {
             Trace.error(tag = "FilesLauncher", message = "No file explorer available at all", e)
         }
+    }
+
+    private companion object {
+        const val EXTERNAL_STORAGE_AUTHORITY = "com.android.externalstorage.documents"
     }
 
 }

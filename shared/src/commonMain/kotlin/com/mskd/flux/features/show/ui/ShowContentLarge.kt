@@ -1,5 +1,6 @@
 package com.mskd.flux.features.show.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -55,7 +56,9 @@ fun ShowContentLarge(
         Box(modifier = Modifier.weight(.5f),) {
 
             ArtworkImageFull(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clickable { sendIntent(ShowIntent.OnArtworkImageClick) },
                 fullArtwork = fullShow,
                 orientation = Orientation.Horizontal,
             )

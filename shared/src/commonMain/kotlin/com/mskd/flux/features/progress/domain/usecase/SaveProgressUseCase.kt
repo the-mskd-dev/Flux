@@ -23,11 +23,15 @@ class SaveProgressUseCase(
         const val TAG = "RecordProgressUseCase"
     }
 
-    suspend operator fun invoke(media: Media, progress: Long): Media {
+    /** @param forceWatched saves the [media] WATCHED whatever the chapters and the progress threshold say. */
+    suspend operator fun invoke(media: Media, progress: Long, forceWatched: Boolean = false): Media {
 
-        val lastChapter = getChaptersUseCase(media).maxByOrNull { it.index }
+        // Chapters are irrelevant when the status is forced
+        val lastChapter = if (forceWatched) null else getChaptersUseCase(media).maxByOrNull { it.index }
 
         val newStatus = when {
+
+            forceWatched -> Status.WATCHED
 
             // If it's the last chapter
             lastChapter != null && progress in lastChapter.start..lastChapter.end -> {

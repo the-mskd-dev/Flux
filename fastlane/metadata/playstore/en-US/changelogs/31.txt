@@ -1,0 +1,2 @@
+- UI: New home UI
+- Feature: Add genres

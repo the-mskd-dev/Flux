@@ -96,6 +96,7 @@ class SettingsViewModel(
             forwardValue = base.settings.playerForwardValue,
             useExternalPlayer = base.settings.externalPlayer,
             pipIsEnabled = base.settings.pipIsEnabled,
+            blurSpoilers = base.settings.blurSpoilers,
             autoKeyboard = base.settings.autoKeyboard,
             optionsDialog = base.optionsDialog,
             settingsDialog = base.settingsDialog,
@@ -165,6 +166,7 @@ class SettingsViewModel(
             is SettingsIntent.OnExternalPlayerCheck -> onExternalPlayerCheck(value = intent.checked)
             is SettingsIntent.OnEnablePipCheck -> onEnablePipCheck(value = intent.checked)
             is SettingsIntent.OnPrefetchHdImagesCheck -> onPrefetchImagesCheck(value = intent.checked)
+            is SettingsIntent.OnBlurSpoilersCheck -> settingsDataStore.setBlurSpoilers(intent.checked)
             is SettingsIntent.OpenUrl -> urlLauncher.open(url = intent.url)
             SettingsIntent.SendEmail -> emailLauncher.sendEmail()
 

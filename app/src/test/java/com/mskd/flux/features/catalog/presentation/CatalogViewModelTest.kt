@@ -82,7 +82,7 @@ class CatalogViewModelTest : FunSpec({
         }
 
         syncCatalogUseCase = mockk(relaxed = true) {
-            every { state } returns MutableStateFlow(SyncState.Idle)
+            every { state } returns MutableStateFlow(SyncState.Idle())
         }
         artworkDb = FakeDatabaseRepository()
 

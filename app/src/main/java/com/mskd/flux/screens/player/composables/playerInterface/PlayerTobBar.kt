@@ -12,8 +12,6 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -32,11 +30,11 @@ import flux.shared.generated.resources.episode
 import flux.shared.generated.resources.season
 import org.jetbrains.compose.resources.stringResource
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun PlayerTopBar(
     modifier: Modifier,
     media: Media,
+    enabled: Boolean,
     onBackTap: () -> Unit
 ) {
 
@@ -49,9 +47,8 @@ fun PlayerTopBar(
     ) {
 
         Box(
-            modifier = modifier
-                .statusBarsPadding()
-                .clickable { onBackTap() }
+            modifier = Modifier
+                .clickable(enabled = enabled) { onBackTap() }
                 .size(50.dp)
                 .clip(shape = CircleShape)
                 .padding(FluxUI.Space.extraSmall),

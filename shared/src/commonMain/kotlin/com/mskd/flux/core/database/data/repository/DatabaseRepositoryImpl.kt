@@ -1,5 +1,8 @@
 package com.mskd.flux.core.database.data.repository
 
+import androidx.room.immediateTransaction
+import androidx.room.useWriterConnection
+import com.mskd.flux.core.database.data.FluxDatabase
 import com.mskd.flux.core.database.data.dao.ArtworkDao
 import com.mskd.flux.core.database.data.dao.MediasDao
 import com.mskd.flux.core.database.data.dao.SeasonsDao
@@ -11,18 +14,22 @@ import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Movie
+import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.utils.extensions.sort
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import com.mskd.flux.features.people.data.mapper.toEntity as toPersonEntity
 
 class DatabaseRepositoryImpl(
-    private val artworksDao: ArtworkDao,
-    private val mediasDao: MediasDao,
-    private val seasonsDao: SeasonsDao
+    private val database: FluxDatabase,
 ) : DatabaseRepository {
+
+    private val artworksDao: ArtworkDao = database.artworkDao()
+    private val mediasDao: MediasDao = database.mediasDao()
+    private val seasonsDao: SeasonsDao = database.seasonsDao()
 
     override fun flowArtworks(includePrivates: Boolean): Flow<List<Artwork>> {
         return artworksDao.flowArtworks(includePrivates = includePrivates).map { entities -> entities.map { it.toDomain() } }
@@ -48,8 +55,40 @@ class DatabaseRepositoryImpl(
         mediasDao.insertOrUpdate(medias = medias.map { it.toEntity() })
     }
 
+    override suspend fun saveSyncedMedias(medias: List<Media>) {
+        mediasDao.upsertFromSync(medias = medias.map { it.toEntity() })
+    }
+
     override suspend fun saveSeasons(seasons: List<Season>) {
         seasonsDao.insert(seasons.map { it.toEntity() })
+    }
+
+    override suspend fun saveSyncedFolder(artwork: Artwork, seasons: List<Season>, medias: List<Media>, people: List<Person>) {
+        database.useWriterConnection { transactor ->
+            transactor.immediateTransaction {
+                // A renamed file keeps its path (MediaStore) but may now be another media: its previous one is replaced,
+                // and is no Fichier manquant, so the Artwork and Season it leaves empty must be cleaned here
+                val previousByPath = mediasDao.findByPaths(paths = medias.map { it.file.path }).associateBy { it.path }
+                val replacesMedias = medias.map { it.toEntity() }.any { media ->
+                    val previous = previousByPath[media.path] ?: return@any false
+                    previous.id != media.id || previous.artworkId != media.artworkId
+                }
+                saveArtworks(listOf(artwork))
+                saveSeasons(seasons)
+                saveSyncedMedias(medias)
+                if (replacesMedias) {
+                    seasonsDao.deleteEmptySeasons()
+                    artworksDao.deleteEmptyArtworks()
+                }
+                if (people.isNotEmpty()) {
+                    // TMDB returns the whole credits: the ones it dropped must not stay
+                    database.personDao().apply {
+                        delete(artworkId = artwork.id)
+                        insert(people = people.map { it.toPersonEntity() })
+                    }
+                }
+            }
+        }
     }
 
     override suspend fun getArtwork(artworkId: Long): Artwork? {
@@ -183,8 +222,8 @@ class DatabaseRepositoryImpl(
 
     override suspend fun deleteMediasNotInFiles(files: List<UserFile>) {
 
-        val mediasToDelete = getMediasNotInFiles(files = files)
-        deleteMedias(medias = mediasToDelete)
+        val existingPaths = files.mapTo(HashSet()) { it.path }
+        deleteMedias(medias = getMedias().filter { it.file.path !in existingPaths })
     }
 
     override suspend fun deleteMediasInFolder(folder: UserFolder) {

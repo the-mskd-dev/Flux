@@ -1,4 +1,0 @@
-- UI: Forme et nombre des items
-- CORE: Amélioration de la compatibilité du lecteur
-- CORE: Passage complet en KMP
-- Fix: Problème d'affichage des boutons lors du retour arrière dans le lecteur

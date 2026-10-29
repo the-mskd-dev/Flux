@@ -5,70 +5,55 @@ import com.mskd.flux.features.catalog.data.datastore.CatalogDataStoreImpl
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinatorImpl
 import com.mskd.flux.features.catalog.domain.datastore.CatalogDataStore
-import com.mskd.flux.features.catalog.domain.fetcher.ArtworkMetadataFetcher
-import com.mskd.flux.features.catalog.domain.fetcher.ArtworkMetadataFetcherImpl
-import com.mskd.flux.features.catalog.domain.fetcher.CatalogContentFetcher
-import com.mskd.flux.features.catalog.domain.fetcher.CatalogContentFetcherImpl
-import com.mskd.flux.features.catalog.domain.fetcher.MovieMetadataFetcher
-import com.mskd.flux.features.catalog.domain.fetcher.MovieMetadataFetcherImpl
-import com.mskd.flux.features.catalog.domain.fetcher.SeasonMetadataFetcher
-import com.mskd.flux.features.catalog.domain.fetcher.SeasonMetadataFetcherImpl
-import com.mskd.flux.features.catalog.domain.resolver.MediaResolver
-import com.mskd.flux.features.catalog.domain.resolver.MediaResolverImpl
-import com.mskd.flux.features.catalog.domain.usecase.cleanCatalog.CleanCatalogUseCase
+import com.mskd.flux.features.catalog.domain.sync.SyncPipeline
+import com.mskd.flux.features.catalog.domain.sync.enrichment.DetailsEnrichment
+import com.mskd.flux.features.catalog.domain.sync.enrichment.DurationsEnrichment
+import com.mskd.flux.features.catalog.domain.sync.enrichment.IdentificationEnrichment
+import com.mskd.flux.features.catalog.domain.sync.enrichment.SeasonsEnrichment
+import com.mskd.flux.features.catalog.domain.sync.step.CatalogStep
+import com.mskd.flux.features.catalog.domain.sync.step.FinalizationStep
+import com.mskd.flux.features.catalog.domain.sync.step.GenresStep
+import com.mskd.flux.features.catalog.domain.sync.step.MissingFilesStep
+import com.mskd.flux.features.catalog.domain.sync.step.NsfwPrivateStep
+import com.mskd.flux.features.catalog.domain.sync.step.ScanStep
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.catalog.domain.usecase.syncGenres.SyncGenresUseCase
 import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
 import com.mskd.flux.features.catalog.presentation.CatalogViewModel
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
-import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val moduleCatalog = module {
 
-    single<CoroutineDispatcher>(named("catalogSyncDispatcher")) {
-        Dispatchers.IO.limitedParallelism(10)
-    }
+    singleOf(::ScanStep)
+    singleOf(::MissingFilesStep)
+    singleOf(::GenresStep)
+    singleOf(::NsfwPrivateStep)
+    singleOf(::FinalizationStep)
 
-    single<ArtworkMetadataFetcher> {
-        ArtworkMetadataFetcherImpl(
-            api = get(),
-            dispatcher = get(named("catalogSyncDispatcher"))
+    single {
+        CatalogStep(
+            database = get(),
+            enrichments = listOf(
+                IdentificationEnrichment(api = get()),
+                DetailsEnrichment(api = get()),
+                SeasonsEnrichment(api = get()),
+                DurationsEnrichment(getFileDurationUseCase = get()),
+            ),
         )
     }
 
-    single<MovieMetadataFetcher> {
-        MovieMetadataFetcherImpl(
-            api = get(),
-            dispatcher = get(named("catalogSyncDispatcher"))
-        )
-    }
-
-    single<SeasonMetadataFetcher>{
-        SeasonMetadataFetcherImpl(
-            api = get(),
-            dispatcher = get(named("catalogSyncDispatcher"))
-        )
-    }
-
-    single<MediaResolver> {
-        MediaResolverImpl(
-            api = get(),
-            settings = get(),
-            getFileDurationUseCase = get(),
-            dispatcher = get(named("catalogSyncDispatcher"))
-        )
-    }
-
-    single<CatalogContentFetcher> {
-        CatalogContentFetcherImpl(
-            artworkMetadataFetcher = get(),
-            movieMetadataFetcher = get(),
-            seasonMetadataFetcher = get(),
-            mediaResolver = get()
+    single {
+        SyncPipeline(
+            scanStep = get(),
+            steps = listOf(
+                get<MissingFilesStep>(),
+                get<GenresStep>(),
+                get<CatalogStep>(),
+                get<NsfwPrivateStep>(),
+                get<FinalizationStep>(),
+            )
         )
     }
 
@@ -76,7 +61,6 @@ val moduleCatalog = module {
         CatalogSyncCoordinatorImpl(scope = get(Qualifiers.APPLICATION_SCOPE))
     }
 
-    singleOf(::CleanCatalogUseCase)
     singleOf(::SyncCatalogUseCase)
     singleOf(::SyncGenresUseCase)
 

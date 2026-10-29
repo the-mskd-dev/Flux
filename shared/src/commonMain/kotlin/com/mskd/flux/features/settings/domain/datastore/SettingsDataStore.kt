@@ -16,6 +16,8 @@ interface SettingsDataStore {
 
     suspend fun setSubtitlesLanguage(language: String)
 
+    suspend fun setSubtitlesEnabled(enabled: Boolean)
+
     suspend fun setAudioLanguage(language: String)
 
     suspend fun setExternalPlayer(useExternalPlayer: Boolean)
@@ -31,11 +33,14 @@ interface SettingsDataStore {
 
     suspend fun setSystemFolders(enabled: Boolean)
 
+    suspend fun setBlurSpoilers(enabled: Boolean)
+
 
     data class State(
         val playerRewindValue: Int = 10,
         val playerForwardValue: Int = 10,
         val subtitlesLanguage: String = systemLanguage(),
+        val subtitlesEnabled: Boolean = true,
         val audioLanguage: String = systemLanguage(),
         val externalPlayer: Boolean = false,
         val pipIsEnabled: Boolean = true,
@@ -43,6 +48,7 @@ interface SettingsDataStore {
         val dataLanguage: Language? = null,
         val prefetchHdImages: Boolean = false,
         val systemFoldersEnabled: Boolean = true,
+        val blurSpoilers: Boolean = false,
     )
 
 }

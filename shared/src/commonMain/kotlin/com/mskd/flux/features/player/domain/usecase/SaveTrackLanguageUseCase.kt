@@ -14,16 +14,26 @@ class SaveTrackLanguageUseCase(
 
     suspend operator fun invoke(track: PlayerTrack) {
 
-        val language = track.language ?: return // Nothing to save (e.g. PlayerTrack.NO_SUBTITLES)
+        if (track == PlayerTrack.NO_SUBTITLES) {
+            settings.setSubtitlesEnabled(false) // Keep the saved language
+            return
+        }
+
+        val language = track.language ?: return // Nothing to save
 
         when (track.type) {
-            PlayerTrack.Type.SUBTITLES -> settings.setSubtitlesLanguage(language)
+            PlayerTrack.Type.SUBTITLES -> {
+                settings.setSubtitlesEnabled(true)
+                settings.setSubtitlesLanguage(language)
+            }
             PlayerTrack.Type.AUDIO -> settings.setAudioLanguage(language)
         }
 
     }
 
     suspend fun getSubtitlesLanguage(): String = settings.flow.first().subtitlesLanguage
+
+    suspend fun subtitlesEnabled(): Boolean = settings.flow.first().subtitlesEnabled
 
     suspend fun getAudioLanguage(): String = settings.flow.first().audioLanguage
 

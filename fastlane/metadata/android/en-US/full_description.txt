@@ -1,10 +1,20 @@
-<p><strong>Flux</strong> is a modern and elegant video player designed to transform your local files into an immersive library.</p>
-<p><strong>Why choose Flux?</strong></p>
-<ul>
-<li><strong>Organized Library:</strong> Information for your movies, series, and anime is retrieved via the TMDB service, allowing them to be organized into a simple and efficient library.</li>
-<li><strong>A Modern Interface:</strong> Enjoy the combination of Material 3 Expressive and Material You for an application with a modern design.</li>
-<li><strong>Integrated Player:</strong> In addition to being a beautiful library, you can play your files directly from within the application.</li>
-<li><strong>Totally Free:</strong> No subscriptions, no ads, no trackers. This application is completely free and will remain so.</li>
-</ul>
-<p>Whether you are an anime fan, a cinephile, or simply need an application to play your files, Flux will make you want to keep watching your movies and series.</p>
-<p><strong>Note:</strong> Flux is an Open Source project developed by an Android enthusiast committed to providing a pleasant, simple, and high-performance experience.</p>
+Flux is a modern, 100% open-source media library and video player for Android, built to organize your local movies, TV shows, and anime. It scans your offline video files and fetches rich metadata (posters, synopses, episode details, genres, and ratings) from The Movie Database (TMDB).
+
+This F-Droid build is completely free, ad-free, tracker-free, and contains zero proprietary Google dependencies.
+
+### 🎬 Key Features
+
+- 📂 Movies, Shows & Anime Library: Organize your offline film and series collection into a modern, easy-to-browse catalog.
+- 🍿 TMDB Metadata Sync: Automatic posters, plot summaries, episode tracking, and ratings.
+- ▶️ Built-in & External Players: Smooth video playback with progress history or launch in your favorite external player.
+- 🛡️ Pure FOSS: No ads, no telemetry, no proprietary SDKs, and no account required.
+
+### 💖 Support the Project
+If you enjoy Flux, consider supporting its development by purchasing the Supporter Edition on the Google Play Store or via GitHub Sponsors. Thanks a lot, Kisses. 🙏
+
+---
+
+### 📜 Legal & Credits
+
+This product uses the TMDB API but is not endorsed or certified by TMDB.
+Licensed under the GNU General Public License v3.0 (GPL-3.0).

@@ -15,7 +15,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.BasicAlertDialog
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -35,9 +34,9 @@ import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.audio_tracks
 import flux.shared.generated.resources.by_default
 import flux.shared.generated.resources.subtitles
+import flux.shared.generated.resources.subtitles_disabled
 import org.jetbrains.compose.resources.stringResource
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlayerTracksSheet(
     type: PlayerTrack.Type,
@@ -107,7 +106,11 @@ fun PlayerTracksSheet(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
 
-                        Text.List.Title(text = track.label.ifBlank { stringResource(Res.string.by_default) })
+                        Text.List.Title(
+                            text = track.label.ifBlank {
+                                stringResource(if (track == PlayerTrack.NO_SUBTITLES) Res.string.subtitles_disabled else Res.string.by_default)
+                            }
+                        )
 
                         if (track == selectedTrack) {
                             Icon(

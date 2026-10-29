@@ -123,6 +123,7 @@
     <string name="information_language">Idioma de la información</string>
     <string name="sync_in_progress">Sincronización en curso…</string>
     <string name="by_default">Por defecto</string>
+    <string name="subtitles_disabled">Desactivados</string>
     <string name="cache_images">Guardar imágenes HD en caché</string>
     <string name="images_cached">Imágenes en caché</string>
     <string name="caching_images_in_progress">Guardando imágenes en caché… %1$d%</string>
@@ -239,4 +240,17 @@
     <string name="known_for_department">Conocido/a por: %1$s</string>
     <string name="original_name">Nombre original: %1$s</string>
     <string name="also_in">También en</string>
+    <string name="retry">Reintentar</string>
+    <string name="unavailable_check_connection">No disponible, comprueba tu conexión</string>
+    <string name="gallery_empty">No hay imágenes disponibles</string>
+    <string name="blur_spoilers">Ocultar spoilers</string>
+    <string name="blur_spoilers_desc">Difuminar la descripción y la imagen de los episodios aún no vistos</string>
+    <string name="spoiler_hidden">Spoiler oculto</string>
+    <string name="spoiler_reveal">Mostrar</string>
+    <string name="chapters">Capítulos</string>
+    <string name="chapter_number">Capítulo %1$d</string>
+    <string name="gallery_image_download">Descargar imagen</string>
+    <string name="gallery_image_download_succeeded">Imagen guardada</string>
+    <string name="gallery_image_download_failed">No se pudo descargar la imagen</string>
+    <string name="gallery_image_download_show">Mostrar</string>
 </resources>

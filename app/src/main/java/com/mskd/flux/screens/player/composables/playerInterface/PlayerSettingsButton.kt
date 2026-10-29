@@ -11,22 +11,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.mskd.flux.features.player.presentation.PlayerIntent
-import com.mskd.flux.features.player.presentation.PlayerUiContent
+import com.mskd.flux.features.player.presentation.SettingsSheet
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun PlayerSettingsButton(
     modifier: Modifier,
+    enabled: Boolean,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
     IconButton(
         modifier = modifier.statusBarsPadding(),
+        enabled = enabled,
         colors = IconButtonDefaults.iconButtonColors(
             contentColor = Color.White
         ),
         onClick = {
-            sendIntent(PlayerIntent.ShowSettings(sheet = PlayerUiContent.SettingsSheet.Settings))
+            sendIntent(PlayerIntent.ShowSettings(sheet = SettingsSheet.Settings))
         }
     ) {
 

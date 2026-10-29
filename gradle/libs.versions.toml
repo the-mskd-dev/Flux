@@ -119,6 +119,7 @@ ktor-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version
 ktor-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 ktor-android = { group = "io.ktor", name = "ktor-client-android", version.ref = "ktor" }
 ktor-http = { group = "io.ktor", name = "ktor-http", version.ref = "ktor" }
+ktor-mock = { group = "io.ktor", name = "ktor-client-mock", version.ref = "ktor" }
 
 # -- DI --
 koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
@@ -131,6 +132,7 @@ koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = 
 androidx-datastore = { group = "androidx.datastore", name = "datastore", version.ref = "datastore" }
 androidx-datastore-pref = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 androidx-sqlite-bundled = { group = "androidx.sqlite", name = "sqlite-bundled", version = "2.7.0" }
+androidx-sqlite-bundled-jvm = { group = "androidx.sqlite", name = "sqlite-bundled-jvm", version = "2.6.2" }
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
@@ -299,7 +301,8 @@ android-unit-test = [
     "koin-test",
     "koin-test-junit4",
     "turbine",
-    "kotlinx-coroutines-test"
+    "kotlinx-coroutines-test",
+    "ktor-mock"
 ]
 
 android-test = [

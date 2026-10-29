@@ -67,6 +67,7 @@ fun ShowScreen(
                 ShowEvent.BackToPreviousScreen -> onBack()
                 is ShowEvent.NavigateToSeason -> navigate(Artwork(artworkId = event.artworkId, season = event.season, rgb = event.rgb))
                 is ShowEvent.NavigateToPerson -> navigate(Route.Person(person = event.person))
+                is ShowEvent.NavigateToGallery -> navigate(Route.Gallery(artworkId = event.artworkId, contentType = event.contentType))
             }
         }
     }

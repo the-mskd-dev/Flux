@@ -5,6 +5,7 @@ import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Movie
+import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.features.sources.domain.model.UserFolder
@@ -121,7 +122,11 @@ class FakeDatabaseRepository : DatabaseRepository {
     override suspend fun saveArtworks(artworks: List<Artwork>, overrideLastModification: Boolean) {}
     override suspend fun saveMedias(medias: List<Media>) {}
 
+    override suspend fun saveSyncedMedias(medias: List<Media>) {}
+
     override suspend fun saveSeasons(seasons: List<Season>) {}
+
+    override suspend fun saveSyncedFolder(artwork: Artwork, seasons: List<Season>, medias: List<Media>, people: List<Person>) {}
 
     override suspend fun deleteArtworks(artworks: List<Artwork>) {}
     

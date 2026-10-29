@@ -23,6 +23,7 @@ import flux.shared.generated.resources.gallery_image_download_failed
 import flux.shared.generated.resources.gallery_image_download_succeeded
 import flux.shared.generated.resources.oups_an_error_occured
 import flux.shared.generated.resources.unavailable_check_connection
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -43,12 +44,13 @@ fun GalleryScreen(
         viewModel.event.collect { event ->
             when (event) {
                 GalleryEvent.BackToPreviousScreen -> onBack()
-                GalleryEvent.ImageDownloadSucceeded -> snackbarHostState.showSnackbar(
-                    message = getString(Res.string.gallery_image_download_succeeded)
-                )
-                GalleryEvent.ImageDownloadFailed -> snackbarHostState.showSnackbar(
-                    message = getString(Res.string.gallery_image_download_failed)
-                )
+                // showSnackbar suspends until dismissed: launched so it never delays the next event
+                GalleryEvent.ImageDownloadSucceeded -> launch {
+                    snackbarHostState.showSnackbar(getString(Res.string.gallery_image_download_succeeded))
+                }
+                GalleryEvent.ImageDownloadFailed -> launch {
+                    snackbarHostState.showSnackbar(getString(Res.string.gallery_image_download_failed))
+                }
             }
         }
     }

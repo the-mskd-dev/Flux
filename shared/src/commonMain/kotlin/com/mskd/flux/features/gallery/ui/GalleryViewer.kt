@@ -26,6 +26,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -87,6 +88,10 @@ fun GalleryViewer(
 
     var resetRequest by remember { mutableIntStateOf(0) }
 
+    // Loading state reported by each page, so the download button only shows for a loaded image
+    val loadedImages = remember { mutableStateMapOf<String, Boolean>() }
+    fun GalleryImage.key() = "$type$path"
+
     // Back first zooms the image out, then closes the viewer
     BackGesture(onBack = { if (zoomed) resetRequest++ else onClose() })
 
@@ -100,14 +105,15 @@ fun GalleryViewer(
             state = pagerState,
             modifier = Modifier.fillMaxSize(),
             userScrollEnabled = !zoomed,
-            key = { images.getOrNull(it)?.let { image -> "${image.type}${image.path}" } ?: it },
+            key = { images.getOrNull(it)?.key() ?: it },
         ) { page ->
             val image = images.getOrNull(page) ?: return@HorizontalPager
             ZoomableImage(
                 image = image,
                 isCurrent = page == pagerState.currentPage,
                 resetRequest = resetRequest,
-                onZoomedChange = { zoomed = it }
+                onZoomedChange = { zoomed = it },
+                onLoadedChange = { loadedImages[image.key()] = it }
             )
         }
 
@@ -124,23 +130,26 @@ fun GalleryViewer(
             )
         }
 
-        val downloadDescription = stringResource(Res.string.gallery_image_download)
-        IconButton(
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .statusBarsPadding()
-                .semantics { contentDescription = downloadDescription },
-            enabled = !imageDownloadRunning,
-            onClick = onDownload
-        ) {
-            if (imageDownloadRunning) {
-                LoadingIndicator(modifier = Modifier.size(24.dp), color = Color.White)
-            } else {
-                Icon(
-                    painter = painterResource(Res.drawable.ic_download),
-                    tint = Color.White,
-                    contentDescription = null,
-                )
+        val currentLoaded = images.getOrNull(pagerState.currentPage)?.let { loadedImages[it.key()] } == true
+        if (currentLoaded) {
+            val downloadDescription = stringResource(Res.string.gallery_image_download)
+            IconButton(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .statusBarsPadding()
+                    .semantics { contentDescription = downloadDescription },
+                enabled = !imageDownloadRunning,
+                onClick = onDownload
+            ) {
+                if (imageDownloadRunning) {
+                    LoadingIndicator(modifier = Modifier.size(24.dp), color = Color.White)
+                } else {
+                    Icon(
+                        painter = painterResource(Res.drawable.ic_download),
+                        tint = Color.White,
+                        contentDescription = null,
+                    )
+                }
             }
         }
 
@@ -155,6 +164,7 @@ private fun ZoomableImage(
     isCurrent: Boolean,
     resetRequest: Int,
     onZoomedChange: (Boolean) -> Unit,
+    onLoadedChange: (Boolean) -> Unit,
 ) {
 
     var scale by remember { mutableFloatStateOf(MIN_ZOOM) }
@@ -259,9 +269,9 @@ private fun ZoomableImage(
                 .build(),
             contentScale = ContentScale.Fit,
             error = Image.error,
-            onLoading = { loading = true },
-            onSuccess = { loading = false },
-            onError = { loading = false },
+            onLoading = { loading = true; onLoadedChange(false) },
+            onSuccess = { loading = false; onLoadedChange(true) },
+            onError = { loading = false; onLoadedChange(false) },
             contentDescription = null
         )
         if (loading) {

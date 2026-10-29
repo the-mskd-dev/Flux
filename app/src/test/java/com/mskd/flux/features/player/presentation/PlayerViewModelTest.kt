@@ -464,7 +464,7 @@ class PlayerViewModelTest : FunSpec({
 
         }
 
-        test("next episode saves the time and changes the media") {
+        test("next episode saves the media as watched and changes the media") {
 
             viewModel.session.test {
                 awaitItem()
@@ -479,7 +479,7 @@ class PlayerViewModelTest : FunSpec({
                 // Then
                 (awaitItem() as State.Content).content.media.mediaId shouldBe MediaMockups.episode2.mediaId
                 viewModel.overlays.value.chapterButton shouldBe null
-                coVerify { recordProgress(MediaMockups.episode1, any()) }
+                coVerify { recordProgress(MediaMockups.episode1, any(), true) }
 
                 cancelAndIgnoreRemainingEvents()
             }
@@ -497,7 +497,7 @@ class PlayerViewModelTest : FunSpec({
                 // Then
                 expectNoEvents()
                 coVerify(exactly = 0) { playerManager.seekTo(any(), any()) }
-                coVerify(exactly = 0) { recordProgress(any(), any()) }
+                coVerify(exactly = 0) { recordProgress(any(), any(), any()) }
 
                 cancelAndIgnoreRemainingEvents()
             }

@@ -386,16 +386,22 @@ class PlayerViewModel<out T>(
 
             }
 
-            is ChapterButton.NextEpisode -> {
-
-                saveTime()
-                _overlays.update { it.copy(chapterButton = null) }
-                mediaId.value = button.nextEpisode.mediaId
-
-            }
+            is ChapterButton.NextEpisode -> moveToNextEpisode(
+                nextEpisode = button.nextEpisode,
+                forceWatched = true
+            )
 
             null -> {}
         }
+
+    }
+
+    /** Saves the current Media, then switches to [nextEpisode]. */
+    private suspend fun moveToNextEpisode(nextEpisode: Episode, forceWatched: Boolean) {
+
+        saveTime(forceWatched = forceWatched)
+        _overlays.update { it.copy(chapterButton = null) }
+        mediaId.value = nextEpisode.mediaId
 
     }
 
@@ -417,11 +423,11 @@ class PlayerViewModel<out T>(
 
     }
 
-    private suspend fun saveTime() {
+    private suspend fun saveTime(forceWatched: Boolean = false) {
         val media = currentSession?.media ?: return
         val progress = _progress.value
 
-        saveProgressUseCase(media = media, progress = progress)
+        saveProgressUseCase(media = media, progress = progress, forceWatched = forceWatched)
     }
 
     private fun updateSeekOverlay(type: SeekOverlay.Type, value: Int) {

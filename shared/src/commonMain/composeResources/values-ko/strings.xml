@@ -248,4 +248,5 @@
     <string name="spoiler_reveal">보기</string>
     <string name="chapters">챕터</string>
     <string name="chapter_number">챕터 %1$d</string>
+    <string name="gallery_image_download">이미지 다운로드</string>
 </resources>

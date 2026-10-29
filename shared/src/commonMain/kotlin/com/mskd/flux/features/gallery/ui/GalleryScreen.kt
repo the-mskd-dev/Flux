@@ -37,6 +37,8 @@ fun GalleryScreen(
         viewModel.event.collect { event ->
             when (event) {
                 GalleryEvent.BackToPreviousScreen -> onBack()
+                // Displayed by the snackbar of the ticket 02
+                GalleryEvent.ImageDownloadSucceeded, GalleryEvent.ImageDownloadFailed -> Unit
             }
         }
     }
@@ -72,6 +74,7 @@ fun GalleryScreen(
                     images = state.content.images,
                     failure = uiState.failure,
                     viewerIndex = state.content.viewerIndex,
+                    imageDownloadRunning = state.content.imageDownloadRunning,
                     sendIntent = { viewModel.handleIntent(it) }
                 )
             }

@@ -249,4 +249,5 @@
     <string name="spoiler_reveal">Anzeigen</string>
     <string name="chapters">Kapitel</string>
     <string name="chapter_number">Kapitel %1$d</string>
+    <string name="gallery_image_download">Bild herunterladen</string>
 </resources>

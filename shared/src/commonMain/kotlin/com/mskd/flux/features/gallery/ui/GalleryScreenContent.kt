@@ -54,6 +54,7 @@ fun GalleryScreenContent(
     images: List<GalleryImage>,
     failure: GalleryFailure? = null,
     viewerIndex: Int? = null,
+    imageDownloadRunning: Boolean = false,
     sendIntent: (GalleryIntent) -> Unit,
 ) {
 
@@ -151,7 +152,9 @@ fun GalleryScreenContent(
                 GalleryViewer(
                     images = images,
                     initialIndex = index,
+                    imageDownloadRunning = imageDownloadRunning,
                     onPageChange = { sendIntent(GalleryIntent.OnViewerPageChange(it)) },
+                    onDownload = { sendIntent(GalleryIntent.OnImageDownloadTap) },
                     onClose = { sendIntent(GalleryIntent.OnViewerClose) }
                 )
             }

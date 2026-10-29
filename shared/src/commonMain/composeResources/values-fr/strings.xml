@@ -250,4 +250,5 @@
     <string name="spoiler_reveal">Révéler</string>
     <string name="chapters">Chapitres</string>
     <string name="chapter_number">Chapitre %1$d</string>
+    <string name="gallery_image_download">Télécharger l'image</string>
 </resources>

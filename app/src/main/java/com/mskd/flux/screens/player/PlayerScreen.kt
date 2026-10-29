@@ -289,6 +289,16 @@ fun PlayerContent(
                         sendIntent(PlayerIntent.OnFastForward); true
                     }
 
+                    Key.MediaPrevious -> {
+                        sendIntent(PlayerIntent.OnMediaPrevious); true
+                    }
+
+                    Key.MediaNext -> {
+                        // A held key must not skip several Episodes
+                        if (keyEvent.nativeKeyEvent.repeatCount == 0) sendIntent(PlayerIntent.OnMediaNext)
+                        true
+                    }
+
                     else -> false
                 }
 
@@ -402,6 +412,7 @@ fun PlayerContent(
     PlayerSettings(
         session = session,
         interfaceState = interfaceState,
+        overlays = overlays,
         sendIntent = sendIntent
     )
 

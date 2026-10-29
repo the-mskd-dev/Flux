@@ -246,4 +246,10 @@
     <string name="blur_spoilers_desc">아직 보지 않은 에피소드의 설명과 이미지를 흐리게 처리합니다</string>
     <string name="spoiler_hidden">스포일러 숨김</string>
     <string name="spoiler_reveal">보기</string>
+    <string name="chapters">챕터</string>
+    <string name="chapter_number">챕터 %1$d</string>
+    <string name="gallery_image_download">이미지 다운로드</string>
+    <string name="gallery_image_download_succeeded">이미지를 저장했습니다</string>
+    <string name="gallery_image_download_failed">이미지를 다운로드하지 못했습니다</string>
+    <string name="gallery_image_download_show">보기</string>
 </resources>

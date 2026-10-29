@@ -11,6 +11,7 @@ import androidx.compose.foundation.gestures.calculateZoom
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -25,6 +26,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -40,7 +42,10 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.positionChanged
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
@@ -49,8 +54,13 @@ import com.mskd.flux.features.gallery.domain.model.GalleryImage
 import com.mskd.flux.features.gallery.domain.model.originalUrl
 import com.mskd.flux.ui.global.BackGesture
 import com.mskd.flux.ui.image.Image
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.gallery_image_download
+import flux.shared.generated.resources.ic_download
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 private const val MIN_ZOOM = 1f
 private const val DOUBLE_TAP_ZOOM = 3f
@@ -61,11 +71,14 @@ private const val ZOOM_ANIMATION_MS = 250
  * Full screen overlay showing the images in their original resolution, one page per image.
  * The pager is locked while the current image is zoomed so that a drag pans the image instead.
  */
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun GalleryViewer(
     images: List<GalleryImage>,
     initialIndex: Int,
+    imageDownloadRunning: Boolean,
     onPageChange: (Int) -> Unit,
+    onDownload: () -> Unit,
     onClose: () -> Unit,
 ) {
 
@@ -74,6 +87,10 @@ fun GalleryViewer(
     val currentOnPageChange by rememberUpdatedState(onPageChange)
 
     var resetRequest by remember { mutableIntStateOf(0) }
+
+    // Loading state reported by each page, so the download button only shows for a loaded image
+    val loadedImages = remember { mutableStateMapOf<String, Boolean>() }
+    fun GalleryImage.key() = "$type$path"
 
     // Back first zooms the image out, then closes the viewer
     BackGesture(onBack = { if (zoomed) resetRequest++ else onClose() })
@@ -88,14 +105,15 @@ fun GalleryViewer(
             state = pagerState,
             modifier = Modifier.fillMaxSize(),
             userScrollEnabled = !zoomed,
-            key = { images.getOrNull(it)?.let { image -> "${image.type}${image.path}" } ?: it },
+            key = { images.getOrNull(it)?.key() ?: it },
         ) { page ->
             val image = images.getOrNull(page) ?: return@HorizontalPager
             ZoomableImage(
                 image = image,
                 isCurrent = page == pagerState.currentPage,
                 resetRequest = resetRequest,
-                onZoomedChange = { zoomed = it }
+                onZoomedChange = { zoomed = it },
+                onLoadedChange = { loadedImages[image.key()] = it }
             )
         }
 
@@ -112,6 +130,29 @@ fun GalleryViewer(
             )
         }
 
+        val currentLoaded = images.getOrNull(pagerState.currentPage)?.let { loadedImages[it.key()] } == true
+        if (currentLoaded) {
+            val downloadDescription = stringResource(Res.string.gallery_image_download)
+            IconButton(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .statusBarsPadding()
+                    .semantics { contentDescription = downloadDescription },
+                enabled = !imageDownloadRunning,
+                onClick = onDownload
+            ) {
+                if (imageDownloadRunning) {
+                    LoadingIndicator(modifier = Modifier.size(24.dp), color = Color.White)
+                } else {
+                    Icon(
+                        painter = painterResource(Res.drawable.ic_download),
+                        tint = Color.White,
+                        contentDescription = null,
+                    )
+                }
+            }
+        }
+
     }
 
 }
@@ -123,6 +164,7 @@ private fun ZoomableImage(
     isCurrent: Boolean,
     resetRequest: Int,
     onZoomedChange: (Boolean) -> Unit,
+    onLoadedChange: (Boolean) -> Unit,
 ) {
 
     var scale by remember { mutableFloatStateOf(MIN_ZOOM) }
@@ -227,9 +269,9 @@ private fun ZoomableImage(
                 .build(),
             contentScale = ContentScale.Fit,
             error = Image.error,
-            onLoading = { loading = true },
-            onSuccess = { loading = false },
-            onError = { loading = false },
+            onLoading = { loading = true; onLoadedChange(false) },
+            onSuccess = { loading = false; onLoadedChange(true) },
+            onError = { loading = false; onLoadedChange(false) },
             contentDescription = null
         )
         if (loading) {

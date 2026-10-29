@@ -1,6 +1,8 @@
 package com.mskd.flux.mockups
 
 import com.mskd.flux.core.model.player.PlayerTrack
+import com.mskd.flux.features.player.domain.model.VideoChapter
+import com.mskd.flux.features.player.domain.model.VideoChapterType
 
 object PlayerMockups {
 
@@ -93,6 +95,13 @@ object PlayerMockups {
         Audio.german,
         Audio.italian,
         Audio.japanese
+    )
+
+    val chapters = listOf(
+        VideoChapter(index = 0, start = 0L, end = 90_000L, type = VideoChapterType.OPENING, title = "Prologue"),
+        VideoChapter(index = 1, start = 90_000L, end = 600_000L, type = VideoChapterType.CHAPTER, title = "Part A"),
+        VideoChapter(index = 2, start = 600_000L, end = 1_200_000L, type = VideoChapterType.CHAPTER),
+        VideoChapter(index = 3, start = 1_200_000L, end = 1_380_000L, type = VideoChapterType.ENDING, title = "Preview"),
     )
 
 }

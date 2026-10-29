@@ -1,9 +1,10 @@
-# Project Directives &amp; Architecture (Android / KMP)
+# Project Directives & Architecture (Android / KMP)
 
 ## 1. Context
 
 - **Description** : KMP (Android Only) application. This app allows users to retrieve their video files information through the API TMDB, and then play their files within the application.
 - **Goals** : Retrieve information, organize files in a modern library, play files and keep a progress history.
+- **Architecture** : Read before creating a file, adding an entity, or proposing a stack change. See `ARCHITECTURE.md`.
 
 ## 2. Agent skills
 
@@ -15,17 +16,21 @@ Issues and specs live in GitHub Issues (`the-mskd-dev/Flux`, via the `gh` CLI). 
 
 Default five-role vocabulary (needs-triage, needs-info, ready-for-agent, ready-for-human, wontfix), applied as GitHub labels. See `docs/agents/triage-labels.md`.
 
+### Specs and Tickets
+
+Write specs in `/.scratch/<REQUEST>/specs.md` and tickets in `/.scratch/<REQUEST>/tickets/`. Put nothing in GitHub Issues.
+
 ### Domain docs
 
 Single-context: root `GLOSSARY.md` + `docs/adr/`. See `docs/agents/domain.md`.
 
-## 3. ANDROID CLI &amp; TERMINAL TOOLING
+## 3. ANDROID CLI & TERMINAL TOOLING
 
 You are allowed to execute terminal commands to interact with the Android environment, run builds, and inspect tests.
 
-### Available Tooling &amp; Commands:
+### Available Tooling & Commands:
 
-1. **Unit Testing &amp; Verification**:
+1. **Unit Testing & Verification**:
 
    - Command: `./gradlew :app:testFossDebugUnitTest`
 

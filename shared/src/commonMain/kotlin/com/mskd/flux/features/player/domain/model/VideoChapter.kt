@@ -4,8 +4,17 @@ data class VideoChapter(
     val index: Int,
     val start: Long,
     val end: Long,
-    val type: VideoChapterType
+    val type: VideoChapterType,
+    /** Title read from the UserFile, `null` when it has none (blank included). */
+    val title: String? = null
 )
+
+/**
+ * The Chapter playing at [position]. A Chapter covers `[start, end)`: a position on a boundary
+ * belongs to the Chapter that starts there. Before the first start or from the last end, there is none.
+ */
+fun List<VideoChapter>.currentAt(position: Long): VideoChapter? =
+    firstOrNull { position >= it.start && position < it.end }
 
 enum class VideoChapterType {
     OPENING, ENDING, CHAPTER;

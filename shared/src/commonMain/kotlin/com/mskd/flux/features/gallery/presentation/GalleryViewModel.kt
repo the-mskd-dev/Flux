@@ -7,7 +7,9 @@ import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.connectivity.domain.ConnectivityRepository
 import com.mskd.flux.features.gallery.domain.usecase.GetGalleryImagesUseCase
+import com.mskd.flux.features.gallery.domain.usecase.ImageDownloadUseCase
 import com.mskd.flux.report.Trace
+import com.mskd.flux.system.FilesLauncher
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -25,6 +27,8 @@ class GalleryViewModel(
     private val getGalleryImages: GetGalleryImagesUseCase,
     private val databaseRepository: DatabaseRepository,
     private val connectivityRepository: ConnectivityRepository,
+    private val imageDownload: ImageDownloadUseCase,
+    private val filesLauncher: FilesLauncher,
 ) : ViewModel() {
 
     //region Flow
@@ -59,6 +63,8 @@ class GalleryViewModel(
             is GalleryIntent.OnImageTap -> setViewerIndex(intent.index)
             is GalleryIntent.OnViewerPageChange -> if (viewerIndex() != null) setViewerIndex(intent.index)
             GalleryIntent.OnViewerClose -> setViewerIndex(null)
+            GalleryIntent.OnImageDownloadTap -> downloadViewedImage()
+            GalleryIntent.OnShowDownloadedImageTap -> filesLauncher.openDownloadedImages()
         }
     }
 
@@ -73,6 +79,36 @@ class GalleryViewModel(
         val content = (ui.state as? State.Content)?.content ?: return@update ui
         if (index != null && index !in content.images.indices) return@update ui
         ui.copy(state = State.Content(content.copy(viewerIndex = index)))
+    }
+
+    // Runs in the view model scope so that swiping to another page does not cancel it
+    private fun downloadViewedImage() {
+
+        val content = (_uiState.value.state as? State.Content)?.content ?: return
+        if (content.imageDownloadRunning) return
+        val image = content.viewerIndex?.let { content.images.getOrNull(it) } ?: return
+
+        setImageDownloadRunning(true)
+
+        viewModelScope.launch {
+            try {
+                imageDownload(image = image, artworkTitle = _uiState.value.title)
+                _event.emit(GalleryEvent.ImageDownloadSucceeded)
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Trace.error("GalleryViewModel", "Fail to download image ${image.path} of artworkId:$artworkId", e)
+                _event.emit(GalleryEvent.ImageDownloadFailed)
+            } finally {
+                setImageDownloadRunning(false)
+            }
+        }
+
+    }
+
+    private fun setImageDownloadRunning(running: Boolean) = _uiState.update { ui ->
+        val content = (ui.state as? State.Content)?.content ?: return@update ui
+        ui.copy(state = State.Content(content.copy(imageDownloadRunning = running)))
     }
 
     private fun loadTitle() = viewModelScope.launch {
@@ -113,7 +149,11 @@ class GalleryViewModel(
             val viewed = previous?.viewerIndex?.let { index -> previous.images.getOrNull(index) }
             val viewerIndex = viewed?.let { image -> images.indexOfFirst { it.type == image.type && it.path == image.path } }
                 ?.takeIf { index -> index >= 0 }
-            it.copy(state = State.Content(GalleryContent(images = images, viewerIndex = viewerIndex)), failure = null)
+            val running = previous?.imageDownloadRunning ?: false
+            it.copy(
+                state = State.Content(GalleryContent(images = images, viewerIndex = viewerIndex, imageDownloadRunning = running)),
+                failure = null
+            )
         }
 
     }

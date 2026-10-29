@@ -10,6 +10,8 @@ import com.mskd.flux.features.connectivity.domain.ConnectivityRepository
 import com.mskd.flux.features.gallery.domain.model.GalleryImage
 import com.mskd.flux.features.gallery.domain.model.GalleryImageType
 import com.mskd.flux.features.gallery.domain.usecase.GetGalleryImagesUseCase
+import com.mskd.flux.features.gallery.domain.usecase.ImageDownloadUseCase
+import com.mskd.flux.system.FilesLauncher
 import com.mskd.flux.mockups.MediaMockups
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -17,7 +19,9 @@ import io.mockk.clearMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.verify
 import io.mockk.mockk
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.test.TestDispatcher
 
@@ -28,6 +32,8 @@ class GalleryViewModelTest : FunSpec({
     lateinit var viewModel: GalleryViewModel
     lateinit var apiRepository: ApiRepository
     lateinit var connectivityRepository: ConnectivityRepository
+    lateinit var imageDownload: ImageDownloadUseCase
+    lateinit var filesLauncher: FilesLauncher
 
     val artwork = MediaMockups.movieArtwork
 
@@ -42,12 +48,17 @@ class GalleryViewModelTest : FunSpec({
             getGalleryImages = GetGalleryImagesUseCase(apiRepository = apiRepository),
             databaseRepository = FakeDatabaseRepository(),
             connectivityRepository = connectivityRepository,
+            imageDownload = imageDownload,
+            filesLauncher = filesLauncher,
         )
     }
 
     beforeTest {
         apiRepository = mockk()
         connectivityRepository = mockk()
+        imageDownload = mockk()
+        filesLauncher = mockk(relaxed = true)
+        coEvery { imageDownload(any(), any()) } returns Unit
         every { connectivityRepository.currentlyOnline() } returns true
         coEvery { apiRepository.getMovieImages(artwork.id) } returns listOf(lowBackdrop, highPoster, midBackdrop)
         updateVm()
@@ -216,6 +227,180 @@ class GalleryViewModelTest : FunSpec({
 
     }
 
+    fun contentRunning(): Boolean =
+        (viewModel.uiState.value.state as State.Content).content.imageDownloadRunning
+
+    test("downloading from the viewer downloads the image at the viewer index with the artwork title") {
+
+        testDispatcher.scheduler.advanceUntilIdle()
+        viewModel.handleIntent(GalleryIntent.OnImageTap(index = 1))
+        viewModel.handleIntent(GalleryIntent.OnImageDownloadTap)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        coVerify(exactly = 1) { imageDownload(midBackdrop, artwork.title) }
+
+    }
+
+    test("after a swipe the download targets the new current image") {
+
+        testDispatcher.scheduler.advanceUntilIdle()
+        viewModel.handleIntent(GalleryIntent.OnImageTap(index = 0))
+        viewModel.handleIntent(GalleryIntent.OnViewerPageChange(index = 2))
+        viewModel.handleIntent(GalleryIntent.OnImageDownloadTap)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        coVerify(exactly = 1) { imageDownload(lowBackdrop, artwork.title) }
+
+    }
+
+    test("the running flag is true during the download then false") {
+
+        val gate = CompletableDeferred<Unit>()
+        coEvery { imageDownload(any(), any()) } coAnswers { gate.await() }
+        testDispatcher.scheduler.advanceUntilIdle()
+        viewModel.handleIntent(GalleryIntent.OnImageTap(index = 0))
+        contentRunning() shouldBe false
+
+        viewModel.handleIntent(GalleryIntent.OnImageDownloadTap)
+        testDispatcher.scheduler.advanceUntilIdle()
+        contentRunning() shouldBe true
+
+        gate.complete(Unit)
+        testDispatcher.scheduler.advanceUntilIdle()
+        contentRunning() shouldBe false
+
+    }
+
+    test("a successful download emits the succeeded event") {
+
+        testDispatcher.scheduler.advanceUntilIdle()
+        viewModel.handleIntent(GalleryIntent.OnImageTap(index = 0))
+
+        viewModel.event.test {
+            viewModel.handleIntent(GalleryIntent.OnImageDownloadTap)
+            testDispatcher.scheduler.advanceUntilIdle()
+            awaitItem() shouldBe GalleryEvent.ImageDownloadSucceeded
+        }
+
+    }
+
+    test("showing the downloaded image opens the downloaded images folder") {
+
+        viewModel.handleIntent(GalleryIntent.OnShowDownloadedImageTap)
+
+        verify(exactly = 1) { filesLauncher.openDownloadedImages() }
+
+    }
+
+    test("a failing download emits the failed event and stops running") {
+
+        coEvery { imageDownload(any(), any()) } throws RuntimeException("boom")
+        testDispatcher.scheduler.advanceUntilIdle()
+        viewModel.handleIntent(GalleryIntent.OnImageTap(index = 0))
+
+        viewModel.event.test {
+            viewModel.handleIntent(GalleryIntent.OnImageDownloadTap)
+            testDispatcher.scheduler.advanceUntilIdle()
+            awaitItem() shouldBe GalleryEvent.ImageDownloadFailed
+        }
+        contentRunning() shouldBe false
+
+    }
+
+    test("a cancelled download is not reported") {
+
+        coEvery { imageDownload(any(), any()) } throws CancellationException("cancelled")
+        testDispatcher.scheduler.advanceUntilIdle()
+        viewModel.handleIntent(GalleryIntent.OnImageTap(index = 0))
+
+        viewModel.event.test {
+            viewModel.handleIntent(GalleryIntent.OnImageDownloadTap)
+            testDispatcher.scheduler.advanceUntilIdle()
+            expectNoEvents()
+        }
+
+    }
+
+    test("a second tap while a download runs is ignored") {
+
+        val gate = CompletableDeferred<Unit>()
+        coEvery { imageDownload(any(), any()) } coAnswers { gate.await() }
+        testDispatcher.scheduler.advanceUntilIdle()
+        viewModel.handleIntent(GalleryIntent.OnImageTap(index = 0))
+
+        viewModel.handleIntent(GalleryIntent.OnImageDownloadTap)
+        viewModel.handleIntent(GalleryIntent.OnImageDownloadTap)
+        gate.complete(Unit)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        coVerify(exactly = 1) { imageDownload(any(), any()) }
+
+    }
+
+    test("a tap with the viewer closed does nothing") {
+
+        testDispatcher.scheduler.advanceUntilIdle()
+        val before = viewModel.uiState.value
+
+        viewModel.event.test {
+            viewModel.handleIntent(GalleryIntent.OnImageDownloadTap)
+            testDispatcher.scheduler.advanceUntilIdle()
+            expectNoEvents()
+        }
+
+        coVerify(exactly = 0) { imageDownload(any(), any()) }
+        viewModel.uiState.value shouldBe before
+
+    }
+
+    test("a swipe does not cancel the running download") {
+
+        val gate = CompletableDeferred<Unit>()
+        coEvery { imageDownload(any(), any()) } coAnswers { gate.await() }
+        testDispatcher.scheduler.advanceUntilIdle()
+        viewModel.handleIntent(GalleryIntent.OnImageTap(index = 0))
+        viewModel.handleIntent(GalleryIntent.OnImageDownloadTap)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.event.test {
+            viewModel.handleIntent(GalleryIntent.OnViewerPageChange(index = 1))
+            gate.complete(Unit)
+            testDispatcher.scheduler.advanceUntilIdle()
+            awaitItem() shouldBe GalleryEvent.ImageDownloadSucceeded
+        }
+
+    }
+
+    test("the rest of the state is untouched by a download") {
+
+        testDispatcher.scheduler.advanceUntilIdle()
+        viewModel.handleIntent(GalleryIntent.OnImageTap(index = 1))
+        val before = viewModel.uiState.value
+
+        viewModel.handleIntent(GalleryIntent.OnImageDownloadTap)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.uiState.value shouldBe before
+        contentImages() shouldBe listOf(highPoster, midBackdrop, lowBackdrop)
+        contentViewerIndex() shouldBe 1
+
+    }
+
+    test("a retry while a download runs keeps the running flag") {
+
+        val gate = CompletableDeferred<Unit>()
+        coEvery { imageDownload(any(), any()) } coAnswers { gate.await() }
+        testDispatcher.scheduler.advanceUntilIdle()
+        viewModel.handleIntent(GalleryIntent.OnImageTap(index = 0))
+        viewModel.handleIntent(GalleryIntent.OnImageDownloadTap)
+
+        viewModel.handleIntent(GalleryIntent.OnRetryTap)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        contentRunning() shouldBe true
+
+    }
+
     test("a show requests only the show images, sorted by rating descending") {
 
         val show = MediaMockups.showArtwork
@@ -228,6 +413,8 @@ class GalleryViewModelTest : FunSpec({
             getGalleryImages = GetGalleryImagesUseCase(apiRepository = apiRepository),
             databaseRepository = FakeDatabaseRepository(),
             connectivityRepository = connectivityRepository,
+            imageDownload = imageDownload,
+            filesLauncher = filesLauncher,
         )
         testDispatcher.scheduler.advanceUntilIdle()
 

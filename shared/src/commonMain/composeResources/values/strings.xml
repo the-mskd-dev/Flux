@@ -265,4 +265,10 @@
     <string name="blur_spoilers_desc">Blur the description and image of episodes you haven't watched yet</string>
     <string name="spoiler_hidden">Hidden spoiler</string>
     <string name="spoiler_reveal">Reveal</string>
+    <string name="chapters">Chapters</string>
+    <string name="chapter_number">Chapter %1$d</string>
+    <string name="gallery_image_download">Download image</string>
+    <string name="gallery_image_download_succeeded">Image saved</string>
+    <string name="gallery_image_download_failed">Couldn't download the image</string>
+    <string name="gallery_image_download_show">Show</string>
 </resources>

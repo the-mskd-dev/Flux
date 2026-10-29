@@ -17,6 +17,7 @@ import com.mskd.flux.features.player.domain.mapper.toPlayerTrack
 import com.mskd.flux.features.player.domain.model.PlayerParams
 import com.mskd.flux.features.player.domain.model.VideoChapter
 import com.mskd.flux.features.player.domain.model.VideoChapterType
+import com.mskd.flux.features.player.domain.model.currentAt
 import com.mskd.flux.features.player.domain.usecase.GetChaptersUseCase
 import com.mskd.flux.features.player.domain.usecase.GetNextEpisodeUseCase
 import com.mskd.flux.features.player.domain.usecase.SaveTrackLanguageUseCase
@@ -71,9 +72,6 @@ class PlayerViewModel<out T>(
 
     private val currentSession get() = (session.value as? State.Content<PlayerSession<T>>)?.content
 
-    private var chapters: List<VideoChapter> = emptyList()
-
-    // Next episode lookup, cached for the current media (null result included)
     private var nextEpisodeCache: Pair<Long, Episode?>? = null
 
     //endregion
@@ -99,6 +97,9 @@ class PlayerViewModel<out T>(
 
     private val _subtitles = MutableStateFlow<List<String?>>(emptyList())
     val subtitles: StateFlow<List<String?>> = _subtitles.asStateFlow()
+
+    // Chapters of the loaded Media, read once when it loads
+    private val chapters = MutableStateFlow<List<VideoChapter>>(emptyList())
 
     private val _progress = MutableStateFlow(0L)
     val progress: StateFlow<Long> = _progress.asStateFlow()
@@ -131,7 +132,8 @@ class PlayerViewModel<out T>(
         mediaState,
         settingsDataStore.flow,
         playerManager.flow,
-    ) { mediaState, settings, playerState ->
+        chapters,
+    ) { mediaState, settings, playerState, chapters ->
 
         when {
             mediaState is State.Error -> State.Error()
@@ -150,6 +152,7 @@ class PlayerViewModel<out T>(
                     tracks = listOf(PlayerTrack.NO_SUBTITLES) + playerState.tracks,
                     selectedAudio = playerState.selectedAudio,
                     selectedSubtitles = playerState.selectedSubtitles,
+                    chapters = chapters,
                 )
             )
         }
@@ -245,8 +248,11 @@ class PlayerViewModel<out T>(
             PlayerIntent.TogglePlayButton -> togglePlayButton()
             PlayerIntent.OnFastRewind -> onFastRewind()
             PlayerIntent.OnFastForward -> onFastForward()
+            PlayerIntent.OnMediaPrevious -> seekTo(progress = 0L, precision = SeekPrecision.EXACT)
+            PlayerIntent.OnMediaNext -> onMediaNext()
             is PlayerIntent.SeekTo -> seekTo(progress = intent.progress, precision = intent.precision)
             is PlayerIntent.SelectTrack -> selectTrack(track = intent.track)
+            is PlayerIntent.SelectChapter -> selectChapter(chapter = intent.chapter)
             is PlayerIntent.OnVolumeChange -> onVolumeChange(delta = intent.delta)
             is PlayerIntent.OnChapterButtonTap -> onChapterButtonTap(button = intent.button)
             PlayerIntent.GoToBackground -> onBackground()
@@ -258,7 +264,7 @@ class PlayerViewModel<out T>(
 
     private suspend fun playMedia(media: Media) {
         val subtitlesPath = getSubtitlesUseCase(file = media.file)
-        chapters = getChaptersUseCase(media = media)
+        chapters.value = getChaptersUseCase(media = media)
         playerManager.playMedia(
             media = media,
             subtitlesPath = subtitlesPath
@@ -314,17 +320,21 @@ class PlayerViewModel<out T>(
         saveTrackLanguageUseCase(track = track)
     }
 
+    private fun selectChapter(chapter: VideoChapter) {
+        seekTo(progress = chapter.start, precision = SeekPrecision.EXACT)
+        showSettingsSheet(sheet = null)
+    }
+
     private suspend fun listenProgress(progress: Long) {
         _progress.update { progress }
 
-        val currentChapter = chapters.find { progress in it.start..it.end }
+        val chapters = chapters.value
+        val currentChapter = chapters.currentAt(position = progress)
         val duration = currentSession?.duration ?: 0L
 
-        when {
+        val chapterButton = when {
             // If it's intro or opening
-            currentChapter?.type == VideoChapterType.OPENING -> {
-                _overlays.update { it.copy(chapterButton = ChapterButton.Skip(chapter = currentChapter!!)) }
-            }
+            currentChapter?.type == VideoChapterType.OPENING -> ChapterButton.Skip(chapter = currentChapter)
 
             // If it's ending, and there's a next chapter
             currentChapter?.type == VideoChapterType.ENDING -> {
@@ -333,37 +343,53 @@ class PlayerViewModel<out T>(
 
                 // If there's a chapter after
                 if (currentChapter.index != lastChapterIndex) {
-                    _overlays.update { it.copy(chapterButton = ChapterButton.Skip(chapter = currentChapter)) }
+                    ChapterButton.Skip(chapter = currentChapter)
                 } else {
-                    showNextEpisode()
+                    nextEpisodeButton()
                 }
 
             }
 
             // If the media is ended
-            progress >= duration.minus(15.seconds.inWholeMilliseconds) -> {
-                showNextEpisode()
-            }
+            progress >= duration.minus(15.seconds.inWholeMilliseconds) -> nextEpisodeButton()
 
-            else -> {
-                _overlays.update { it.copy(chapterButton = null) }
-            }
-
+            else -> null
         }
+
+        // One update, so that observers see the Chapter and the button change together
+        _overlays.update { it.copy(currentChapter = currentChapter, chapterButton = chapterButton) }
 
     }
 
-    private suspend fun showNextEpisode() {
+    /** The button to the Next Episode, or the one already showing when there is none. */
+    private suspend fun nextEpisodeButton(): ChapterButton? {
+
+        val media = currentSession?.media ?: return _overlays.value.chapterButton
+        val nextEpisode = nextEpisodeOf(media) ?: return _overlays.value.chapterButton
+
+        return ChapterButton.NextEpisode(nextEpisode = nextEpisode)
+
+    }
+
+    // Next episode lookup, cached for the current media (null result included)
+    private suspend fun nextEpisodeOf(media: Media): Episode? {
+
+        val cache = nextEpisodeCache
+        if (cache?.first == media.mediaId) return cache.second
+
+        return getNextEpisodeUseCase(media = media).also { nextEpisodeCache = media.mediaId to it }
+
+    }
+
+    private suspend fun onMediaNext() {
 
         val media = currentSession?.media ?: return
-        val cache = nextEpisodeCache
-        val nextEpisode = if (cache?.first == media.mediaId) {
-            cache.second
-        } else {
-            getNextEpisodeUseCase(media = media).also { nextEpisodeCache = media.mediaId to it }
-        } ?: return
+        val nextEpisode = nextEpisodeOf(media) ?: return
 
-        _overlays.update { it.copy(chapterButton = ChapterButton.NextEpisode(nextEpisode = nextEpisode)) }
+        moveToNextEpisode(
+            nextEpisode = nextEpisode,
+            forceWatched = _overlays.value.chapterButton is ChapterButton.NextEpisode
+        )
 
     }
 
@@ -377,16 +403,22 @@ class PlayerViewModel<out T>(
 
             }
 
-            is ChapterButton.NextEpisode -> {
-
-                saveTime()
-                _overlays.update { it.copy(chapterButton = null) }
-                mediaId.value = button.nextEpisode.mediaId
-
-            }
+            is ChapterButton.NextEpisode -> moveToNextEpisode(
+                nextEpisode = button.nextEpisode,
+                forceWatched = true
+            )
 
             null -> {}
         }
+
+    }
+
+    /** Saves the current Media, then switches to [nextEpisode]. */
+    private suspend fun moveToNextEpisode(nextEpisode: Episode, forceWatched: Boolean) {
+
+        saveTime(forceWatched = forceWatched)
+        _overlays.update { it.copy(chapterButton = null) }
+        mediaId.value = nextEpisode.mediaId
 
     }
 
@@ -408,11 +440,11 @@ class PlayerViewModel<out T>(
 
     }
 
-    private suspend fun saveTime() {
+    private suspend fun saveTime(forceWatched: Boolean = false) {
         val media = currentSession?.media ?: return
         val progress = _progress.value
 
-        saveProgressUseCase(media = media, progress = progress)
+        saveProgressUseCase(media = media, progress = progress, forceWatched = forceWatched)
     }
 
     private fun updateSeekOverlay(type: SeekOverlay.Type, value: Int) {

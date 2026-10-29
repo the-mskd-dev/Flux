@@ -103,11 +103,37 @@ class AndroidGetChaptersUseCaseTest : FunSpec({
 
         // Then
         chapters shouldBe listOf(
-            VideoChapter(index = 0, start = 0L, end = 90_000L, type = VideoChapterType.OPENING),
-            VideoChapter(index = 1, start = 90_000L, end = 1_200_000L, type = VideoChapterType.CHAPTER),
-            VideoChapter(index = 2, start = 1_200_000L, end = 1_380_000L, type = VideoChapterType.ENDING),
-            VideoChapter(index = 3, start = 1_380_000L, end = 1_400_000L, type = VideoChapterType.CHAPTER),
+            VideoChapter(index = 0, start = 0L, end = 90_000L, type = VideoChapterType.OPENING, title = "Opening"),
+            VideoChapter(index = 1, start = 90_000L, end = 1_200_000L, type = VideoChapterType.CHAPTER, title = "Episode 1"),
+            VideoChapter(index = 2, start = 1_200_000L, end = 1_380_000L, type = VideoChapterType.ENDING, title = "Ending"),
+            VideoChapter(index = 3, start = 1_380_000L, end = 1_400_000L, type = VideoChapterType.CHAPTER, title = null),
         )
+
+    }
+
+    test("invoke stores a blank title as absent") {
+
+        // Given
+        val mediaInfo = MediaInfo(
+            format = "Matroska",
+            duration = 1_380_000L,
+            videoStream = null,
+            audioStreams = emptyList(),
+            subtitleStreams = emptyList(),
+            chapters = listOf(
+                Chapter(index = 0, start = 0L, end = 90_000L, title = ""),
+                Chapter(index = 1, start = 90_000L, end = 1_200_000L, title = "   "),
+                Chapter(index = 2, start = 1_200_000L, end = 1_380_000L, title = "Part B"),
+            ),
+            frameLoaderContext = null
+        )
+        everyBuiltMediaInfoIs(mediaInfo)
+
+        // When
+        val chapters = useCase(media = MediaMockups.episode1)
+
+        // Then
+        chapters.map { it.title } shouldBe listOf(null, null, "Part B")
 
     }
 

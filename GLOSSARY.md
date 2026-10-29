@@ -66,6 +66,10 @@ _Avoid_: Header image, banner, bannière
 Page listant toutes les images TMDB d'un Artwork (Backdrop et Poster, toutes langues) dans une seule grille triée par note décroissante, avec un visualiseur plein écran zoomable. Pour un Show, uniquement les images du Show lui-même, pas celles des Season ni des Episode. Rien n'est stocké localement.
 _Avoid_: Galerie d'images, Images, Photos
 
+**Image Download**:
+Copie, dans le stockage d'images de l'appareil, d'une image de la Gallery en résolution originale. Elle sort de Flux : le Catalog ne la connaît pas.
+_Avoid_: Download, Save, Export, Sauvegarde
+
 **Spoiler**:
 Description ou image d'un Episode à voir, ou description d'une Season dont tous les Episode sont à voir. Les Movie, le Show lui-même et l'Unknown Artwork n'ont pas de Spoiler.
 _Avoid_: Spoil
@@ -144,11 +148,15 @@ Chapter correspondant à un générique de fin d'un Media. Un Media peut en avoi
 _Avoid_: Outro, ED, Credits, générique
 
 **Chapter button**:
-Action contextuelle proposée pendant la lecture : passer un Opening ou un Ending, ou lancer l'épisode suivant.
+Action contextuelle proposée pendant la lecture : passer un Opening ou un Ending, ou lancer le Next Episode.
 _Avoid_: Skip button
 
+**Next Episode**:
+Episode qui suit, dans le même Show, celui en cours de lecture (par saison puis numéro). Un Movie, le dernier Episode d'un Show et les Episode de l'Unknown Artwork n'en ont pas.
+_Avoid_: Prochain épisode, Up next
+
 **Settings sheet**:
-Feuille de réglages du lecteur, soit générale, soit dédiée au choix d'une piste audio ou de sous-titres.
+Feuille de réglages du lecteur, soit générale, soit dédiée au choix d'une piste audio, de sous-titres ou d'un Chapter.
 _Avoid_: Bottom sheet, menu
 
 **Track**:

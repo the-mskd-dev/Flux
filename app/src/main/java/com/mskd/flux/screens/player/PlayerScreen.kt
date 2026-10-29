@@ -294,7 +294,9 @@ fun PlayerContent(
                     }
 
                     Key.MediaNext -> {
-                        sendIntent(PlayerIntent.OnMediaNext); true
+                        // A held key must not skip several Episodes
+                        if (keyEvent.nativeKeyEvent.repeatCount == 0) sendIntent(PlayerIntent.OnMediaNext)
+                        true
                     }
 
                     else -> false

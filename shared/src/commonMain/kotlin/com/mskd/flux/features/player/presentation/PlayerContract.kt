@@ -75,6 +75,7 @@ sealed class PlayerIntent {
     data object OnFastRewind : PlayerIntent()
     data object OnFastForward : PlayerIntent()
     data object OnMediaPrevious : PlayerIntent()
+    data object OnMediaNext : PlayerIntent()
     data class SeekTo(val progress: Long, val precision: SeekPrecision = SeekPrecision.EXACT) : PlayerIntent()
     data class ShowSettings(val sheet: SettingsSheet?) : PlayerIntent()
     data class SelectTrack(val track: PlayerTrack) : PlayerIntent()

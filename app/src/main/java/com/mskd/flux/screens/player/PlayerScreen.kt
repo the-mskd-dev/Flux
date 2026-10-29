@@ -293,6 +293,10 @@ fun PlayerContent(
                         sendIntent(PlayerIntent.OnMediaPrevious); true
                     }
 
+                    Key.MediaNext -> {
+                        sendIntent(PlayerIntent.OnMediaNext); true
+                    }
+
                     else -> false
                 }
 

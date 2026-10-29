@@ -72,7 +72,6 @@ class PlayerViewModel<out T>(
 
     private val currentSession get() = (session.value as? State.Content<PlayerSession<T>>)?.content
 
-    // Next episode lookup, cached for the current media (null result included)
     private var nextEpisodeCache: Pair<Long, Episode?>? = null
 
     //endregion
@@ -250,6 +249,7 @@ class PlayerViewModel<out T>(
             PlayerIntent.OnFastRewind -> onFastRewind()
             PlayerIntent.OnFastForward -> onFastForward()
             PlayerIntent.OnMediaPrevious -> seekTo(progress = 0L, precision = SeekPrecision.EXACT)
+            PlayerIntent.OnMediaNext -> onMediaNext()
             is PlayerIntent.SeekTo -> seekTo(progress = intent.progress, precision = intent.precision)
             is PlayerIntent.SelectTrack -> selectTrack(track = intent.track)
             is PlayerIntent.SelectChapter -> selectChapter(chapter = intent.chapter)
@@ -365,14 +365,31 @@ class PlayerViewModel<out T>(
     private suspend fun nextEpisodeButton(): ChapterButton? {
 
         val media = currentSession?.media ?: return _overlays.value.chapterButton
-        val cache = nextEpisodeCache
-        val nextEpisode = if (cache?.first == media.mediaId) {
-            cache.second
-        } else {
-            getNextEpisodeUseCase(media = media).also { nextEpisodeCache = media.mediaId to it }
-        } ?: return _overlays.value.chapterButton
+        val nextEpisode = nextEpisodeOf(media) ?: return _overlays.value.chapterButton
 
         return ChapterButton.NextEpisode(nextEpisode = nextEpisode)
+
+    }
+
+    // Next episode lookup, cached for the current media (null result included)
+    private suspend fun nextEpisodeOf(media: Media): Episode? {
+
+        val cache = nextEpisodeCache
+        if (cache?.first == media.mediaId) return cache.second
+
+        return getNextEpisodeUseCase(media = media).also { nextEpisodeCache = media.mediaId to it }
+
+    }
+
+    private suspend fun onMediaNext() {
+
+        val media = currentSession?.media ?: return
+        val nextEpisode = nextEpisodeOf(media) ?: return
+
+        moveToNextEpisode(
+            nextEpisode = nextEpisode,
+            forceWatched = _overlays.value.chapterButton is ChapterButton.NextEpisode
+        )
 
     }
 

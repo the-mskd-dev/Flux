@@ -388,6 +388,81 @@ class PlayerViewModelTest : FunSpec({
         }
     }
 
+    context("media next") {
+
+        test("without next episode does nothing") {
+
+            // Given
+            updateVm(mediaId = MediaMockups.movie.mediaId)
+
+            viewModel.session.test {
+                awaitItem()
+
+                // When
+                viewModel.handleIntent(PlayerIntent.OnMediaNext)
+
+                // Then
+                expectNoEvents()
+                viewModel.overlays.value.chapterButton shouldBe null
+                coVerify(exactly = 0) { recordProgress(any(), any(), any()) }
+
+                cancelAndIgnoreRemainingEvents()
+            }
+
+        }
+
+        test("mid-episode saves the progress as is and changes the media") {
+
+            viewModel.session.test {
+                awaitItem()
+
+                // When
+                viewModel.handleIntent(PlayerIntent.OnMediaNext)
+
+                // Then
+                (awaitItem() as State.Content).content.media.mediaId shouldBe MediaMockups.episode2.mediaId
+                viewModel.overlays.value.chapterButton shouldBe null
+                coVerify { recordProgress(MediaMockups.episode1, any(), false) }
+
+                cancelAndIgnoreRemainingEvents()
+            }
+
+        }
+
+        test("while the chapter button shows next episode saves the media as watched") {
+
+            // Given
+            val progressFlow = MutableStateFlow(0L)
+            playerManager = mockk(relaxed = true) {
+                every { flow } returns MutableStateFlow(
+                    PlayerManager.State.Ready(
+                        player = player,
+                        duration = MediaMockups.episode1.duration.minToMs
+                    )
+                )
+                every { progress } returns progressFlow
+            }
+            updateVm()
+
+            viewModel.overlays.test {
+                awaitItem()
+                progressFlow.value = MediaMockups.episode1.duration.minToMs - 10_000L
+                awaitItem().chapterButton shouldBe ChapterButton.NextEpisode(nextEpisode = MediaMockups.episode2)
+
+                // When
+                viewModel.handleIntent(PlayerIntent.OnMediaNext)
+
+                // Then
+                awaitItem().chapterButton shouldBe null
+                coVerify { recordProgress(MediaMockups.episode1, any(), true) }
+
+                cancelAndIgnoreRemainingEvents()
+            }
+
+        }
+
+    }
+
     test("artwork re-emission without media change does not emit a new state") {
 
         // Given

@@ -270,4 +270,5 @@
     <string name="gallery_image_download">Download image</string>
     <string name="gallery_image_download_succeeded">Image saved</string>
     <string name="gallery_image_download_failed">Couldn't download the image</string>
+    <string name="gallery_image_download_show">Show</string>
 </resources>

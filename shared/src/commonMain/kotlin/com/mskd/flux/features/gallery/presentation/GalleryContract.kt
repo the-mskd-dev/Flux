@@ -27,6 +27,7 @@ sealed interface GalleryIntent {
     data class OnViewerPageChange(val index: Int) : GalleryIntent
     data object OnViewerClose : GalleryIntent
     data object OnImageDownloadTap : GalleryIntent
+    data object OnShowDownloadedImageTap : GalleryIntent
 }
 
 sealed interface GalleryEvent {

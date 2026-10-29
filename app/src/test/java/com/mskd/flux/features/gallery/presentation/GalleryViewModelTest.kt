@@ -11,6 +11,7 @@ import com.mskd.flux.features.gallery.domain.model.GalleryImage
 import com.mskd.flux.features.gallery.domain.model.GalleryImageType
 import com.mskd.flux.features.gallery.domain.usecase.GetGalleryImagesUseCase
 import com.mskd.flux.features.gallery.domain.usecase.ImageDownloadUseCase
+import com.mskd.flux.system.FilesLauncher
 import com.mskd.flux.mockups.MediaMockups
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -18,6 +19,7 @@ import io.mockk.clearMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.verify
 import io.mockk.mockk
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
@@ -31,6 +33,7 @@ class GalleryViewModelTest : FunSpec({
     lateinit var apiRepository: ApiRepository
     lateinit var connectivityRepository: ConnectivityRepository
     lateinit var imageDownload: ImageDownloadUseCase
+    lateinit var filesLauncher: FilesLauncher
 
     val artwork = MediaMockups.movieArtwork
 
@@ -46,6 +49,7 @@ class GalleryViewModelTest : FunSpec({
             databaseRepository = FakeDatabaseRepository(),
             connectivityRepository = connectivityRepository,
             imageDownload = imageDownload,
+            filesLauncher = filesLauncher,
         )
     }
 
@@ -53,6 +57,7 @@ class GalleryViewModelTest : FunSpec({
         apiRepository = mockk()
         connectivityRepository = mockk()
         imageDownload = mockk()
+        filesLauncher = mockk(relaxed = true)
         coEvery { imageDownload(any(), any()) } returns Unit
         every { connectivityRepository.currentlyOnline() } returns true
         coEvery { apiRepository.getMovieImages(artwork.id) } returns listOf(lowBackdrop, highPoster, midBackdrop)
@@ -279,6 +284,14 @@ class GalleryViewModelTest : FunSpec({
 
     }
 
+    test("showing the downloaded image opens the downloaded images folder") {
+
+        viewModel.handleIntent(GalleryIntent.OnShowDownloadedImageTap)
+
+        verify(exactly = 1) { filesLauncher.openDownloadedImages() }
+
+    }
+
     test("a failing download emits the failed event and stops running") {
 
         coEvery { imageDownload(any(), any()) } throws RuntimeException("boom")
@@ -401,6 +414,7 @@ class GalleryViewModelTest : FunSpec({
             databaseRepository = FakeDatabaseRepository(),
             connectivityRepository = connectivityRepository,
             imageDownload = imageDownload,
+            filesLauncher = filesLauncher,
         )
         testDispatcher.scheduler.advanceUntilIdle()
 

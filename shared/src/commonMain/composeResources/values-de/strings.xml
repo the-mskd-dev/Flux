@@ -252,4 +252,5 @@
     <string name="gallery_image_download">Bild herunterladen</string>
     <string name="gallery_image_download_succeeded">Bild gespeichert</string>
     <string name="gallery_image_download_failed">Das Bild konnte nicht heruntergeladen werden</string>
+    <string name="gallery_image_download_show">Anzeigen</string>
 </resources>

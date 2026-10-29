@@ -6,6 +6,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -21,6 +22,7 @@ import com.mskd.flux.ui.components.ErrorScreen
 import com.mskd.flux.ui.components.LoadingScreen
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.gallery_image_download_failed
+import flux.shared.generated.resources.gallery_image_download_show
 import flux.shared.generated.resources.gallery_image_download_succeeded
 import flux.shared.generated.resources.oups_an_error_occured
 import flux.shared.generated.resources.unavailable_check_connection
@@ -47,7 +49,11 @@ fun GalleryScreen(
             when (event) {
                 GalleryEvent.BackToPreviousScreen -> onBack()
                 GalleryEvent.ImageDownloadSucceeded -> scope.launch {
-                    snackbarHostState.showSnackbar(getString(Res.string.gallery_image_download_succeeded))
+                    val result = snackbarHostState.showSnackbar(
+                        message = getString(Res.string.gallery_image_download_succeeded),
+                        actionLabel = getString(Res.string.gallery_image_download_show),
+                    )
+                    if (result == SnackbarResult.ActionPerformed) viewModel.handleIntent(GalleryIntent.OnShowDownloadedImageTap)
                 }
                 GalleryEvent.ImageDownloadFailed -> scope.launch {
                     snackbarHostState.showSnackbar(getString(Res.string.gallery_image_download_failed))

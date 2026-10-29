@@ -2,12 +2,14 @@ package com.mskd.flux.system
 
 import android.content.ContentValues
 import android.content.Context
-import android.os.Environment
 import android.provider.MediaStore
 import com.mskd.flux.report.Trace
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+
+/** Folder of the Gallery Image Downloads, relative to the primary storage. */
+internal const val DOWNLOADED_IMAGES_PATH = "Pictures/Flux"
 
 /**
  * Saves the images into `Pictures/Flux` through MediaStore, which needs no storage permission from minSdk 29.
@@ -24,7 +26,7 @@ class AndroidImageSaver(private val context: Context) : ImageSaver {
             val pending = ContentValues().apply {
                 put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
                 put(MediaStore.Images.Media.MIME_TYPE, mimeType)
-                put(MediaStore.Images.Media.RELATIVE_PATH, "${Environment.DIRECTORY_PICTURES}/$ALBUM")
+                put(MediaStore.Images.Media.RELATIVE_PATH, DOWNLOADED_IMAGES_PATH)
                 put(MediaStore.Images.Media.IS_PENDING, 1)
             }
 
@@ -57,7 +59,6 @@ class AndroidImageSaver(private val context: Context) : ImageSaver {
 
     private companion object {
         const val TAG = "ImageSaver"
-        const val ALBUM = "Flux"
     }
 
 }

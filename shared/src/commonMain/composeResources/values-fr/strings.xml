@@ -253,4 +253,5 @@
     <string name="gallery_image_download">Télécharger l'image</string>
     <string name="gallery_image_download_succeeded">Image enregistrée</string>
     <string name="gallery_image_download_failed">Impossible de télécharger l'image</string>
+    <string name="gallery_image_download_show">Afficher</string>
 </resources>

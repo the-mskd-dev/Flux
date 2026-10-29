@@ -9,6 +9,7 @@ import com.mskd.flux.features.connectivity.domain.ConnectivityRepository
 import com.mskd.flux.features.gallery.domain.usecase.GetGalleryImagesUseCase
 import com.mskd.flux.features.gallery.domain.usecase.ImageDownloadUseCase
 import com.mskd.flux.report.Trace
+import com.mskd.flux.system.FilesLauncher
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -27,6 +28,7 @@ class GalleryViewModel(
     private val databaseRepository: DatabaseRepository,
     private val connectivityRepository: ConnectivityRepository,
     private val imageDownload: ImageDownloadUseCase,
+    private val filesLauncher: FilesLauncher,
 ) : ViewModel() {
 
     //region Flow
@@ -62,6 +64,7 @@ class GalleryViewModel(
             is GalleryIntent.OnViewerPageChange -> if (viewerIndex() != null) setViewerIndex(intent.index)
             GalleryIntent.OnViewerClose -> setViewerIndex(null)
             GalleryIntent.OnImageDownloadTap -> downloadViewedImage()
+            GalleryIntent.OnShowDownloadedImageTap -> filesLauncher.openDownloadedImages()
         }
     }
 

@@ -253,4 +253,5 @@
     <string name="gallery_image_download">Scarica l'immagine</string>
     <string name="gallery_image_download_succeeded">Immagine salvata</string>
     <string name="gallery_image_download_failed">Impossibile scaricare l'immagine</string>
+    <string name="gallery_image_download_show">Mostra</string>
 </resources>

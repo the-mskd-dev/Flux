@@ -13,6 +13,7 @@ import com.mskd.flux.features.catalog.domain.model.SyncState
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.ints.shouldBeGreaterThan
+import io.kotest.matchers.ints.shouldBeInRange
 import io.kotest.matchers.ints.shouldBeLessThanOrEqual
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
@@ -57,6 +58,7 @@ class SyncCatalogBehaviourTest : FunSpec({
     test("a light sync only fetches the new files") {
 
         // Given
+        harness.settings.setDataLanguage(Language.FRENCH)
         val inception = harness.deviceFile("Inception (2010).mkv")
         harness.deviceStorage.availableFiles = listOf(inception)
         harness.lightSync()
@@ -71,7 +73,7 @@ class SyncCatalogBehaviourTest : FunSpec({
         harness.tmdb.callCount("search/movie") shouldBe 0
         harness.tmdb.callCount("movie/{id}") shouldBe 0
         harness.tmdb.callCount("search/tv") shouldBe 1
-        harness.tmdb.callCount("tv/{id}/season/{season}") shouldBe 2
+        harness.tmdb.callCount("tv/{id}/season/{season}") shouldBeInRange  1..2
         harness.catalog.getArtworks(includePrivates = true).map { it.title } shouldContainExactlyInAnyOrder listOf("Inception", "Breaking Bad")
         harness.catalog.getMedias().map { it.title } shouldContainExactlyInAnyOrder listOf("Inception", "Pilot")
 

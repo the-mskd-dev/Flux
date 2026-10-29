@@ -15,6 +15,10 @@ Issues and specs live in GitHub Issues (`the-mskd-dev/Flux`, via the `gh` CLI). 
 
 Default five-role vocabulary (needs-triage, needs-info, ready-for-agent, ready-for-human, wontfix), applied as GitHub labels. See `docs/agents/triage-labels.md`.
 
+### Specs and Tickets
+
+Write specs in `/.scratch/<REQUEST>/specs.md` and tickets in `/.scratch/<REQUEST>/tickets/`. Put nothing in GitHub Issues.
+
 ### Domain docs
 
 Single-context: root `GLOSSARY.md` + `docs/adr/`. See `docs/agents/domain.md`.

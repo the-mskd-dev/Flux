@@ -9,6 +9,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.core.State
@@ -39,16 +40,16 @@ fun GalleryScreen(
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
             when (event) {
                 GalleryEvent.BackToPreviousScreen -> onBack()
-                // showSnackbar suspends until dismissed: launched so it never delays the next event
-                GalleryEvent.ImageDownloadSucceeded -> launch {
+                GalleryEvent.ImageDownloadSucceeded -> scope.launch {
                     snackbarHostState.showSnackbar(getString(Res.string.gallery_image_download_succeeded))
                 }
-                GalleryEvent.ImageDownloadFailed -> launch {
+                GalleryEvent.ImageDownloadFailed -> scope.launch {
                     snackbarHostState.showSnackbar(getString(Res.string.gallery_image_download_failed))
                 }
             }

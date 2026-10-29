@@ -247,4 +247,6 @@
     <string name="blur_spoilers_desc">Difuminar la descripción y la imagen de los episodios aún no vistos</string>
     <string name="spoiler_hidden">Spoiler oculto</string>
     <string name="spoiler_reveal">Mostrar</string>
+    <string name="chapters">Capítulos</string>
+    <string name="chapter_number">Capítulo %1$d</string>
 </resources>

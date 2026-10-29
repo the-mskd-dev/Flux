@@ -4,7 +4,9 @@ data class VideoChapter(
     val index: Int,
     val start: Long,
     val end: Long,
-    val type: VideoChapterType
+    val type: VideoChapterType,
+    /** Title read from the UserFile, `null` when it has none (blank included). */
+    val title: String? = null
 )
 
 /**

@@ -402,6 +402,7 @@ fun PlayerContent(
     PlayerSettings(
         session = session,
         interfaceState = interfaceState,
+        overlays = overlays,
         sendIntent = sendIntent
     )
 

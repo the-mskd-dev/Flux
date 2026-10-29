@@ -72,8 +72,6 @@ class PlayerViewModel<out T>(
 
     private val currentSession get() = (session.value as? State.Content<PlayerSession<T>>)?.content
 
-    private var chapters: List<VideoChapter> = emptyList()
-
     // Next episode lookup, cached for the current media (null result included)
     private var nextEpisodeCache: Pair<Long, Episode?>? = null
 
@@ -100,6 +98,9 @@ class PlayerViewModel<out T>(
 
     private val _subtitles = MutableStateFlow<List<String?>>(emptyList())
     val subtitles: StateFlow<List<String?>> = _subtitles.asStateFlow()
+
+    // Chapters of the loaded Media, read once when it loads
+    private val chapters = MutableStateFlow<List<VideoChapter>>(emptyList())
 
     private val _progress = MutableStateFlow(0L)
     val progress: StateFlow<Long> = _progress.asStateFlow()
@@ -132,7 +133,8 @@ class PlayerViewModel<out T>(
         mediaState,
         settingsDataStore.flow,
         playerManager.flow,
-    ) { mediaState, settings, playerState ->
+        chapters,
+    ) { mediaState, settings, playerState, chapters ->
 
         when {
             mediaState is State.Error -> State.Error()
@@ -151,6 +153,7 @@ class PlayerViewModel<out T>(
                     tracks = listOf(PlayerTrack.NO_SUBTITLES) + playerState.tracks,
                     selectedAudio = playerState.selectedAudio,
                     selectedSubtitles = playerState.selectedSubtitles,
+                    chapters = chapters,
                 )
             )
         }
@@ -248,6 +251,7 @@ class PlayerViewModel<out T>(
             PlayerIntent.OnFastForward -> onFastForward()
             is PlayerIntent.SeekTo -> seekTo(progress = intent.progress, precision = intent.precision)
             is PlayerIntent.SelectTrack -> selectTrack(track = intent.track)
+            is PlayerIntent.SelectChapter -> selectChapter(chapter = intent.chapter)
             is PlayerIntent.OnVolumeChange -> onVolumeChange(delta = intent.delta)
             is PlayerIntent.OnChapterButtonTap -> onChapterButtonTap(button = intent.button)
             PlayerIntent.GoToBackground -> onBackground()
@@ -259,7 +263,7 @@ class PlayerViewModel<out T>(
 
     private suspend fun playMedia(media: Media) {
         val subtitlesPath = getSubtitlesUseCase(file = media.file)
-        chapters = getChaptersUseCase(media = media)
+        chapters.value = getChaptersUseCase(media = media)
         playerManager.playMedia(
             media = media,
             subtitlesPath = subtitlesPath
@@ -315,17 +319,21 @@ class PlayerViewModel<out T>(
         saveTrackLanguageUseCase(track = track)
     }
 
+    private fun selectChapter(chapter: VideoChapter) {
+        seekTo(progress = chapter.start, precision = SeekPrecision.EXACT)
+        showSettingsSheet(sheet = null)
+    }
+
     private suspend fun listenProgress(progress: Long) {
         _progress.update { progress }
 
+        val chapters = chapters.value
         val currentChapter = chapters.currentAt(position = progress)
         val duration = currentSession?.duration ?: 0L
 
-        when {
+        val chapterButton = when {
             // If it's intro or opening
-            currentChapter?.type == VideoChapterType.OPENING -> {
-                _overlays.update { it.copy(chapterButton = ChapterButton.Skip(chapter = currentChapter!!)) }
-            }
+            currentChapter?.type == VideoChapterType.OPENING -> ChapterButton.Skip(chapter = currentChapter)
 
             // If it's ending, and there's a next chapter
             currentChapter?.type == VideoChapterType.ENDING -> {
@@ -334,37 +342,36 @@ class PlayerViewModel<out T>(
 
                 // If there's a chapter after
                 if (currentChapter.index != lastChapterIndex) {
-                    _overlays.update { it.copy(chapterButton = ChapterButton.Skip(chapter = currentChapter)) }
+                    ChapterButton.Skip(chapter = currentChapter)
                 } else {
-                    showNextEpisode()
+                    nextEpisodeButton()
                 }
 
             }
 
             // If the media is ended
-            progress >= duration.minus(15.seconds.inWholeMilliseconds) -> {
-                showNextEpisode()
-            }
+            progress >= duration.minus(15.seconds.inWholeMilliseconds) -> nextEpisodeButton()
 
-            else -> {
-                _overlays.update { it.copy(chapterButton = null) }
-            }
-
+            else -> null
         }
+
+        // One update, so that observers see the Chapter and the button change together
+        _overlays.update { it.copy(currentChapter = currentChapter, chapterButton = chapterButton) }
 
     }
 
-    private suspend fun showNextEpisode() {
+    /** The button to the Next Episode, or the one already showing when there is none. */
+    private suspend fun nextEpisodeButton(): ChapterButton? {
 
-        val media = currentSession?.media ?: return
+        val media = currentSession?.media ?: return _overlays.value.chapterButton
         val cache = nextEpisodeCache
         val nextEpisode = if (cache?.first == media.mediaId) {
             cache.second
         } else {
             getNextEpisodeUseCase(media = media).also { nextEpisodeCache = media.mediaId to it }
-        } ?: return
+        } ?: return _overlays.value.chapterButton
 
-        _overlays.update { it.copy(chapterButton = ChapterButton.NextEpisode(nextEpisode = nextEpisode)) }
+        return ChapterButton.NextEpisode(nextEpisode = nextEpisode)
 
     }
 

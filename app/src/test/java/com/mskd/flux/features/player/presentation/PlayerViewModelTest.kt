@@ -590,6 +590,165 @@ class PlayerViewModelTest : FunSpec({
 
     }
 
+    context("chapters list") {
+
+        val prologue = VideoChapter(index = 0, start = 0L, end = 90_000L, type = VideoChapterType.CHAPTER, title = "Prologue")
+        val partA = VideoChapter(index = 1, start = 90_000L, end = 600_000L, type = VideoChapterType.CHAPTER, title = "Part A")
+        val untitled = VideoChapter(index = 2, start = 600_000L, end = 1_200_000L, type = VideoChapterType.CHAPTER)
+
+        val progressFlow = MutableStateFlow(0L)
+
+        fun updateVmWithChapters(chapters: List<VideoChapter>) {
+            getChaptersUseCase = mockk(relaxed = true)
+            coEvery { getChaptersUseCase(any()) } returns chapters
+
+            progressFlow.value = 0L
+            playerManager = mockk(relaxed = true) {
+                every { flow } returns MutableStateFlow(
+                    PlayerManager.State.Ready(
+                        player = player,
+                        duration = MediaMockups.episode1.duration.minToMs
+                    )
+                )
+                every { progress } returns progressFlow
+            }
+
+            updateVm()
+        }
+
+        context("settings row flag") {
+            withData(
+                nameFn = { (chapters, _) -> "${chapters.size} chapter(s)" },
+                emptyList<VideoChapter>() to false,
+                listOf(prologue) to false,
+                listOf(prologue, partA) to true,
+                listOf(prologue, partA, untitled) to true,
+            ) { (chapters, expected) ->
+
+                // Given
+                updateVmWithChapters(chapters)
+
+                // When
+                val session = viewModel.session.first { it is State.Content && it.content.chapters == chapters }
+
+                // Then
+                (session as State.Content).content.showChapters shouldBe expected
+
+            }
+        }
+
+        test("session exposes the chapters of the loaded media") {
+
+            // Given
+            updateVmWithChapters(listOf(prologue, partA))
+
+            // When
+            val session = viewModel.session.first { it is State.Content && it.content.chapters.isNotEmpty() }
+
+            // Then
+            (session as State.Content).content.chapters shouldBe listOf(prologue, partA)
+
+        }
+
+        test("current chapter follows progress with half-open ranges") {
+
+            // Given
+            updateVmWithChapters(listOf(prologue, partA, untitled))
+
+            viewModel.overlays.test {
+                awaitItem().currentChapter shouldBe null
+                coVerify { playerManager.playMedia(any(), any()) }
+
+                // When / Then
+                progressFlow.value = 30_000L
+                awaitItem().currentChapter shouldBe prologue
+
+                progressFlow.value = partA.start
+                awaitItem().currentChapter shouldBe partA
+
+                progressFlow.value = untitled.end
+                awaitItem().currentChapter shouldBe null
+
+                cancelAndIgnoreRemainingEvents()
+            }
+
+        }
+
+        test("current chapter is not re-emitted while it stays the same") {
+
+            // Given
+            updateVmWithChapters(listOf(prologue, partA))
+
+            viewModel.overlays.test {
+                awaitItem()
+                coVerify { playerManager.playMedia(any(), any()) }
+
+                progressFlow.value = 10_000L
+                awaitItem().currentChapter shouldBe prologue
+
+                // When
+                progressFlow.value = 20_000L
+                progressFlow.value = 30_000L
+
+                // Then
+                expectNoEvents()
+
+                cancelAndIgnoreRemainingEvents()
+            }
+
+        }
+
+        context("select chapter") {
+
+            test("seeks exactly to the start of the chapter and closes the settings sheet") {
+
+                // Given
+                updateVmWithChapters(listOf(prologue, partA))
+
+                viewModel.interfaceState.test {
+                    awaitItem()
+                    viewModel.handleIntent(PlayerIntent.ShowSettings(sheet = SettingsSheet.Chapters))
+                    awaitItem().settingsSheet shouldBe SettingsSheet.Chapters
+
+                    // When
+                    viewModel.handleIntent(PlayerIntent.SelectChapter(chapter = partA))
+
+                    // Then
+                    awaitItem().settingsSheet shouldBe null
+                    coVerify { playerManager.seekTo(progress = partA.start, precision = SeekPrecision.EXACT) }
+
+                    cancelAndIgnoreRemainingEvents()
+                }
+
+            }
+
+            test("does not touch play/pause") {
+
+                // Given
+                updateVmWithChapters(listOf(prologue, partA))
+
+                viewModel.interfaceState.test {
+                    awaitItem()
+
+                    // When
+                    viewModel.handleIntent(PlayerIntent.SelectChapter(chapter = partA))
+                    viewModel.handleIntent(PlayerIntent.ShowSettings(sheet = SettingsSheet.Settings))
+                    awaitItem().settingsSheet shouldBe SettingsSheet.Settings
+
+                    // Then
+                    coVerify(exactly = 0) { playerManager.togglePlay() }
+                    coVerify(exactly = 0) { playerManager.play() }
+                    coVerify(exactly = 0) { playerManager.pause() }
+
+                    cancelAndIgnoreRemainingEvents()
+                }
+
+            }
+
+        }
+
+    }
+
     test("chapter button no longer offers to skip the opening once progress is on its end boundary") {
 
         // Given

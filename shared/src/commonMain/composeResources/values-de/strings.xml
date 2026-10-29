@@ -247,4 +247,6 @@
     <string name="blur_spoilers_desc">Beschreibung und Bild von noch nicht gesehenen Episoden verwischen</string>
     <string name="spoiler_hidden">Spoiler verborgen</string>
     <string name="spoiler_reveal">Anzeigen</string>
+    <string name="chapters">Kapitel</string>
+    <string name="chapter_number">Kapitel %1$d</string>
 </resources>

@@ -19,7 +19,11 @@ data class PlayerSession<out T>(
     val tracks: List<PlayerTrack> = emptyList(),
     val selectedAudio: PlayerTrack? = null,
     val selectedSubtitles: PlayerTrack? = null,
-)
+    val chapters: List<VideoChapter> = emptyList(),
+) {
+    /** A single Chapter is the whole file: the Chapters row is only worth showing from 2. */
+    val showChapters: Boolean get() = chapters.size >= 2
+}
 
 /** Visibility of the Interface, Settings sheet and Picture-in-Picture mode. */
 @Immutable
@@ -34,6 +38,7 @@ data class PlayerInterfaceState(
 data class PlayerOverlays(
     val seekOverlay: SeekOverlay? = null,
     val chapterButton: ChapterButton? = null,
+    val currentChapter: VideoChapter? = null,
 )
 
 @Immutable
@@ -55,6 +60,7 @@ data class AmbientOverlay(
 sealed class SettingsSheet {
     data object Settings : SettingsSheet()
     data class Tracks(val type: PlayerTrack.Type) : SettingsSheet()
+    data object Chapters : SettingsSheet()
 }
 
 sealed interface ChapterButton {
@@ -71,6 +77,7 @@ sealed class PlayerIntent {
     data class SeekTo(val progress: Long, val precision: SeekPrecision = SeekPrecision.EXACT) : PlayerIntent()
     data class ShowSettings(val sheet: SettingsSheet?) : PlayerIntent()
     data class SelectTrack(val track: PlayerTrack) : PlayerIntent()
+    data class SelectChapter(val chapter: VideoChapter) : PlayerIntent()
 
     data class OnChapterButtonTap(val button: ChapterButton?) : PlayerIntent()
     data class OnVolumeChange(val delta: Float) : PlayerIntent()

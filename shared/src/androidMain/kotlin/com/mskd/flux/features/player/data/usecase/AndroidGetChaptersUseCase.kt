@@ -32,7 +32,8 @@ class AndroidGetChaptersUseCase(
                     index = it.index,
                     start = it.start,
                     end = it.end,
-                    type = VideoChapterType.fromString(it.title)
+                    type = VideoChapterType.fromString(it.title),
+                    title = it.title?.takeUnless { title -> title.isBlank() }
                 )
             }.orEmpty().also { Trace.info(TAG, "Found ${it.size} chapter(s)") }
 

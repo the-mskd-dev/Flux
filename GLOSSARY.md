@@ -144,11 +144,15 @@ Chapter correspondant à un générique de fin d'un Media. Un Media peut en avoi
 _Avoid_: Outro, ED, Credits, générique
 
 **Chapter button**:
-Action contextuelle proposée pendant la lecture : passer un Opening ou un Ending, ou lancer l'épisode suivant.
+Action contextuelle proposée pendant la lecture : passer un Opening ou un Ending, ou lancer le Next Episode.
 _Avoid_: Skip button
 
+**Next Episode**:
+Episode qui suit, dans le même Show, celui en cours de lecture (par saison puis numéro). Un Movie, le dernier Episode d'un Show et les Episode de l'Unknown Artwork n'en ont pas.
+_Avoid_: Prochain épisode, Up next
+
 **Settings sheet**:
-Feuille de réglages du lecteur, soit générale, soit dédiée au choix d'une piste audio ou de sous-titres.
+Feuille de réglages du lecteur, soit générale, soit dédiée au choix d'une piste audio, de sous-titres ou d'un Chapter.
 _Avoid_: Bottom sheet, menu
 
 **Track**:

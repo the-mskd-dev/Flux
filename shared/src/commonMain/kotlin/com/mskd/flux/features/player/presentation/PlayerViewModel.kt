@@ -17,6 +17,7 @@ import com.mskd.flux.features.player.domain.mapper.toPlayerTrack
 import com.mskd.flux.features.player.domain.model.PlayerParams
 import com.mskd.flux.features.player.domain.model.VideoChapter
 import com.mskd.flux.features.player.domain.model.VideoChapterType
+import com.mskd.flux.features.player.domain.model.currentAt
 import com.mskd.flux.features.player.domain.usecase.GetChaptersUseCase
 import com.mskd.flux.features.player.domain.usecase.GetNextEpisodeUseCase
 import com.mskd.flux.features.player.domain.usecase.SaveTrackLanguageUseCase
@@ -317,7 +318,7 @@ class PlayerViewModel<out T>(
     private suspend fun listenProgress(progress: Long) {
         _progress.update { progress }
 
-        val currentChapter = chapters.find { progress in it.start..it.end }
+        val currentChapter = chapters.currentAt(position = progress)
         val duration = currentSession?.duration ?: 0L
 
         when {

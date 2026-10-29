@@ -590,6 +590,45 @@ class PlayerViewModelTest : FunSpec({
 
     }
 
+    test("chapter button no longer offers to skip the opening once progress is on its end boundary") {
+
+        // Given
+        val opening = VideoChapter(index = 0, start = 0L, end = 90_000L, type = VideoChapterType.OPENING)
+        val part = VideoChapter(index = 1, start = 90_000L, end = 1_380_000L, type = VideoChapterType.CHAPTER)
+        getChaptersUseCase = mockk(relaxed = true)
+        coEvery { getChaptersUseCase(any()) } returns listOf(opening, part)
+
+        val progressFlow = MutableStateFlow(0L)
+        playerManager = mockk(relaxed = true) {
+            every { flow } returns MutableStateFlow(
+                PlayerManager.State.Ready(
+                    player = player,
+                    duration = MediaMockups.episode1.duration.minToMs
+                )
+            )
+            every { progress } returns progressFlow
+        }
+
+        updateVm()
+
+        viewModel.overlays.test {
+            awaitItem()
+            coVerify { playerManager.playMedia(any(), any()) }
+
+            progressFlow.value = 30_000L
+            awaitItem().chapterButton shouldBe ChapterButton.Skip(chapter = opening)
+
+            // When
+            progressFlow.value = opening.end
+
+            // Then
+            awaitItem().chapterButton shouldBe null
+
+            cancelAndIgnoreRemainingEvents()
+        }
+
+    }
+
     test("next episode is searched once per media despite several progress ticks") {
 
         // Given

@@ -246,4 +246,6 @@
     <string name="blur_spoilers_desc">まだ見ていないエピソードの説明と画像をぼかします</string>
     <string name="spoiler_hidden">ネタバレは非表示</string>
     <string name="spoiler_reveal">表示</string>
+    <string name="chapters">チャプター</string>
+    <string name="chapter_number">チャプター %1$d</string>
 </resources>

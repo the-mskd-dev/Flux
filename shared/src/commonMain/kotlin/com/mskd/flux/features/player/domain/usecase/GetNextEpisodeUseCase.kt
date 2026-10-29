@@ -12,6 +12,6 @@ class GetNextEpisodeUseCase(
 
         if (media == null || media !is Episode || media.isUnknown) return null
 
-        return database.getNextEpisodeFor(episode = media)
+        return database.getNextEpisodeFor(episode = media)?.takeIf { it.isAvailable }
     }
 }

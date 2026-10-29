@@ -250,4 +250,8 @@
     <string name="spoiler_reveal">Révéler</string>
     <string name="chapters">Chapitres</string>
     <string name="chapter_number">Chapitre %1$d</string>
+    <string name="gallery_image_download">Télécharger l'image</string>
+    <string name="gallery_image_download_succeeded">Image enregistrée</string>
+    <string name="gallery_image_download_failed">Impossible de télécharger l'image</string>
+    <string name="gallery_image_download_show">Afficher</string>
 </resources>

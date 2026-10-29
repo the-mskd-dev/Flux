@@ -66,6 +66,10 @@ _Avoid_: Header image, banner, bannière
 Page listant toutes les images TMDB d'un Artwork (Backdrop et Poster, toutes langues) dans une seule grille triée par note décroissante, avec un visualiseur plein écran zoomable. Pour un Show, uniquement les images du Show lui-même, pas celles des Season ni des Episode. Rien n'est stocké localement.
 _Avoid_: Galerie d'images, Images, Photos
 
+**Image Download**:
+Copie, dans le stockage d'images de l'appareil, d'une image de la Gallery en résolution originale. Elle sort de Flux : le Catalog ne la connaît pas.
+_Avoid_: Download, Save, Export, Sauvegarde
+
 **Spoiler**:
 Description ou image d'un Episode à voir, ou description d'une Season dont tous les Episode sont à voir. Les Movie, le Show lui-même et l'Unknown Artwork n'ont pas de Spoiler.
 _Avoid_: Spoil

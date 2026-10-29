@@ -17,6 +17,7 @@ enum class GalleryFailure { OFFLINE, ERROR }
 data class GalleryContent(
     val images: List<GalleryImage>,
     val viewerIndex: Int? = null,
+    val imageDownloadRunning: Boolean = false,
 )
 
 sealed interface GalleryIntent {
@@ -25,8 +26,12 @@ sealed interface GalleryIntent {
     data class OnImageTap(val index: Int) : GalleryIntent
     data class OnViewerPageChange(val index: Int) : GalleryIntent
     data object OnViewerClose : GalleryIntent
+    data object OnImageDownloadTap : GalleryIntent
+    data object OnShowDownloadedImageTap : GalleryIntent
 }
 
 sealed interface GalleryEvent {
     data object BackToPreviousScreen : GalleryEvent
+    data object ImageDownloadSucceeded : GalleryEvent
+    data object ImageDownloadFailed : GalleryEvent
 }

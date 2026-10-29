@@ -1,4 +1,4 @@
-## 1. Overview &amp; Tech Stack
+## 1. Overview & Tech Stack
 
 - **Project**: Android / KMP (Kotlin Multiplatform) Application
 - **Architecture**: MVI (Model-View-Intent) + Clean Architecture
@@ -6,12 +6,12 @@
 - **Data**: Room, Datastore
 - **Dependency Injection**: Koin
 - **Networking**: Ktor Client + kotlinx.serialization
-- **Async &amp; Reactive**: Coroutines &amp; Flow (StateFlow / SharedFlow)
+- **Async & Reactive**: Coroutines & Flow (StateFlow / SharedFlow)
 - **Player**: Media3, ExoPlayer
 - **Testing**: Kotest (FunSpec), kotlin.test, MockK, Turbine
 - **API**: TMDB
 
-## 2. Directory &amp; Package Structure
+## 2. Directory & Package Structure
 
 - Shared logic inside `shared/src/commonMain/kotlin/`:
   - `data/`: DTOs (`remote/dto`), Repository implementations, Data Store implementations, Data Sources.
@@ -19,9 +19,9 @@
   - `presentation/`: MVI Contracts, ViewModels.
   - `di/`: Koin modules.
 
-## 3. Code Conventions &amp; MVI Architecture
+## 3. Code Conventions & MVI Architecture
 
-### Data Layer &amp; API (TMDB)
+### Data Layer & API (TMDB)
 
 - All network DTOs must be annotated with `@Serializable` using `@SerialName("..._path")` to map TMDB API responses correctly.
 - Always map DTOs to Domain models using extension functions (`fun Dto.toDomain()`), in a file named `DtoMapper`.
@@ -47,7 +47,7 @@ Each feature must consist of 3 distinct files:
    - When implementing or refactoring the Domain layer (UseCases, Models) or Data layer (Repositories, Data Sources), you are **strictly forbidden from using any** `android.*` **or** `androidx.*` **imports** (such as `Context`, `Bundle`, `Intent`, or `Log`).
      - You MUST write this code in pure Kotlin as if it were already located in the `commonMain` module. If platform-specific Android APIs are absolutely required, define a pure Kotlin interface in the domain layer and implement it in the Android application module, or use the `expect`/`actual` pattern.
 
-### Context &amp; File scanning
+### Context & File scanning
 
 - Always strictly respect the exclusion rules defined in `.aiignore` and `.gitignore`.
 - Never read, index, or search inside ignored directories (e.g., `build/`, `.gradle/`).

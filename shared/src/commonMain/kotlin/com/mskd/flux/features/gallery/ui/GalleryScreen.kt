@@ -5,8 +5,10 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.core.State
@@ -17,8 +19,11 @@ import com.mskd.flux.features.gallery.presentation.GalleryViewModel
 import com.mskd.flux.ui.components.ErrorScreen
 import com.mskd.flux.ui.components.LoadingScreen
 import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.gallery_image_download_failed
+import flux.shared.generated.resources.gallery_image_download_succeeded
 import flux.shared.generated.resources.oups_an_error_occured
 import flux.shared.generated.resources.unavailable_check_connection
+import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -32,13 +37,18 @@ fun GalleryScreen(
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
             when (event) {
                 GalleryEvent.BackToPreviousScreen -> onBack()
-                // Displayed by the snackbar of the ticket 02
-                GalleryEvent.ImageDownloadSucceeded, GalleryEvent.ImageDownloadFailed -> Unit
+                GalleryEvent.ImageDownloadSucceeded -> snackbarHostState.showSnackbar(
+                    message = getString(Res.string.gallery_image_download_succeeded)
+                )
+                GalleryEvent.ImageDownloadFailed -> snackbarHostState.showSnackbar(
+                    message = getString(Res.string.gallery_image_download_failed)
+                )
             }
         }
     }
@@ -75,6 +85,7 @@ fun GalleryScreen(
                     failure = uiState.failure,
                     viewerIndex = state.content.viewerIndex,
                     imageDownloadRunning = state.content.imageDownloadRunning,
+                    snackbarHostState = snackbarHostState,
                     sendIntent = { viewModel.handleIntent(it) }
                 )
             }

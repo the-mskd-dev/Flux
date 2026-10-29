@@ -251,4 +251,6 @@
     <string name="chapters">Capitoli</string>
     <string name="chapter_number">Capitolo %1$d</string>
     <string name="gallery_image_download">Scarica l'immagine</string>
+    <string name="gallery_image_download_succeeded">Immagine salvata in Pictures/Flux</string>
+    <string name="gallery_image_download_failed">Impossibile scaricare l'immagine</string>
 </resources>

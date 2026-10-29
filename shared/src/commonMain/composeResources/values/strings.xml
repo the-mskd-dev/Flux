@@ -268,4 +268,6 @@
     <string name="chapters">Chapters</string>
     <string name="chapter_number">Chapter %1$d</string>
     <string name="gallery_image_download">Download image</string>
+    <string name="gallery_image_download_succeeded">Image saved to Pictures/Flux</string>
+    <string name="gallery_image_download_failed">Couldn't download the image</string>
 </resources>

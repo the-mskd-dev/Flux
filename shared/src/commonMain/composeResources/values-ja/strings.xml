@@ -249,4 +249,6 @@
     <string name="chapters">チャプター</string>
     <string name="chapter_number">チャプター %1$d</string>
     <string name="gallery_image_download">画像をダウンロード</string>
+    <string name="gallery_image_download_succeeded">画像を Pictures/Flux に保存しました</string>
+    <string name="gallery_image_download_failed">画像をダウンロードできませんでした</string>
 </resources>

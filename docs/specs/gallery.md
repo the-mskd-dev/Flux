@@ -74,7 +74,7 @@ Un tap sur l'Artwork image ouvre une nouvelle page **Gallery**. Elle récupère 
 
 - Logos, and season or episode images.
 - Language filtering or language badges.
-- Actions in the viewer: share, set as the Artwork's poster or banner. Saving an image is covered by the [Image Download spec](../../.scratch/image-download/specs/spec.md).
+- Actions in the viewer: share, set as the Artwork's poster or banner.
 - Offline storage of the image list.
 - A dedicated screen for the token request from the Gallery.
 - Any change to the blurred or full Artwork image appearance.

@@ -1,9 +1,5 @@
 package com.mskd.flux.features.artwork.ui.composables
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -29,6 +25,7 @@ import coil3.compose.AsyncImagePreviewHandler
 import coil3.compose.LocalAsyncImagePreviewHandler
 import coil3.compose.LocalPlatformContext
 import coil3.compose.rememberAsyncImagePainter
+import coil3.request.ErrorResult
 import coil3.request.ImageRequest
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.mockups.MediaMockups
@@ -41,7 +38,7 @@ import com.mskd.flux.utils.extensions.tmdbLogo
 
 /**
  * Title of an [Artwork]: its Logo when it has one, its title text otherwise.
- * The title text is also shown while the Logo is loading or when it fails to load.
+ * Nothing is shown while the Logo is loading, the title text is shown when it fails to load.
  */
 @Composable
 fun ArtworkTitle(
@@ -66,25 +63,16 @@ fun ArtworkTitle(
 
     val state by painter.state.collectAsState()
 
-    AnimatedContent(
-        modifier = modifier,
-        targetState = state is AsyncImagePainter.State.Success,
-        contentAlignment = Alignment.Center,
-        transitionSpec = { fadeIn() togetherWith fadeOut() },
-        label = "ArtworkTitle"
-    ) { isLoaded ->
-
-        if (isLoaded) {
-            Image(
-                modifier = Modifier.fillMaxWidth(),
-                painter = painter,
-                contentDescription = artwork.title,
-                contentScale = ContentScale.Fit
-            )
-        } else {
-            ArtworkTitleText(title = artwork.title)
-        }
-
+    // No transition: a cached Logo is resolved right after the first composition, so it must not replace a visible title text
+    if (state is AsyncImagePainter.State.Error) {
+        ArtworkTitleText(modifier = modifier, title = artwork.title)
+    } else {
+        Image(
+            modifier = modifier.fillMaxWidth(),
+            painter = painter,
+            contentDescription = artwork.title,
+            contentScale = ContentScale.Fit
+        )
     }
 
 }
@@ -145,9 +133,11 @@ fun ArtworkTitleWithoutLogo_Preview() {
 @OptIn(ExperimentalCoilApi::class)
 @PortraitPreview
 @Composable
-fun ArtworkTitleLogoLoadingOrFailed_Preview() {
+fun ArtworkTitleLogoFailed_Preview() {
     ArtworkTitlePreview(
         artwork = MediaMockups.movieArtwork.copy(logoPath = "/logo.png"),
-        previewHandler = AsyncImagePreviewHandler { _, _ -> AsyncImagePainter.State.Loading(painter = null) }
+        previewHandler = AsyncImagePreviewHandler { _, request ->
+            AsyncImagePainter.State.Error(painter = null, result = ErrorResult(image = null, request = request, throwable = Exception()))
+        }
     )
 }

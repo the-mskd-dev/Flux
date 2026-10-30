@@ -31,6 +31,13 @@ interface DatabaseRepository {
     /** Saves an Artwork with its seasons, medias and people in a single transaction: a folder is never saved halfway. */
     suspend fun saveSyncedFolder(artwork: Artwork, seasons: List<Season>, medias: List<Media>, people: List<Person>)
 
+    /**
+     * Saves, like [saveSyncedFolder], the Médias of [sourceArtworkId] re-identified to [artwork] by an Identification manuelle.
+     * The history entry of the source Artwork follows its Média (on a merge, the most recent entry is kept), and the source
+     * Artwork, left empty, is deleted with its people.
+     */
+    suspend fun saveIdentifiedFolder(sourceArtworkId: Long, artwork: Artwork, seasons: List<Season>, medias: List<Media>, people: List<Person>)
+
     // Artworks
     suspend fun getArtwork(artworkId: Long) : Artwork?
     suspend fun getArtworks(includePrivates: Boolean = false) : List<Artwork>

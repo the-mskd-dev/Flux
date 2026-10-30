@@ -27,6 +27,10 @@ import com.mskd.flux.features.files.domain.datasource.FilesDataSource
 import com.mskd.flux.features.files.domain.usecase.GetFileDurationUseCase
 import com.mskd.flux.features.files.fake.FakeFilesDataSource
 import com.mskd.flux.features.files.moduleFiles
+import com.mskd.flux.features.history.data.dao.HistoryDao
+import com.mskd.flux.features.history.moduleHistory
+import com.mskd.flux.features.identification.domain.usecase.IdentifyManuallyUseCase
+import com.mskd.flux.features.identification.moduleIdentification
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import com.mskd.flux.features.images.fake.FakeImagesPrefetchManager
 import com.mskd.flux.features.people.domain.repository.PeopleRepository
@@ -98,6 +102,8 @@ internal class SyncHarness(tmdbToken: String = "test-token", tmdbMaxRequests: In
             moduleCatalog,
             moduleFiles,
             modulePeople,
+            moduleHistory,
+            moduleIdentification,
             module {
                 single<RoomDatabase.Builder<FluxDatabase>> {
                     Room.inMemoryDatabaseBuilder(mockk<Context>(relaxed = true), FluxDatabase::class.java)
@@ -146,6 +152,11 @@ internal class SyncHarness(tmdbToken: String = "test-token", tmdbMaxRequests: In
     val user: UserDataStore = koin.get()
 
     val token: TokenDataStore = koin.get()
+
+    /** The Identification manuelle, outside of any Synchro. */
+    val identifyManually: IdentifyManuallyUseCase = koin.get()
+
+    val history: HistoryDao = koin.get()
 
     init {
         recorderScope.launch { useCase.state.collect { _states += it } }

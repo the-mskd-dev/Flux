@@ -252,4 +252,9 @@
     <string name="gallery_image_download_succeeded">이미지를 저장했습니다</string>
     <string name="gallery_image_download_failed">이미지를 다운로드하지 못했습니다</string>
     <string name="gallery_image_download_show">보기</string>
+    <string name="identification_select_data">데이터 선택</string>
+    <string name="identification_current">현재</string>
+    <string name="identification_no_result">결과 없음</string>
+    <string name="identification_search_failed">TMDB를 검색할 수 없습니다</string>
+    <string name="identification_failed">이 작품의 데이터를 가져올 수 없습니다. 다시 시도해 주세요.</string>
 </resources>

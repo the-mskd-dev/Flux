@@ -6,11 +6,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.features.artwork.presentation.ArtworkIntent
+import com.mskd.flux.features.artwork.presentation.IdentificationAvailability
 import com.mskd.flux.ui.modal.menu.FluxPopUpMenu
 import com.mskd.flux.ui.modal.menu.FluxPopUpMenuItem
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_eraser
 import flux.shared.generated.resources.ic_file_explorer
+import flux.shared.generated.resources.ic_search
+import flux.shared.generated.resources.identification_select_data
 import flux.shared.generated.resources.more_info
 import flux.shared.generated.resources.open_in_file_explorer
 import flux.shared.generated.resources.reset_progress
@@ -21,6 +24,7 @@ import org.jetbrains.compose.resources.stringResource
 fun ArtworkDropDownMenu(
     isVisible: Boolean,
     fullArtwork: FullArtwork,
+    identification: IdentificationAvailability,
     onDismissRequest: () -> Unit,
     sendIntent: (ArtworkIntent) -> Unit
 ) {
@@ -63,6 +67,26 @@ fun ArtworkDropDownMenu(
                     },
                 )
             )
+
+            // Identification manuelle
+            if (identification != IdentificationAvailability.HIDDEN) {
+                add(
+                    FluxPopUpMenuItem(
+                        text = stringResource(Res.string.identification_select_data),
+                        onClick = {
+                            sendIntent(ArtworkIntent.ShowIdentificationDialog)
+                            onDismissRequest()
+                        },
+                        leadingIcon = {
+                            Icon(
+                                painter = painterResource(Res.drawable.ic_search),
+                                contentDescription = stringResource(Res.string.identification_select_data)
+                            )
+                        },
+                        enabled = identification == IdentificationAvailability.ENABLED,
+                    )
+                )
+            }
 
             // Open in file explorer (only for movies)
             if (fullArtwork is FullArtwork.FullMovie) {

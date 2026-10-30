@@ -17,7 +17,8 @@ data class ArtworkDataState(
     val fullArtwork: FullArtwork,
     val useExternalPlayer: Boolean,
     val blurSpoilers: Boolean,
-    val people: ImmutableList<Person> = persistentListOf()
+    val people: ImmutableList<Person> = persistentListOf(),
+    val identification: IdentificationAvailability = IdentificationAvailability.HIDDEN,
 )
 
 @Immutable
@@ -42,6 +43,7 @@ data class ArtworkContent(
     val blurredEpisodeIds: ImmutableSet<Long> = persistentSetOf(),
     val useExternalPlayer: Boolean,
     val people: ImmutableList<Person> = persistentListOf(),
+    val identification: IdentificationAvailability = IdentificationAvailability.HIDDEN,
     val dialog: ArtworkDialog?,
 )
 
@@ -50,9 +52,19 @@ data class ArtworkUiState(
     val state: State<ArtworkContent> = State.Loading
 )
 
+/** Availability of the Identification manuelle option of the menu. */
+enum class IdentificationAvailability {
+    /** No TMDB token, a TMDB ID in a file name, the Unknown Artwork, or a page that does not offer it. */
+    HIDDEN,
+    /** During a Synchro, which could overwrite the choice. */
+    DISABLED,
+    ENABLED,
+}
+
 sealed class ArtworkDialog {
     data class EpisodeStatusConfirmation(val episode: Episode) : ArtworkDialog()
     object ResetProgressConfirmation : ArtworkDialog()
+    data object Identification : ArtworkDialog()
 }
 
 sealed interface ArtworkIntent {
@@ -68,6 +80,10 @@ sealed interface ArtworkIntent {
     // Dialogs
     data object CloseDialog: ArtworkIntent
     data object ShowResetProgressDialog : ArtworkIntent
+    data object ShowIdentificationDialog : ArtworkIntent
+
+    // Identification manuelle
+    data class OnIdentified(val artworkId: Long) : ArtworkIntent
 
     // Status
     data object ResetProgress: ArtworkIntent
@@ -87,4 +103,6 @@ sealed interface ArtworkEvent {
     data class PlayMedia(val media: Media, val externalPlayer: Boolean) : ArtworkEvent
     data class NavigateToPerson(val person: Person) : ArtworkEvent
     data class NavigateToGallery(val artworkId: Long, val contentType: ContentType) : ArtworkEvent
+    /** Replaces the page by the one of [artworkId]: back must not lead to the previous Artwork, which may no longer exist. */
+    data class ReplaceArtwork(val artworkId: Long) : ArtworkEvent
 }

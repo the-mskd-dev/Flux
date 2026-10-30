@@ -17,7 +17,8 @@ fun ArtworkEntity.toDomain() : Artwork {
         lastModification = this.lastModification,
         isPrivate = this.isPrivate,
         nsfw = this.nsfw,
-        logoPath = this.logoPath
+        logoPath = this.logoPath,
+        isManuallyIdentified = this.manuallyIdentified
     )
 }
 
@@ -33,6 +34,7 @@ fun Artwork.toEntity(overrideLastModification: Boolean = true) : ArtworkEntity {
         lastModification = if (overrideLastModification) Clock.System.now().toEpochMilliseconds() else this.lastModification,
         isPrivate = this.isPrivate,
         nsfw = this.nsfw,
-        logoPath = this.logoPath
+        logoPath = this.logoPath,
+        manuallyIdentified = this.isManuallyIdentified
     )
 }

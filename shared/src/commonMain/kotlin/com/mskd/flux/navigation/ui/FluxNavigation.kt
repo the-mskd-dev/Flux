@@ -68,6 +68,12 @@ fun FluxNavigation(
                 crashLogger.addBreadcrumb(message = "clear backstack then navigate to $route")
                 backStack.add(route)
             },
+            replace = { route ->
+                transitions = Transition.Fade to Transition.Fade
+                crashLogger.addBreadcrumb(message = "replace ${backStack.lastOrNull() as? Route} by $route")
+                backStack.removeLastOrNull()
+                backStack.add(route)
+            },
         )
     }
 

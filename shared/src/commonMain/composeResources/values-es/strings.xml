@@ -253,4 +253,9 @@
     <string name="gallery_image_download_succeeded">Imagen guardada</string>
     <string name="gallery_image_download_failed">No se pudo descargar la imagen</string>
     <string name="gallery_image_download_show">Mostrar</string>
+    <string name="identification_select_data">Seleccionar los datos</string>
+    <string name="identification_current">Actual</string>
+    <string name="identification_no_result">Sin resultados</string>
+    <string name="identification_search_failed">No se pudo buscar en TMDB</string>
+    <string name="identification_failed">No se pudieron obtener los datos de esta obra. Inténtalo de nuevo.</string>
 </resources>

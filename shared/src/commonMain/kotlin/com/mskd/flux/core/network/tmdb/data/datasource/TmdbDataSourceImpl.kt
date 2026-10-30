@@ -1,5 +1,6 @@
 package com.mskd.flux.core.network.tmdb.data.datasource
 
+import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.core.model.language.Language
 import com.mskd.flux.core.model.language.languageCode
@@ -70,6 +71,24 @@ class TmdbDataSourceImpl(
 
         } catch (e: Exception) {
             Napier.e(tag = TAG, message = "getTmdbArtwork - Fail to get TMDBArtwork for file:${file.name} (${language.toTmdbFormat()})", throwable = e)
+            throw e
+        }
+
+    }
+
+    override suspend fun searchArtworks(title: String, type: ContentType): List<ArtworkDto> {
+
+        check(tokenDataStore.tokenIsAvailable()) { "No TMDB token available" }
+
+        val language = tmdbLanguage().toTmdbFormat()
+
+        return try {
+            when (type) {
+                ContentType.MOVIE -> tmdbService.searchMovie(title = title, language = language)
+                ContentType.SHOW -> tmdbService.searchShow(title = title, language = language)
+            }.results.onEach { it.type = if (type == ContentType.SHOW) MediaTypeDto.SHOW else MediaTypeDto.MOVIE }
+        } catch (e: Exception) {
+            Napier.e(tag = TAG, message = "searchArtworks - Fail to search $type '$title' ($language)", throwable = e)
             throw e
         }
 

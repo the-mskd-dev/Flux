@@ -8,6 +8,7 @@ import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.files.UserFile
+import com.mskd.flux.core.network.tmdb.domain.model.ArtworkCandidate
 import com.mskd.flux.core.network.tmdb.domain.model.ArtworkDetails
 import com.mskd.flux.core.network.tmdb.domain.model.PersonInfo
 import com.mskd.flux.core.network.tmdb.domain.model.Translation
@@ -20,6 +21,9 @@ interface ApiRepository {
     suspend fun getArtwork(file: UserFile): Artwork
 
     suspend fun getArtworkById(id: Long, type: ContentType): Artwork?
+
+    /** TMDB results for [title], without year filter, in the TMDB order. Throws when the search fails (network, API, no token). */
+    suspend fun searchArtworks(title: String, type: ContentType): List<ArtworkCandidate>
 
     /** Details, translations and credits of the Artwork in one call; null when TMDB has no details (or no token). */
     suspend fun getDetails(artworkId: Long, type: ContentType, file: UserFile): ArtworkDetails?

@@ -24,6 +24,7 @@ val moduleArtwork = module {
             urlLauncher = get(),
             settingsDataStore = get(),
             tokenDataStore = get(),
+            catalogSyncCoordinator = get(),
             changeMediaStatus = get(),
             markPreviousAsWatched = get(),
             resetProgress = get(),

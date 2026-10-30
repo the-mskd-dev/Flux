@@ -26,6 +26,9 @@ interface HistoryDao {
     @Query("SELECT * FROM history")
     suspend fun getAll() : List<HistoryEntity>
 
+    @Query("SELECT * FROM history WHERE historyArtworkId = :artworkId")
+    suspend fun get(artworkId: Long) : HistoryEntity?
+
     @Query("DELETE FROM history WHERE historyArtworkId = :artworkId")
     suspend fun delete(artworkId: Long)
 

@@ -1,5 +1,6 @@
 package com.mskd.flux.core.network.tmdb.data.datasource
 
+import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.core.network.tmdb.data.dto.ArtworkDto
 import com.mskd.flux.core.network.tmdb.data.dto.TranslationsDto
@@ -16,6 +17,9 @@ import com.mskd.flux.core.network.tmdb.domain.model.TranslationRequest
 interface TmdbDataSource {
 
     suspend fun getArtwork(file: UserFile) : ArtworkDto?
+
+    /** Every result of the search of [title], without year filter. Throws when the search fails (network, API, no token). */
+    suspend fun searchArtworks(title: String, type: ContentType) : List<ArtworkDto>
 
     suspend fun getGenres() : List<GenreDto>
 

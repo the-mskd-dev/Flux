@@ -12,7 +12,9 @@ import com.mskd.flux.core.network.tmdb.data.datasource.TmdbDataSource
 import com.mskd.flux.core.network.tmdb.data.dto.images.ImagesDto
 import com.mskd.flux.core.network.tmdb.data.mapper.logoPath
 import com.mskd.flux.core.network.tmdb.data.mapper.toArtwork
+import com.mskd.flux.core.network.tmdb.data.mapper.toCandidate
 import com.mskd.flux.core.network.tmdb.data.mapper.toDomain
+import com.mskd.flux.core.network.tmdb.domain.model.ArtworkCandidate
 import com.mskd.flux.core.network.tmdb.domain.model.ArtworkDetails
 import com.mskd.flux.core.network.tmdb.domain.model.PersonInfo
 import com.mskd.flux.core.network.tmdb.domain.model.Translation
@@ -34,6 +36,9 @@ internal class ApiRepositoryImpl(
         ContentType.MOVIE -> tmdb.getMovie(artworkId = id)?.toArtwork()
         ContentType.SHOW -> tmdb.getShow(artworkId = id)?.toArtwork()
     }
+
+    override suspend fun searchArtworks(title: String, type: ContentType): List<ArtworkCandidate> =
+        tmdb.searchArtworks(title = title, type = type).map { it.toCandidate() }
 
     override suspend fun getDetails(artworkId: Long, type: ContentType, file: UserFile): ArtworkDetails? = when (type) {
         ContentType.MOVIE -> tmdb.getMovie(artworkId = artworkId)?.let { movie ->

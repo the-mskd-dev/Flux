@@ -18,6 +18,7 @@ import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.core.ImagesPaths
 import com.mskd.flux.core.model.files.UserFile
+import com.mskd.flux.features.history.data.model.HistoryEntity
 import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.utils.extensions.sort
 import kotlinx.coroutines.flow.Flow
@@ -66,28 +67,67 @@ class DatabaseRepositoryImpl(
 
     override suspend fun saveSyncedFolder(artwork: Artwork, seasons: List<Season>, medias: List<Media>, people: List<Person>) {
         database.useWriterConnection { transactor ->
+            transactor.immediateTransaction { saveFolder(artwork = artwork, seasons = seasons, medias = medias, people = people) }
+        }
+    }
+
+    override suspend fun saveIdentifiedFolder(
+        sourceArtworkId: Long,
+        artwork: Artwork,
+        seasons: List<Season>,
+        medias: List<Media>,
+        people: List<Person>,
+    ) {
+        database.useWriterConnection { transactor ->
             transactor.immediateTransaction {
-                // A renamed file keeps its path (MediaStore) but may now be another media: its previous one is replaced,
-                // and is no Fichier manquant, so the Artwork and Season it leaves empty must be cleaned here
-                val previousByPath = mediasDao.findByPaths(paths = medias.map { it.file.path }).associateBy { it.path }
-                val replacesMedias = medias.map { it.toEntity() }.any { media ->
-                    val previous = previousByPath[media.path] ?: return@any false
-                    previous.id != media.id || previous.artworkId != media.artworkId
+
+                val historyDao = database.historyDao()
+
+                // Read before the save: the history entry is deleted with its Média by the cascade of its foreign key
+                val sourceHistory = historyDao.get(artworkId = sourceArtworkId)
+                val historyPath = sourceHistory?.let { entry ->
+                    mediasDao.findByArtworkIds(artworkIds = listOf(sourceArtworkId)).find { it.id == entry.mediaId }?.path
                 }
-                saveArtworks(listOf(artwork))
-                saveSeasons(seasons)
-                saveSyncedMedias(medias)
-                if (replacesMedias) {
-                    seasonsDao.deleteEmptySeasons()
-                    artworksDao.deleteEmptyArtworks()
-                }
-                if (people.isNotEmpty()) {
-                    // TMDB returns the whole credits: the ones it dropped must not stay
-                    database.personDao().apply {
-                        delete(artworkId = artwork.id)
-                        insert(people = people.map { it.toPersonEntity() })
+
+                saveFolder(artwork = artwork, seasons = seasons, medias = medias, people = people)
+
+                if (sourceHistory != null && historyPath != null) {
+                    val media = mediasDao.findByPaths(paths = listOf(historyPath)).find { it.artworkId == artwork.id }
+                    val targetHistory = historyDao.get(artworkId = artwork.id)
+                    if (media != null && (targetHistory == null || targetHistory.timestamp < sourceHistory.timestamp)) {
+                        historyDao.upsert(entity = HistoryEntity(artworkId = artwork.id, mediaId = media.id, timestamp = sourceHistory.timestamp))
                     }
                 }
+
+                if (artworksDao.getArtwork(artworkId = sourceArtworkId) == null) {
+                    database.personDao().delete(artworkId = sourceArtworkId)
+                }
+
+            }
+        }
+    }
+
+    /** Must run in a transaction. */
+    private suspend fun saveFolder(artwork: Artwork, seasons: List<Season>, medias: List<Media>, people: List<Person>) {
+        // A renamed file keeps its path (MediaStore) but may now be another media: its previous one is replaced,
+        // and is no Fichier manquant, so the Artwork and Season it leaves empty must be cleaned here
+        val previousByPath = mediasDao.findByPaths(paths = medias.map { it.file.path }).associateBy { it.path }
+        val replacesMedias = medias.map { it.toEntity() }.any { media ->
+            val previous = previousByPath[media.path] ?: return@any false
+            previous.id != media.id || previous.artworkId != media.artworkId
+        }
+        saveArtworks(listOf(artwork))
+        saveSeasons(seasons)
+        saveSyncedMedias(medias)
+        if (replacesMedias) {
+            seasonsDao.deleteEmptySeasons()
+            artworksDao.deleteEmptyArtworks()
+        }
+        if (people.isNotEmpty()) {
+            // TMDB returns the whole credits: the ones it dropped must not stay
+            database.personDao().apply {
+                delete(artworkId = artwork.id)
+                insert(people = people.map { it.toPersonEntity() })
             }
         }
     }

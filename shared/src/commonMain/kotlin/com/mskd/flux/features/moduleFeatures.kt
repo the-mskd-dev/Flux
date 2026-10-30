@@ -6,6 +6,7 @@ import com.mskd.flux.features.customization.moduleCustomization
 import com.mskd.flux.features.files.moduleFiles
 import com.mskd.flux.features.gallery.moduleGallery
 import com.mskd.flux.features.history.moduleHistory
+import com.mskd.flux.features.identification.moduleIdentification
 import com.mskd.flux.features.images.moduleImages
 import com.mskd.flux.features.message.moduleMessage
 import com.mskd.flux.features.people.modulePeople
@@ -29,6 +30,7 @@ val moduleFeatures = module {
         moduleCustomization,
         moduleGallery,
         moduleHistory,
+        moduleIdentification,
         moduleImages,
         moduleMessage,
         modulePeople,

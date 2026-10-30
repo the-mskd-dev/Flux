@@ -271,4 +271,9 @@
     <string name="gallery_image_download_succeeded">Image saved</string>
     <string name="gallery_image_download_failed">Couldn't download the image</string>
     <string name="gallery_image_download_show">Show</string>
+    <string name="identification_select_data">Select data</string>
+    <string name="identification_current">Current</string>
+    <string name="identification_no_result">No result</string>
+    <string name="identification_search_failed">Couldn\'t search TMDB</string>
+    <string name="identification_failed">Couldn\'t retrieve the data of this artwork. Please try again.</string>
 </resources>

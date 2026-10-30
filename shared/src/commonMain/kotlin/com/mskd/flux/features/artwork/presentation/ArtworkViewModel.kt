@@ -8,6 +8,8 @@ import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
+import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
+import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.people.domain.usecase.GetPeopleUseCase
 import com.mskd.flux.features.player.domain.model.PlaybackAction
 import com.mskd.flux.features.player.domain.usecase.ResolvePlaybackActionUseCase
@@ -42,6 +44,7 @@ class ArtworkViewModel(
     private val urlLauncher: UrlLauncher,
     settingsDataStore: SettingsDataStore,
     private val tokenDataStore: TokenDataStore,
+    catalogSyncCoordinator: CatalogSyncCoordinator,
     observeArtworkUseCase: ObserveArtworkUseCase,
     getPeopleUseCase: GetPeopleUseCase,
     private val changeMediaStatus: ChangeMediaStatusUseCase,
@@ -66,12 +69,18 @@ class ArtworkViewModel(
 
     private val _userState = MutableStateFlow(ArtworkUserState())
 
+    private val settingsAndSync = combine(
+        settingsDataStore.flow,
+        tokenDataStore.flow,
+        catalogSyncCoordinator.state,
+    ) { settings, token, sync -> Triple(settings, token.isNotBlank(), sync is SyncState.Syncing) }
+
     val uiState: StateFlow<ArtworkUiState> = combine(
         observeArtworkUseCase(artworkId = artworkId),
-        settingsDataStore.flow,
+        settingsAndSync,
         getPeopleUseCase(artworkId = artworkId),
         _userState,
-    ) { artworkState, settings, people, userState ->
+    ) { artworkState, (settings, tokenAvailable, syncing), people, userState ->
 
         when (artworkState) {
             is State.Loading -> ArtworkUiState(state = State.Loading)
@@ -83,6 +92,11 @@ class ArtworkViewModel(
                     useExternalPlayer = settings.externalPlayer,
                     blurSpoilers = settings.blurSpoilers,
                     people = people,
+                    identification = resolveIdentification(
+                        fullArtwork = artworkState.content,
+                        tokenAvailable = tokenAvailable,
+                        syncing = syncing,
+                    ),
                 )
 
                 ArtworkUiState(state = mergeStates(dataState, userState))
@@ -115,6 +129,10 @@ class ArtworkViewModel(
             // Dialogs
             ArtworkIntent.CloseDialog -> closeDialog()
             ArtworkIntent.ShowResetProgressDialog -> showResetProgressDialog()
+            ArtworkIntent.ShowIdentificationDialog -> showIdentificationDialog()
+
+            // Identification manuelle
+            is ArtworkIntent.OnIdentified -> onIdentified(artworkId = intent.artworkId)
 
             // Status
             is ArtworkIntent.ChangeWatchStatus -> changeWatchStatus(media = intent.media)
@@ -162,9 +180,25 @@ class ArtworkViewModel(
                 blurredEpisodeIds = (spoilerIds - readableIds).toImmutableSet(),
                 useExternalPlayer = dataState.useExternalPlayer,
                 people = dataState.people,
+                identification = dataState.identification,
                 dialog = userState.dialog,
             )
         )
+    }
+
+    /** Movies only: the Identification manuelle of a Show is offered on its own page. A TMDB ID in a file name has priority. */
+    private fun resolveIdentification(
+        fullArtwork: FullArtwork,
+        tokenAvailable: Boolean,
+        syncing: Boolean,
+    ): IdentificationAvailability {
+        val movie = (fullArtwork as? FullArtwork.FullMovie)?.movie ?: return IdentificationAvailability.HIDDEN
+        return when {
+            fullArtwork.artwork.isUnknown || !tokenAvailable -> IdentificationAvailability.HIDDEN
+            movie.file.nameProperties.tmdbId != null -> IdentificationAvailability.HIDDEN
+            syncing -> IdentificationAvailability.DISABLED
+            else -> IdentificationAvailability.ENABLED
+        }
     }
 
     /** Only a Season description whose Episodes are all still to watch is a spoiler. */
@@ -310,6 +344,16 @@ class ArtworkViewModel(
 
     private fun showResetProgressDialog() {
         _userState.update { it.copy(dialog = ArtworkDialog.ResetProgressConfirmation) }
+    }
+
+    private fun showIdentificationDialog() {
+        if (artworkContent?.identification != IdentificationAvailability.ENABLED) return
+        _userState.update { it.copy(dialog = ArtworkDialog.Identification) }
+    }
+
+    private suspend fun onIdentified(artworkId: Long) {
+        _userState.update { it.copy(dialog = null) }
+        _event.emit(ArtworkEvent.ReplaceArtwork(artworkId = artworkId))
     }
 
     private suspend fun resetProgress() {

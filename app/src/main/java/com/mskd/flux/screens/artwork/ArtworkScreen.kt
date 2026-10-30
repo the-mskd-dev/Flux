@@ -28,9 +28,11 @@ import com.mskd.flux.features.artwork.presentation.ArtworkEvent
 import com.mskd.flux.features.artwork.presentation.ArtworkIntent
 import com.mskd.flux.features.artwork.presentation.ArtworkOverviewContent
 import com.mskd.flux.features.artwork.presentation.ArtworkViewModel
+import com.mskd.flux.features.artwork.presentation.IdentificationAvailability
 import com.mskd.flux.features.artwork.ui.ArtworkContentLarge
 import com.mskd.flux.features.artwork.ui.ArtworkContentRegular
 import com.mskd.flux.features.artwork.ui.composables.ArtworkDropDownMenu
+import com.mskd.flux.features.identification.ui.IdentificationDialog
 import com.mskd.flux.features.player.domain.model.PlayerParams
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.navigation.domain.Route
@@ -59,6 +61,7 @@ fun ArtworkScreen(
     colorScheme: ColorScheme,
     navigate: (Route) -> Unit,
     onBack: () -> Unit,
+    replaceArtwork: (artworkId: Long) -> Unit,
     viewModel: ArtworkViewModel = koinViewModel(parameters = { parametersOf(artworkId, season) })
 ) {
 
@@ -73,6 +76,7 @@ fun ArtworkScreen(
         viewModel.event.collect { event ->
             when (event) {
                 ArtworkEvent.BackToPreviousScreen -> onBack()
+                is ArtworkEvent.ReplaceArtwork -> replaceArtwork(event.artworkId)
                 is ArtworkEvent.NavigateToPerson -> navigate(Route.Person(person = event.person))
                 is ArtworkEvent.NavigateToGallery -> navigate(Route.Gallery(artworkId = event.artworkId, contentType = event.contentType))
                 is ArtworkEvent.PlayMedia -> {
@@ -120,6 +124,7 @@ fun ArtworkScreen(
                         expandedEpisodeId = content.expandedEpisodeId,
                         spoilerEpisodeIds = content.spoilerEpisodeIds,
                         blurredEpisodeIds = content.blurredEpisodeIds,
+                        identification = content.identification,
                         dialog = content.dialog,
                         sendIntent = viewModel::handleIntent
                     )
@@ -144,6 +149,7 @@ fun ArtworkScreenContent(
     expandedEpisodeId: Long?,
     spoilerEpisodeIds: Set<Long>,
     blurredEpisodeIds: Set<Long>,
+    identification: IdentificationAvailability = IdentificationAvailability.HIDDEN,
     dialog: ArtworkDialog?,
     sendIntent: (ArtworkIntent) -> Unit
 ) {
@@ -177,6 +183,7 @@ fun ArtworkScreenContent(
             ArtworkDropDownMenu(
                 isVisible = showMenu,
                 fullArtwork = fullArtwork,
+                identification = identification,
                 onDismissRequest = { showMenu = false },
                 sendIntent = sendIntent
             )
@@ -228,6 +235,14 @@ fun ArtworkScreenContent(
         onDismiss = { sendIntent(ArtworkIntent.CloseDialog) },
         onValidate = { sendIntent(ArtworkIntent.MarkPreviousEpisodesAsWatched) }
     )
+
+    if (dialog is ArtworkDialog.Identification) {
+        IdentificationDialog(
+            artworkId = fullArtwork.artwork.id,
+            onDismiss = { sendIntent(ArtworkIntent.CloseDialog) },
+            onIdentified = { artworkId -> sendIntent(ArtworkIntent.OnIdentified(artworkId = artworkId)) },
+        )
+    }
 
     if (dialog is ArtworkDialog.ResetProgressConfirmation) {
         ResetProgressDialog(

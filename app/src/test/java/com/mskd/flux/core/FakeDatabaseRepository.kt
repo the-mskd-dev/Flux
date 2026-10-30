@@ -131,6 +131,8 @@ class FakeDatabaseRepository : DatabaseRepository {
 
     override suspend fun saveSyncedFolder(artwork: Artwork, seasons: List<Season>, medias: List<Media>, people: List<Person>) {}
 
+    override suspend fun saveIdentifiedFolder(sourceArtworkId: Long, artwork: Artwork, seasons: List<Season>, medias: List<Media>, people: List<Person>) {}
+
     override suspend fun deleteArtworks(artworks: List<Artwork>) {}
     
     override suspend fun deleteMediasNotInFiles(files: List<UserFile>) {}

@@ -223,6 +223,14 @@ _Avoid_: Resolver, metadata fetcher
 Un fichier dont la récupération TMDB a échoué (réseau, API, token absent) ; rien n'est enregistré et il est retenté à la Synchro suivante.
 _Avoid_: Fichier inconnu, UNKNOWN
 
+**Identification manuelle**:
+Choix, par l'utilisateur, de l'Artwork TMDB auquel sont rattachés tous les Média d'un Artwork. Il prévaut sur la recherche par nom, y compris pour les nouveaux fichiers d'une Synchro légère. Il est effacé par une Réinitialisation ou une Synchro complète, et n'est pas possible quand un fichier de l'Artwork porte un TMDB ID dans son nom.
+_Avoid_: Sélection des données, rematch, correction
+
+**Réinitialisation**:
+Effacement de l'Identification manuelle d'un Artwork : chacun de ses fichiers retrouve l'Artwork que la recherche par nom lui attribue. Le Status et la Progress des Média sont conservés.
+_Avoid_: Reset, annulation
+
 **Fichier non reconnu**:
 Un fichier que TMDB ne permet pas d'identifier ; il est enregistré comme Média sans Artwork connu.
 _Avoid_: Fichier en échec

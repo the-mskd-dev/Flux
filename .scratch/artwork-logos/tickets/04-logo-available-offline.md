@@ -6,6 +6,8 @@ Logo are prefetched in a single small size only (TMDB `w500`), never in the HD v
 
 The prefetch input must tell Logo paths apart from the other image paths, since the other images get a standard and an optional HD variant while Logo do not.
 
+Note from ticket 02: the display request (`ArtworkTitle`) uses `String.tmdbLogo` with `Size.ORIGINAL`. Coil's memory cache key includes the size, so the prefetch must also request `Size.ORIGINAL` to share the memory cache entry (the disk cache is keyed by URL only).
+
 **Blocked by:** 01: A new Artwork gets its Logo during the Synchro; 02: Display the Logo instead of the title text
 
 **Status:** ready-for-agent

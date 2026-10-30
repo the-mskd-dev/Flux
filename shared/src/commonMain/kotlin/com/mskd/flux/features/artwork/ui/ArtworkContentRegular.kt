@@ -64,7 +64,6 @@ fun ArtworkContentRegular(
                 fullArtwork = fullArtwork,
                 currentMedia = selectedMedia,
                 selectedSeason = selectedSeason,
-                title = fullArtwork.artwork.title,
                 sendIntent = sendIntent
             )
 

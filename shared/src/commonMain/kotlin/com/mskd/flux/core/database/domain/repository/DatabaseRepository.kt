@@ -35,6 +35,9 @@ interface DatabaseRepository {
     suspend fun getArtworks(includePrivates: Boolean = false) : List<Artwork>
     suspend fun getArtworks(artworkIds: List<Long>) : List<Artwork>
 
+    /** Writes only the Logo path of the Artwork (see [Artwork.logoPath]): its other data and its user state are kept. */
+    suspend fun setArtworkLogo(artworkId: Long, logoPath: String?)
+
     // Privacy
     suspend fun setArtworkPrivate(artworkId: Long, isPrivate: Boolean)
     suspend fun clearPrivateArtworks()

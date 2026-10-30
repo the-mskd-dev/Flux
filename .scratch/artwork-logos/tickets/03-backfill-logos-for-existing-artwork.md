@@ -8,7 +8,7 @@ This ticket introduces the "fetch the Logo of one Artwork" lookup, which the lan
 
 **Blocked by:** 01: A new Artwork gets its Logo during the Synchro
 
-**Status:** ready-for-agent
+**Status:** done
 
 - [ ] A reusable lookup fetches the images of one Artwork and returns the chosen Logo, "none", or a failure; a failure is distinguished from "none".
 - [ ] The Étape runs in light and complete Synchros, after the Étape catalogue and before the Finalisation.

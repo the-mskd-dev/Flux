@@ -14,7 +14,7 @@ class FinalizationStep(
     private val imagesPrefetchManager: ImagesPrefetchManager,
 ) : SyncStep {
 
-    override fun units(context: SyncContext) = 1
+    override suspend fun units(context: SyncContext) = 1
 
     override suspend fun run(context: SyncContext) {
 

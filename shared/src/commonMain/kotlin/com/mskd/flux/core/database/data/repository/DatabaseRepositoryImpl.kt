@@ -103,6 +103,10 @@ class DatabaseRepositoryImpl(
         return artworksDao.getArtworks(artworkIds = artworkIds).map { it.toDomain() }
     }
 
+    override suspend fun setArtworkLogo(artworkId: Long, logoPath: String?) {
+        artworksDao.setArtworkLogo(artworkId = artworkId, logoPath = logoPath)
+    }
+
     override suspend fun setArtworkPrivate(artworkId: Long, isPrivate: Boolean) {
         artworksDao.setArtworkPrivate(artworkId = artworkId, isPrivate = isPrivate)
     }

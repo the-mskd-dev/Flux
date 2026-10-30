@@ -55,6 +55,14 @@ internal class ApiRepositoryImpl(
     /** Logo among the images appended to the details; null (not searched) when the details came without images. */
     private suspend fun ImagesDto?.logoPath(): String? = this?.logoPath(language = settings.getDataLanguage())
 
+    override suspend fun getLogo(artworkId: Long, type: ContentType): String {
+        val images = when (type) {
+            ContentType.MOVIE -> tmdb.getMovieImages(artworkId = artworkId)
+            ContentType.SHOW -> tmdb.getShowImages(artworkId = artworkId)
+        }
+        return images.logoPath(language = settings.getDataLanguage())
+    }
+
     override suspend fun getGenres(): List<Genre> = tmdb.getGenres().map { it.toDomain() }
 
     //endregion

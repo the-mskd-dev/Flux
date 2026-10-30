@@ -1,0 +1,12 @@
+{
+  "id": 27205,
+  "backdrops": [],
+  "posters": [],
+  "logos": [
+    { "file_path": "/inception-fr.png", "aspect_ratio": 3.2, "vote_average": 5.1, "iso_639_1": "fr" },
+    { "file_path": "/inception-fr-best.png", "aspect_ratio": 3.2, "vote_average": 5.4, "iso_639_1": "fr" },
+    { "file_path": "/inception-fr-vector.svg", "aspect_ratio": 3.2, "vote_average": 9.0, "iso_639_1": "fr" },
+    { "file_path": "/inception-en.png", "aspect_ratio": 3.2, "vote_average": 5.0, "iso_639_1": "en" },
+    { "file_path": "/inception-textless.png", "aspect_ratio": 3.2, "vote_average": 8.0, "iso_639_1": null }
+  ]
+}

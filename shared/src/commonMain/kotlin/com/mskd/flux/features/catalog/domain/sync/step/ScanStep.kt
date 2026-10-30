@@ -11,7 +11,7 @@ class ScanStep(
     private val scanSourcesUseCase: ScanSourcesUseCase,
 ) : SyncStep {
 
-    override fun units(context: SyncContext) = 1
+    override suspend fun units(context: SyncContext) = 1
 
     override suspend fun run(context: SyncContext) {
 

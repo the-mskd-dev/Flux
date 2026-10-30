@@ -27,7 +27,7 @@ class CatalogStep(
         const val SAVE_UNITS = 1
     }
 
-    override fun units(context: SyncContext) =
+    override suspend fun units(context: SyncContext) =
         context.foldersToFetch.sumOf { folder -> enrichments.sumOf { it.units(folder) } } + SAVE_UNITS
 
     override suspend fun run(context: SyncContext) {

@@ -138,6 +138,8 @@ internal class SyncHarness(tmdbToken: String = "test-token", tmdbMaxRequests: In
 
     val user: UserDataStore = koin.get()
 
+    val token: TokenDataStore = koin.get()
+
     init {
         recorderScope.launch { useCase.state.collect { _states += it } }
     }
@@ -153,6 +155,10 @@ internal class SyncHarness(tmdbToken: String = "test-token", tmdbMaxRequests: In
     /** A video file of a custom folder Source rooted at [root]. */
     fun customFile(root: String, name: String): UserFile =
         UserFile(name = name, path = "$root/document/$name", realPath = name, source = FileSource.SAF)
+
+    /** Makes every Artwork of the Catalogue never searched for a Logo, like a Catalogue synchronised before the Logo existed. */
+    suspend fun forgetLogos() =
+        catalog.getArtworks(includePrivates = true).forEach { catalog.setArtworkLogo(artworkId = it.id, logoPath = null) }
 
     /** Runs a light sync and waits for its end. */
     suspend fun lightSync() {

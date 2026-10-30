@@ -7,6 +7,7 @@ import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.artwork.Season
+import com.mskd.flux.core.model.core.ImagesPaths
 import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.mockups.MediaMockups
@@ -115,8 +116,8 @@ class FakeDatabaseRepository : DatabaseRepository {
         return MediaMockups.unknowns
     }
 
-    override suspend fun getAllImagesPaths(): List<String> {
-        return emptyList()
+    override suspend fun getAllImagesPaths(): ImagesPaths {
+        return ImagesPaths()
     }
 
     override suspend fun updateRealPaths(files: List<UserFile>) {}

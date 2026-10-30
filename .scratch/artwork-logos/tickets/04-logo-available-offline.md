@@ -10,7 +10,7 @@ Note from ticket 02: the display request (`ArtworkTitle`) uses `String.tmdbLogo`
 
 **Blocked by:** 01: A new Artwork gets its Logo during the Synchro; 02: Display the Logo instead of the title text
 
-**Status:** ready-for-agent
+**Status:** done
 
 - [ ] The prefetch input distinguishes Logo paths from the other image paths.
 - [ ] Every non-empty Logo path is prefetched in `w500`; no HD variant is requested for a Logo, even with the HD option enabled.

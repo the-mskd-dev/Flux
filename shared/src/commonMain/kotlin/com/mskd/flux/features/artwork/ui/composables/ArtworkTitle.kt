@@ -30,13 +30,13 @@ import coil3.compose.LocalAsyncImagePreviewHandler
 import coil3.compose.LocalPlatformContext
 import coil3.compose.rememberAsyncImagePainter
 import coil3.request.ImageRequest
-import coil3.size.Size
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.PortraitPreview
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.features.images.domain.LOGO_REQUEST_SIZE
 import com.mskd.flux.utils.extensions.tmdbLogo
 
 /**
@@ -61,7 +61,7 @@ fun ArtworkTitle(
         model = ImageRequest.Builder(LocalPlatformContext.current)
             .data(logoPath.tmdbLogo)
             // The Logo is not drawn until loaded, so its size cannot come from the draw scope
-            .size(Size.ORIGINAL)
+            .size(LOGO_REQUEST_SIZE)
             .build()
     )
 

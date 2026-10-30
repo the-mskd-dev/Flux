@@ -1,10 +1,12 @@
 package com.mskd.flux.features.images.domain
 
 import coil3.ImageLoader
+import coil3.size.Size
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.utils.extensions.tmdbImage
 import com.mskd.flux.utils.extensions.tmdbImageLarge
+import com.mskd.flux.utils.extensions.tmdbLogo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -46,11 +48,14 @@ class ImagesPrefetchManagerImpl(
 
             val prefetchHdImages = settings.flow.first().prefetchHdImages
 
-            val allImagesPaths = database.getAllImagesPaths()
+            val imagesPaths = database.getAllImagesPaths()
 
-            val sdUrls = allImagesPaths.map { it.tmdbImage }.filter { pendingUrls.add(it) }
-            val hdUrls = if (prefetchHdImages) allImagesPaths.map { it.tmdbImageLarge }.filter { pendingUrls.add(it) } else emptyList()
-            val urls = (sdUrls + hdUrls).ifEmpty { return@launch }
+            val sdUrls = imagesPaths.images.map { it.tmdbImage }.filter { pendingUrls.add(it) }
+            val hdUrls = if (prefetchHdImages) imagesPaths.images.map { it.tmdbImageLarge }.filter { pendingUrls.add(it) } else emptyList()
+            // A Logo is requested like on its Artwork page to share its cache entry, never in HD
+            val logoUrls = imagesPaths.logos.mapNotNull { path -> path?.takeIf { it.isNotEmpty() }?.tmdbLogo }.filter { pendingUrls.add(it) }
+            val sizeByUrl: Map<String, Size?> = (sdUrls + hdUrls).associateWith { null } + logoUrls.associateWith { LOGO_REQUEST_SIZE }
+            val urls = sizeByUrl.keys.toList().ifEmpty { return@launch }
 
             totalCount.addAndGet(urls.size)
             updateState()
@@ -69,7 +74,8 @@ class ImagesPrefetchManagerImpl(
 
                     val request = imageRequestFactory.build(
                         url = url,
-                        onEnd = { onFetchEnd(url) }
+                        onEnd = { onFetchEnd(url) },
+                        size = sizeByUrl[url]
                     )
 
                     imageLoader.enqueue(request)

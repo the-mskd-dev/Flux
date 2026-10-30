@@ -90,7 +90,7 @@ interface ArtworkDao {
 
 //region Images
 
-    @Query("SELECT imagePath, bannerPath FROM artworks")
+    @Query("SELECT imagePath, bannerPath, logoPath FROM artworks")
     suspend fun getArtworksImages() : List<ArtworkImagesProjection>
 
 //endregion

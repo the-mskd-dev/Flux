@@ -47,7 +47,6 @@ import com.mskd.flux.utils.extensions.tmdbLogo
 fun ArtworkTitle(
     artwork: Artwork,
     modifier: Modifier = Modifier,
-    isLarge: Boolean = false,
 ) {
 
     val logoPath = artwork.logoPath
@@ -76,17 +75,12 @@ fun ArtworkTitle(
     ) { isLoaded ->
 
         if (isLoaded) {
-            BoxWithConstraints(contentAlignment = Alignment.Center) {
-                Image(
-                    modifier = Modifier
-                        // Fixed height so the Logo does not depend on its pixel size, width follows its ratio
-                        .height(if (isLarge) LOGO_HEIGHT_LARGE else LOGO_HEIGHT)
-                        .widthIn(max = maxWidth * LOGO_MAX_WIDTH_FRACTION),
-                    painter = painter,
-                    contentDescription = artwork.title,
-                    contentScale = ContentScale.Fit
-                )
-            }
+            Image(
+                modifier = Modifier.fillMaxWidth(),
+                painter = painter,
+                contentDescription = artwork.title,
+                contentScale = ContentScale.Fit
+            )
         } else {
             ArtworkTitleText(title = artwork.title)
         }
@@ -106,10 +100,6 @@ private fun ArtworkTitleText(
         color = MaterialTheme.colorScheme.onBackground,
     )
 }
-
-private const val LOGO_MAX_WIDTH_FRACTION = .7f
-private val LOGO_HEIGHT = 72.dp
-private val LOGO_HEIGHT_LARGE = 96.dp
 
 @OptIn(ExperimentalCoilApi::class)
 @Composable

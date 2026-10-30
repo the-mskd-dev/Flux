@@ -89,7 +89,6 @@ fun ArtworkContentLarge(
                     is FullArtwork.FullMovie -> ArtworkTitle(
                         modifier = Modifier.wrapContentWidth(),
                         artwork = fullArtwork.artwork,
-                        isLarge = true,
                     )
                     is FullArtwork.FullShow -> Text.MainTitle(
                         modifier = Modifier.wrapContentWidth(),

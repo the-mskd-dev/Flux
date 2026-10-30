@@ -85,7 +85,6 @@ fun ShowContentLarge(
                         .padding(FluxUI.Space.medium)
                         .wrapContentWidth(),
                     artwork = fullShow.artwork,
-                    isLarge = true,
                 )
 
             }

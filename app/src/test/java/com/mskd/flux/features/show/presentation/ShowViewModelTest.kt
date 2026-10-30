@@ -8,6 +8,9 @@ import com.mskd.flux.core.model.artwork.PersonType
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.features.artwork.fake.FakeObserveArtworkUseCase
+import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
+import com.mskd.flux.features.catalog.domain.model.SyncState
+import com.mskd.flux.features.identification.presentation.IdentificationAvailability
 import com.mskd.flux.features.people.domain.usecase.GetPeopleUseCase
 import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
@@ -25,6 +28,9 @@ import io.mockk.verify
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
+import com.mskd.flux.core.model.artwork.Artwork
 
 class ShowViewModelTest : FunSpec({
 
@@ -36,10 +42,15 @@ class ShowViewModelTest : FunSpec({
     lateinit var resetProgress: ResetProgressUseCase
     lateinit var urlLauncher: UrlLauncher
     lateinit var tokenDataStore: TokenDataStore
+    lateinit var token: MutableStateFlow<String>
+    lateinit var syncState: MutableStateFlow<SyncState>
 
     val updateVm: () -> Unit = {
 
-        tokenDataStore = mockk(relaxed = true) { coEvery { tokenIsAvailable() } returns true }
+        tokenDataStore = mockk(relaxed = true) {
+            coEvery { tokenIsAvailable() } returns true
+            every { flow } returns token
+        }
         resetProgress = mockk(relaxed = true)
         urlLauncher = mockk(relaxed = true)
 
@@ -48,6 +59,7 @@ class ShowViewModelTest : FunSpec({
             observeArtworkUseCase = observeArtworkUseCase,
             getPeopleUseCase = getPeopleUseCase,
             tokenDataStore = tokenDataStore,
+            catalogSyncCoordinator = mockk<CatalogSyncCoordinator> { every { state } returns syncState },
             resetProgress = resetProgress,
             urlLauncher = urlLauncher
         )
@@ -56,6 +68,8 @@ class ShowViewModelTest : FunSpec({
 
     beforeTest {
 
+        token = MutableStateFlow("token")
+        syncState = MutableStateFlow(SyncState.Idle())
         observeArtworkUseCase = FakeObserveArtworkUseCase()
         getPeopleUseCase = mockk()
         every { getPeopleUseCase(any()) } returns MutableStateFlow(persistentListOf<Person>())
@@ -234,6 +248,7 @@ class ShowViewModelTest : FunSpec({
             observeArtworkUseCase = observeArtworkUseCase,
             getPeopleUseCase = getPeopleUseCase,
             tokenDataStore = tokenDataStore,
+            catalogSyncCoordinator = mockk<CatalogSyncCoordinator> { every { state } returns syncState },
             resetProgress = resetProgress,
             urlLauncher = urlLauncher
         )
@@ -251,6 +266,7 @@ class ShowViewModelTest : FunSpec({
             observeArtworkUseCase = observeArtworkUseCase,
             getPeopleUseCase = getPeopleUseCase,
             tokenDataStore = tokenDataStore,
+            catalogSyncCoordinator = mockk<CatalogSyncCoordinator> { every { state } returns syncState },
             resetProgress = resetProgress,
             urlLauncher = urlLauncher
         )
@@ -259,6 +275,83 @@ class ShowViewModelTest : FunSpec({
             val state = awaitItem()
             state.state shouldBe State.Error()
         }
+    }
+
+    context("Identification manuelle") {
+
+        fun showWith(artwork: Artwork = MediaMockups.showArtwork, fileName: String? = null) {
+            val episodes = MediaMockups.episodes.mapIndexed { index, episode ->
+                if (index == 0 && fileName != null) episode.copy(file = episode.file.copy(name = fileName)) else episode
+            }
+            observeArtworkUseCase = mockk {
+                every { this@mockk(any()) } returns flowOf(
+                    State.Content(MediaMockups.fullShow.copy(artwork = artwork, episodes = episodes.toImmutableList()))
+                )
+            }
+            updateVm()
+        }
+
+        suspend fun identification(): IdentificationAvailability =
+            (viewModel.uiState.first { it.state is State.Content }.state as State.Content).content.identification
+
+        test("offered on a Show with a TMDB token") {
+            identification() shouldBe IdentificationAvailability.ENABLED
+        }
+
+        test("hidden without TMDB token") {
+            token.value = ""
+            updateVm()
+            identification() shouldBe IdentificationAvailability.HIDDEN
+        }
+
+        test("hidden when the name of one of the files carries a TMDB ID") {
+            showWith(fileName = "Dark S01E01 {tmdb-70523}.mkv")
+            identification() shouldBe IdentificationAvailability.HIDDEN
+        }
+
+        test("hidden on the Unknown Artwork") {
+            showWith(artwork = Artwork.UNKNOWN)
+            identification() shouldBe IdentificationAvailability.HIDDEN
+        }
+
+        test("disabled during a Synchro, enabled again once it ends") {
+            syncState.value = SyncState.Syncing(full = false)
+            updateVm()
+            viewModel.uiState.test {
+                (awaitItem().state as State.Content).content.identification shouldBe IdentificationAvailability.DISABLED
+                syncState.value = SyncState.Idle()
+                (awaitItem().state as State.Content).content.identification shouldBe IdentificationAvailability.ENABLED
+            }
+        }
+
+        test("the dialog opens only when the option is enabled") {
+            syncState.value = SyncState.Syncing(full = false)
+            updateVm()
+            viewModel.uiState.test {
+                awaitItem()
+                viewModel.handleIntent(ShowIntent.ShowIdentificationDialog)
+                expectNoEvents()
+
+                syncState.value = SyncState.Idle()
+                awaitItem()
+                viewModel.handleIntent(ShowIntent.ShowIdentificationDialog)
+                (awaitItem().state as State.Content).content.dialog shouldBe ShowDialog.Identification
+            }
+        }
+
+        test("once identified, the dialog closes and the page is replaced by the new Show") {
+            viewModel.uiState.test {
+                awaitItem()
+                viewModel.handleIntent(ShowIntent.ShowIdentificationDialog)
+                awaitItem()
+                viewModel.event.test {
+                    viewModel.handleIntent(ShowIntent.OnIdentified(artworkId = 42L))
+                    awaitItem() shouldBe ShowEvent.ReplaceShow(artworkId = 42L)
+                }
+                (awaitItem().state as State.Content).content.dialog shouldBe null
+            }
+        }
+
     }
 
 })

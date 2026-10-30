@@ -13,6 +13,7 @@ val moduleShow = module {
             observeArtworkUseCase = get(),
             getPeopleUseCase = get(),
             tokenDataStore = get(),
+            catalogSyncCoordinator = get(),
             resetProgress = get(),
         )
     }

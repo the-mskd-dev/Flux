@@ -16,7 +16,7 @@ val moduleIdentification = module {
             database = get(),
             enrichments = listOf(
                 DetailsEnrichment(api = get()),
-                SeasonsEnrichment(api = get()),
+                SeasonsEnrichment(api = get(), missingSeasonIsUnknown = true),
                 DurationsEnrichment(getFileDurationUseCase = get()),
             ),
         )

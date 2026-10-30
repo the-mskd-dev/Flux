@@ -101,11 +101,12 @@ interface TMDBService {
 
     //region Season
 
+    /** Null when the show has no such season (TMDB "not found"). */
     suspend fun getSeason(
         id: Long,
         season: Int,
         language: String
-    ) : SeasonDto
+    ) : SeasonDto?
 
     suspend fun getSeasonTranslations(
         artworkId: Long,

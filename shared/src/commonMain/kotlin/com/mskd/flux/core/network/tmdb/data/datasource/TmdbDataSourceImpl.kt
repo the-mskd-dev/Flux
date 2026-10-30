@@ -313,8 +313,7 @@ class TmdbDataSourceImpl(
 
     override suspend fun getSeason(artworkId: Long, season: Int): SeasonDto? {
 
-        if (!tokenDataStore.tokenIsAvailable())
-            return null
+        check(tokenDataStore.tokenIsAvailable()) { "No TMDB token available" }
 
         val language = tmdbLanguage()
 
@@ -342,7 +341,7 @@ class TmdbDataSourceImpl(
                     id = artworkId,
                     season = season,
                     language = language.toTmdbFormat()
-                )
+                ) ?: return@coroutineScope null
 
                 englishSeason?.await()?.let { tmdbSeason.completedBy(it) } ?: tmdbSeason
 
@@ -352,7 +351,7 @@ class TmdbDataSourceImpl(
             throw e
         } catch (e: Exception) {
             Napier.e(tag = TAG, message = "getTmdbSeason - Fail to get TMDBSeason for artworkId:$artworkId, season:$season (${language.toTmdbFormat()})", throwable = e)
-            null
+            throw e
         }
 
     }

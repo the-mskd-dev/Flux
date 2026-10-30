@@ -10,6 +10,7 @@ import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.model.SyncState
+import com.mskd.flux.features.identification.presentation.IdentificationAvailability
 import com.mskd.flux.features.people.domain.usecase.GetPeopleUseCase
 import com.mskd.flux.features.player.domain.model.PlaybackAction
 import com.mskd.flux.features.player.domain.usecase.ResolvePlaybackActionUseCase
@@ -193,12 +194,7 @@ class ArtworkViewModel(
         syncing: Boolean,
     ): IdentificationAvailability {
         val movie = (fullArtwork as? FullArtwork.FullMovie)?.movie ?: return IdentificationAvailability.HIDDEN
-        return when {
-            fullArtwork.artwork.isUnknown || !tokenAvailable -> IdentificationAvailability.HIDDEN
-            movie.file.nameProperties.tmdbId != null -> IdentificationAvailability.HIDDEN
-            syncing -> IdentificationAvailability.DISABLED
-            else -> IdentificationAvailability.ENABLED
-        }
+        return IdentificationAvailability.of(artwork = fullArtwork.artwork, files = listOf(movie.file), tokenAvailable = tokenAvailable, syncing = syncing)
     }
 
     /** Only a Season description whose Episodes are all still to watch is a spoiler. */

@@ -1,0 +1,14 @@
+{
+  "id": 7002,
+  "name": "Season 2",
+  "overview": "The second season.",
+  "poster_path": "/lost-pages-s2.jpg",
+  "season_number": 2,
+  "episodes": [
+    {
+      "id": 70021, "show_id": 990003, "name": "The Next Chapter", "overview": "The first episode of the second season.",
+      "runtime": 42, "episode_number": 1, "season_number": 2, "still_path": "/lp21.jpg",
+      "vote_average": 7.0, "vote_count": 10, "air_date": "2021-01-01", "crew": []
+    }
+  ]
+}

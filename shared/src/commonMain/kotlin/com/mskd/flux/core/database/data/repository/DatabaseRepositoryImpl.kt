@@ -89,6 +89,11 @@ class DatabaseRepositoryImpl(
                     mediasDao.findByArtworkIds(artworkIds = listOf(sourceArtworkId)).find { it.id == entry.mediaId }?.path
                 }
 
+                // The episodes the chosen Show does not have are Fichiers non reconnus: the Unknown Artwork must exist to show them
+                if (medias.any { it.artworkId == Artwork.UNKNOWN_ID } && artworksDao.getArtwork(artworkId = Artwork.UNKNOWN_ID) == null) {
+                    saveArtworks(listOf(Artwork.UNKNOWN))
+                }
+
                 saveFolder(artwork = artwork, seasons = seasons, medias = medias, people = people)
 
                 if (sourceHistory != null && historyPath != null) {

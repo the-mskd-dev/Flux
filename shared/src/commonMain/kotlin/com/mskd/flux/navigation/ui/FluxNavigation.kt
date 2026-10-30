@@ -126,6 +126,7 @@ fun FluxNavigation(
                     ShowScreen(
                         navigate = { route -> navigator.navigate(route) },
                         onBack = { navigator.onBack() },
+                        replaceShow = { artworkId -> navigator.replace(entry.copy(artworkId = artworkId, rgb = null)) },
                         artworkId = entry.artworkId,
                         colorScheme = createColorScheme(
                             theme = customization.uiTheme,

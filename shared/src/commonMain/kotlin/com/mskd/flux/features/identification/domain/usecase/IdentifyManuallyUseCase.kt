@@ -11,7 +11,8 @@ import kotlinx.coroutines.CancellationException
 /**
  * Identification manuelle: every Média of an Artwork is re-identified to the Artwork chosen by the user, by replaying the
  * [enrichments] of the Synchro under its TMDB ID. The result is marked as manually identified, and is Private when the
- * source or the chosen Artwork is. When the chosen Artwork cannot be fetched, nothing is saved: the Médias stay where they are.
+ * source or the chosen Artwork is. When the chosen Artwork cannot be fetched, or has none of the files, nothing is saved:
+ * the Médias stay where they are.
  */
 class IdentifyManuallyUseCase(
     private val database: DatabaseRepository,
@@ -46,6 +47,8 @@ class IdentifyManuallyUseCase(
         enrichments.forEach { it.enrich(draft) }
 
         val artwork = draft.artwork?.takeIf { draft.isSavable && !it.isUnknown } ?: error("No data for ${target.type} ${target.id}")
+        // Otherwise the chosen Artwork, left empty, would be deleted by the save
+        check(draft.medias.any { it.artworkId == artwork.id }) { "No file of artwork $artworkId in ${target.type} ${target.id}" }
 
         database.saveIdentifiedFolder(
             sourceArtworkId = source.id,

@@ -22,6 +22,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.core.State
+import com.mskd.flux.features.identification.presentation.IdentificationAvailability
+import com.mskd.flux.features.identification.ui.IdentificationDialog
 import com.mskd.flux.features.show.presentation.ShowDialog
 import com.mskd.flux.features.show.presentation.ShowEvent
 import com.mskd.flux.features.show.presentation.ShowIntent
@@ -42,6 +44,8 @@ import com.mskd.flux.ui.modal.menu.FluxPopUpMenu
 import com.mskd.flux.ui.modal.menu.FluxPopUpMenuItem
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_eraser
+import flux.shared.generated.resources.ic_search
+import flux.shared.generated.resources.identification_select_data
 import flux.shared.generated.resources.more_info
 import flux.shared.generated.resources.oups_an_error_occured
 import flux.shared.generated.resources.reset_progress
@@ -56,6 +60,7 @@ fun ShowScreen(
     colorScheme: ColorScheme,
     navigate: (Route) -> Unit,
     onBack: () -> Unit,
+    replaceShow: (artworkId: Long) -> Unit,
     viewModel: ShowViewModel = koinViewModel(parameters = { parametersOf(artworkId) })
 ) {
 
@@ -65,6 +70,7 @@ fun ShowScreen(
         viewModel.event.collect { event ->
             when (event) {
                 ShowEvent.BackToPreviousScreen -> onBack()
+                is ShowEvent.ReplaceShow -> replaceShow(event.artworkId)
                 is ShowEvent.NavigateToSeason -> navigate(Artwork(artworkId = event.artworkId, season = event.season, rgb = event.rgb))
                 is ShowEvent.NavigateToPerson -> navigate(Route.Person(person = event.person))
                 is ShowEvent.NavigateToGallery -> navigate(Route.Gallery(artworkId = event.artworkId, contentType = event.contentType))
@@ -99,6 +105,7 @@ fun ShowScreen(
                     ShowScreenContent(
                         fullShow = content.fullShow,
                         people = content.people,
+                        identification = content.identification,
                         dialog = content.dialog,
                         sendIntent = viewModel::handleIntent
                     )
@@ -115,6 +122,7 @@ fun ShowScreen(
 fun ShowScreenContent(
     fullShow: FullArtwork.FullShow,
     people: List<Person>,
+    identification: IdentificationAvailability = IdentificationAvailability.HIDDEN,
     dialog: ShowDialog?,
     sendIntent: (ShowIntent) -> Unit
 ) {
@@ -143,6 +151,7 @@ fun ShowScreenContent(
 
             ShowDropDownMenu(
                 isVisible = showMenu,
+                identification = identification,
                 onDismissRequest = { showMenu = false },
                 sendIntent = sendIntent
             )
@@ -173,6 +182,14 @@ fun ShowScreenContent(
             )
         }
 
+        if (dialog is ShowDialog.Identification) {
+            IdentificationDialog(
+                artworkId = fullShow.artwork.id,
+                onDismiss = { sendIntent(ShowIntent.CloseDialog) },
+                onIdentified = { artworkId -> sendIntent(ShowIntent.OnIdentified(artworkId = artworkId)) },
+            )
+        }
+
         if (dialog is ShowDialog.ResetProgress) {
             ResetProgressDialog(
                 onValidate = { sendIntent(ShowIntent.ResetProgress) },
@@ -187,6 +204,7 @@ fun ShowScreenContent(
 @Composable
 fun ShowDropDownMenu(
     isVisible: Boolean,
+    identification: IdentificationAvailability,
     onDismissRequest: () -> Unit,
     sendIntent: (ShowIntent) -> Unit
 ) {
@@ -194,7 +212,7 @@ fun ShowDropDownMenu(
     FluxPopUpMenu(
         isVisible = isVisible,
         onDismissRequest = onDismissRequest,
-        items = listOf(
+        items = listOfNotNull(
             FluxPopUpMenuItem(
                 text = stringResource(Res.string.more_info),
                 onClick = {
@@ -210,7 +228,17 @@ fun ShowDropDownMenu(
                     onDismissRequest()
                 },
                 leadingIcon = { Icon(painter = painterResource(Res.drawable.ic_eraser), contentDescription = stringResource(Res.string.reset_progress)) },
-            )
+            ),
+            // Identification manuelle
+            FluxPopUpMenuItem(
+                text = stringResource(Res.string.identification_select_data),
+                onClick = {
+                    sendIntent(ShowIntent.ShowIdentificationDialog)
+                    onDismissRequest()
+                },
+                leadingIcon = { Icon(painter = painterResource(Res.drawable.ic_search), contentDescription = stringResource(Res.string.identification_select_data)) },
+                enabled = identification == IdentificationAvailability.ENABLED,
+            ).takeIf { identification != IdentificationAvailability.HIDDEN },
         )
     )
 

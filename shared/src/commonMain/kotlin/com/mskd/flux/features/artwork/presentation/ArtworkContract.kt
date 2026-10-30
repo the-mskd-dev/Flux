@@ -7,6 +7,7 @@ import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.core.State
+import com.mskd.flux.features.identification.presentation.IdentificationAvailability
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.persistentListOf
@@ -51,15 +52,6 @@ data class ArtworkContent(
 data class ArtworkUiState(
     val state: State<ArtworkContent> = State.Loading
 )
-
-/** Availability of the Identification manuelle option of the menu. */
-enum class IdentificationAvailability {
-    /** No TMDB token, a TMDB ID in a file name, the Unknown Artwork, or a page that does not offer it. */
-    HIDDEN,
-    /** During a Synchro, which could overwrite the choice. */
-    DISABLED,
-    ENABLED,
-}
 
 sealed class ArtworkDialog {
     data class EpisodeStatusConfirmation(val episode: Episode) : ArtworkDialog()

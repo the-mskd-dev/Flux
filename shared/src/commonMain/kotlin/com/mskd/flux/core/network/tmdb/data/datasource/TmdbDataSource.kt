@@ -43,6 +43,7 @@ interface TmdbDataSource {
         number: Int,
     ) : EpisodeDto?
 
+    /** Null when the show has no such season. Throws when the season cannot be fetched (network, API, no token). */
     suspend fun getSeason(
         artworkId: Long,
         season: Int,

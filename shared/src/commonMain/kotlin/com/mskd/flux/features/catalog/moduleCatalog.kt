@@ -38,7 +38,7 @@ val moduleCatalog = module {
         CatalogStep(
             database = get(),
             enrichments = listOf(
-                IdentificationEnrichment(api = get()),
+                IdentificationEnrichment(api = get(), database = get()),
                 DetailsEnrichment(api = get()),
                 SeasonsEnrichment(api = get()),
                 DurationsEnrichment(getFileDurationUseCase = get()),

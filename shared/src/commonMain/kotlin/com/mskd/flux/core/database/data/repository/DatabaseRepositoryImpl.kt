@@ -175,10 +175,13 @@ class DatabaseRepositoryImpl(
 
     override suspend fun saveArtworks(artworks: List<Artwork>, overrideLastModification: Boolean) {
         val privateIds = artworksDao.getPrivateArtworkIds().toSet()
+        val manuallyIdentifiedIds = artworksDao.getManuallyIdentifiedArtworkIds().toSet()
 
         artworksDao.insertArtworks(artworks = artworks.map { artwork ->
             artwork.toEntity(overrideLastModification = overrideLastModification).copy(
-                isPrivate = artwork.isPrivate || artwork.id in privateIds
+                isPrivate = artwork.isPrivate || artwork.id in privateIds,
+                // A save never undoes an Identification manuelle: only an explicit clear of the marker does
+                manuallyIdentified = artwork.isManuallyIdentified || artwork.id in manuallyIdentifiedIds
             )
         })
     }
@@ -189,6 +192,10 @@ class DatabaseRepositoryImpl(
 
     override suspend fun getMediasNotInFiles(files: List<UserFile>): List<Media> {
         return mediasDao.getMediasNotInFiles(fileNames =  files.map { it.name }).map { it.toDomain() }
+    }
+
+    override suspend fun getManuallyIdentifiedMedias(): List<Media> {
+        return mediasDao.findByArtworkIds(artworkIds = artworksDao.getManuallyIdentifiedArtworkIds()).map { it.toDomain() }
     }
 
     override suspend fun getMovie(artworkId: Long): Movie? {

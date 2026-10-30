@@ -55,6 +55,9 @@ interface ArtworkDao {
     @Query("SELECT id FROM artworks WHERE isPrivate = 1")
     suspend fun getPrivateArtworkIds() : List<Long>
 
+    @Query("SELECT id FROM artworks WHERE manuallyIdentified = 1")
+    suspend fun getManuallyIdentifiedArtworkIds() : List<Long>
+
     @Query("UPDATE artworks SET isPrivate = 1 WHERE nsfw = 1")
     suspend fun setNsfwArtworksPrivate()
 

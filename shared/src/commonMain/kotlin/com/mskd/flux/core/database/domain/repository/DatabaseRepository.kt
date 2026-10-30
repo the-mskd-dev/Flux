@@ -58,6 +58,9 @@ interface DatabaseRepository {
     suspend fun getMediasNotInFiles(files: List<UserFile>) : List<Media>
     suspend fun getNextEpisodeFor(episode: Episode) : Episode?
 
+    /** The Médias of the Artworks identified manually (Identification manuelle). */
+    suspend fun getManuallyIdentifiedMedias() : List<Media>
+
     // Movies
     suspend fun getMovie(artworkId: Long) : Movie?
 

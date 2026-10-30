@@ -71,6 +71,11 @@ class FakeDatabaseRepository : DatabaseRepository {
         return MediaMockups.artworks.filter { it.nsfw }.map { it.id }
     }
 
+    override suspend fun getManuallyIdentifiedMedias(): List<Media> {
+        val artworkIds = MediaMockups.artworks.filter { it.isManuallyIdentified }.map { it.id }
+        return MediaMockups.allMedias.filter { it.artworkId in artworkIds }
+    }
+
     override suspend fun getMedias(): List<Media> {
         return MediaMockups.allMedias
     }

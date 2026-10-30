@@ -34,7 +34,8 @@ val moduleTmdb = module {
 
     single<ApiRepository> {
         ApiRepositoryImpl(
-            tmdb = get()
+            tmdb = get(),
+            settings = get()
         )
     }
 

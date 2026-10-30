@@ -9,6 +9,8 @@ import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.core.network.tmdb.data.datasource.TmdbDataSource
+import com.mskd.flux.core.network.tmdb.data.dto.images.ImagesDto
+import com.mskd.flux.core.network.tmdb.data.mapper.logoPath
 import com.mskd.flux.core.network.tmdb.data.mapper.toArtwork
 import com.mskd.flux.core.network.tmdb.data.mapper.toDomain
 import com.mskd.flux.core.network.tmdb.domain.model.ArtworkDetails
@@ -17,9 +19,11 @@ import com.mskd.flux.core.network.tmdb.domain.model.Translation
 import com.mskd.flux.core.network.tmdb.domain.model.TranslationRequest
 import com.mskd.flux.core.network.tmdb.domain.repository.ApiRepository
 import com.mskd.flux.features.gallery.domain.model.GalleryImage
+import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 
 internal class ApiRepositoryImpl(
-    private val tmdb: TmdbDataSource
+    private val tmdb: TmdbDataSource,
+    private val settings: SettingsDataStore,
 ) : ApiRepository {
 
     //region Artwork
@@ -34,19 +38,22 @@ internal class ApiRepositoryImpl(
     override suspend fun getDetails(artworkId: Long, type: ContentType, file: UserFile): ArtworkDetails? = when (type) {
         ContentType.MOVIE -> tmdb.getMovie(artworkId = artworkId)?.let { movie ->
             ArtworkDetails(
-                artwork = movie.toArtwork(),
+                artwork = movie.toArtwork(logoPath = movie.images.logoPath()),
                 movie = movie.toDomain(file = file, duration = movie.duration ?: 0),
                 people = movie.credits?.toDomain(artworkId = movie.id).orEmpty()
             )
         }
         ContentType.SHOW -> tmdb.getShow(artworkId = artworkId)?.let { show ->
             ArtworkDetails(
-                artwork = show.toArtwork(),
+                artwork = show.toArtwork(logoPath = show.images.logoPath()),
                 movie = null,
                 people = show.credits?.toDomain(artworkId = show.id).orEmpty()
             )
         }
     }
+
+    /** Logo among the images appended to the details; null (not searched) when the details came without images. */
+    private suspend fun ImagesDto?.logoPath(): String? = this?.logoPath(language = settings.getDataLanguage())
 
     override suspend fun getGenres(): List<Genre> = tmdb.getGenres().map { it.toDomain() }
 

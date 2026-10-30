@@ -15,6 +15,7 @@ import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.usecase.syncGenres.SyncGenresUseCase
 import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
 import com.mskd.flux.features.catalog.fake.FakeCatalogSyncCoordinator
+import com.mskd.flux.features.images.fake.FakeImagesPrefetchManager
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import io.kotest.core.spec.style.FunSpec
 import io.mockk.coEvery
@@ -93,6 +94,7 @@ class UpdateLanguageUseCaseTest : FunSpec({
         coEvery { database.getMedias() } returns listOf(movie) + listOf(episode)
         coEvery { database.getArtworks(includePrivates = true) } returns listOf(showArtwork)
         coEvery { database.getSeasons() } returns listOf(season)
+        coEvery { api.getLogo(any(), any()) } returns ""
 
         useCase = UpdateLanguageUseCase(
             api = api,
@@ -100,6 +102,7 @@ class UpdateLanguageUseCaseTest : FunSpec({
             settings = settings,
             coordinator = coordinator,
             syncGenresUseCase = syncGenresUseCase,
+            imagesPrefetchManager = FakeImagesPrefetchManager(),
             dispatcher = testDispatcher
         )
     }

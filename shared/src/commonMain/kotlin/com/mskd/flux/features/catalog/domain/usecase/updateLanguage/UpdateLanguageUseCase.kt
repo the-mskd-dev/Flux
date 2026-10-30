@@ -1,6 +1,7 @@
 package com.mskd.flux.features.catalog.domain.usecase.updateLanguage
 
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
+import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Movie
@@ -8,7 +9,10 @@ import com.mskd.flux.core.network.tmdb.domain.model.TranslationRequest
 import com.mskd.flux.core.network.tmdb.domain.repository.ApiRepository
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.usecase.syncGenres.SyncGenresUseCase
+import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
+import com.mskd.flux.report.Trace
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -16,6 +20,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
+import kotlinx.coroutines.withContext
 
 class UpdateLanguageUseCase(
     private val api: ApiRepository,
@@ -23,14 +28,18 @@ class UpdateLanguageUseCase(
     private val settings: SettingsDataStore,
     private val coordinator: CatalogSyncCoordinator,
     private val syncGenresUseCase: SyncGenresUseCase,
+    private val imagesPrefetchManager: ImagesPrefetchManager,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(10)
 ) {
+
+    private companion object { const val TAG = "UpdateLanguageUseCase" }
 
     operator fun invoke() {
         coordinator.launch(full = false) {
 
             val language = settings.getDataLanguage()
-            val shows = database.getArtworks(includePrivates = true).filter { it.type == ContentType.SHOW }
+            val artworks = database.getArtworks(includePrivates = true)
+            val shows = artworks.filter { it.type == ContentType.SHOW }
             val medias = database.getMedias()
             val movies = medias.filterIsInstance<Movie>()
             val seasons = database.getSeasons()
@@ -127,6 +136,27 @@ class UpdateLanguageUseCase(
 
             }
 
+            // Logos, once the translations are saved: the translated Artwork rows, read before the change, would overwrite the new Logo paths
+            withContext(dispatcher) {
+                artworks.filter { !it.isUnknown }.chunked(batchSize).forEach { chunk ->
+                    chunk.map { artwork -> async { updateLogo(artwork) } }.awaitAll()
+                }
+            }
+
+            imagesPrefetchManager.prefetchImages()
+
+        }
+    }
+
+    /** A failed lookup keeps the previous Logo. */
+    private suspend fun updateLogo(artwork: Artwork) {
+        try {
+            val logoPath = api.getLogo(artworkId = artwork.id, type = artwork.type)
+            database.setArtworkLogo(artworkId = artwork.id, logoPath = logoPath)
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            Trace.error(TAG, "Fail to search the Logo of ${artwork.title}", e)
         }
     }
 

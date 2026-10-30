@@ -74,6 +74,7 @@ val moduleCatalog = module {
             settings = get(),
             coordinator = get(),
             syncGenresUseCase = get(),
+            imagesPrefetchManager = get(),
         )
     }
 

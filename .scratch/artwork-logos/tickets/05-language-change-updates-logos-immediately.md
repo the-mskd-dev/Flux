@@ -8,7 +8,7 @@ The existing translation blocks save whole Artwork rows from an earlier snapshot
 
 **Blocked by:** 03: Existing Artwork get their Logo (Étape "Logos"); 04: The Logo is available offline (prefetch)
 
-**Status:** ready-for-agent
+**Status:** done
 
 - [ ] The language change use case re-chooses the Logo of all Artwork (except the Unknown Artwork) in the new language and overwrites the stored Logo path.
 - [ ] "None" can become a Logo and a Logo can become "none" after the change.

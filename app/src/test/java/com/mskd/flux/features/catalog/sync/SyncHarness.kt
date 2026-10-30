@@ -12,6 +12,7 @@ import com.mskd.flux.core.datastore.domain.UserDataStore
 import com.mskd.flux.core.model.core.AppInfo
 import com.mskd.flux.core.model.files.FileSource
 import com.mskd.flux.core.model.files.UserFile
+import com.mskd.flux.core.model.language.Language
 import com.mskd.flux.core.network.tmdb.data.TMDB_MAX_REQUESTS
 import com.mskd.flux.core.network.tmdb.data.moduleTmdb
 import com.mskd.flux.core.network.tmdb.data.tmdbHttpClient
@@ -19,6 +20,7 @@ import com.mskd.flux.di.Qualifiers
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
+import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
 import com.mskd.flux.features.catalog.fake.FakeCatalogSyncCoordinator
 import com.mskd.flux.features.catalog.moduleCatalog
 import com.mskd.flux.features.files.domain.datasource.FilesDataSource
@@ -80,6 +82,9 @@ internal class SyncHarness(tmdbToken: String = "test-token", tmdbMaxRequests: In
 
     private val recorderScope = CoroutineScope(SupervisorJob() + Dispatchers.Unconfined)
 
+    /** The images prefetch, counting its requests. */
+    val prefetch = FakeImagesPrefetchManager()
+
     private val _states = CopyOnWriteArrayList<SyncState>()
 
     /** Successive values of the Synchro state since the harness creation. */
@@ -103,7 +108,7 @@ internal class SyncHarness(tmdbToken: String = "test-token", tmdbMaxRequests: In
                 single<TokenDataStore> { TokenDataStoreImpl(tokenDataStore = InMemoryPreferencesDataStore(), appInfo = get()) }
                 single<UserDataStore> { UserDataStoreImpl(userDataStore = InMemoryPreferencesDataStore(), json = get()) }
                 single<PrivateFolderDataStore> { PrivateFolderDataStoreImpl(privateFolderDataStore = InMemoryPreferencesDataStore()) }
-                single<ImagesPrefetchManager> { FakeImagesPrefetchManager() }
+                single<ImagesPrefetchManager> { prefetch }
                 single<GetFileDurationUseCase> {
                     object : GetFileDurationUseCase {
                         override suspend fun invoke(file: UserFile): Int {
@@ -126,6 +131,8 @@ internal class SyncHarness(tmdbToken: String = "test-token", tmdbMaxRequests: In
     private val koin = koinApplication.koin
 
     private val useCase: SyncCatalogUseCase = koin.get()
+
+    private val updateLanguageUseCase: UpdateLanguageUseCase = koin.get()
 
     /** The Catalogue, as persisted in the database. */
     val catalog: DatabaseRepository = koin.get()
@@ -170,6 +177,18 @@ internal class SyncHarness(tmdbToken: String = "test-token", tmdbMaxRequests: In
     suspend fun fullSync() {
         requestFullSync()
         awaitIdle()
+    }
+
+    /** Changes the data language like the Settings do, then waits for the Catalogue to be updated. */
+    suspend fun changeDataLanguage(language: Language) {
+        requestDataLanguageChange(language)
+        awaitIdle()
+    }
+
+    /** Changes the data language like the Settings do, without waiting for the Catalogue to be updated. */
+    suspend fun requestDataLanguageChange(language: Language) {
+        settings.setDataLanguage(language)
+        updateLanguageUseCase()
     }
 
     fun requestLightSync() = useCase(onlyNew = true)

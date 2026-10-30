@@ -58,6 +58,10 @@ _Avoid_: Fanart, banner, bannière
 Image TMDB 2:3 d'un Artwork, en portrait.
 _Avoid_: Affiche, cover, jaquette
 
+**Logo**:
+Image TMDB d'un Artwork représentant son titre stylisé, sur fond transparent. Elle remplace le titre texte sur la page de l'Artwork lorsqu'elle est disponible. Un Artwork a au plus un Logo.
+_Avoid_: Title image, Wordmark, Titre graphique
+
 **Artwork image**:
 Image affichée en haut de la page d'un Artwork. Un tap l'ouvre dans la Gallery lorsqu'un token TMDB est configuré.
 _Avoid_: Header image, banner, bannière

@@ -6,6 +6,7 @@ import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.artwork.Season
+import com.mskd.flux.core.model.core.ImagesPaths
 import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.features.sources.domain.model.UserFolder
 import kotlinx.coroutines.flow.Flow
@@ -35,6 +36,9 @@ interface DatabaseRepository {
     suspend fun getArtworks(includePrivates: Boolean = false) : List<Artwork>
     suspend fun getArtworks(artworkIds: List<Long>) : List<Artwork>
 
+    /** Writes only the Logo path of the Artwork (see [Artwork.logoPath]): its other data and its user state are kept. */
+    suspend fun setArtworkLogo(artworkId: Long, logoPath: String?)
+
     // Privacy
     suspend fun setArtworkPrivate(artworkId: Long, isPrivate: Boolean)
     suspend fun clearPrivateArtworks()
@@ -63,7 +67,7 @@ interface DatabaseRepository {
     suspend fun getUnknownMedias() : List<Episode>
 
     // Images
-    suspend fun getAllImagesPaths() : List<String>
+    suspend fun getAllImagesPaths() : ImagesPaths
 
     // Update
     suspend fun updateRealPaths(files: List<UserFile>)

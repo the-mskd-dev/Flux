@@ -12,7 +12,7 @@ class NsfwPrivateStep(
     private val privateFolder: PrivateFolderDataStore,
 ) : SyncStep {
 
-    override fun units(context: SyncContext) = 1
+    override suspend fun units(context: SyncContext) = 1
 
     override suspend fun run(context: SyncContext) {
 

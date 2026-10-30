@@ -123,6 +123,9 @@ configure<ApplicationExtension> {
         getByName("androidTest") {
             resources.directories.add("$rootDir/shared/schemas")
         }
+        getByName("test") {
+            resources.directories.add("$rootDir/shared/schemas")
+        }
     }
 
     buildFeatures {

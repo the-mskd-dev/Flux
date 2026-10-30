@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,14 +18,12 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.bleedHorizontal
-import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxUI
 
 @Composable
 fun ArtworkHeader(
     modifier: Modifier,
     fullArtwork: FullArtwork,
-    title: String,
     currentMedia: Media,
     selectedSeason: Int?,
     sendIntent: (ArtworkIntent) -> Unit
@@ -57,7 +54,7 @@ fun ArtworkHeader(
         )
 
         if (isMovie) {
-            Text.MainTitle(
+            ArtworkTitle(
                 modifier = Modifier.constrainAs(text) {
                     top.linkTo(image.bottom)
                     start.linkTo(parent.start, FluxUI.Space.medium)
@@ -65,8 +62,7 @@ fun ArtworkHeader(
                     bottom.linkTo(image.bottom)
                     width = Dimension.preferredWrapContent
                 },
-                text = title,
-                color = MaterialTheme.colorScheme.onBackground,
+                artwork = fullArtwork.artwork,
             )
         }
 
@@ -99,7 +95,6 @@ fun ArtworkHeader_Preview() {
                 modifier = Modifier.fillMaxWidth(),
                 fullArtwork = MediaMockups.fullShow,
                 currentMedia = MediaMockups.episode1,
-                title = MediaMockups.fullShow.artwork.title,
                 selectedSeason = 1,
                 sendIntent = {}
             )

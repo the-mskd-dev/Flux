@@ -10,5 +10,6 @@
   "genres": [{ "id": 18, "name": "Drama" }],
   "adult": false,
   "translations": { "translations": [] },
-  "credits": { "cast": [], "crew": [] }
+  "credits": { "cast": [], "crew": [] },
+  "images": { "backdrops": [], "posters": [], "logos": [] }
 }

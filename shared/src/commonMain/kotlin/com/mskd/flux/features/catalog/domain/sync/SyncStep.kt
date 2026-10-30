@@ -9,8 +9,8 @@ interface SyncStep {
     /** Whether the step runs in this Synchro. */
     fun isEnabled(context: SyncContext): Boolean = true
 
-    /** Estimated units of work, deduced from the file names. Called once the scan is done, before any step runs. */
-    fun units(context: SyncContext): Int
+    /** Estimated units of work, deduced from the file names or the Catalogue. Called once the scan is done, before any step runs. */
+    suspend fun units(context: SyncContext): Int
 
     suspend fun run(context: SyncContext)
 

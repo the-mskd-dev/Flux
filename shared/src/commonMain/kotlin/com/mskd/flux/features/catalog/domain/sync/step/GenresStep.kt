@@ -9,7 +9,7 @@ class GenresStep(private val syncGenresUseCase: SyncGenresUseCase) : SyncStep {
 
     override fun isEnabled(context: SyncContext) = context.full
 
-    override fun units(context: SyncContext) = 1
+    override suspend fun units(context: SyncContext) = 1
 
     override suspend fun run(context: SyncContext) {
         syncGenresUseCase()

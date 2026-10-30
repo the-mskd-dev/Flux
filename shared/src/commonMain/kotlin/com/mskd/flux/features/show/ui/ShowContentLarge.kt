@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.features.artwork.ui.composables.ArtworkImageFull
+import com.mskd.flux.features.artwork.ui.composables.ArtworkTitle
 import com.mskd.flux.features.artwork.ui.composables.GenresTags
 import com.mskd.flux.features.people.ui.components.people.PeopleList
 import com.mskd.flux.features.show.presentation.ShowIntent
@@ -79,12 +80,11 @@ fun ShowContentLarge(
 
             item(span = { GridItemSpan(maxLineSpan) }) {
 
-                Text.MainTitle(
+                ArtworkTitle(
                     modifier = Modifier
                         .padding(FluxUI.Space.medium)
                         .wrapContentWidth(),
-                    text = fullShow.artwork.title,
-                    color = MaterialTheme.colorScheme.onBackground,
+                    artwork = fullShow.artwork,
                 )
 
             }

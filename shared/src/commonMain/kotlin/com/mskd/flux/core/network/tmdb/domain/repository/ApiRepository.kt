@@ -24,6 +24,9 @@ interface ApiRepository {
     /** Details, translations and credits of the Artwork in one call; null when TMDB has no details (or no token). */
     suspend fun getDetails(artworkId: Long, type: ContentType, file: UserFile): ArtworkDetails?
 
+    /** Path of the Logo chosen among the images of the Artwork, empty when it has none. Throws when the lookup fails (network, API, no token). */
+    suspend fun getLogo(artworkId: Long, type: ContentType): String
+
     suspend fun getGenres() : List<Genre>
 
     suspend fun getMovie(artworkId: Long, file: UserFile): Movie?

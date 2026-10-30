@@ -16,6 +16,7 @@ import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.artwork.Season
+import com.mskd.flux.core.model.core.ImagesPaths
 import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.utils.extensions.sort
@@ -103,6 +104,10 @@ class DatabaseRepositoryImpl(
         return artworksDao.getArtworks(artworkIds = artworkIds).map { it.toDomain() }
     }
 
+    override suspend fun setArtworkLogo(artworkId: Long, logoPath: String?) {
+        artworksDao.setArtworkLogo(artworkId = artworkId, logoPath = logoPath)
+    }
+
     override suspend fun setArtworkPrivate(artworkId: Long, isPrivate: Boolean) {
         artworksDao.setArtworkPrivate(artworkId = artworkId, isPrivate = isPrivate)
     }
@@ -177,17 +182,19 @@ class DatabaseRepositoryImpl(
         return mediasDao.getUnknownMedias().mapNotNull { it.toDomain() as? Episode }
     }
 
-    override suspend fun getAllImagesPaths(): List<String> {
+    override suspend fun getAllImagesPaths(): ImagesPaths {
         val artworks = artworksDao.getArtworksImages()
         val medias = mediasDao.getMediasImages()
         val seasons = seasonsDao.getImages()
 
-        return buildList {
+        val images = buildList {
             addAll(artworks.filter { it.imagePath.isNotBlank() }.map { it.imagePath })
             addAll(artworks.filter { it.bannerPath.isNotBlank() }.map { it.bannerPath })
             addAll(medias.filter { it.isNotBlank() })
             addAll(seasons.filter { it.isNotBlank() })
         }
+
+        return ImagesPaths(images = images, logos = artworks.map { it.logoPath })
     }
 
     override suspend fun updateRealPaths(files: List<UserFile>) {

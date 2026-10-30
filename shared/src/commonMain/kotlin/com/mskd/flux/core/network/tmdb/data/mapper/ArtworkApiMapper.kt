@@ -21,7 +21,7 @@ fun ArtworkDto.toDomain() : Artwork {
     )
 }
 
-fun MovieDto.toArtwork() : Artwork {
+fun MovieDto.toArtwork(logoPath: String? = null) : Artwork {
     return Artwork(
         id = this.id,
         title = this.title,
@@ -30,11 +30,12 @@ fun MovieDto.toArtwork() : Artwork {
         bannerPath = this.bannerPath.orEmpty(),
         type = ContentType.MOVIE,
         genreIds = this.genres.map { it.id }.toImmutableList(),
-        nsfw = this.nsfw
+        nsfw = this.nsfw,
+        logoPath = logoPath
     )
 }
 
-fun ShowDto.toArtwork() : Artwork {
+fun ShowDto.toArtwork(logoPath: String? = null) : Artwork {
     return Artwork(
         id = this.id,
         title = this.title,
@@ -43,6 +44,7 @@ fun ShowDto.toArtwork() : Artwork {
         bannerPath = this.bannerPath.orEmpty(),
         type = ContentType.SHOW,
         genreIds = this.genres.map { it.id }.toImmutableList(),
-        nsfw = this.nsfw
+        nsfw = this.nsfw,
+        logoPath = logoPath
     )
 }

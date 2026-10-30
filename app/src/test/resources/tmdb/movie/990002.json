@@ -27,5 +27,12 @@
   "credits": {
     "cast": [],
     "crew": []
+  },
+  "images": {
+    "backdrops": [],
+    "posters": [],
+    "logos": [
+      { "file_path": "/forgotten-tale-en.svg", "aspect_ratio": 3.0, "vote_average": 5.0, "iso_639_1": "en" }
+    ]
   }
 }

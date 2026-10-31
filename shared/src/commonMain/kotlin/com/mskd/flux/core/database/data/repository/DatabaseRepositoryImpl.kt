@@ -198,6 +198,10 @@ class DatabaseRepositoryImpl(
         return mediasDao.findByArtworkIds(artworkIds = artworksDao.getManuallyIdentifiedArtworkIds()).map { it.toDomain() }
     }
 
+    override suspend fun clearManualIdentifications() {
+        artworksDao.clearManualIdentifications()
+    }
+
     override suspend fun getMovie(artworkId: Long): Movie? {
         return mediasDao.getForArtwork(artworkId = artworkId).find { it.type == ContentType.MOVIE }?.toDomain() as? Movie
     }

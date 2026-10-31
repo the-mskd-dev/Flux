@@ -76,6 +76,8 @@ class FakeDatabaseRepository : DatabaseRepository {
         return MediaMockups.allMedias.filter { it.artworkId in artworkIds }
     }
 
+    override suspend fun clearManualIdentifications() {}
+
     override suspend fun getMedias(): List<Media> {
         return MediaMockups.allMedias
     }

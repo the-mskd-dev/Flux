@@ -61,6 +61,9 @@ interface DatabaseRepository {
     /** The Médias of the Artworks identified manually (Identification manuelle). */
     suspend fun getManuallyIdentifiedMedias() : List<Media>
 
+    /** Forgets every Identification manuelle: the files are identified by name search again. */
+    suspend fun clearManualIdentifications()
+
     // Movies
     suspend fun getMovie(artworkId: Long) : Movie?
 

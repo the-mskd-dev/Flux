@@ -44,7 +44,6 @@ fun IdentificationDialog(
 
     FluxDialog(
         title = stringResource(Res.string.identification_select_data),
-        // The Médias are being moved: the dialog stays until the end
         onDismiss = { if (!uiState.isIdentifying) onDismiss() },
         content = {
             IdentificationDialogContent(

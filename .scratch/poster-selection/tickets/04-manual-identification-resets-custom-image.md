@@ -8,8 +8,8 @@ See `.scratch/poster-selection/specs.md`.
 
 **Blocked by:** 01: Choose a custom Backdrop from the Gallery
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] The save of an identified folder explicitly clears the custom Backdrop and custom Poster of the target Artwork (the regular save keeps them, see ticket 03).
-- [ ] `SyncHarness` behaviour tests cover: identification to a new Artwork → no Image personnalisée; identification into an Artwork already in the Catalog with an Image personnalisée → cleared.
+- [x] The save of an identified folder explicitly clears the custom Backdrop and custom Poster of the target Artwork (the regular save keeps them, see ticket 03).
+- [x] `SyncHarness` behaviour tests cover: identification to a new Artwork → no Image personnalisée; identification into an Artwork already in the Catalog with an Image personnalisée → cleared.
 - [ ] `./gradlew :app:testFossDebugUnitTest` passes.

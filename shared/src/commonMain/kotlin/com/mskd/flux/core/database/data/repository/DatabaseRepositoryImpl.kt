@@ -95,6 +95,8 @@ class DatabaseRepositoryImpl(
                 }
 
                 saveFolder(artwork = artwork, seasons = seasons, medias = medias, people = people)
+                // The chosen Artwork shows its TMDB images: an Image personnalisée it had in the Catalog is lost
+                artworksDao.clearCustomImages(artworkId = artwork.id)
 
                 if (sourceHistory != null && historyPath != null) {
                     val media = mediasDao.findByPaths(paths = listOf(historyPath)).find { it.artworkId == artwork.id }

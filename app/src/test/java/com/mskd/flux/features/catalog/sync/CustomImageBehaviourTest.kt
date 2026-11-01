@@ -1,5 +1,7 @@
 package com.mskd.flux.features.catalog.sync
 
+import com.mskd.flux.core.model.artwork.Artwork
+import com.mskd.flux.core.model.artwork.ContentType
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
@@ -10,6 +12,9 @@ import io.kotest.matchers.shouldBe
 class CustomImageBehaviourTest : FunSpec({
 
     lateinit var harness: SyncHarness
+
+    val inceptionId = 27205L
+    val forgottenTale = Artwork(id = 990002, title = "Forgotten Tale", type = ContentType.MOVIE)
 
     beforeTest { harness = SyncHarness() }
     afterTest { harness.close() }
@@ -99,6 +104,45 @@ class CustomImageBehaviourTest : FunSpec({
             artwork.customPosterPath shouldBe null
         }
         artworkOf("Inception").imagePath shouldBe inception.imagePath
+
+    }
+
+    test("an Identification manuelle to a new Artwork gives it no Image personnalisée") {
+
+        // Given
+        harness.deviceStorage.availableFiles = listOf(harness.deviceFile("Inception (2010).mkv"))
+        harness.lightSync()
+        harness.catalog.setArtworkCustomBackdrop(artworkId = inceptionId, path = "/inception-backdrop.jpg")
+        harness.catalog.setArtworkCustomPoster(artworkId = inceptionId, path = "/inception-poster.jpg")
+
+        // When
+        harness.identifyManually(artworkId = inceptionId, target = forgottenTale)
+
+        // Then
+        val artwork = harness.catalog.getArtwork(artworkId = forgottenTale.id)!!
+        artwork.customBackdropPath shouldBe null
+        artwork.customPosterPath shouldBe null
+
+    }
+
+    test("an Identification manuelle into an Artwork of the Catalog clears its Image personnalisée") {
+
+        // Given
+        harness.deviceStorage.availableFiles = listOf(
+            harness.deviceFile("Inception (2010).mkv"),
+            harness.deviceFile("Forgotten Tale (2015).mkv"),
+        )
+        harness.lightSync()
+        harness.catalog.setArtworkCustomBackdrop(artworkId = forgottenTale.id, path = "/tale-backdrop.jpg")
+        harness.catalog.setArtworkCustomPoster(artworkId = forgottenTale.id, path = "/tale-poster.jpg")
+
+        // When
+        harness.identifyManually(artworkId = inceptionId, target = forgottenTale)
+
+        // Then
+        val artwork = harness.catalog.getArtwork(artworkId = forgottenTale.id)!!
+        artwork.customBackdropPath shouldBe null
+        artwork.customPosterPath shouldBe null
 
     }
 

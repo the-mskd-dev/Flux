@@ -34,7 +34,7 @@ interface DatabaseRepository {
     /**
      * Saves, like [saveSyncedFolder], the Médias of [sourceArtworkId] re-identified to [artwork] by an Identification manuelle.
      * The history entry of the source Artwork follows its Média (on a merge, the most recent entry is kept), and the source
-     * Artwork, left empty, is deleted with its people.
+     * Artwork, left empty, is deleted with its people. The [artwork] has no Image personnalisée: one it had in the Catalog is cleared.
      */
     suspend fun saveIdentifiedFolder(sourceArtworkId: Long, artwork: Artwork, seasons: List<Season>, medias: List<Media>, people: List<Person>)
 

@@ -252,4 +252,9 @@
     <string name="gallery_image_download_succeeded">画像を保存しました</string>
     <string name="gallery_image_download_failed">画像をダウンロードできませんでした</string>
     <string name="gallery_image_download_show">表示</string>
+    <string name="identification_select_data">データを選択</string>
+    <string name="identification_current">現在</string>
+    <string name="identification_no_result">結果なし</string>
+    <string name="identification_search_failed">TMDBを検索できませんでした</string>
+    <string name="identification_failed">この作品のデータを取得できませんでした。もう一度お試しください。</string>
 </resources>

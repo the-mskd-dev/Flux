@@ -6,6 +6,7 @@ import com.mskd.flux.core.network.tmdb.data.dto.ArtworkDto
 import com.mskd.flux.core.network.tmdb.data.dto.MediaTypeDto
 import com.mskd.flux.core.network.tmdb.data.dto.movie.MovieDto
 import com.mskd.flux.core.network.tmdb.data.dto.show.ShowDto
+import com.mskd.flux.core.network.tmdb.domain.model.ArtworkCandidate
 import kotlinx.collections.immutable.toImmutableList
 
 fun ArtworkDto.toDomain() : Artwork {
@@ -18,6 +19,13 @@ fun ArtworkDto.toDomain() : Artwork {
         type = if (this.type == MediaTypeDto.MOVIE) ContentType.MOVIE else ContentType.SHOW,
         genreIds = this.genreIds.toImmutableList(),
         nsfw = this.nsfw
+    )
+}
+
+fun ArtworkDto.toCandidate() : ArtworkCandidate {
+    return ArtworkCandidate(
+        artwork = this.toDomain(),
+        year = this.releaseDate?.take(4)?.toIntOrNull()
     )
 }
 

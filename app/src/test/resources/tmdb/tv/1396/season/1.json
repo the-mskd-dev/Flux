@@ -32,6 +32,20 @@
       "vote_count": 250,
       "air_date": "2008-01-27",
       "crew": []
+    },
+    {
+      "id": 62087,
+      "show_id": 1396,
+      "name": "...And the Bag's in the River",
+      "overview": "Walt is struggling to decide what to do with Krazy-8.",
+      "runtime": 48,
+      "episode_number": 3,
+      "season_number": 1,
+      "still_path": "/bag-in-the-river.jpg",
+      "vote_average": 8.1,
+      "vote_count": 240,
+      "air_date": "2008-02-10",
+      "crew": []
     }
   ]
 }

@@ -71,6 +71,7 @@ class MainActivity : ComponentActivity() {
                             ArtworkScreen(
                                 navigate = { route -> nav.navigate(route) },
                                 onBack = { nav.onBack() },
+                                replaceArtwork = { artworkId -> nav.replace(entry.copy(artworkId = artworkId, season = null)) },
                                 artworkId = entry.artworkId,
                                 season = entry.season,
                                 colorScheme = createColorScheme(

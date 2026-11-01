@@ -7,6 +7,9 @@ import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
+import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
+import com.mskd.flux.features.catalog.domain.model.SyncState
+import com.mskd.flux.features.identification.presentation.IdentificationAvailability
 import com.mskd.flux.features.people.domain.usecase.GetPeopleUseCase
 import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
@@ -27,6 +30,7 @@ class ShowViewModel(
     observeArtworkUseCase: ObserveArtworkUseCase,
     getPeopleUseCase: GetPeopleUseCase,
     private val tokenDataStore: TokenDataStore,
+    catalogSyncCoordinator: CatalogSyncCoordinator,
     private val resetProgress: ResetProgressUseCase,
 ) : ViewModel() {
 
@@ -37,11 +41,17 @@ class ShowViewModel(
 
     private val _userState = MutableStateFlow<ShowDialog?>(null)
 
+    private val tokenAndSync = combine(
+        tokenDataStore.flow,
+        catalogSyncCoordinator.state,
+    ) { token, sync -> token.isNotBlank() to (sync is SyncState.Syncing) }
+
     val uiState: StateFlow<ShowUiState> = combine(
         observeArtworkUseCase(artworkId = artworkId),
         getPeopleUseCase(artworkId = artworkId),
+        tokenAndSync,
         _userState,
-    ) { artworkState, people, dialog ->
+    ) { artworkState, people, (tokenAvailable, syncing), dialog ->
         when (artworkState) {
             is State.Loading -> ShowUiState(state = State.Loading)
             is State.Error -> ShowUiState(state = State.Error())
@@ -53,6 +63,12 @@ class ShowViewModel(
                         ShowContent(
                             fullShow = fullShow,
                             people = people,
+                            identification = IdentificationAvailability.of(
+                                artwork = fullShow.artwork,
+                                files = fullShow.episodes.map { it.file },
+                                tokenAvailable = tokenAvailable,
+                                syncing = syncing,
+                            ),
                             dialog = dialog
                         )
                     )
@@ -87,6 +103,10 @@ class ShowViewModel(
             ShowIntent.CloseDialog -> closeDialog()
             is ShowIntent.ShowSeasonPreview -> showSeasonPreview(season = intent.season)
             is ShowIntent.ShowResetProgressDialog -> showResetDialog()
+            ShowIntent.ShowIdentificationDialog -> showIdentificationDialog()
+
+            // Identification manuelle
+            is ShowIntent.OnIdentified -> onIdentified(artworkId = intent.artworkId)
 
             // Other
             ShowIntent.OpenShowInfo -> openShowInfo()
@@ -117,6 +137,16 @@ class ShowViewModel(
 
     private fun showResetDialog() {
         _userState.update { ShowDialog.ResetProgress }
+    }
+
+    private fun showIdentificationDialog() {
+        if (showContent?.identification != IdentificationAvailability.ENABLED) return
+        _userState.update { ShowDialog.Identification }
+    }
+
+    private suspend fun onIdentified(artworkId: Long) {
+        _userState.update { null }
+        _event.emit(ShowEvent.ReplaceShow(artworkId = artworkId))
     }
 
     private suspend fun openShowInfo() {

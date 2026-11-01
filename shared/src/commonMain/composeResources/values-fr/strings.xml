@@ -254,4 +254,9 @@
     <string name="gallery_image_download_succeeded">Image enregistrée</string>
     <string name="gallery_image_download_failed">Impossible de télécharger l'image</string>
     <string name="gallery_image_download_show">Afficher</string>
+    <string name="identification_select_data">Sélectionner les données</string>
+    <string name="identification_current">Actuel</string>
+    <string name="identification_no_result">Aucun résultat</string>
+    <string name="identification_search_failed">Impossible de chercher sur TMDB</string>
+    <string name="identification_failed">Impossible de récupérer les données de cette œuvre. Veuillez réessayer.</string>
 </resources>

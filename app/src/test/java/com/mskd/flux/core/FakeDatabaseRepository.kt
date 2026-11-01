@@ -71,6 +71,13 @@ class FakeDatabaseRepository : DatabaseRepository {
         return MediaMockups.artworks.filter { it.nsfw }.map { it.id }
     }
 
+    override suspend fun getManuallyIdentifiedMedias(): List<Media> {
+        val artworkIds = MediaMockups.artworks.filter { it.isManuallyIdentified }.map { it.id }
+        return MediaMockups.allMedias.filter { it.artworkId in artworkIds }
+    }
+
+    override suspend fun clearManualIdentifications() {}
+
     override suspend fun getMedias(): List<Media> {
         return MediaMockups.allMedias
     }
@@ -130,6 +137,8 @@ class FakeDatabaseRepository : DatabaseRepository {
     override suspend fun saveSeasons(seasons: List<Season>) {}
 
     override suspend fun saveSyncedFolder(artwork: Artwork, seasons: List<Season>, medias: List<Media>, people: List<Person>) {}
+
+    override suspend fun saveIdentifiedFolder(sourceArtworkId: Long, artwork: Artwork, seasons: List<Season>, medias: List<Media>, people: List<Person>) {}
 
     override suspend fun deleteArtworks(artworks: List<Artwork>) {}
     

@@ -23,4 +23,6 @@ data class ArtworkEntity(
     @ColumnInfo(defaultValue = "")
     val genreIds: List<Int> = emptyList(),
     val logoPath: String? = null,
+    @ColumnInfo(defaultValue = "0")
+    val manuallyIdentified: Boolean = false,
 )

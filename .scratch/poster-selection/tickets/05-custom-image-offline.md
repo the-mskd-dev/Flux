@@ -10,4 +10,4 @@ See `.scratch/poster-selection/specs.md`.
 
 - [x] The list of images to prefetch includes the non-null custom Backdrop and custom Poster paths, in the same sizes as the TMDB Backdrop and Poster.
 - [x] A behaviour test (`SyncHarness` Catalog, or `ImagesPrefetchManagerTest`) shows a custom path is part of the images to prefetch.
-- [x] `./gradlew :app:testFossDebugUnitTest` passes.
+- [ ] `./gradlew :app:testFossDebugUnitTest` passes.

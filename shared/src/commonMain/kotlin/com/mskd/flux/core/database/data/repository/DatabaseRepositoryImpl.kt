@@ -263,6 +263,8 @@ class DatabaseRepositoryImpl(
         val images = buildList {
             addAll(artworks.filter { it.imagePath.isNotBlank() }.map { it.imagePath })
             addAll(artworks.filter { it.bannerPath.isNotBlank() }.map { it.bannerPath })
+            addAll(artworks.mapNotNull { it.customBackdropPath?.takeIf(String::isNotBlank) })
+            addAll(artworks.mapNotNull { it.customPosterPath?.takeIf(String::isNotBlank) })
             addAll(medias.filter { it.isNotBlank() })
             addAll(seasons.filter { it.isNotBlank() })
         }

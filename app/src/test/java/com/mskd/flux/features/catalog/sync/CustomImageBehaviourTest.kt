@@ -146,4 +146,21 @@ class CustomImageBehaviourTest : FunSpec({
 
     }
 
+    test("the custom Backdrop and custom Poster are part of the images to prefetch, so they are available offline") {
+
+        // Given
+        harness.deviceStorage.availableFiles = listOf(harness.deviceFile("Inception (2010).mkv"))
+        harness.lightSync()
+        harness.catalog.setArtworkCustomBackdrop(artworkId = inceptionId, path = "/chosen-backdrop.jpg")
+        harness.catalog.setArtworkCustomPoster(artworkId = inceptionId, path = "/chosen-poster.jpg")
+
+        // When
+        val images = harness.catalog.getAllImagesPaths().images
+
+        // Then
+        images.count { it == "/chosen-backdrop.jpg" } shouldBe 1
+        images.count { it == "/chosen-poster.jpg" } shouldBe 1
+
+    }
+
 })

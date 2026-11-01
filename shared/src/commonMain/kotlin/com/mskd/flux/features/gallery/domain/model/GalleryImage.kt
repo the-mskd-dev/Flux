@@ -33,10 +33,9 @@ enum class GalleryImageType {
     POSTER
 }
 
-/** The type of image that can become the Artwork image in this header mode, null when none can. */
-val ArtworkHeaderMode.choosableImageType: GalleryImageType?
+/** The type of image that can become the Artwork image in this header mode. */
+val ArtworkHeaderMode.choosableImageType: GalleryImageType
     get() = when (this) {
         ArtworkHeaderMode.NORMAL -> GalleryImageType.BACKDROP
-        // The custom Poster of the blurred header is not offered yet
-        ArtworkHeaderMode.BLURRED -> null
+        ArtworkHeaderMode.BLURRED -> GalleryImageType.POSTER
     }

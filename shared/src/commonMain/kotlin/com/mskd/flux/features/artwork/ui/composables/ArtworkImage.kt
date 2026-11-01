@@ -130,7 +130,7 @@ fun ArtworkImageBlurred(
 ) {
 
     val imageUrl = when (fullArtwork) {
-        is FullArtwork.FullMovie -> fullArtwork.imagePath.tmdbImage
+        is FullArtwork.FullMovie -> fullArtwork.artwork.artworkImagePath(ArtworkHeaderMode.BLURRED).tmdbImage
         is FullArtwork.FullShow -> fullArtwork.seasons.find { it.season == selectedSeason }?.imagePath?.tmdbImage ?: fullArtwork.imagePath.tmdbImage
     }
 

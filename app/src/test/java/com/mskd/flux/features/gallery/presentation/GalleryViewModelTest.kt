@@ -556,4 +556,96 @@ class GalleryViewModelTest : FunSpec({
 
     //endregion
 
+    //region Image personnalisée with the blurred header
+
+    fun blurredHeader(enabled: Boolean) = customization.update { it.copy(oldBlurredHeader = enabled) }
+
+    test("on a Movie with the blurred header, a Poster can be used as Artwork image, a Backdrop cannot") {
+
+        blurredHeader(true)
+
+        buttonOf(highPoster.path) shouldBe ArtworkImageButton.AVAILABLE
+        buttonOf(midBackdrop.path) shouldBe ArtworkImageButton.HIDDEN
+
+    }
+
+    test("with the blurred header and without Image personnalisée, the TMDB Poster is the current image") {
+
+        blurredHeader(true)
+        coEvery { apiRepository.getMovieImages(artwork.id) } returns listOf(highPoster, tmdbPoster)
+        updateVm()
+
+        buttonOf(tmdbPoster.path) shouldBe ArtworkImageButton.CURRENT
+        buttonOf(highPoster.path) shouldBe ArtworkImageButton.AVAILABLE
+
+    }
+
+    test("with the blurred header and a custom Poster, it is the current image and the TMDB Poster becomes available") {
+
+        blurredHeader(true)
+        storedArtwork.value = artwork.copy(customPosterPath = highPoster.path)
+        coEvery { apiRepository.getMovieImages(artwork.id) } returns listOf(highPoster, tmdbPoster)
+        updateVm()
+
+        buttonOf(highPoster.path) shouldBe ArtworkImageButton.CURRENT
+        buttonOf(tmdbPoster.path) shouldBe ArtworkImageButton.AVAILABLE
+
+    }
+
+    test("on a Show with the blurred header, a Backdrop can still be used as Artwork image, a Poster still cannot") {
+
+        blurredHeader(true)
+        showGallery()
+
+        buttonOf(lowBackdrop.path) shouldBe ArtworkImageButton.AVAILABLE
+        buttonOf(highPoster.path) shouldBe ArtworkImageButton.HIDDEN
+
+    }
+
+    test("using a Poster with the blurred header saves it as custom Poster and leaves the custom Backdrop untouched") {
+
+        blurredHeader(true)
+        storedArtwork.value = artwork.copy(customBackdropPath = lowBackdrop.path)
+
+        buttonOf(highPoster.path) shouldBe ArtworkImageButton.AVAILABLE
+
+        viewModel.handleIntent(GalleryIntent.OnUseImageTap)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        storedArtwork.value?.customPosterPath shouldBe highPoster.path
+        storedArtwork.value?.customBackdropPath shouldBe lowBackdrop.path
+        buttonOf(highPoster.path) shouldBe ArtworkImageButton.CURRENT
+
+    }
+
+    test("the custom Backdrop and the custom Poster are kept apart when the blurred header setting changes") {
+
+        // Given : a custom Backdrop chosen with the normal header, then a custom Poster with the blurred header
+        buttonOf(midBackdrop.path) shouldBe ArtworkImageButton.AVAILABLE
+        viewModel.handleIntent(GalleryIntent.OnUseImageTap)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        blurredHeader(true)
+        buttonOf(highPoster.path) shouldBe ArtworkImageButton.AVAILABLE
+        viewModel.handleIntent(GalleryIntent.OnUseImageTap)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        storedArtwork.value?.customBackdropPath shouldBe midBackdrop.path
+        storedArtwork.value?.customPosterPath shouldBe highPoster.path
+
+        // Then : each mode finds its own Image personnalisée again
+        buttonOf(highPoster.path) shouldBe ArtworkImageButton.CURRENT
+        buttonOf(midBackdrop.path) shouldBe ArtworkImageButton.HIDDEN
+
+        blurredHeader(false)
+        buttonOf(midBackdrop.path) shouldBe ArtworkImageButton.CURRENT
+        buttonOf(highPoster.path) shouldBe ArtworkImageButton.HIDDEN
+
+        blurredHeader(true)
+        buttonOf(highPoster.path) shouldBe ArtworkImageButton.CURRENT
+
+    }
+
+    //endregion
+
 })

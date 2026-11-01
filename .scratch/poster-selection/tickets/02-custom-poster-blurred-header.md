@@ -8,9 +8,9 @@ See `.scratch/poster-selection/specs.md`.
 
 **Status:** ready-for-agent
 
-- [ ] The domain rule's blurred branch returns custom Poster, otherwise TMDB Poster, for a Movie.
-- [ ] The blurred header of the Movie page uses this rule instead of reading the TMDB Poster directly.
-- [ ] Button state with the blurred header: Movie + Poster → *available* / *current*; Movie + Backdrop → *hidden*; Show + Poster → still *hidden*, Show + Backdrop → still *available*.
-- [ ] Tapping the button on a Poster saves it as custom Poster, leaving the custom Backdrop untouched.
-- [ ] `GalleryViewModelTest` covers the blurred cases above, the save of a Poster, and the independence of both choices when the setting changes.
-- [ ] `./gradlew :app:testFossDebugUnitTest` passes.
+- [x] The domain rule's blurred branch returns custom Poster, otherwise TMDB Poster, for a Movie.
+- [x] The blurred header of the Movie page uses this rule instead of reading the TMDB Poster directly.
+- [x] Button state with the blurred header: Movie + Poster → *available* / *current*; Movie + Backdrop → *hidden*; Show + Poster → still *hidden*, Show + Backdrop → still *available*.
+- [x] Tapping the button on a Poster saves it as custom Poster, leaving the custom Backdrop untouched.
+- [x] `GalleryViewModelTest` covers the blurred cases above, the save of a Poster, and the independence of both choices when the setting changes.
+- [x] `./gradlew :app:testFossDebugUnitTest` passes.

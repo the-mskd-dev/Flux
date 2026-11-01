@@ -22,6 +22,5 @@ enum class ArtworkHeaderMode {
  */
 fun Artwork.artworkImagePath(mode: ArtworkHeaderMode): String = when (mode) {
     ArtworkHeaderMode.NORMAL -> customBackdropPath ?: bannerPath
-    // The custom Poster is not chosen yet: the blurred header keeps the TMDB Poster
-    ArtworkHeaderMode.BLURRED -> imagePath
+    ArtworkHeaderMode.BLURRED -> customPosterPath ?: imagePath
 }

@@ -251,6 +251,8 @@
     <string name="chapters">Capitoli</string>
     <string name="chapter_number">Capitolo %1$d</string>
     <string name="gallery_image_download">Scarica l'immagine</string>
+    <string name="gallery_use_image">Usa questa immagine</string>
+    <string name="gallery_current_image">Immagine attuale</string>
     <string name="gallery_image_download_succeeded">Immagine salvata</string>
     <string name="gallery_image_download_failed">Impossibile scaricare l'immagine</string>
     <string name="gallery_image_download_show">Mostra</string>

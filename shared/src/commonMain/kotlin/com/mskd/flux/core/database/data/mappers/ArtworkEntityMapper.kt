@@ -18,7 +18,9 @@ fun ArtworkEntity.toDomain() : Artwork {
         isPrivate = this.isPrivate,
         nsfw = this.nsfw,
         logoPath = this.logoPath,
-        isManuallyIdentified = this.manuallyIdentified
+        isManuallyIdentified = this.manuallyIdentified,
+        customBackdropPath = this.customBackdropPath,
+        customPosterPath = this.customPosterPath
     )
 }
 
@@ -35,6 +37,8 @@ fun Artwork.toEntity(overrideLastModification: Boolean = true) : ArtworkEntity {
         isPrivate = this.isPrivate,
         nsfw = this.nsfw,
         logoPath = this.logoPath,
-        manuallyIdentified = this.isManuallyIdentified
+        manuallyIdentified = this.isManuallyIdentified,
+        customBackdropPath = this.customBackdropPath,
+        customPosterPath = this.customPosterPath
     )
 }

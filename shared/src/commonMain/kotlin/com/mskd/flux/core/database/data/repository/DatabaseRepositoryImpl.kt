@@ -149,6 +149,14 @@ class DatabaseRepositoryImpl(
         return artworksDao.getArtworks(artworkIds = artworkIds).map { it.toDomain() }
     }
 
+    override suspend fun setArtworkCustomBackdrop(artworkId: Long, path: String?) {
+        artworksDao.setArtworkCustomBackdrop(artworkId = artworkId, path = path)
+    }
+
+    override suspend fun setArtworkCustomPoster(artworkId: Long, path: String?) {
+        artworksDao.setArtworkCustomPoster(artworkId = artworkId, path = path)
+    }
+
     override suspend fun setArtworkLogo(artworkId: Long, logoPath: String?) {
         artworksDao.setArtworkLogo(artworkId = artworkId, logoPath = logoPath)
     }

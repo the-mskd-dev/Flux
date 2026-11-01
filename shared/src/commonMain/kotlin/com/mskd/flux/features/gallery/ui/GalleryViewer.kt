@@ -17,10 +17,13 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Clear
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LoadingIndicator
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -52,10 +55,13 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.mskd.flux.features.gallery.domain.model.GalleryImage
 import com.mskd.flux.features.gallery.domain.model.originalUrl
+import com.mskd.flux.features.gallery.presentation.ArtworkImageButton
 import com.mskd.flux.ui.global.BackGesture
 import com.mskd.flux.ui.image.Image
 import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.gallery_current_image
 import flux.shared.generated.resources.gallery_image_download
+import flux.shared.generated.resources.gallery_use_image
 import flux.shared.generated.resources.ic_download
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -77,8 +83,10 @@ fun GalleryViewer(
     images: List<GalleryImage>,
     initialIndex: Int,
     imageDownloadRunning: Boolean,
+    artworkImageButton: ArtworkImageButton,
     onPageChange: (Int) -> Unit,
     onDownload: () -> Unit,
+    onUseImage: () -> Unit,
     onClose: () -> Unit,
 ) {
 
@@ -131,6 +139,27 @@ fun GalleryViewer(
         }
 
         val currentLoaded = images.getOrNull(pagerState.currentPage)?.let { loadedImages[it.key()] } == true
+        if (currentLoaded && artworkImageButton != ArtworkImageButton.HIDDEN) {
+            TextButton(
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .statusBarsPadding(),
+                enabled = artworkImageButton == ArtworkImageButton.AVAILABLE,
+                colors = ButtonDefaults.textButtonColors(
+                    contentColor = Color.White,
+                    disabledContentColor = Color.White.copy(alpha = .6f),
+                ),
+                onClick = onUseImage
+            ) {
+                Text(
+                    text = stringResource(
+                        if (artworkImageButton == ArtworkImageButton.CURRENT) Res.string.gallery_current_image
+                        else Res.string.gallery_use_image
+                    )
+                )
+            }
+        }
+
         if (currentLoaded) {
             val downloadDescription = stringResource(Res.string.gallery_image_download)
             IconButton(

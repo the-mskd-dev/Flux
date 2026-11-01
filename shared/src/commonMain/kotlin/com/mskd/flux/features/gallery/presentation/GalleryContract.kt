@@ -18,7 +18,18 @@ data class GalleryContent(
     val images: List<GalleryImage>,
     val viewerIndex: Int? = null,
     val imageDownloadRunning: Boolean = false,
+    val artworkImageButton: ArtworkImageButton = ArtworkImageButton.HIDDEN,
 )
+
+/** The "Utiliser cette image" button of the viewer, for the image shown. */
+enum class ArtworkImageButton {
+    /** The image cannot be the Artwork image (other type than the header shows, or a Synchro runs). */
+    HIDDEN,
+    /** "Utiliser cette image": the image can become the Image personnalisée. */
+    AVAILABLE,
+    /** "Image actuelle": the image is already the Artwork image. */
+    CURRENT,
+}
 
 sealed interface GalleryIntent {
     data object OnBackTap : GalleryIntent
@@ -28,6 +39,7 @@ sealed interface GalleryIntent {
     data object OnViewerClose : GalleryIntent
     data object OnImageDownloadTap : GalleryIntent
     data object OnShowDownloadedImageTap : GalleryIntent
+    data object OnUseImageTap : GalleryIntent
 }
 
 sealed interface GalleryEvent {

@@ -94,6 +94,7 @@ fun GalleryScreen(
                     failure = uiState.failure,
                     viewerIndex = state.content.viewerIndex,
                     imageDownloadRunning = state.content.imageDownloadRunning,
+                    artworkImageButton = state.content.artworkImageButton,
                     snackbarHostState = snackbarHostState,
                     sendIntent = { viewModel.handleIntent(it) }
                 )

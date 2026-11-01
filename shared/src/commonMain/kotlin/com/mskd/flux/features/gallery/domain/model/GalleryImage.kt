@@ -1,5 +1,6 @@
 package com.mskd.flux.features.gallery.domain.model
 
+import com.mskd.flux.core.model.artwork.ArtworkHeaderMode
 import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.tmdbImageLarge
 
@@ -31,3 +32,11 @@ enum class GalleryImageType {
     BACKDROP,
     POSTER
 }
+
+/** The type of image that can become the Artwork image in this header mode, null when none can. */
+val ArtworkHeaderMode.choosableImageType: GalleryImageType?
+    get() = when (this) {
+        ArtworkHeaderMode.NORMAL -> GalleryImageType.BACKDROP
+        // The custom Poster of the blurred header is not offered yet
+        ArtworkHeaderMode.BLURRED -> null
+    }

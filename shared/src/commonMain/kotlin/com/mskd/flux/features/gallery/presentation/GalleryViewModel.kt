@@ -3,9 +3,18 @@ package com.mskd.flux.features.gallery.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
+import com.mskd.flux.core.model.artwork.Artwork
+import com.mskd.flux.core.model.artwork.ArtworkHeaderMode
 import com.mskd.flux.core.model.artwork.ContentType
+import com.mskd.flux.core.model.artwork.artworkImagePath
 import com.mskd.flux.core.model.core.State
+import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
+import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.connectivity.domain.ConnectivityRepository
+import com.mskd.flux.features.customization.domain.datastore.CustomizationDataStore
+import com.mskd.flux.features.gallery.domain.model.GalleryImage
+import com.mskd.flux.features.gallery.domain.model.GalleryImageType
+import com.mskd.flux.features.gallery.domain.model.choosableImageType
 import com.mskd.flux.features.gallery.domain.usecase.GetGalleryImagesUseCase
 import com.mskd.flux.features.gallery.domain.usecase.ImageDownloadUseCase
 import com.mskd.flux.report.Trace
@@ -15,9 +24,12 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -29,6 +41,8 @@ class GalleryViewModel(
     private val connectivityRepository: ConnectivityRepository,
     private val imageDownload: ImageDownloadUseCase,
     private val filesLauncher: FilesLauncher,
+    customizationDataStore: CustomizationDataStore,
+    catalogSyncCoordinator: CatalogSyncCoordinator,
 ) : ViewModel() {
 
     //region Flow
@@ -36,8 +50,29 @@ class GalleryViewModel(
     private val _event = MutableSharedFlow<GalleryEvent>()
     val event: SharedFlow<GalleryEvent> = _event.asSharedFlow()
 
+    // The state driven by the user and the images source; the observed Artwork completes it in [uiState]
     private val _uiState = MutableStateFlow(GalleryUiState())
-    val uiState: StateFlow<GalleryUiState> = _uiState.asStateFlow()
+
+    private val headerMode = customizationDataStore.flow.map { customization ->
+        ArtworkHeaderMode.of(type = contentType, blurredHeader = customization.oldBlurredHeader)
+    }
+
+    private val syncing = catalogSyncCoordinator.state.map { it is SyncState.Syncing }
+
+    val uiState: StateFlow<GalleryUiState> = combine(
+        _uiState,
+        databaseRepository.flowArtwork(artworkId = artworkId),
+        headerMode,
+        syncing,
+    ) { ui, artwork, mode, syncing ->
+        val content = (ui.state as? State.Content)?.content
+        ui.copy(
+            title = artwork?.title.orEmpty(),
+            state = if (content == null) ui.state else State.Content(
+                content.copy(artworkImageButton = artworkImageButton(content.viewedImage(), artwork, mode, syncing))
+            )
+        )
+    }.stateIn(scope = viewModelScope, started = SharingStarted.Eagerly, initialValue = GalleryUiState())
 
     private var loadJob: Job? = null
 
@@ -46,7 +81,6 @@ class GalleryViewModel(
     //region Init
 
     init {
-        loadTitle()
         loadImages()
     }
 
@@ -65,6 +99,7 @@ class GalleryViewModel(
             GalleryIntent.OnViewerClose -> setViewerIndex(null)
             GalleryIntent.OnImageDownloadTap -> downloadViewedImage()
             GalleryIntent.OnShowDownloadedImageTap -> filesLauncher.openDownloadedImages()
+            GalleryIntent.OnUseImageTap -> useViewedImage()
         }
     }
 
@@ -86,13 +121,13 @@ class GalleryViewModel(
 
         val content = (_uiState.value.state as? State.Content)?.content ?: return
         if (content.imageDownloadRunning) return
-        val image = content.viewerIndex?.let { content.images.getOrNull(it) } ?: return
+        val image = content.viewedImage() ?: return
 
         setImageDownloadRunning(true)
 
         viewModelScope.launch {
             try {
-                imageDownload(image = image, artworkTitle = _uiState.value.title)
+                imageDownload(image = image, artworkTitle = uiState.value.title)
                 _event.emit(GalleryEvent.ImageDownloadSucceeded)
             } catch (e: CancellationException) {
                 throw e
@@ -111,9 +146,35 @@ class GalleryViewModel(
         ui.copy(state = State.Content(content.copy(imageDownloadRunning = running)))
     }
 
-    private fun loadTitle() = viewModelScope.launch {
-        val title = databaseRepository.getArtwork(artworkId = artworkId)?.title ?: return@launch
-        _uiState.update { it.copy(title = title) }
+    private fun GalleryContent.viewedImage(): GalleryImage? = viewerIndex?.let { images.getOrNull(it) }
+
+    // Same rule as the page header, so that "Image actuelle" is always the image the header shows
+    private fun artworkImageButton(image: GalleryImage?, artwork: Artwork?, mode: ArtworkHeaderMode, syncing: Boolean): ArtworkImageButton = when {
+        image == null || artwork == null || syncing || image.type != mode.choosableImageType -> ArtworkImageButton.HIDDEN
+        image.path == artwork.artworkImagePath(mode) -> ArtworkImageButton.CURRENT
+        else -> ArtworkImageButton.AVAILABLE
+    }
+
+    // The Artwork is observed: the button becomes "Image actuelle" by itself once saved
+    private fun useViewedImage() {
+
+        val content = (uiState.value.state as? State.Content)?.content ?: return
+        if (content.artworkImageButton != ArtworkImageButton.AVAILABLE) return
+        val image = content.viewedImage() ?: return
+
+        viewModelScope.launch {
+            try {
+                when (image.type) {
+                    GalleryImageType.BACKDROP -> databaseRepository.setArtworkCustomBackdrop(artworkId = artworkId, path = image.path)
+                    GalleryImageType.POSTER -> databaseRepository.setArtworkCustomPoster(artworkId = artworkId, path = image.path)
+                }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Trace.error("GalleryViewModel", "Fail to use image ${image.path} as Artwork image of artworkId:$artworkId", e)
+            }
+        }
+
     }
 
     private fun loadImages() {

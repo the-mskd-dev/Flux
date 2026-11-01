@@ -2,11 +2,15 @@ package com.mskd.flux.features.gallery.presentation
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
-import com.mskd.flux.core.FakeDatabaseRepository
+import com.mskd.flux.core.database.domain.repository.DatabaseRepository
+import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.core.network.tmdb.domain.repository.ApiRepository
+import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
+import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.connectivity.domain.ConnectivityRepository
+import com.mskd.flux.features.customization.domain.datastore.CustomizationDataStore
 import com.mskd.flux.features.gallery.domain.model.GalleryImage
 import com.mskd.flux.features.gallery.domain.model.GalleryImageType
 import com.mskd.flux.features.gallery.domain.usecase.GetGalleryImagesUseCase
@@ -23,6 +27,8 @@ import io.mockk.verify
 import io.mockk.mockk
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.test.TestDispatcher
 
 class GalleryViewModelTest : FunSpec({
@@ -34,6 +40,10 @@ class GalleryViewModelTest : FunSpec({
     lateinit var connectivityRepository: ConnectivityRepository
     lateinit var imageDownload: ImageDownloadUseCase
     lateinit var filesLauncher: FilesLauncher
+    lateinit var databaseRepository: DatabaseRepository
+    lateinit var storedArtwork: MutableStateFlow<Artwork?>
+    lateinit var customization: MutableStateFlow<CustomizationDataStore.State>
+    lateinit var syncState: MutableStateFlow<SyncState>
 
     val artwork = MediaMockups.movieArtwork
 
@@ -41,19 +51,33 @@ class GalleryViewModelTest : FunSpec({
     val highPoster = GalleryImage(path = "/high.jpg", type = GalleryImageType.POSTER, ratio = .67f, rating = 7.0)
     val midBackdrop = GalleryImage(path = "/mid.jpg", type = GalleryImageType.BACKDROP, ratio = 1.78f, rating = 6.0)
 
-    val updateVm: () -> Unit = {
+    fun createVm(artworkId: Long, contentType: ContentType) {
         viewModel = GalleryViewModel(
-            artworkId = artwork.id,
-            contentType = ContentType.MOVIE,
+            artworkId = artworkId,
+            contentType = contentType,
             getGalleryImages = GetGalleryImagesUseCase(apiRepository = apiRepository),
-            databaseRepository = FakeDatabaseRepository(),
+            databaseRepository = databaseRepository,
             connectivityRepository = connectivityRepository,
             imageDownload = imageDownload,
             filesLauncher = filesLauncher,
+            customizationDataStore = mockk { every { flow } returns customization },
+            catalogSyncCoordinator = mockk { every { state } returns syncState },
         )
     }
 
+    val updateVm: () -> Unit = { createVm(artworkId = artwork.id, contentType = ContentType.MOVIE) }
+
     beforeTest {
+        storedArtwork = MutableStateFlow(artwork)
+        customization = MutableStateFlow(CustomizationDataStore.State())
+        syncState = MutableStateFlow(SyncState.Idle())
+        // The Catalog: the stored Artwork is observed, and the targeted writes change it
+        databaseRepository = mockk {
+            every { flowArtwork(any()) } returns storedArtwork
+            coEvery { getArtwork(any()) } answers { storedArtwork.value }
+            coEvery { setArtworkCustomBackdrop(any(), any()) } answers { storedArtwork.update { it?.copy(customBackdropPath = secondArg()) } }
+            coEvery { setArtworkCustomPoster(any(), any()) } answers { storedArtwork.update { it?.copy(customPosterPath = secondArg()) } }
+        }
         apiRepository = mockk()
         connectivityRepository = mockk()
         imageDownload = mockk()
@@ -407,20 +431,129 @@ class GalleryViewModelTest : FunSpec({
         // The movie view model of beforeTest has already loaded its images
         clearMocks(apiRepository, answers = false)
         coEvery { apiRepository.getShowImages(show.id) } returns listOf(lowBackdrop, highPoster, midBackdrop)
-        viewModel = GalleryViewModel(
-            artworkId = show.id,
-            contentType = ContentType.SHOW,
-            getGalleryImages = GetGalleryImagesUseCase(apiRepository = apiRepository),
-            databaseRepository = FakeDatabaseRepository(),
-            connectivityRepository = connectivityRepository,
-            imageDownload = imageDownload,
-            filesLauncher = filesLauncher,
-        )
+        storedArtwork.value = show
+        createVm(artworkId = show.id, contentType = ContentType.SHOW)
         testDispatcher.scheduler.advanceUntilIdle()
 
         contentImages() shouldBe listOf(highPoster, midBackdrop, lowBackdrop)
         coVerify(exactly = 0) { apiRepository.getMovieImages(any()) }
 
     }
+
+    //region Image personnalisée
+
+    fun buttonOf(path: String): ArtworkImageButton {
+        val images = contentImages()
+        viewModel.handleIntent(GalleryIntent.OnImageTap(index = images.indexOfFirst { it.path == path }))
+        return (viewModel.uiState.value.state as State.Content).content.artworkImageButton
+    }
+
+    val tmdbBackdrop = GalleryImage(path = artwork.bannerPath, type = GalleryImageType.BACKDROP, ratio = 1.78f, rating = 4.0)
+    val tmdbPoster = GalleryImage(path = artwork.imagePath, type = GalleryImageType.POSTER, ratio = .67f, rating = 3.0)
+
+    fun showGallery() {
+        val show = MediaMockups.showArtwork
+        coEvery { apiRepository.getShowImages(show.id) } returns listOf(lowBackdrop, highPoster)
+        storedArtwork.value = show
+        createVm(artworkId = show.id, contentType = ContentType.SHOW)
+    }
+
+    test("on a Show, a Backdrop can be used as Artwork image, a Poster cannot") {
+
+        showGallery()
+
+        buttonOf(lowBackdrop.path) shouldBe ArtworkImageButton.AVAILABLE
+        buttonOf(highPoster.path) shouldBe ArtworkImageButton.HIDDEN
+
+    }
+
+    test("on a Movie with the normal header, a Backdrop can be used as Artwork image, a Poster cannot") {
+
+        buttonOf(midBackdrop.path) shouldBe ArtworkImageButton.AVAILABLE
+        buttonOf(highPoster.path) shouldBe ArtworkImageButton.HIDDEN
+
+    }
+
+    test("without Image personnalisée, the TMDB Backdrop is the current image") {
+
+        coEvery { apiRepository.getMovieImages(artwork.id) } returns listOf(lowBackdrop, tmdbBackdrop, tmdbPoster)
+        updateVm()
+
+        buttonOf(tmdbBackdrop.path) shouldBe ArtworkImageButton.CURRENT
+        buttonOf(lowBackdrop.path) shouldBe ArtworkImageButton.AVAILABLE
+
+    }
+
+    test("with a custom Backdrop, it is the current image and the TMDB Backdrop becomes available") {
+
+        storedArtwork.value = artwork.copy(customBackdropPath = lowBackdrop.path)
+        coEvery { apiRepository.getMovieImages(artwork.id) } returns listOf(lowBackdrop, tmdbBackdrop)
+        updateVm()
+
+        buttonOf(lowBackdrop.path) shouldBe ArtworkImageButton.CURRENT
+        buttonOf(tmdbBackdrop.path) shouldBe ArtworkImageButton.AVAILABLE
+
+    }
+
+    test("the button is hidden while a Synchro runs") {
+
+        syncState.value = SyncState.Syncing(full = false)
+
+        buttonOf(midBackdrop.path) shouldBe ArtworkImageButton.HIDDEN
+
+        syncState.value = SyncState.Idle()
+
+        buttonOf(midBackdrop.path) shouldBe ArtworkImageButton.AVAILABLE
+
+    }
+
+    test("the button is hidden with the viewer closed") {
+
+        (viewModel.uiState.value.state as State.Content).content.artworkImageButton shouldBe ArtworkImageButton.HIDDEN
+
+    }
+
+    test("using a Backdrop saves it as custom Backdrop and it becomes the current image") {
+
+        buttonOf(midBackdrop.path) shouldBe ArtworkImageButton.AVAILABLE
+
+        viewModel.handleIntent(GalleryIntent.OnUseImageTap)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        storedArtwork.value?.customBackdropPath shouldBe midBackdrop.path
+        storedArtwork.value?.customPosterPath shouldBe null
+        buttonOf(midBackdrop.path) shouldBe ArtworkImageButton.CURRENT
+
+    }
+
+    test("a failed save leaves the state unchanged and emits no event") {
+
+        coEvery { databaseRepository.setArtworkCustomBackdrop(any(), any()) } throws RuntimeException("boom")
+        buttonOf(midBackdrop.path)
+        val before = viewModel.uiState.value
+
+        viewModel.event.test {
+            viewModel.handleIntent(GalleryIntent.OnUseImageTap)
+            testDispatcher.scheduler.advanceUntilIdle()
+            expectNoEvents()
+        }
+
+        viewModel.uiState.value shouldBe before
+        storedArtwork.value?.customBackdropPath shouldBe null
+
+    }
+
+    test("a tap on a Poster with the normal header saves nothing") {
+
+        buttonOf(highPoster.path)
+
+        viewModel.handleIntent(GalleryIntent.OnUseImageTap)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        storedArtwork.value shouldBe artwork
+
+    }
+
+    //endregion
 
 })

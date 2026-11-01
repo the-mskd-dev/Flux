@@ -13,6 +13,8 @@ import kotlinx.collections.immutable.persistentListOf
  * @property type Content type of the artwork, which can be a movie or a show.
  * @property logoPath Path to the Logo of the artwork: null when never searched, empty when TMDB has none.
  * @property isManuallyIdentified True when the user chose this Artwork for its Médias (Identification manuelle).
+ * @property customBackdropPath Backdrop chosen by the user in the Gallery (Image personnalisée), null when none.
+ * @property customPosterPath Poster chosen by the user in the Gallery (Image personnalisée, Movie only), null when none.
  */
 data class Artwork(
     val id: Long = 0,
@@ -26,6 +28,8 @@ data class Artwork(
     val nsfw: Boolean = false,
     val logoPath: String? = null,
     val isManuallyIdentified: Boolean = false,
+    val customBackdropPath: String? = null,
+    val customPosterPath: String? = null,
 
     val lastModification: Long? = null,
 ) {

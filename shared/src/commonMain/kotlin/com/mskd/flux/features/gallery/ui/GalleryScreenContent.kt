@@ -36,6 +36,7 @@ import com.mskd.flux.features.gallery.domain.model.GalleryImage
 import com.mskd.flux.features.gallery.domain.model.GalleryImageType
 import com.mskd.flux.features.gallery.domain.model.thumbnailUrl
 import com.mskd.flux.features.gallery.presentation.GalleryFailure
+import com.mskd.flux.features.gallery.presentation.ArtworkImageButton
 import com.mskd.flux.features.gallery.presentation.GalleryIntent
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.FluxThemePreview
@@ -59,6 +60,7 @@ fun GalleryScreenContent(
     failure: GalleryFailure? = null,
     viewerIndex: Int? = null,
     imageDownloadRunning: Boolean = false,
+    artworkImageButton: ArtworkImageButton = ArtworkImageButton.HIDDEN,
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     sendIntent: (GalleryIntent) -> Unit,
 ) {
@@ -158,8 +160,10 @@ fun GalleryScreenContent(
                     images = images,
                     initialIndex = index,
                     imageDownloadRunning = imageDownloadRunning,
+                    artworkImageButton = artworkImageButton,
                     onPageChange = { sendIntent(GalleryIntent.OnViewerPageChange(it)) },
                     onDownload = { sendIntent(GalleryIntent.OnImageDownloadTap) },
+                    onUseImage = { sendIntent(GalleryIntent.OnUseImageTap) },
                     onClose = { sendIntent(GalleryIntent.OnViewerClose) }
                 )
             }

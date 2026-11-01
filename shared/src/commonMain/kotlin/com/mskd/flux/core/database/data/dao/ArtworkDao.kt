@@ -76,6 +76,16 @@ interface ArtworkDao {
 
 //endregion
 
+//region Image personnalisée
+
+    @Query("UPDATE artworks SET customBackdropPath = :path WHERE id = :artworkId")
+    suspend fun setArtworkCustomBackdrop(artworkId: Long, path: String?)
+
+    @Query("UPDATE artworks SET customPosterPath = :path WHERE id = :artworkId")
+    suspend fun setArtworkCustomPoster(artworkId: Long, path: String?)
+
+//endregion
+
 //region Delete
 
     @Query("DELETE FROM artworks WHERE id IN (:artworkIds)")

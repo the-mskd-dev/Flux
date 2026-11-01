@@ -43,6 +43,12 @@ interface DatabaseRepository {
     suspend fun getArtworks(includePrivates: Boolean = false) : List<Artwork>
     suspend fun getArtworks(artworkIds: List<Long>) : List<Artwork>
 
+    /** Sets the custom Backdrop of the Artwork (Image personnalisée), without rewriting the rest of it. */
+    suspend fun setArtworkCustomBackdrop(artworkId: Long, path: String?)
+
+    /** Sets the custom Poster of the Artwork (Image personnalisée), without rewriting the rest of it. */
+    suspend fun setArtworkCustomPoster(artworkId: Long, path: String?)
+
     /** Writes only the Logo path of the Artwork (see [Artwork.logoPath]): its other data and its user state are kept. */
     suspend fun setArtworkLogo(artworkId: Long, logoPath: String?)
 

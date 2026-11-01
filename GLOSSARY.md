@@ -63,8 +63,12 @@ Image TMDB d'un Artwork représentant son titre stylisé, sur fond transparent. 
 _Avoid_: Title image, Wordmark, Titre graphique
 
 **Artwork image**:
-Image affichée en haut de la page d'un Artwork. Un tap l'ouvre dans la Gallery lorsqu'un token TMDB est configuré.
+Image affichée en haut de la page d'un Artwork : son Backdrop, ou son Poster lorsque le header flou est activé (Movie uniquement). C'est l'Image personnalisée correspondante si elle existe, sinon celle de TMDB. Un tap l'ouvre dans la Gallery lorsqu'un token TMDB est configuré.
 _Avoid_: Header image, banner, bannière
+
+**Image personnalisée**:
+Backdrop ou Poster choisi par l'utilisateur dans la Gallery pour remplacer celui de TMDB dans l'Artwork image. Un Artwork a au plus un Backdrop personnalisé et un Poster personnalisé ; seul un Movie peut avoir un Poster personnalisé. Elle ne change que l'Artwork image, pas les vignettes du Catalog. Elle est conservée par la Synchro légère et effacée par la Synchro complète, l'Identification manuelle et la Réinitialisation.
+_Avoid_: Affiche personnalisée, custom image, override
 
 **Gallery**:
 Page listant toutes les images TMDB d'un Artwork (Backdrop et Poster, toutes langues) dans une seule grille triée par note décroissante, avec un visualiseur plein écran zoomable. Pour un Show, uniquement les images du Show lui-même, pas celles des Season ni des Episode. Rien n'est stocké localement.

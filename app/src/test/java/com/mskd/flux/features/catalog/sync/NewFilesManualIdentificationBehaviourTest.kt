@@ -9,8 +9,8 @@ import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.shouldBe
 
 /**
- * Behaviour of the new files of a Synchro légère towards an Identification manuelle, observed through the Catalogue in database.
- * See .scratch/identification-manuelle/specs.md and docs/adr/0001-identification-manuelle-par-titre-de-fichier.md.
+ * Behaviour of the new files of a Light sync towards a Manual identification, observed through the Catalog in database.
+ * See .scratch/manual-identification/specs.md and docs/adr/0001-manual-identification-by-file-name-title.md.
  */
 class NewFilesManualIdentificationBehaviourTest : FunSpec({
 
@@ -53,7 +53,7 @@ class NewFilesManualIdentificationBehaviourTest : FunSpec({
 
     }
 
-    test("a TMDB ID in the folder name wins over the Identification manuelle") {
+    test("a TMDB ID in the folder name wins over the Manual identification") {
 
         // Given
         givenManuallyIdentifiedShow()

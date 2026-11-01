@@ -866,7 +866,7 @@ class ArtworkViewModelTest : FunSpec({
         }
     }
 
-    context("Identification manuelle") {
+    context("Manual identification") {
 
         fun movieWith(fileName: String) {
             val movie = MediaMockups.movie.copy(file = MediaMockups.movie.file.copy(name = fileName))
@@ -900,7 +900,7 @@ class ArtworkViewModelTest : FunSpec({
             identification() shouldBe IdentificationAvailability.HIDDEN
         }
 
-        test("disabled during a Synchro, enabled again once it ends") {
+        test("disabled during a Sync, enabled again once it ends") {
             syncState.value = SyncState.Syncing(full = false)
             updateVm(MediaMockups.movieArtwork.id)
             viewModel.uiState.test {

@@ -52,7 +52,7 @@ class Migration14To15Test : FunSpec({
         return getRoomDatabase(Room.databaseBuilder(context, FluxDatabase::class.java, file.name))
     }
 
-    test("existing Artwork survive the upgrade untouched and have no Image personnalisée") {
+    test("existing Artwork survive the upgrade untouched and have no Custom image") {
 
         // Given
         createDatabase(

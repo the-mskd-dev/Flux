@@ -76,7 +76,7 @@ interface ArtworkDao {
 
 //endregion
 
-//region Image personnalisée
+//region Custom image
 
     @Query("UPDATE artworks SET customBackdropPath = :path WHERE id = :artworkId")
     suspend fun setArtworkCustomBackdrop(artworkId: Long, path: String?)

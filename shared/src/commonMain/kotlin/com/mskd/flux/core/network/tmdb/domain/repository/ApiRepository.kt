@@ -46,7 +46,7 @@ interface ApiRepository {
     suspend fun getPersonInfo(personId: Int): PersonInfo?
 
     /**
-     * The season and an episode per file: an episode the season does not have is a Fichier non reconnu.
+     * The season and an episode per file: an episode the season does not have is an Unrecognized file.
      * Null when the show has no such season. Throws when the season cannot be fetched (network, API, no token).
      */
     suspend fun getSeasonAndEpisodes(artworkId: Long, season: Int, files: List<UserFile>): Pair<Season, List<Episode>>?

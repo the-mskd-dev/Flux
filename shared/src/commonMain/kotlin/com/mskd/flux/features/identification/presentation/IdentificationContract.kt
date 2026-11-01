@@ -29,6 +29,6 @@ sealed interface IdentificationIntent {
 }
 
 sealed interface IdentificationEvent {
-    /** The Médias now belong to [artworkId]. */
+    /** The Media now belong to [artworkId]. */
     data class Identified(val artworkId: Long) : IdentificationEvent
 }

@@ -68,7 +68,7 @@ fun ArtworkDropDownMenu(
                 )
             )
 
-            // Identification manuelle
+            // Manual identification
             if (identification != IdentificationAvailability.HIDDEN) {
                 add(
                     FluxPopUpMenuItem(

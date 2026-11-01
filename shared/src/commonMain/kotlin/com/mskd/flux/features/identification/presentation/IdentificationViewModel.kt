@@ -48,7 +48,7 @@ class IdentificationViewModel(
         viewModelScope.launch {
             val source = databaseRepository.getArtwork(artworkId = artworkId)
             artwork = source
-            // The title of the file name, not the TMDB title: it is what the Synchro searched
+            // The title of the file name, not the TMDB title: it is what the Sync searched
             val file = databaseRepository.getMovie(artworkId = artworkId)?.file
                 ?: databaseRepository.getEpisodes(artworkId = artworkId).firstOrNull()?.file
             _uiState.update { it.copy(query = file?.nameProperties?.title.orEmpty()) }

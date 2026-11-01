@@ -1,6 +1,6 @@
-# 05: Image personnalisée available offline
+# 05: Custom image available offline
 
-**What to build:** The custom Backdrop and custom Poster are prefetched with the other Catalog images, so the **Artwork image** shows the **Image personnalisée** without a connection once prefetched.
+**What to build:** The custom Backdrop and custom Poster are prefetched with the other Catalog images, so the **Artwork image** shows the **Custom image** without a connection once prefetched.
 
 See `.scratch/poster-selection/specs.md`.
 

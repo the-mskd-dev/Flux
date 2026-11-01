@@ -277,7 +277,7 @@ class ShowViewModelTest : FunSpec({
         }
     }
 
-    context("Identification manuelle") {
+    context("Manual identification") {
 
         fun showWith(artwork: Artwork = MediaMockups.showArtwork, fileName: String? = null) {
             val episodes = MediaMockups.episodes.mapIndexed { index, episode ->
@@ -314,7 +314,7 @@ class ShowViewModelTest : FunSpec({
             identification() shouldBe IdentificationAvailability.HIDDEN
         }
 
-        test("disabled during a Synchro, enabled again once it ends") {
+        test("disabled during a Sync, enabled again once it ends") {
             syncState.value = SyncState.Syncing(full = false)
             updateVm()
             viewModel.uiState.test {

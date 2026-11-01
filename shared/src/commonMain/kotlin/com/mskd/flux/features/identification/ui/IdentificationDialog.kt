@@ -23,7 +23,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
-/** Lists the TMDB results for the Artwork [artworkId]: choosing one performs an Identification manuelle. */
+/** Lists the TMDB results for the Artwork [artworkId]: choosing one performs a Manual identification. */
 @Composable
 fun IdentificationDialog(
     artworkId: Long,

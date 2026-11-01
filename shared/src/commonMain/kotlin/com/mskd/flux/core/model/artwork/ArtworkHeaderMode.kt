@@ -17,7 +17,7 @@ enum class ArtworkHeaderMode {
 }
 
 /**
- * Path of the Artwork image shown by the header in [mode]: the Image personnalisée when there is one, otherwise the TMDB image.
+ * Path of the Artwork image shown by the header in [mode]: the Custom image when there is one, otherwise the TMDB image.
  * The single rule shared by the page header and the Gallery.
  */
 fun Artwork.artworkImagePath(mode: ArtworkHeaderMode): String = when (mode) {

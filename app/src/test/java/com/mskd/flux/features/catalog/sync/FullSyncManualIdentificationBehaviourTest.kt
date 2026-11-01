@@ -7,8 +7,8 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
 /**
- * Behaviour of the Synchro complète towards the Identifications manuelles, observed through the Catalogue in database.
- * See .scratch/identification-manuelle/specs.md.
+ * Behaviour of the Full sync towards the Manual identifications, observed through the Catalog in database.
+ * See .scratch/manual-identification/specs.md.
  */
 class FullSyncManualIdentificationBehaviourTest : FunSpec({
 

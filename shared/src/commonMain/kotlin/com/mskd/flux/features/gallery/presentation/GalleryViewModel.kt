@@ -148,14 +148,14 @@ class GalleryViewModel(
 
     private fun GalleryContent.viewedImage(): GalleryImage? = viewerIndex?.let { images.getOrNull(it) }
 
-    // Same rule as the page header, so that "Image actuelle" is always the image the header shows
+    // Same rule as the page header, so that "Current image" is always the image the header shows
     private fun artworkImageButton(image: GalleryImage?, artwork: Artwork?, mode: ArtworkHeaderMode, syncing: Boolean): ArtworkImageButton = when {
         image == null || artwork == null || syncing || image.type != mode.choosableImageType -> ArtworkImageButton.HIDDEN
         image.path == artwork.artworkImagePath(mode) -> ArtworkImageButton.CURRENT
         else -> ArtworkImageButton.AVAILABLE
     }
 
-    // The Artwork is observed: the button becomes "Image actuelle" by itself once saved
+    // The Artwork is observed: the button becomes "Current image" by itself once saved
     private fun useViewedImage() {
 
         val content = (uiState.value.state as? State.Content)?.content ?: return

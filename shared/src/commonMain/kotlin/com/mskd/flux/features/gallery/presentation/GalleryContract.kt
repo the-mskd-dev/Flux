@@ -21,13 +21,13 @@ data class GalleryContent(
     val artworkImageButton: ArtworkImageButton = ArtworkImageButton.HIDDEN,
 )
 
-/** The "Utiliser cette image" button of the viewer, for the image shown. */
+/** The "Use this image" button of the viewer, for the image shown. */
 enum class ArtworkImageButton {
-    /** The image cannot be the Artwork image (other type than the header shows, or a Synchro runs). */
+    /** The image cannot be the Artwork image (other type than the header shows, or a Sync runs). */
     HIDDEN,
-    /** "Utiliser cette image": the image can become the Image personnalisée. */
+    /** "Use this image": the image can become the Custom image. */
     AVAILABLE,
-    /** "Image actuelle": the image is already the Artwork image. */
+    /** "Current image": the image is already the Artwork image. */
     CURRENT,
 }
 

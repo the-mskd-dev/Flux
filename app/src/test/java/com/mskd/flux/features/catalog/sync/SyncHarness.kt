@@ -59,7 +59,7 @@ import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.time.Duration.Companion.seconds
 
 /**
- * Drives the Synchro through its only entry point, the Synchro use case, with the real Synchro graph.
+ * Drives the Sync through its only entry point, the Sync use case, with the real Sync graph.
  * Only the outer dependencies are replaced: in-memory Sources, TMDB simulated at the HTTP level,
  * in-memory Room database and datastores.
  *
@@ -91,7 +91,7 @@ internal class SyncHarness(tmdbToken: String = "test-token", tmdbMaxRequests: In
 
     private val _states = CopyOnWriteArrayList<SyncState>()
 
-    /** Successive values of the Synchro state since the harness creation. */
+    /** Successive values of the Sync state since the harness creation. */
     val states: List<SyncState> get() = _states.toList()
 
     private val koinApplication = koinApplication {
@@ -140,7 +140,7 @@ internal class SyncHarness(tmdbToken: String = "test-token", tmdbMaxRequests: In
 
     private val updateLanguageUseCase: UpdateLanguageUseCase = koin.get()
 
-    /** The Catalogue, as persisted in the database. */
+    /** The Catalog, as persisted in the database. */
     val catalog: DatabaseRepository = koin.get()
 
     val people: PeopleRepository = koin.get()
@@ -153,7 +153,7 @@ internal class SyncHarness(tmdbToken: String = "test-token", tmdbMaxRequests: In
 
     val token: TokenDataStore = koin.get()
 
-    /** The Identification manuelle, outside of any Synchro. */
+    /** The Manual identification, outside of any Sync. */
     val identifyManually: IdentifyManuallyUseCase = koin.get()
 
     val history: HistoryDao = koin.get()
@@ -174,7 +174,7 @@ internal class SyncHarness(tmdbToken: String = "test-token", tmdbMaxRequests: In
     fun customFile(root: String, name: String): UserFile =
         UserFile(name = name, path = "$root/document/$name", realPath = name, source = FileSource.SAF)
 
-    /** Makes every Artwork of the Catalogue never searched for a Logo, like a Catalogue synchronised before the Logo existed. */
+    /** Makes every Artwork of the Catalog never searched for a Logo, like a Catalog synchronised before the Logo existed. */
     suspend fun forgetLogos() =
         catalog.getArtworks(includePrivates = true).forEach { catalog.setArtworkLogo(artworkId = it.id, logoPath = null) }
 
@@ -184,19 +184,19 @@ internal class SyncHarness(tmdbToken: String = "test-token", tmdbMaxRequests: In
         awaitIdle()
     }
 
-    /** Runs a Synchro complète and waits for its end. */
+    /** Runs a Full sync and waits for its end. */
     suspend fun fullSync() {
         requestFullSync()
         awaitIdle()
     }
 
-    /** Changes the data language like the Settings do, then waits for the Catalogue to be updated. */
+    /** Changes the data language like the Settings do, then waits for the Catalog to be updated. */
     suspend fun changeDataLanguage(language: Language) {
         requestDataLanguageChange(language)
         awaitIdle()
     }
 
-    /** Changes the data language like the Settings do, without waiting for the Catalogue to be updated. */
+    /** Changes the data language like the Settings do, without waiting for the Catalog to be updated. */
     suspend fun requestDataLanguageChange(language: Language) {
         settings.setDataLanguage(language)
         updateLanguageUseCase()
@@ -206,7 +206,7 @@ internal class SyncHarness(tmdbToken: String = "test-token", tmdbMaxRequests: In
 
     fun requestFullSync() = useCase(onlyNew = false)
 
-    /** Waits for the Synchro to end, along with the background work it started. */
+    /** Waits for the Sync to end, along with the background work it started. */
     suspend fun awaitIdle() = withTimeout(10.seconds) {
         useCase.state.first { it is SyncState.Idle }
         while (true) {

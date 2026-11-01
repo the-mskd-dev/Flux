@@ -132,7 +132,7 @@ class ArtworkViewModel(
             ArtworkIntent.ShowResetProgressDialog -> showResetProgressDialog()
             ArtworkIntent.ShowIdentificationDialog -> showIdentificationDialog()
 
-            // Identification manuelle
+            // Manual identification
             is ArtworkIntent.OnIdentified -> onIdentified(artworkId = intent.artworkId)
 
             // Status
@@ -187,7 +187,7 @@ class ArtworkViewModel(
         )
     }
 
-    /** Movies only: the Identification manuelle of a Show is offered on its own page. A TMDB ID in a file name has priority. */
+    /** Movies only: the Manual identification of a Show is offered on its own page. A TMDB ID in a file name has priority. */
     private fun resolveIdentification(
         fullArtwork: FullArtwork,
         tokenAvailable: Boolean,

@@ -83,13 +83,13 @@ class DatabaseRepositoryImpl(
 
                 val historyDao = database.historyDao()
 
-                // Read before the save: the history entry is deleted with its Média by the cascade of its foreign key
+                // Read before the save: the history entry is deleted with its Media by the cascade of its foreign key
                 val sourceHistory = historyDao.get(artworkId = sourceArtworkId)
                 val historyPath = sourceHistory?.let { entry ->
                     mediasDao.findByArtworkIds(artworkIds = listOf(sourceArtworkId)).find { it.id == entry.mediaId }?.path
                 }
 
-                // The episodes the chosen Show does not have are Fichiers non reconnus: the Unknown Artwork must exist to show them
+                // The episodes the chosen Show does not have are Unrecognized files: the Unknown Artwork must exist to show them
                 if (medias.any { it.artworkId == Artwork.UNKNOWN_ID } && artworksDao.getArtwork(artworkId = Artwork.UNKNOWN_ID) == null) {
                     saveArtworks(listOf(Artwork.UNKNOWN))
                 }
@@ -115,7 +115,7 @@ class DatabaseRepositoryImpl(
     /** Must run in a transaction. */
     private suspend fun saveFolder(artwork: Artwork, seasons: List<Season>, medias: List<Media>, people: List<Person>) {
         // A renamed file keeps its path (MediaStore) but may now be another media: its previous one is replaced,
-        // and is no Fichier manquant, so the Artwork and Season it leaves empty must be cleaned here
+        // and is no Missing file, so the Artwork and Season it leaves empty must be cleaned here
         val previousByPath = mediasDao.findByPaths(paths = medias.map { it.file.path }).associateBy { it.path }
         val replacesMedias = medias.map { it.toEntity() }.any { media ->
             val previous = previousByPath[media.path] ?: return@any false
@@ -190,9 +190,9 @@ class DatabaseRepositoryImpl(
             val entity = artwork.toEntity(overrideLastModification = overrideLastModification)
             entity.copy(
                 isPrivate = artwork.isPrivate || artwork.id in privateIds,
-                // A save never undoes an Identification manuelle: only an explicit clear of the marker does
+                // A save never undoes a Manual identification: only an explicit clear of the marker does
                 manuallyIdentified = artwork.isManuallyIdentified || artwork.id in manuallyIdentifiedIds,
-                // Nor an Image personnalisée: only an explicit clear does
+                // Nor a Custom image: only an explicit clear does
                 customBackdropPath = entity.customBackdropPath ?: existing[artwork.id]?.customBackdropPath,
                 customPosterPath = entity.customPosterPath ?: existing[artwork.id]?.customPosterPath,
             )

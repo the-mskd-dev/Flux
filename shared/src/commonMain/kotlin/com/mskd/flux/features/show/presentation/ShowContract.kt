@@ -42,7 +42,7 @@ sealed class ShowIntent {
     data object ShowResetProgressDialog : ShowIntent()
     data object ShowIdentificationDialog : ShowIntent()
 
-    // Identification manuelle
+    // Manual identification
     data class OnIdentified(val artworkId: Long) : ShowIntent()
 
     // Other

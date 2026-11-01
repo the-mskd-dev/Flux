@@ -4,7 +4,7 @@ import com.mskd.flux.core.database.domain.repository.DatabaseRepository
 import com.mskd.flux.features.catalog.domain.sync.SyncContext
 import com.mskd.flux.features.catalog.domain.sync.SyncStep
 
-/** Removes the Fichiers manquants right after the scan, whatever happens next. */
+/** Removes the Missing files right after the scan, whatever happens next. */
 class MissingFilesStep(private val database: DatabaseRepository) : SyncStep {
 
     override suspend fun units(context: SyncContext) = 1

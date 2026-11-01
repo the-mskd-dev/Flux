@@ -105,7 +105,7 @@ class ShowViewModel(
             is ShowIntent.ShowResetProgressDialog -> showResetDialog()
             ShowIntent.ShowIdentificationDialog -> showIdentificationDialog()
 
-            // Identification manuelle
+            // Manual identification
             is ShowIntent.OnIdentified -> onIdentified(artworkId = intent.artworkId)
 
             // Other

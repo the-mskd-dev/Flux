@@ -10,7 +10,7 @@ import org.koin.dsl.module
 
 val moduleIdentification = module {
 
-    // The Enrichissements of the catalogue step, without the identification: the Artwork is the one chosen by the user
+    // The Enrichments of the catalog step, without the identification: the Artwork is the one chosen by the user
     single {
         IdentifyManuallyUseCase(
             database = get(),

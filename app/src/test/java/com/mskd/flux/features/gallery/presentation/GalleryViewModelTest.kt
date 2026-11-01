@@ -440,7 +440,7 @@ class GalleryViewModelTest : FunSpec({
 
     }
 
-    //region Image personnalisée
+    //region Custom image
 
     fun buttonOf(path: String): ArtworkImageButton {
         val images = contentImages()
@@ -474,7 +474,7 @@ class GalleryViewModelTest : FunSpec({
 
     }
 
-    test("without Image personnalisée, the TMDB Backdrop is the current image") {
+    test("without Custom image, the TMDB Backdrop is the current image") {
 
         coEvery { apiRepository.getMovieImages(artwork.id) } returns listOf(lowBackdrop, tmdbBackdrop, tmdbPoster)
         updateVm()
@@ -495,7 +495,7 @@ class GalleryViewModelTest : FunSpec({
 
     }
 
-    test("the button is hidden while a Synchro runs") {
+    test("the button is hidden while a Sync runs") {
 
         syncState.value = SyncState.Syncing(full = false)
 
@@ -556,7 +556,7 @@ class GalleryViewModelTest : FunSpec({
 
     //endregion
 
-    //region Image personnalisée with the blurred header
+    //region Custom image with the blurred header
 
     fun blurredHeader(enabled: Boolean) = customization.update { it.copy(oldBlurredHeader = enabled) }
 
@@ -569,7 +569,7 @@ class GalleryViewModelTest : FunSpec({
 
     }
 
-    test("with the blurred header and without Image personnalisée, the TMDB Poster is the current image") {
+    test("with the blurred header and without Custom image, the TMDB Poster is the current image") {
 
         blurredHeader(true)
         coEvery { apiRepository.getMovieImages(artwork.id) } returns listOf(highPoster, tmdbPoster)
@@ -633,7 +633,7 @@ class GalleryViewModelTest : FunSpec({
         storedArtwork.value?.customBackdropPath shouldBe midBackdrop.path
         storedArtwork.value?.customPosterPath shouldBe highPoster.path
 
-        // Then : each mode finds its own Image personnalisée again
+        // Then : each mode finds its own Custom image again
         buttonOf(highPoster.path) shouldBe ArtworkImageButton.CURRENT
         buttonOf(midBackdrop.path) shouldBe ArtworkImageButton.HIDDEN
 

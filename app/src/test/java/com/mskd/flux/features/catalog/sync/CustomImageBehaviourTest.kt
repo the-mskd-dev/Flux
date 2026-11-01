@@ -6,7 +6,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
 /**
- * Image personnalisée of an Artwork, observed through the Catalogue in database.
+ * Custom image of an Artwork, observed through the Catalog in database.
  * See .scratch/poster-selection/specs.md.
  */
 class CustomImageBehaviourTest : FunSpec({
@@ -40,7 +40,7 @@ class CustomImageBehaviourTest : FunSpec({
 
     }
 
-    test("a Synchro légère keeps the custom Backdrop and custom Poster of every Artwork") {
+    test("a Light sync keeps the custom Backdrop and custom Poster of every Artwork") {
 
         // Given
         harness.deviceStorage.availableFiles = listOf(harness.deviceFile("Inception (2010).mkv"))
@@ -60,7 +60,7 @@ class CustomImageBehaviourTest : FunSpec({
 
     }
 
-    test("a Synchro légère that adds a new Episode to a Show keeps its Image personnalisée") {
+    test("a Light sync that adds a new Episode to a Show keeps its Custom image") {
 
         // Given
         harness.deviceStorage.availableFiles = listOf(harness.deviceFile("Breaking Bad S01E01.mkv"))
@@ -81,7 +81,7 @@ class CustomImageBehaviourTest : FunSpec({
 
     }
 
-    test("a Synchro complète clears the Image personnalisée of every Artwork") {
+    test("a Full sync clears the Custom image of every Artwork") {
 
         // Given
         harness.deviceStorage.availableFiles = listOf(
@@ -107,7 +107,7 @@ class CustomImageBehaviourTest : FunSpec({
 
     }
 
-    test("an Identification manuelle to a new Artwork gives it no Image personnalisée") {
+    test("a Manual identification to a new Artwork gives it no Custom image") {
 
         // Given
         harness.deviceStorage.availableFiles = listOf(harness.deviceFile("Inception (2010).mkv"))
@@ -125,7 +125,7 @@ class CustomImageBehaviourTest : FunSpec({
 
     }
 
-    test("an Identification manuelle into an Artwork of the Catalog keeps its Image personnalisée") {
+    test("a Manual identification into an Artwork of the Catalog keeps its Custom image") {
 
         // Given
         harness.deviceStorage.availableFiles = listOf(

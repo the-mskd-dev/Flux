@@ -87,9 +87,6 @@ interface ArtworkDao {
     @Query("UPDATE artworks SET customBackdropPath = NULL, customPosterPath = NULL WHERE customBackdropPath IS NOT NULL OR customPosterPath IS NOT NULL")
     suspend fun clearCustomImages()
 
-    @Query("UPDATE artworks SET customBackdropPath = NULL, customPosterPath = NULL WHERE id = :artworkId")
-    suspend fun clearCustomImages(artworkId: Long)
-
 //endregion
 
 //region Delete

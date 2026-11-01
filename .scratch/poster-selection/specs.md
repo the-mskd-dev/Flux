@@ -17,7 +17,7 @@ Pour l'utilisateur :
   - sur un **Movie**, les Backdrop quand le header flou est désactivé, les Poster quand il est activé.
 - Un Artwork peut avoir au plus un Backdrop personnalisé et un Poster personnalisé (Movie uniquement). Changer le réglage du header flou ne perd rien : chaque mode retrouve sa propre Image personnalisée.
 - Seule l'Artwork image change. Les vignettes du Catalog, de la recherche, du Private Folder et de la page Person gardent le Poster TMDB.
-- L'Image personnalisée survit à la **Synchro légère**. Elle est effacée par la **Synchro complète**, l'**Identification manuelle** et la **Réinitialisation** : on revient alors à l'image TMDB par défaut.
+- L'Image personnalisée survit à la **Synchro légère**. Elle est effacée par la **Synchro complète** et la **Réinitialisation** : on revient alors à l'image TMDB par défaut. L'**Identification manuelle** ne transfère pas l'Image personnalisée de l'Artwork source ; si l'Artwork cible était déjà dans le Catalog, il garde la sienne.
 - Il n'y a pas d'action « revenir à l'image par défaut » : on choisit une autre image, ou une Synchro complète remet tout à zéro.
 - Le bouton est masqué pendant une Synchro.
 - L'Image personnalisée est préchargée comme les autres images, donc visible hors connexion.
@@ -45,8 +45,8 @@ Pour l'utilisateur :
 19. As a user, I want my chosen image to survive a Synchro légère, so that I do not have to choose it again after adding files.
 20. As a user, I want my chosen image to survive a Synchro légère that adds new Episodes to the Show, so that adding an Episode does not reset the page.
 21. As a user, I want a Synchro complète to bring back the TMDB images, so that I have a simple way to reset everything.
-22. As a user, I want an Identification manuelle to bring back the TMDB image of the chosen Artwork, so that I never see an image from another Artwork.
-23. As a user identifying an Artwork manually into one already in my Catalog, I want the result to show the TMDB default image, so that the behaviour stays simple and predictable.
+22. As a user, I want an Identification manuelle to a new Artwork to show the TMDB image of the chosen Artwork, so that I never see an image from another Artwork.
+23. As a user identifying an Artwork manually into one already in my Catalog, I want that Artwork to keep its Image personnalisée, so that I don't lose a choice I already made.
 24. As a user, I want a Réinitialisation to bring back the TMDB default image, so that resetting really resets.
 25. As a user, I want the button to be hidden while a Synchro runs, so that my choice is not lost to a concurrent write.
 26. As a user offline, I want my chosen image to be displayed, so that the page looks the same without a connection.
@@ -81,7 +81,7 @@ Pour l'utilisateur :
 - The Image personnalisée clearing is done by the Synchro complète only, in the same place, and with the same enablement, as the clearing of the Identifications manuelles (a dedicated Étape de synchro, or the existing one extended; whichever stays the simplest). It runs before the catalogue step.
 
 **Identification manuelle / Réinitialisation**
-- The Artwork saved by an Identification manuelle has no Image personnalisée, even when the target Artwork already existed in the Catalog with one. The save of an identified folder must therefore explicitly clear the custom paths of the target, since the regular save keeps them.
+- The Image personnalisée of the source Artwork does not follow its Médias: it is deleted with the source Artwork. The target Artwork keeps its own Image personnalisée when it already existed in the Catalog, since the regular save keeps the existing custom paths; a new target has none.
 - The Réinitialisation is specified but not implemented yet. When it is, it must clear the Image personnalisée of every Artwork it produces. This is a requirement on that future work, not a task of this spec.
 
 **Gallery**
@@ -103,7 +103,7 @@ Prior art: `FullSyncManualIdentificationBehaviourTest`, `ManualIdentificationBeh
 - Setting a custom Backdrop / Poster is read back from the Catalog.
 - A Synchro légère keeps the Image personnalisée, including when a new Episode of the Show is added (Artwork rewritten).
 - A Synchro complète clears both custom paths of every Artwork.
-- An Identification manuelle produces an Artwork without an Image personnalisée, including when the target already existed with one.
+- An Identification manuelle to a new Artwork produces an Artwork without an Image personnalisée; into an Artwork already in the Catalog, that Artwork keeps its own.
 - The images to prefetch include the custom paths.
 
 **Seam 2: `GalleryViewModel`**

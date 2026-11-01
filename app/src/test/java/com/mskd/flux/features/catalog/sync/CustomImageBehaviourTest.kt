@@ -125,7 +125,7 @@ class CustomImageBehaviourTest : FunSpec({
 
     }
 
-    test("an Identification manuelle into an Artwork of the Catalog clears its Image personnalisée") {
+    test("an Identification manuelle into an Artwork of the Catalog keeps its Image personnalisée") {
 
         // Given
         harness.deviceStorage.availableFiles = listOf(
@@ -141,8 +141,8 @@ class CustomImageBehaviourTest : FunSpec({
 
         // Then
         val artwork = harness.catalog.getArtwork(artworkId = forgottenTale.id)!!
-        artwork.customBackdropPath shouldBe null
-        artwork.customPosterPath shouldBe null
+        artwork.customBackdropPath shouldBe "/tale-backdrop.jpg"
+        artwork.customPosterPath shouldBe "/tale-poster.jpg"
 
     }
 

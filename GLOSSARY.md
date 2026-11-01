@@ -67,7 +67,7 @@ Image affichée en haut de la page d'un Artwork : son Backdrop, ou son Poster lo
 _Avoid_: Header image, banner, bannière
 
 **Image personnalisée**:
-Backdrop ou Poster choisi par l'utilisateur dans la Gallery pour remplacer celui de TMDB dans l'Artwork image. Un Artwork a au plus un Backdrop personnalisé et un Poster personnalisé ; seul un Movie peut avoir un Poster personnalisé. Elle ne change que l'Artwork image, pas les vignettes du Catalog. Elle est conservée par la Synchro légère et effacée par la Synchro complète, l'Identification manuelle et la Réinitialisation.
+Backdrop ou Poster choisi par l'utilisateur dans la Gallery pour remplacer celui de TMDB dans l'Artwork image. Un Artwork a au plus un Backdrop personnalisé et un Poster personnalisé ; seul un Movie peut avoir un Poster personnalisé. Elle ne change que l'Artwork image, pas les vignettes du Catalog. Elle est conservée par la Synchro légère et effacée par la Synchro complète et la Réinitialisation. Une Identification manuelle ne transfère pas celle de l'Artwork source ; l'Artwork cible garde la sienne s'il était déjà dans le Catalog.
 _Avoid_: Affiche personnalisée, custom image, override
 
 **Gallery**:

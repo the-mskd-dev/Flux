@@ -184,12 +184,17 @@ class DatabaseRepositoryImpl(
     override suspend fun saveArtworks(artworks: List<Artwork>, overrideLastModification: Boolean) {
         val privateIds = artworksDao.getPrivateArtworkIds().toSet()
         val manuallyIdentifiedIds = artworksDao.getManuallyIdentifiedArtworkIds().toSet()
+        val existing = artworksDao.getArtworks(artworkIds = artworks.map { it.id }).associateBy { it.id }
 
         artworksDao.insertArtworks(artworks = artworks.map { artwork ->
-            artwork.toEntity(overrideLastModification = overrideLastModification).copy(
+            val entity = artwork.toEntity(overrideLastModification = overrideLastModification)
+            entity.copy(
                 isPrivate = artwork.isPrivate || artwork.id in privateIds,
                 // A save never undoes an Identification manuelle: only an explicit clear of the marker does
-                manuallyIdentified = artwork.isManuallyIdentified || artwork.id in manuallyIdentifiedIds
+                manuallyIdentified = artwork.isManuallyIdentified || artwork.id in manuallyIdentifiedIds,
+                // Nor an Image personnalisée: only an explicit clear does
+                customBackdropPath = entity.customBackdropPath ?: existing[artwork.id]?.customBackdropPath,
+                customPosterPath = entity.customPosterPath ?: existing[artwork.id]?.customPosterPath,
             )
         })
     }
@@ -208,6 +213,10 @@ class DatabaseRepositoryImpl(
 
     override suspend fun clearManualIdentifications() {
         artworksDao.clearManualIdentifications()
+    }
+
+    override suspend fun clearCustomImages() {
+        artworksDao.clearCustomImages()
     }
 
     override suspend fun getMovie(artworkId: Long): Movie? {

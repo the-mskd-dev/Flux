@@ -16,19 +16,19 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.LoadingIndicator
-import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.SplitButtonDefaults
+import androidx.compose.material3.SplitButtonLayout
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -77,6 +77,7 @@ import flux.shared.generated.resources.gallery_use_as_poster
 import flux.shared.generated.resources.ic_download
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -121,7 +122,7 @@ fun GalleryViewer(
         }
     }
 
-    // Loading state reported by each page, so the download button only shows for a loaded image
+    // Loading state reported by each page, so the controls only show for a loaded image
     val loadedImages = remember { mutableStateMapOf<String, Boolean>() }
     fun GalleryImage.key() = "$type$path"
 
@@ -153,89 +154,113 @@ fun GalleryViewer(
             }
         }
 
-        ViewerControl(visible = controls.visible, alignment = Alignment.TopStart) {
-            IconButton(onClick = onClose) {
-                Icon(
-                    imageVector = Icons.Rounded.Clear,
-                    tint = Color.White,
-                    contentDescription = "close button",
-                )
-            }
-        }
-
         val currentImage = images.getOrNull(pagerState.currentPage)
         val currentLoaded = currentImage?.let { loadedImages[it.key()] } == true
-        ViewerControl(
-            visible = controls.visible && currentImage != null && currentLoaded &&
-                artworkImageButton != ArtworkImageButton.HIDDEN,
-            alignment = Alignment.TopCenter,
-        ) {
+        ViewerControl(visible = controls.visible && currentImage != null && currentLoaded) {
             // Still needed for the smart cast, and keeps the content empty if the image vanishes mid fade-out
             if (currentImage == null) return@ViewerControl
-            OutlinedButton(
-                enabled = artworkImageButton == ArtworkImageButton.AVAILABLE,
-                colors = ButtonDefaults.textButtonColors(
-                    contentColor = Color.White,
-                    disabledContentColor = Color.White.copy(alpha = .6f),
-                ),
-                onClick = {
-                    controls.onButtonInteraction()
-                    onUseImage()
-                }
-            ) {
-                Text(
-                    text = stringResource(
-                        when (currentImage.type) {
-                            GalleryImageType.POSTER ->
-                                if (artworkImageButton == ArtworkImageButton.CURRENT) Res.string.gallery_current_poster
-                                else Res.string.gallery_use_as_poster
-                            GalleryImageType.BACKDROP ->
-                                if (artworkImageButton == ArtworkImageButton.CURRENT) Res.string.gallery_current_backdrop
-                                else Res.string.gallery_use_as_backdrop
+            val onDownloadClick = {
+                controls.onButtonInteraction()
+                onDownload()
+            }
+            if (artworkImageButton == ArtworkImageButton.HIDDEN) {
+                DownloadButton(
+                    imageDownloadRunning = imageDownloadRunning,
+                    onClick = onDownloadClick,
+                )
+            } else {
+                SplitButtonLayout(
+                    leadingButton = {
+                        SplitButtonDefaults.TonalLeadingButton(
+                            colors = viewerButtonColors(),
+                            enabled = artworkImageButton == ArtworkImageButton.AVAILABLE,
+                            onClick = {
+                                controls.onButtonInteraction()
+                                onUseImage()
+                            }
+                        ) {
+                            Text(text = stringResource(useImageLabel(currentImage.type, artworkImageButton)))
                         }
-                    )
+                    },
+                    trailingButton = {
+                        val downloadDescription = stringResource(Res.string.gallery_image_download)
+                        SplitButtonDefaults.TrailingButton(
+                            modifier = Modifier.semantics { contentDescription = downloadDescription },
+                            enabled = !imageDownloadRunning,
+                            colors = viewerButtonColors(),
+                            elevation = ButtonDefaults.filledTonalButtonElevation(),
+                            onClick = onDownloadClick,
+                        ) {
+                            DownloadIcon(imageDownloadRunning = imageDownloadRunning)
+                        }
+                    },
                 )
             }
         }
-
-        ViewerControl(visible = controls.visible && currentLoaded, alignment = Alignment.TopEnd) {
-            val downloadDescription = stringResource(Res.string.gallery_image_download)
-            IconButton(
-                modifier = Modifier.semantics { contentDescription = downloadDescription },
-                enabled = !imageDownloadRunning,
-                onClick = {
-                    controls.onButtonInteraction()
-                    onDownload()
-                }
-            ) {
-                if (imageDownloadRunning) {
-                    LoadingIndicator(modifier = Modifier.size(24.dp), color = Color.White)
-                } else {
-                    Icon(
-                        painter = painterResource(Res.drawable.ic_download),
-                        tint = Color.White,
-                        contentDescription = null,
-                    )
-                }
-            }
-        }
-
     }
-
 }
 
-/** A viewer control pinned to the top of the screen, fading in and out with [visible]. */
+/** Tonal colours whose disabled state stays readable on the black viewer background, whatever the theme. */
+@Composable
+private fun viewerButtonColors() = ButtonDefaults.filledTonalButtonColors(
+    disabledContainerColor = DISABLED_CONTAINER_COLOR,
+    disabledContentColor = DISABLED_CONTENT_COLOR,
+)
+
+private val DISABLED_CONTAINER_COLOR = Color.White.copy(alpha = .12f)
+private val DISABLED_CONTENT_COLOR = Color.White.copy(alpha = .6f)
+
+private fun useImageLabel(type: GalleryImageType, state: ArtworkImageButton): StringResource {
+    val current = state == ArtworkImageButton.CURRENT
+    return when (type) {
+        GalleryImageType.POSTER -> if (current) Res.string.gallery_current_poster else Res.string.gallery_use_as_poster
+        GalleryImageType.BACKDROP -> if (current) Res.string.gallery_current_backdrop else Res.string.gallery_use_as_backdrop
+    }
+}
+
+/** Standalone Download button, shown in place of the split button when Use as Poster/Backdrop is hidden. */
+@Composable
+private fun DownloadButton(imageDownloadRunning: Boolean, onClick: () -> Unit) {
+    val downloadDescription = stringResource(Res.string.gallery_image_download)
+    FilledTonalIconButton(
+        colors = IconButtonDefaults.filledTonalIconButtonColors(
+            disabledContainerColor = DISABLED_CONTAINER_COLOR,
+            disabledContentColor = DISABLED_CONTENT_COLOR,
+        ),
+        modifier = Modifier.semantics { contentDescription = downloadDescription },
+        enabled = !imageDownloadRunning,
+        onClick = onClick,
+    ) {
+        DownloadIcon(imageDownloadRunning = imageDownloadRunning)
+    }
+}
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+private fun DownloadIcon(imageDownloadRunning: Boolean) {
+    if (imageDownloadRunning) {
+        LoadingIndicator(modifier = Modifier.size(SplitButtonDefaults.TrailingIconSize))
+    } else {
+        Icon(
+            modifier = Modifier.size(SplitButtonDefaults.TrailingIconSize),
+            painter = painterResource(Res.drawable.ic_download),
+            contentDescription = null,
+        )
+    }
+}
+
+/** The viewer controls, centred at the bottom of the screen above the navigation bar, fading in and out with [visible]. */
 @Composable
 private fun BoxScope.ViewerControl(
     visible: Boolean,
-    alignment: Alignment,
     content: @Composable () -> Unit,
 ) {
     AnimatedVisibility(
         visible = visible,
         modifier = Modifier
-            .align(alignment)
-            .statusBarsPadding(),
+            .align(Alignment.BottomCenter)
+            .navigationBarsPadding()
+            .padding(bottom = 16.dp),
         enter = fadeIn(),
         exit = fadeOut(),
     ) {

@@ -96,6 +96,9 @@ private const val MAX_ZOOM = 10f
 private const val ZOOM_ANIMATION_MS = 250
 private const val DISMISS_ANIMATION_MS = 250
 
+// Scale the image reaches, on top of the swipe down shrink, once the closing animation ends
+private const val DISMISS_CLOSED_SCALE = 0.7f
+
 // Downward velocity from which releasing the swipe down dismisses the viewer whatever the distance
 private val DISMISS_FLING_VELOCITY = 1_000.dp
 
@@ -135,6 +138,8 @@ fun GalleryViewer(
     }
     var dismissAnimation by remember { mutableStateOf<Job?>(null) }
     var closing by remember { mutableStateOf(false) }
+    // From 0 to 1 while the viewer closes: the image fades out and shrinks as it keeps moving down
+    var closeProgress by remember { mutableFloatStateOf(0f) }
 
     fun onDismissStart() {
         dismissAnimation?.cancel()
@@ -154,6 +159,9 @@ fun GalleryViewer(
                 closing = true
                 onClose()
                 animateDismissTo(dismissState.height, tween(DISMISS_ANIMATION_MS), velocity)
+                scope.launch {
+                    animate(0f, 1f, animationSpec = tween(DISMISS_ANIMATION_MS)) { value, _ -> closeProgress = value }
+                }
             }
             ViewerDismissRelease.SETTLE -> animateDismissTo(0f, spring(), velocity)
         }
@@ -204,6 +212,7 @@ fun GalleryViewer(
                     resetRequest = resetRequest,
                     dismiss = dismissState.takeIf { isCurrent },
                     dismissible = !closing,
+                    closeProgress = { closeProgress },
                     onTap = controls::onTap,
                     onDismissStart = ::onDismissStart,
                     onDismissEnd = ::onDismissEnd,
@@ -340,6 +349,7 @@ private fun ZoomableImage(
     onDismissStart: () -> Unit,
     onDismissEnd: (velocity: Float) -> Unit,
     onDismissCancel: () -> Unit,
+    closeProgress: () -> Float,
     onZoomedChange: (Boolean) -> Unit,
     onLoadedChange: (Boolean) -> Unit,
 ) {
@@ -474,7 +484,10 @@ private fun ZoomableImage(
             }
             .graphicsLayer {
                 // The swipe down only happens at 1x, where the zoom offset is zero
-                val dismissScale = dismiss?.scale ?: 1f
+                // Read in the draw phase only, so the closing animation doesn't recompose the page
+                val close = closeProgress()
+                val dismissScale = (dismiss?.scale ?: 1f) * (1f - (1f - DISMISS_CLOSED_SCALE) * close)
+                alpha = 1f - close
                 scaleX = scale * dismissScale
                 scaleY = scale * dismissScale
                 translationX = offset.x

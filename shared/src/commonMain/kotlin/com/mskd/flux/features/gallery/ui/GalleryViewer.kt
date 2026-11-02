@@ -164,7 +164,7 @@ fun GalleryViewer(
                 onDownload()
             }
             if (artworkImageButton == ArtworkImageButton.HIDDEN) {
-                DownloadButton(
+                ImageDownloadButton(
                     imageDownloadRunning = imageDownloadRunning,
                     onClick = onDownloadClick,
                 )
@@ -191,7 +191,7 @@ fun GalleryViewer(
                             elevation = ButtonDefaults.filledTonalButtonElevation(),
                             onClick = onDownloadClick,
                         ) {
-                            DownloadIcon(imageDownloadRunning = imageDownloadRunning)
+                            ImageDownloadIcon(imageDownloadRunning = imageDownloadRunning)
                         }
                     },
                 )
@@ -218,9 +218,9 @@ private fun useImageLabel(type: GalleryImageType, state: ArtworkImageButton): St
     }
 }
 
-/** Standalone Download button, shown in place of the split button when Use as Poster/Backdrop is hidden. */
+/** Standalone Image Download button, shown in place of the split button when Use as Poster/Backdrop is hidden. */
 @Composable
-private fun DownloadButton(imageDownloadRunning: Boolean, onClick: () -> Unit) {
+private fun ImageDownloadButton(imageDownloadRunning: Boolean, onClick: () -> Unit) {
     val downloadDescription = stringResource(Res.string.gallery_image_download)
     FilledTonalIconButton(
         colors = IconButtonDefaults.filledTonalIconButtonColors(
@@ -231,13 +231,13 @@ private fun DownloadButton(imageDownloadRunning: Boolean, onClick: () -> Unit) {
         enabled = !imageDownloadRunning,
         onClick = onClick,
     ) {
-        DownloadIcon(imageDownloadRunning = imageDownloadRunning)
+        ImageDownloadIcon(imageDownloadRunning = imageDownloadRunning)
     }
 }
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-private fun DownloadIcon(imageDownloadRunning: Boolean) {
+private fun ImageDownloadIcon(imageDownloadRunning: Boolean) {
     if (imageDownloadRunning) {
         LoadingIndicator(modifier = Modifier.size(SplitButtonDefaults.TrailingIconSize))
     } else {

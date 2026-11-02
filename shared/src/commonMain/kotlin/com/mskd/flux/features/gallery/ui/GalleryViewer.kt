@@ -1,7 +1,10 @@
 package com.mskd.flux.features.gallery.ui
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animate
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
@@ -10,6 +13,7 @@ import androidx.compose.foundation.gestures.calculatePan
 import androidx.compose.foundation.gestures.calculateZoom
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -26,6 +30,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -46,7 +51,10 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.positionChanged
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalViewConfiguration
+import androidx.compose.ui.platform.ViewConfiguration
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
@@ -77,6 +85,9 @@ private const val DOUBLE_TAP_ZOOM = 3f
 private const val MAX_ZOOM = 10f
 private const val ZOOM_ANIMATION_MS = 250
 
+// Lower than the platform default (~300 ms) so that a single tap toggles the controls faster
+private const val DOUBLE_TAP_TIMEOUT_MS = 200L
+
 /**
  * Full screen overlay showing the images in their original resolution, one page per image.
  * The pager is locked while the current image is zoomed so that a drag pans the image instead.
@@ -100,6 +111,16 @@ fun GalleryViewer(
 
     var resetRequest by remember { mutableIntStateOf(0) }
 
+    val controls = rememberViewerControlsState()
+    LaunchedEffect(imageDownloadRunning) { controls.onDownloadRunningChange(imageDownloadRunning) }
+
+    val baseViewConfiguration = LocalViewConfiguration.current
+    val viewerViewConfiguration = remember(baseViewConfiguration) {
+        object : ViewConfiguration by baseViewConfiguration {
+            override val doubleTapTimeoutMillis: Long = DOUBLE_TAP_TIMEOUT_MS
+        }
+    }
+
     // Loading state reported by each page, so the download button only shows for a loaded image
     val loadedImages = remember { mutableStateMapOf<String, Boolean>() }
     fun GalleryImage.key() = "$type$path"
@@ -113,48 +134,54 @@ fun GalleryViewer(
 
     Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
 
-        HorizontalPager(
-            state = pagerState,
-            modifier = Modifier.fillMaxSize(),
-            userScrollEnabled = !zoomed,
-            key = { images.getOrNull(it)?.key() ?: it },
-        ) { page ->
-            val image = images.getOrNull(page) ?: return@HorizontalPager
-            ZoomableImage(
-                image = image,
-                isCurrent = page == pagerState.currentPage,
-                resetRequest = resetRequest,
-                onZoomedChange = { zoomed = it },
-                onLoadedChange = { loadedImages[image.key()] = it }
-            )
+        CompositionLocalProvider(LocalViewConfiguration provides viewerViewConfiguration) {
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier.fillMaxSize(),
+                userScrollEnabled = !zoomed,
+                key = { images.getOrNull(it)?.key() ?: it },
+            ) { page ->
+                val image = images.getOrNull(page) ?: return@HorizontalPager
+                ZoomableImage(
+                    image = image,
+                    isCurrent = page == pagerState.currentPage,
+                    resetRequest = resetRequest,
+                    onTap = controls::onTap,
+                    onZoomedChange = { zoomed = it },
+                    onLoadedChange = { loadedImages[image.key()] = it }
+                )
+            }
         }
 
-        IconButton(
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .statusBarsPadding(),
-            onClick = onClose
-        ) {
-            Icon(
-                imageVector = Icons.Rounded.Clear,
-                tint = Color.White,
-                contentDescription = "close button",
-            )
+        ViewerControl(visible = controls.visible, alignment = Alignment.TopStart) {
+            IconButton(onClick = onClose) {
+                Icon(
+                    imageVector = Icons.Rounded.Clear,
+                    tint = Color.White,
+                    contentDescription = "close button",
+                )
+            }
         }
 
         val currentImage = images.getOrNull(pagerState.currentPage)
         val currentLoaded = currentImage?.let { loadedImages[it.key()] } == true
-        if (currentImage != null && currentLoaded && artworkImageButton != ArtworkImageButton.HIDDEN) {
+        ViewerControl(
+            visible = controls.visible && currentImage != null && currentLoaded &&
+                artworkImageButton != ArtworkImageButton.HIDDEN,
+            alignment = Alignment.TopCenter,
+        ) {
+            // Still needed for the smart cast, and keeps the content empty if the image vanishes mid fade-out
+            if (currentImage == null) return@ViewerControl
             OutlinedButton(
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .statusBarsPadding(),
                 enabled = artworkImageButton == ArtworkImageButton.AVAILABLE,
                 colors = ButtonDefaults.textButtonColors(
                     contentColor = Color.White,
                     disabledContentColor = Color.White.copy(alpha = .6f),
                 ),
-                onClick = onUseImage
+                onClick = {
+                    controls.onButtonInteraction()
+                    onUseImage()
+                }
             ) {
                 Text(
                     text = stringResource(
@@ -171,15 +198,15 @@ fun GalleryViewer(
             }
         }
 
-        if (currentLoaded) {
+        ViewerControl(visible = controls.visible && currentLoaded, alignment = Alignment.TopEnd) {
             val downloadDescription = stringResource(Res.string.gallery_image_download)
             IconButton(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .statusBarsPadding()
-                    .semantics { contentDescription = downloadDescription },
+                modifier = Modifier.semantics { contentDescription = downloadDescription },
                 enabled = !imageDownloadRunning,
-                onClick = onDownload
+                onClick = {
+                    controls.onButtonInteraction()
+                    onDownload()
+                }
             ) {
                 if (imageDownloadRunning) {
                     LoadingIndicator(modifier = Modifier.size(24.dp), color = Color.White)
@@ -197,12 +224,32 @@ fun GalleryViewer(
 
 }
 
+/** A viewer control pinned to the top of the screen, fading in and out with [visible]. */
+@Composable
+private fun BoxScope.ViewerControl(
+    visible: Boolean,
+    alignment: Alignment,
+    content: @Composable () -> Unit,
+) {
+    AnimatedVisibility(
+        visible = visible,
+        modifier = Modifier
+            .align(alignment)
+            .statusBarsPadding(),
+        enter = fadeIn(),
+        exit = fadeOut(),
+    ) {
+        content()
+    }
+}
+
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun ZoomableImage(
     image: GalleryImage,
     isCurrent: Boolean,
     resetRequest: Int,
+    onTap: () -> Unit,
     onZoomedChange: (Boolean) -> Unit,
     onLoadedChange: (Boolean) -> Unit,
 ) {
@@ -213,6 +260,7 @@ private fun ZoomableImage(
     var loading by remember { mutableStateOf(true) }
     var animation by remember { mutableStateOf<Job?>(null) }
     val scope = rememberCoroutineScope()
+    val currentOnTap by rememberUpdatedState(onTap)
 
     // Keeps the zoomed image from being dragged out of the screen
     fun clamp(offset: Offset, scale: Float): Offset {
@@ -263,8 +311,12 @@ private fun ZoomableImage(
         modifier = Modifier
             .fillMaxSize()
             .onSizeChanged { size = it }
+            // The tap gesture alone is invisible to accessibility services, which would leave the controls unreachable
+            .semantics { onClick { currentOnTap(); true } }
             .pointerInput(Unit) {
+                // A double-tap zooms only: onTap is delayed by the double-tap timeout and never fires for it
                 detectTapGestures(
+                    onTap = { currentOnTap() },
                     onDoubleTap = { tap ->
                         val focus = tap - Offset(size.width / 2f, size.height / 2f)
                         if (scale > MIN_ZOOM) animateZoomTo(MIN_ZOOM, focus)

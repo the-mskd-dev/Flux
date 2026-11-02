@@ -46,6 +46,7 @@ import com.mskd.flux.features.gallery.domain.model.thumbnailUrl
 import com.mskd.flux.features.gallery.presentation.GalleryFailure
 import com.mskd.flux.features.gallery.presentation.ArtworkImageButton
 import com.mskd.flux.features.gallery.presentation.GalleryIntent
+import com.mskd.flux.features.gallery.ui.viewer.GalleryViewer
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.components.FluxScaffold

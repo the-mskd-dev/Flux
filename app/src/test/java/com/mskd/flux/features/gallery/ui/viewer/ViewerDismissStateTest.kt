@@ -1,4 +1,4 @@
-package com.mskd.flux.features.gallery.ui
+package com.mskd.flux.features.gallery.ui.viewer
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.floats.plusOrMinus

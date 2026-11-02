@@ -1,5 +1,7 @@
-package com.mskd.flux.features.gallery.ui
+package com.mskd.flux.features.gallery.ui.viewer
 
+import androidx.compose.animation.core.AnimationSpec
+import androidx.compose.animation.core.animate
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.setValue
@@ -39,6 +41,11 @@ class ViewerDismissState(private val flingVelocity: Float) {
     /** Moves the image to [offset], used by the settle back and dismiss animations. */
     fun snapTo(offset: Float) {
         this.offset = offset.coerceAtLeast(0f)
+    }
+
+    /** Animates the image to [target], from the release [velocity] in px/s. */
+    suspend fun animateTo(target: Float, animationSpec: AnimationSpec<Float>, velocity: Float = 0f) {
+        animate(offset, target, velocity, animationSpec) { value, _ -> snapTo(value) }
     }
 
     /** Decides what the release of the drag does, from the reached offset and the vertical [velocity] in px/s. */

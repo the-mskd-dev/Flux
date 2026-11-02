@@ -1,4 +1,4 @@
-package com.mskd.flux.features.gallery.ui
+package com.mskd.flux.features.gallery.ui.viewer
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue

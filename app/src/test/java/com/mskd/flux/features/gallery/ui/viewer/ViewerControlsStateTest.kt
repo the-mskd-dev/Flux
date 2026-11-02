@@ -1,4 +1,4 @@
-package com.mskd.flux.features.gallery.ui
+package com.mskd.flux.features.gallery.ui.viewer
 
 import com.mskd.flux.configs.fluxExtensions
 import io.kotest.core.spec.style.FunSpec

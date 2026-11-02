@@ -4,17 +4,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
 import com.mskd.flux.core.model.artwork.Artwork
-import com.mskd.flux.core.model.artwork.ArtworkHeaderMode
 import com.mskd.flux.core.model.artwork.ContentType
-import com.mskd.flux.core.model.artwork.artworkImagePath
+import com.mskd.flux.core.model.artwork.shownBackdropPath
+import com.mskd.flux.core.model.artwork.shownPosterPath
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.connectivity.domain.ConnectivityRepository
-import com.mskd.flux.features.customization.domain.datastore.CustomizationDataStore
 import com.mskd.flux.features.gallery.domain.model.GalleryImage
 import com.mskd.flux.features.gallery.domain.model.GalleryImageType
-import com.mskd.flux.features.gallery.domain.model.choosableImageType
 import com.mskd.flux.features.gallery.domain.usecase.GetGalleryImagesUseCase
 import com.mskd.flux.features.gallery.domain.usecase.ImageDownloadUseCase
 import com.mskd.flux.report.Trace
@@ -41,7 +39,6 @@ class GalleryViewModel(
     private val connectivityRepository: ConnectivityRepository,
     private val imageDownload: ImageDownloadUseCase,
     private val filesLauncher: FilesLauncher,
-    customizationDataStore: CustomizationDataStore,
     catalogSyncCoordinator: CatalogSyncCoordinator,
 ) : ViewModel() {
 
@@ -53,23 +50,18 @@ class GalleryViewModel(
     // The state driven by the user and the images source; the observed Artwork completes it in [uiState]
     private val _uiState = MutableStateFlow(GalleryUiState())
 
-    private val headerMode = customizationDataStore.flow.map { customization ->
-        ArtworkHeaderMode.of(type = contentType, blurredHeader = customization.oldBlurredHeader)
-    }
-
     private val syncing = catalogSyncCoordinator.state.map { it is SyncState.Syncing }
 
     val uiState: StateFlow<GalleryUiState> = combine(
         _uiState,
         databaseRepository.flowArtwork(artworkId = artworkId),
-        headerMode,
         syncing,
-    ) { ui, artwork, mode, syncing ->
+    ) { ui, artwork, syncing ->
         val content = (ui.state as? State.Content)?.content
         ui.copy(
             title = artwork?.title.orEmpty(),
             state = if (content == null) ui.state else State.Content(
-                content.copy(artworkImageButton = artworkImageButton(content.viewedImage(), artwork, mode, syncing))
+                content.copy(artworkImageButton = artworkImageButton(content.viewedImage(), artwork, syncing))
             )
         )
     }.stateIn(scope = viewModelScope, started = SharingStarted.Eagerly, initialValue = GalleryUiState())
@@ -148,14 +140,19 @@ class GalleryViewModel(
 
     private fun GalleryContent.viewedImage(): GalleryImage? = viewerIndex?.let { images.getOrNull(it) }
 
-    // Same rule as the page header, so that "Current image" is always the image the header shows
-    private fun artworkImageButton(image: GalleryImage?, artwork: Artwork?, mode: ArtworkHeaderMode, syncing: Boolean): ArtworkImageButton = when {
-        image == null || artwork == null || syncing || image.type != mode.choosableImageType -> ArtworkImageButton.HIDDEN
-        image.path == artwork.artworkImagePath(mode) -> ArtworkImageButton.CURRENT
+    // Same rule as the page header and the Catalog, so that "Current poster" / "Current backdrop" is always the image they show
+    private fun artworkImageButton(image: GalleryImage?, artwork: Artwork?, syncing: Boolean): ArtworkImageButton = when {
+        image == null || artwork == null || syncing -> ArtworkImageButton.HIDDEN
+        image.path == artwork.shownPathOf(image.type) -> ArtworkImageButton.CURRENT
         else -> ArtworkImageButton.AVAILABLE
     }
 
-    // The Artwork is observed: the button becomes "Current image" by itself once saved
+    private fun Artwork.shownPathOf(type: GalleryImageType): String = when (type) {
+        GalleryImageType.BACKDROP -> shownBackdropPath
+        GalleryImageType.POSTER -> shownPosterPath
+    }
+
+    // The Artwork is observed: the button becomes "Current poster" / "Current backdrop" by itself once saved
     private fun useViewedImage() {
 
         val content = (uiState.value.state as? State.Content)?.content ?: return
@@ -171,7 +168,7 @@ class GalleryViewModel(
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
-                Trace.error("GalleryViewModel", "Fail to use image ${image.path} as Artwork image of artworkId:$artworkId", e)
+                Trace.error("GalleryViewModel", "Fail to use image ${image.path} as custom ${image.type} of artworkId:$artworkId", e)
             }
         }
 

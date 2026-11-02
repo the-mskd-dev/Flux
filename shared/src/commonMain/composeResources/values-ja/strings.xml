@@ -249,8 +249,10 @@
     <string name="chapters">チャプター</string>
     <string name="chapter_number">チャプター %1$d</string>
     <string name="gallery_image_download">画像をダウンロード</string>
-    <string name="gallery_use_image">この画像を使用</string>
-    <string name="gallery_current_image">現在の画像</string>
+    <string name="gallery_use_as_poster">ポスターとして使用</string>
+    <string name="gallery_use_as_backdrop">背景として使用</string>
+    <string name="gallery_current_poster">現在のポスター</string>
+    <string name="gallery_current_backdrop">現在の背景</string>
     <string name="gallery_image_download_succeeded">画像を保存しました</string>
     <string name="gallery_image_download_failed">画像をダウンロードできませんでした</string>
     <string name="gallery_image_download_show">表示</string>

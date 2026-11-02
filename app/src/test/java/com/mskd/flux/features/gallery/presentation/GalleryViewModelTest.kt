@@ -10,7 +10,6 @@ import com.mskd.flux.core.network.tmdb.domain.repository.ApiRepository
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.connectivity.domain.ConnectivityRepository
-import com.mskd.flux.features.customization.domain.datastore.CustomizationDataStore
 import com.mskd.flux.features.gallery.domain.model.GalleryImage
 import com.mskd.flux.features.gallery.domain.model.GalleryImageType
 import com.mskd.flux.features.gallery.domain.usecase.GetGalleryImagesUseCase
@@ -42,7 +41,6 @@ class GalleryViewModelTest : FunSpec({
     lateinit var filesLauncher: FilesLauncher
     lateinit var databaseRepository: DatabaseRepository
     lateinit var storedArtwork: MutableStateFlow<Artwork?>
-    lateinit var customization: MutableStateFlow<CustomizationDataStore.State>
     lateinit var syncState: MutableStateFlow<SyncState>
 
     val artwork = MediaMockups.movieArtwork
@@ -60,7 +58,6 @@ class GalleryViewModelTest : FunSpec({
             connectivityRepository = connectivityRepository,
             imageDownload = imageDownload,
             filesLauncher = filesLauncher,
-            customizationDataStore = mockk { every { flow } returns customization },
             catalogSyncCoordinator = mockk { every { state } returns syncState },
         )
     }
@@ -69,7 +66,6 @@ class GalleryViewModelTest : FunSpec({
 
     beforeTest {
         storedArtwork = MutableStateFlow(artwork)
-        customization = MutableStateFlow(CustomizationDataStore.State())
         syncState = MutableStateFlow(SyncState.Idle())
         // The Catalog: the stored Artwork is observed, and the targeted writes change it
         databaseRepository = mockk {
@@ -448,6 +444,12 @@ class GalleryViewModelTest : FunSpec({
         return (viewModel.uiState.value.state as State.Content).content.artworkImageButton
     }
 
+    fun useImage(path: String) {
+        buttonOf(path) shouldBe ArtworkImageButton.AVAILABLE
+        viewModel.handleIntent(GalleryIntent.OnUseImageTap)
+        testDispatcher.scheduler.advanceUntilIdle()
+    }
+
     val tmdbBackdrop = GalleryImage(path = artwork.bannerPath, type = GalleryImageType.BACKDROP, ratio = 1.78f, rating = 4.0)
     val tmdbPoster = GalleryImage(path = artwork.imagePath, type = GalleryImageType.POSTER, ratio = .67f, rating = 3.0)
 
@@ -458,33 +460,35 @@ class GalleryViewModelTest : FunSpec({
         createVm(artworkId = show.id, contentType = ContentType.SHOW)
     }
 
-    test("on a Show, a Backdrop can be used as Artwork image, a Poster cannot") {
+    test("on a Movie, both a Backdrop and a Poster can be used") {
+
+        buttonOf(midBackdrop.path) shouldBe ArtworkImageButton.AVAILABLE
+        buttonOf(highPoster.path) shouldBe ArtworkImageButton.AVAILABLE
+
+    }
+
+    test("on a Show, both a Backdrop and a Poster can be used") {
 
         showGallery()
 
         buttonOf(lowBackdrop.path) shouldBe ArtworkImageButton.AVAILABLE
-        buttonOf(highPoster.path) shouldBe ArtworkImageButton.HIDDEN
+        buttonOf(highPoster.path) shouldBe ArtworkImageButton.AVAILABLE
 
     }
 
-    test("on a Movie with the normal header, a Backdrop can be used as Artwork image, a Poster cannot") {
+    test("without Custom image, the TMDB Backdrop and the TMDB Poster are the current images") {
 
-        buttonOf(midBackdrop.path) shouldBe ArtworkImageButton.AVAILABLE
-        buttonOf(highPoster.path) shouldBe ArtworkImageButton.HIDDEN
-
-    }
-
-    test("without Custom image, the TMDB Backdrop is the current image") {
-
-        coEvery { apiRepository.getMovieImages(artwork.id) } returns listOf(lowBackdrop, tmdbBackdrop, tmdbPoster)
+        coEvery { apiRepository.getMovieImages(artwork.id) } returns listOf(lowBackdrop, tmdbBackdrop, tmdbPoster, highPoster)
         updateVm()
 
         buttonOf(tmdbBackdrop.path) shouldBe ArtworkImageButton.CURRENT
+        buttonOf(tmdbPoster.path) shouldBe ArtworkImageButton.CURRENT
         buttonOf(lowBackdrop.path) shouldBe ArtworkImageButton.AVAILABLE
+        buttonOf(highPoster.path) shouldBe ArtworkImageButton.AVAILABLE
 
     }
 
-    test("with a custom Backdrop, it is the current image and the TMDB Backdrop becomes available") {
+    test("with a custom Backdrop, it is the current Backdrop and the TMDB Backdrop becomes available") {
 
         storedArtwork.value = artwork.copy(customBackdropPath = lowBackdrop.path)
         coEvery { apiRepository.getMovieImages(artwork.id) } returns listOf(lowBackdrop, tmdbBackdrop)
@@ -495,11 +499,23 @@ class GalleryViewModelTest : FunSpec({
 
     }
 
+    test("with a custom Poster, it is the current Poster and the TMDB Poster becomes available") {
+
+        storedArtwork.value = artwork.copy(customPosterPath = highPoster.path)
+        coEvery { apiRepository.getMovieImages(artwork.id) } returns listOf(highPoster, tmdbPoster)
+        updateVm()
+
+        buttonOf(highPoster.path) shouldBe ArtworkImageButton.CURRENT
+        buttonOf(tmdbPoster.path) shouldBe ArtworkImageButton.AVAILABLE
+
+    }
+
     test("the button is hidden while a Sync runs") {
 
         syncState.value = SyncState.Syncing(full = false)
 
         buttonOf(midBackdrop.path) shouldBe ArtworkImageButton.HIDDEN
+        buttonOf(highPoster.path) shouldBe ArtworkImageButton.HIDDEN
 
         syncState.value = SyncState.Idle()
 
@@ -513,16 +529,37 @@ class GalleryViewModelTest : FunSpec({
 
     }
 
-    test("using a Backdrop saves it as custom Backdrop and it becomes the current image") {
+    test("using a Backdrop saves it as custom Backdrop and it becomes the current Backdrop") {
 
-        buttonOf(midBackdrop.path) shouldBe ArtworkImageButton.AVAILABLE
-
-        viewModel.handleIntent(GalleryIntent.OnUseImageTap)
-        testDispatcher.scheduler.advanceUntilIdle()
+        useImage(midBackdrop.path)
 
         storedArtwork.value?.customBackdropPath shouldBe midBackdrop.path
         storedArtwork.value?.customPosterPath shouldBe null
         buttonOf(midBackdrop.path) shouldBe ArtworkImageButton.CURRENT
+
+    }
+
+    test("using a Poster saves it as custom Poster and leaves the custom Backdrop untouched") {
+
+        storedArtwork.value = artwork.copy(customBackdropPath = lowBackdrop.path)
+
+        useImage(highPoster.path)
+
+        storedArtwork.value?.customPosterPath shouldBe highPoster.path
+        storedArtwork.value?.customBackdropPath shouldBe lowBackdrop.path
+        buttonOf(highPoster.path) shouldBe ArtworkImageButton.CURRENT
+        buttonOf(lowBackdrop.path) shouldBe ArtworkImageButton.CURRENT
+
+    }
+
+    test("on a Show, using a Poster saves it as custom Poster") {
+
+        showGallery()
+
+        useImage(highPoster.path)
+
+        storedArtwork.value?.customPosterPath shouldBe highPoster.path
+        buttonOf(highPoster.path) shouldBe ArtworkImageButton.CURRENT
 
     }
 
@@ -543,106 +580,16 @@ class GalleryViewModelTest : FunSpec({
 
     }
 
-    test("a tap on a Poster with the normal header saves nothing") {
+    test("a tap on the current image saves nothing") {
 
-        buttonOf(highPoster.path)
+        coEvery { apiRepository.getMovieImages(artwork.id) } returns listOf(tmdbPoster, highPoster)
+        updateVm()
+        buttonOf(tmdbPoster.path) shouldBe ArtworkImageButton.CURRENT
 
         viewModel.handleIntent(GalleryIntent.OnUseImageTap)
         testDispatcher.scheduler.advanceUntilIdle()
 
         storedArtwork.value shouldBe artwork
-
-    }
-
-    //endregion
-
-    //region Custom image with the blurred header
-
-    fun blurredHeader(enabled: Boolean) = customization.update { it.copy(oldBlurredHeader = enabled) }
-
-    test("on a Movie with the blurred header, a Poster can be used as Artwork image, a Backdrop cannot") {
-
-        blurredHeader(true)
-
-        buttonOf(highPoster.path) shouldBe ArtworkImageButton.AVAILABLE
-        buttonOf(midBackdrop.path) shouldBe ArtworkImageButton.HIDDEN
-
-    }
-
-    test("with the blurred header and without Custom image, the TMDB Poster is the current image") {
-
-        blurredHeader(true)
-        coEvery { apiRepository.getMovieImages(artwork.id) } returns listOf(highPoster, tmdbPoster)
-        updateVm()
-
-        buttonOf(tmdbPoster.path) shouldBe ArtworkImageButton.CURRENT
-        buttonOf(highPoster.path) shouldBe ArtworkImageButton.AVAILABLE
-
-    }
-
-    test("with the blurred header and a custom Poster, it is the current image and the TMDB Poster becomes available") {
-
-        blurredHeader(true)
-        storedArtwork.value = artwork.copy(customPosterPath = highPoster.path)
-        coEvery { apiRepository.getMovieImages(artwork.id) } returns listOf(highPoster, tmdbPoster)
-        updateVm()
-
-        buttonOf(highPoster.path) shouldBe ArtworkImageButton.CURRENT
-        buttonOf(tmdbPoster.path) shouldBe ArtworkImageButton.AVAILABLE
-
-    }
-
-    test("on a Show with the blurred header, a Backdrop can still be used as Artwork image, a Poster still cannot") {
-
-        blurredHeader(true)
-        showGallery()
-
-        buttonOf(lowBackdrop.path) shouldBe ArtworkImageButton.AVAILABLE
-        buttonOf(highPoster.path) shouldBe ArtworkImageButton.HIDDEN
-
-    }
-
-    test("using a Poster with the blurred header saves it as custom Poster and leaves the custom Backdrop untouched") {
-
-        blurredHeader(true)
-        storedArtwork.value = artwork.copy(customBackdropPath = lowBackdrop.path)
-
-        buttonOf(highPoster.path) shouldBe ArtworkImageButton.AVAILABLE
-
-        viewModel.handleIntent(GalleryIntent.OnUseImageTap)
-        testDispatcher.scheduler.advanceUntilIdle()
-
-        storedArtwork.value?.customPosterPath shouldBe highPoster.path
-        storedArtwork.value?.customBackdropPath shouldBe lowBackdrop.path
-        buttonOf(highPoster.path) shouldBe ArtworkImageButton.CURRENT
-
-    }
-
-    test("the custom Backdrop and the custom Poster are kept apart when the blurred header setting changes") {
-
-        // Given : a custom Backdrop chosen with the normal header, then a custom Poster with the blurred header
-        buttonOf(midBackdrop.path) shouldBe ArtworkImageButton.AVAILABLE
-        viewModel.handleIntent(GalleryIntent.OnUseImageTap)
-        testDispatcher.scheduler.advanceUntilIdle()
-
-        blurredHeader(true)
-        buttonOf(highPoster.path) shouldBe ArtworkImageButton.AVAILABLE
-        viewModel.handleIntent(GalleryIntent.OnUseImageTap)
-        testDispatcher.scheduler.advanceUntilIdle()
-
-        storedArtwork.value?.customBackdropPath shouldBe midBackdrop.path
-        storedArtwork.value?.customPosterPath shouldBe highPoster.path
-
-        // Then : each mode finds its own Custom image again
-        buttonOf(highPoster.path) shouldBe ArtworkImageButton.CURRENT
-        buttonOf(midBackdrop.path) shouldBe ArtworkImageButton.HIDDEN
-
-        blurredHeader(false)
-        buttonOf(midBackdrop.path) shouldBe ArtworkImageButton.CURRENT
-        buttonOf(highPoster.path) shouldBe ArtworkImageButton.HIDDEN
-
-        blurredHeader(true)
-        buttonOf(highPoster.path) shouldBe ArtworkImageButton.CURRENT
 
     }
 

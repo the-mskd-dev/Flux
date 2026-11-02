@@ -21,13 +21,13 @@ data class GalleryContent(
     val artworkImageButton: ArtworkImageButton = ArtworkImageButton.HIDDEN,
 )
 
-/** The "Use this image" button of the viewer, for the image shown. */
+/** The "Use as poster" / "Use as backdrop" button of the viewer, for the image shown. */
 enum class ArtworkImageButton {
-    /** The image cannot be the Artwork image (other type than the header shows, or a Sync runs). */
+    /** The image cannot become a Custom image (viewer closed, or a Sync runs). */
     HIDDEN,
-    /** "Use this image": the image can become the Custom image. */
+    /** "Use as poster" / "Use as backdrop": the image can become the Custom image of its type. */
     AVAILABLE,
-    /** "Current image": the image is already the Artwork image. */
+    /** "Current poster" / "Current backdrop": the image is already the Poster or Backdrop shown for the Artwork. */
     CURRENT,
 }
 

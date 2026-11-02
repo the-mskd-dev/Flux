@@ -54,14 +54,17 @@ import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.mskd.flux.features.gallery.domain.model.GalleryImage
+import com.mskd.flux.features.gallery.domain.model.GalleryImageType
 import com.mskd.flux.features.gallery.domain.model.originalUrl
 import com.mskd.flux.features.gallery.presentation.ArtworkImageButton
 import com.mskd.flux.ui.global.BackGesture
 import com.mskd.flux.ui.image.Image
 import flux.shared.generated.resources.Res
-import flux.shared.generated.resources.gallery_current_image
+import flux.shared.generated.resources.gallery_current_backdrop
+import flux.shared.generated.resources.gallery_current_poster
 import flux.shared.generated.resources.gallery_image_download
-import flux.shared.generated.resources.gallery_use_image
+import flux.shared.generated.resources.gallery_use_as_backdrop
+import flux.shared.generated.resources.gallery_use_as_poster
 import flux.shared.generated.resources.ic_download
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -138,8 +141,9 @@ fun GalleryViewer(
             )
         }
 
-        val currentLoaded = images.getOrNull(pagerState.currentPage)?.let { loadedImages[it.key()] } == true
-        if (currentLoaded && artworkImageButton != ArtworkImageButton.HIDDEN) {
+        val currentImage = images.getOrNull(pagerState.currentPage)
+        val currentLoaded = currentImage?.let { loadedImages[it.key()] } == true
+        if (currentImage != null && currentLoaded && artworkImageButton != ArtworkImageButton.HIDDEN) {
             TextButton(
                 modifier = Modifier
                     .align(Alignment.TopCenter)
@@ -153,8 +157,14 @@ fun GalleryViewer(
             ) {
                 Text(
                     text = stringResource(
-                        if (artworkImageButton == ArtworkImageButton.CURRENT) Res.string.gallery_current_image
-                        else Res.string.gallery_use_image
+                        when (currentImage.type) {
+                            GalleryImageType.POSTER ->
+                                if (artworkImageButton == ArtworkImageButton.CURRENT) Res.string.gallery_current_poster
+                                else Res.string.gallery_use_as_poster
+                            GalleryImageType.BACKDROP ->
+                                if (artworkImageButton == ArtworkImageButton.CURRENT) Res.string.gallery_current_backdrop
+                                else Res.string.gallery_use_as_backdrop
+                        }
                     )
                 )
             }

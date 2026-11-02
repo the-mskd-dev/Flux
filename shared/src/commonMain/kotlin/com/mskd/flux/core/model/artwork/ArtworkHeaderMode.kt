@@ -16,11 +16,14 @@ enum class ArtworkHeaderMode {
     }
 }
 
-/**
- * Path of the Artwork image shown by the header in [mode]: the Custom image when there is one, otherwise the TMDB image.
- * The single rule shared by the page header and the Gallery.
- */
+/** Backdrop shown for the Artwork: the custom Backdrop when there is one, otherwise the TMDB Backdrop. */
+val Artwork.shownBackdropPath: String get() = customBackdropPath ?: bannerPath
+
+/** Poster shown for the Artwork, on its page and in the Catalog: the custom Poster when there is one, otherwise the TMDB Poster. */
+val Artwork.shownPosterPath: String get() = customPosterPath ?: imagePath
+
+/** Path of the Artwork image shown by the header in [mode]: the Custom image when there is one, otherwise the TMDB image. */
 fun Artwork.artworkImagePath(mode: ArtworkHeaderMode): String = when (mode) {
-    ArtworkHeaderMode.NORMAL -> customBackdropPath ?: bannerPath
-    ArtworkHeaderMode.BLURRED -> customPosterPath ?: imagePath
+    ArtworkHeaderMode.NORMAL -> shownBackdropPath
+    ArtworkHeaderMode.BLURRED -> shownPosterPath
 }

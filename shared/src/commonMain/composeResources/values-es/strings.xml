@@ -250,8 +250,10 @@
     <string name="chapters">Capítulos</string>
     <string name="chapter_number">Capítulo %1$d</string>
     <string name="gallery_image_download">Descargar imagen</string>
-    <string name="gallery_use_image">Usar esta imagen</string>
-    <string name="gallery_current_image">Imagen actual</string>
+    <string name="gallery_use_as_poster">Usar como póster</string>
+    <string name="gallery_use_as_backdrop">Usar como fondo</string>
+    <string name="gallery_current_poster">Póster actual</string>
+    <string name="gallery_current_backdrop">Fondo actual</string>
     <string name="gallery_image_download_succeeded">Imagen guardada</string>
     <string name="gallery_image_download_failed">No se pudo descargar la imagen</string>
     <string name="gallery_image_download_show">Mostrar</string>

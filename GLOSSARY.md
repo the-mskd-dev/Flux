@@ -67,7 +67,7 @@ Image shown at the top of an Artwork page: its Backdrop, or its Poster when the 
 _Avoid_: Header image, banner, bannière
 
 **Custom image**:
-Backdrop or Poster chosen by the user in the Gallery to replace the TMDB one in the Artwork image. An Artwork has at most one custom Backdrop and one custom Poster; only a Movie can have a custom Poster. It only changes the Artwork image, not the Catalog thumbnails. It is kept by the Light sync and cleared by the Full sync and the Identification reset. A Manual identification does not carry over the one of the source Artwork; the target Artwork keeps its own if it was already in the Catalog.
+Backdrop or Poster chosen by the user in the Gallery to replace the TMDB one. The custom Backdrop replaces the Backdrop of the Artwork image; the custom Poster replaces the Poster of the Artwork image (blurred header) and the Artwork thumbnail in the Catalog, the search and the Private Folder. An Artwork, Movie or Show, has at most one custom Backdrop and one custom Poster. It is kept by the Light sync and cleared by the Full sync and the Identification reset. A Manual identification does not carry over the one of the source Artwork; the target Artwork keeps its own if it was already in the Catalog.
 _Avoid_: Image personnalisée, Affiche personnalisée, override
 
 **Gallery**:

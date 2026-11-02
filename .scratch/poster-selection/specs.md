@@ -10,17 +10,19 @@ From the full screen viewer of the Gallery, the user can choose the displayed im
 
 For the user:
 
-- A text button centred at the top of the viewer, **"Use this image"**, replaces the Artwork image with the displayed image.
-- On the image that is already the Artwork image (custom or TMDB default), the button gives way to a disabled **"Current image"** label.
-- Only images of the type displayed by the header are offered:
-  - on a **Show**, only Backdrop (the Show page has no blurred header);
-  - on a **Movie**, Backdrop when the blurred header is disabled, Poster when it is enabled.
-- An Artwork can have at most one custom Backdrop and one custom Poster (Movie only). Changing the blurred header setting loses nothing: each mode finds its own Custom image again.
-- Only the Artwork image changes. The thumbnails of the Catalog, the search, the Private Folder and the Person page keep the TMDB Poster.
+- A text button centred at the top of the viewer, **"Use as poster"** on a Poster and **"Use as backdrop"** on a Backdrop, makes the displayed image the custom Poster or the custom Backdrop of the Artwork.
+- On the image that is already the shown Poster or Backdrop (custom or TMDB default), the button gives way to a disabled **"Current poster"** or **"Current backdrop"** label.
+- The button is offered on every image, Backdrop and Poster, for a Movie and for a Show, whatever the blurred header setting.
+- An Artwork can have at most one custom Backdrop and one custom Poster. Changing the blurred header setting loses nothing: each mode finds its own Custom image again.
+- The custom Backdrop replaces the Backdrop of the Artwork image. The custom Poster replaces the Poster of the Artwork image (blurred header) and the thumbnail of the Artwork in the Catalog, the search and the Private Folder. The thumbnails of the Person page keep the TMDB Poster.
 - The Custom image survives the **Light sync**. It is cleared by the **Full sync** and the **Identification reset**: the default TMDB image is then brought back. The **Manual identification** does not transfer the Custom image of the source Artwork; if the target Artwork was already in the Catalog, it keeps its own.
 - There is no "go back to the default image" action: you choose another image, or a Full sync resets everything.
 - The button is hidden during a Sync.
 - The Custom image is prefetched like the other images, so it is visible offline.
+
+## Revision (2026-11-02)
+
+The button no longer depends on the header mode: both types can always be chosen, with a label per type ("Use as poster" / "Use as backdrop"), and the custom Poster also replaces the Catalog, search and Private Folder thumbnails (`CatalogArtworkItem`, `SearchContentGrid`, `PrivateContentGrid`). This supersedes user stories 5, 12, 13 and 18, the "Gallery image type that can be chosen follows from the same mode" rule, the header mode dependency of the Gallery view model, the "Use this image" and "Current image" strings and the corresponding button-state tests below.
 
 ## User Stories
 

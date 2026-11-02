@@ -35,6 +35,11 @@ class ViewerControlsState(private val scope: CoroutineScope) {
         restartAutoHide()
     }
 
+    fun hide() {
+        visible = false
+        restartAutoHide()
+    }
+
     fun onDownloadRunningChange(running: Boolean) {
         if (downloadRunning == running) return
         downloadRunning = running

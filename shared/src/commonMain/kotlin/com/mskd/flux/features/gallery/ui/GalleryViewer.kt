@@ -1,11 +1,12 @@
 package com.mskd.flux.features.gallery.ui
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.animate
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.calculateCentroid
@@ -32,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -45,12 +47,17 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.input.pointer.positionChanged
+import androidx.compose.ui.input.pointer.util.VelocityTracker
+import androidx.compose.ui.input.pointer.util.addPointerInputChange
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalViewConfiguration
 import androidx.compose.ui.platform.ViewConfiguration
 import androidx.compose.ui.semantics.contentDescription
@@ -75,8 +82,10 @@ import flux.shared.generated.resources.gallery_image_download
 import flux.shared.generated.resources.gallery_use_as_backdrop
 import flux.shared.generated.resources.gallery_use_as_poster
 import flux.shared.generated.resources.ic_download
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlin.math.abs
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -85,6 +94,10 @@ private const val MIN_ZOOM = 1f
 private const val DOUBLE_TAP_ZOOM = 3f
 private const val MAX_ZOOM = 10f
 private const val ZOOM_ANIMATION_MS = 250
+private const val DISMISS_ANIMATION_MS = 250
+
+// Downward velocity from which releasing the swipe down dismisses the viewer whatever the distance
+private val DISMISS_FLING_VELOCITY = 1_000.dp
 
 // Lower than the platform default (~300 ms) so that a single tap toggles the controls faster
 private const val DOUBLE_TAP_TIMEOUT_MS = 200L
@@ -92,6 +105,7 @@ private const val DOUBLE_TAP_TIMEOUT_MS = 200L
 /**
  * Full screen overlay showing the images in their original resolution, one page per image.
  * The pager is locked while the current image is zoomed so that a drag pans the image instead.
+ * At 1x, a mainly vertical drag down moves the image like a bottom sheet to dismiss the viewer.
  */
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -113,6 +127,40 @@ fun GalleryViewer(
     var resetRequest by remember { mutableIntStateOf(0) }
 
     val controls = rememberViewerControlsState()
+
+    val scope = rememberCoroutineScope()
+    val density = LocalDensity.current
+    val dismissState = remember(density) {
+        ViewerDismissState(flingVelocity = with(density) { DISMISS_FLING_VELOCITY.toPx() })
+    }
+    var dismissAnimation by remember { mutableStateOf<Job?>(null) }
+    var closing by remember { mutableStateOf(false) }
+
+    fun onDismissStart() {
+        dismissAnimation?.cancel()
+        controls.hide()
+    }
+
+    fun animateDismissTo(target: Float, animationSpec: AnimationSpec<Float>, velocity: Float) {
+        dismissAnimation = scope.launch {
+            animate(dismissState.offset, target, velocity, animationSpec) { value, _ -> dismissState.snapTo(value) }
+        }
+    }
+
+    fun onDismissEnd(velocity: Float) {
+        when (dismissState.release(velocity)) {
+            // The image keeps moving down while the viewer fades out
+            ViewerDismissRelease.DISMISS -> {
+                closing = true
+                onClose()
+                animateDismissTo(dismissState.height, tween(DISMISS_ANIMATION_MS), velocity)
+            }
+            ViewerDismissRelease.SETTLE -> animateDismissTo(0f, spring(), velocity)
+        }
+    }
+
+    // The pager stays locked until the image is back in place, so a settling image can't jump onto another page
+    val dismissInProgress by remember(dismissState) { derivedStateOf { dismissState.offset > 0f } }
     LaunchedEffect(imageDownloadRunning) { controls.onDownloadRunningChange(imageDownloadRunning) }
 
     val baseViewConfiguration = LocalViewConfiguration.current
@@ -133,21 +181,33 @@ fun GalleryViewer(
         snapshotFlow { pagerState.currentPage }.collect { currentOnPageChange(it) }
     }
 
-    Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .onSizeChanged { dismissState.height = it.height.toFloat() }
+            // The Gallery grid shows through as the image is dragged down
+            .drawBehind { drawRect(Color.Black.copy(alpha = dismissState.backgroundAlpha)) }
+    ) {
 
         CompositionLocalProvider(LocalViewConfiguration provides viewerViewConfiguration) {
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier.fillMaxSize(),
-                userScrollEnabled = !zoomed,
+                userScrollEnabled = !zoomed && !dismissInProgress,
                 key = { images.getOrNull(it)?.key() ?: it },
             ) { page ->
                 val image = images.getOrNull(page) ?: return@HorizontalPager
+                val isCurrent = page == pagerState.currentPage
                 ZoomableImage(
                     image = image,
-                    isCurrent = page == pagerState.currentPage,
+                    isCurrent = isCurrent,
                     resetRequest = resetRequest,
+                    dismiss = dismissState.takeIf { isCurrent },
+                    dismissible = !closing,
                     onTap = controls::onTap,
+                    onDismissStart = ::onDismissStart,
+                    onDismissEnd = ::onDismissEnd,
+                    onDismissCancel = { animateDismissTo(0f, spring(), 0f) },
                     onZoomedChange = { zoomed = it },
                     onLoadedChange = { loadedImages[image.key()] = it }
                 )
@@ -274,7 +334,12 @@ private fun ZoomableImage(
     image: GalleryImage,
     isCurrent: Boolean,
     resetRequest: Int,
+    dismiss: ViewerDismissState?,
+    dismissible: Boolean,
     onTap: () -> Unit,
+    onDismissStart: () -> Unit,
+    onDismissEnd: (velocity: Float) -> Unit,
+    onDismissCancel: () -> Unit,
     onZoomedChange: (Boolean) -> Unit,
     onLoadedChange: (Boolean) -> Unit,
 ) {
@@ -286,6 +351,11 @@ private fun ZoomableImage(
     var animation by remember { mutableStateOf<Job?>(null) }
     val scope = rememberCoroutineScope()
     val currentOnTap by rememberUpdatedState(onTap)
+    val currentDismiss by rememberUpdatedState(dismiss)
+    val currentDismissible by rememberUpdatedState(dismissible)
+    val currentOnDismissStart by rememberUpdatedState(onDismissStart)
+    val currentOnDismissEnd by rememberUpdatedState(onDismissEnd)
+    val currentOnDismissCancel by rememberUpdatedState(onDismissCancel)
 
     // Keeps the zoomed image from being dragged out of the screen
     fun clamp(offset: Offset, scale: Float): Offset {
@@ -350,31 +420,65 @@ private fun ZoomableImage(
                 )
             }
             .pointerInput(Unit) {
-                // Only consumes pinches, and drags once zoomed, so a 1x drag still reaches the pager
+                // Only consumes pinches, drags once zoomed and the swipe down to dismiss, so a horizontal 1x drag
+                // still reaches the pager. Past the touch slop, a 1x drag mainly downward becomes the swipe down.
                 awaitEachGesture {
-                    awaitFirstDown(requireUnconsumed = false)
-                    do {
-                        val event = awaitPointerEvent()
-                        val multiTouch = event.changes.count { it.pressed } > 1
-                        if (multiTouch || scale > MIN_ZOOM) {
-                            val zoom = event.calculateZoom()
-                            val pan = event.calculatePan()
-                            if (zoom != 1f || pan != Offset.Zero) {
-                                animation?.cancel()
-                                val centroid = event.calculateCentroid(useCurrent = false)
-                                val focus = centroid - Offset(size.width / 2f, size.height / 2f)
-                                transform(scale * zoom, focus, pan)
-                                event.changes.forEach { if (it.positionChanged()) it.consume() }
+                    val down = awaitFirstDown(requireUnconsumed = false)
+                    val velocityTracker = VelocityTracker()
+                    var drag = Offset.Zero
+                    var gestureClaimed = false
+                    var dismissing = false
+                    try {
+                        do {
+                            val event = awaitPointerEvent()
+                            val multiTouch = event.changes.count { it.pressed } > 1
+                            val change = event.changes.firstOrNull { it.id == down.id }
+                            if (dismissing) {
+                                if (change != null) {
+                                    velocityTracker.addPointerInputChange(change)
+                                    currentDismiss?.drag(change.positionChange().y)
+                                    change.consume()
+                                }
+                            } else if (multiTouch || scale > MIN_ZOOM) {
+                                gestureClaimed = true
+                                val zoom = event.calculateZoom()
+                                val pan = event.calculatePan()
+                                if (zoom != 1f || pan != Offset.Zero) {
+                                    animation?.cancel()
+                                    val centroid = event.calculateCentroid(useCurrent = false)
+                                    val focus = centroid - Offset(size.width / 2f, size.height / 2f)
+                                    transform(scale * zoom, focus, pan)
+                                    event.changes.forEach { if (it.positionChanged()) it.consume() }
+                                }
+                            } else if (!gestureClaimed && change != null && currentDismissible && currentDismiss != null) {
+                                velocityTracker.addPointerInputChange(change)
+                                drag += change.positionChange()
+                                if (drag.getDistance() > viewConfiguration.touchSlop) {
+                                    gestureClaimed = true
+                                    if (drag.y > abs(drag.x)) {
+                                        dismissing = true
+                                        currentOnDismissStart()
+                                        currentDismiss?.drag(change.positionChange().y)
+                                        change.consume()
+                                    }
+                                }
                             }
-                        }
-                    } while (event.changes.any { it.pressed })
+                        } while (event.changes.any { it.pressed })
+                        if (dismissing) currentOnDismissEnd(velocityTracker.calculateVelocity().y)
+                    } catch (e: CancellationException) {
+                        // A page leaving mid-drag settles the image back rather than leaving it off its resting position
+                        if (dismissing) currentOnDismissCancel()
+                        throw e
+                    }
                 }
             }
             .graphicsLayer {
-                scaleX = scale
-                scaleY = scale
+                // The swipe down only happens at 1x, where the zoom offset is zero
+                val dismissScale = dismiss?.scale ?: 1f
+                scaleX = scale * dismissScale
+                scaleY = scale * dismissScale
                 translationX = offset.x
-                translationY = offset.y
+                translationY = offset.y + (dismiss?.offset ?: 0f)
             },
         contentAlignment = Alignment.Center
     ) {

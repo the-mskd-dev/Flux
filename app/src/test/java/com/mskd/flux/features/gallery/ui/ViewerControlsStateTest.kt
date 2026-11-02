@@ -83,4 +83,16 @@ class ViewerControlsStateTest : FunSpec({
         controls.visible shouldBe false
     }
 
+    test("hiding the controls cancels the delay, the next tap shows them again for 3 s") {
+        controls.onTap()
+        advanceAndRun(2_000)
+        controls.hide()
+        controls.visible shouldBe false
+        controls.onTap()
+        advanceAndRun(2_999)
+        controls.visible shouldBe true
+        advanceAndRun(2)
+        controls.visible shouldBe false
+    }
+
 })

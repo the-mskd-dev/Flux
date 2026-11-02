@@ -22,6 +22,7 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LoadingIndicator
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -144,7 +145,7 @@ fun GalleryViewer(
         val currentImage = images.getOrNull(pagerState.currentPage)
         val currentLoaded = currentImage?.let { loadedImages[it.key()] } == true
         if (currentImage != null && currentLoaded && artworkImageButton != ArtworkImageButton.HIDDEN) {
-            TextButton(
+            OutlinedButton(
                 modifier = Modifier
                     .align(Alignment.TopCenter)
                     .statusBarsPadding(),

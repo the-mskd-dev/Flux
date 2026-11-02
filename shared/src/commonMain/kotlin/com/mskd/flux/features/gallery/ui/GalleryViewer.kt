@@ -1,6 +1,12 @@
 package com.mskd.flux.features.gallery.ui
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.ui.unit.toSize
+import androidx.compose.ui.layout.positionInRoot
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.foundation.shape.CornerBasedShape
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.animate
 import androidx.compose.animation.core.spring
@@ -95,6 +101,7 @@ private const val DOUBLE_TAP_ZOOM = 3f
 private const val MAX_ZOOM = 10f
 private const val ZOOM_ANIMATION_MS = 250
 private const val DISMISS_ANIMATION_MS = 250
+private const val RETURN_FLIGHT_MS = 350
 
 // Downward velocity from which releasing the swipe down dismisses the viewer whatever the distance
 private val DISMISS_FLING_VELOCITY = 1_000.dp
@@ -105,7 +112,8 @@ private const val DOUBLE_TAP_TIMEOUT_MS = 200L
 /**
  * Full screen overlay showing the images in their original resolution, one page per image.
  * The pager is locked while the current image is zoomed so that a drag pans the image instead.
- * At 1x, a mainly vertical drag down moves the image like a bottom sheet to dismiss the viewer.
+ * At 1x, a mainly vertical drag down moves the image like a bottom sheet to dismiss the viewer: the image then flies
+ * back to its thumbnail, found in [thumbnailBounds] (in root coordinates) and rounded like [thumbnailShape].
  */
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -118,6 +126,8 @@ fun GalleryViewer(
     onDownload: () -> Unit,
     onUseImage: () -> Unit,
     onClose: () -> Unit,
+    thumbnailShape: CornerBasedShape,
+    thumbnailBounds: (GalleryImage) -> Rect?,
 ) {
 
     val pagerState = rememberPagerState(initialPage = initialIndex) { images.size }
@@ -135,6 +145,9 @@ fun GalleryViewer(
     }
     var dismissAnimation by remember { mutableStateOf<Job?>(null) }
     var closing by remember { mutableStateOf(false) }
+    var returnFlight by remember { mutableStateOf<ViewerReturnFlight?>(null) }
+    // Position of the viewer in the root, to bring the thumbnail bounds into the viewer coordinates
+    var viewerBounds by remember { mutableStateOf(Rect.Zero) }
 
     fun onDismissStart() {
         dismissAnimation?.cancel()
@@ -147,13 +160,44 @@ fun GalleryViewer(
         }
     }
 
+    // Starts the flight of the current image back to its thumbnail, false if the thumbnail is not on screen
+    fun startReturnFlight(): Boolean {
+        val image = images.getOrNull(pagerState.currentPage) ?: return false
+        val thumbnail = thumbnailBounds(image)?.takeIf { it.overlaps(viewerBounds) } ?: return false
+        if (image.ratio <= 0f) return false
+        // Where the image is now: fitted in the viewer, then shrunk around its centre and moved down by the swipe
+        val fitted = fittedImageRect(viewerBounds.size, image.ratio)
+        val startSize = fitted.size * dismissState.scale
+        val start = Rect(
+            offset = fitted.center + Offset(0f, dismissState.offset) - Offset(startSize.width, startSize.height) / 2f,
+            size = startSize,
+        )
+        val target = thumbnail.translate(-viewerBounds.topLeft)
+        val flight = ViewerReturnFlight(
+            start = start,
+            target = target,
+            targetCornerRadius = thumbnailShape.topStart.toPx(target.size, density),
+        )
+        returnFlight = flight
+        dismissAnimation?.cancel()
+        scope.launch {
+            animate(0f, 1f, animationSpec = tween(RETURN_FLIGHT_MS, easing = FastOutSlowInEasing)) { value, _ ->
+                flight.progress = value
+            }
+            onClose()
+        }
+        return true
+    }
+
     fun onDismissEnd(velocity: Float) {
         when (dismissState.release(velocity)) {
-            // The image keeps moving down while the viewer fades out
             ViewerDismissRelease.DISMISS -> {
                 closing = true
-                onClose()
-                animateDismissTo(dismissState.height, tween(DISMISS_ANIMATION_MS), velocity)
+                // Without a thumbnail to go back to, the image keeps moving down while the viewer fades out
+                if (!startReturnFlight()) {
+                    onClose()
+                    animateDismissTo(dismissState.height, tween(DISMISS_ANIMATION_MS), velocity)
+                }
             }
             ViewerDismissRelease.SETTLE -> animateDismissTo(0f, spring(), velocity)
         }
@@ -184,16 +228,22 @@ fun GalleryViewer(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .onSizeChanged { dismissState.height = it.height.toFloat() }
-            // The Gallery grid shows through as the image is dragged down
-            .drawBehind { drawRect(Color.Black.copy(alpha = dismissState.backgroundAlpha)) }
+            .onGloballyPositioned {
+                viewerBounds = Rect(it.positionInRoot(), it.size.toSize())
+                dismissState.height = it.size.height.toFloat()
+            }
+            // The Gallery grid shows through as the image is dragged down, then fully as it flies back to its thumbnail
+            .drawBehind {
+                val flightProgress = returnFlight?.progress ?: 0f
+                drawRect(Color.Black.copy(alpha = dismissState.backgroundAlpha * (1f - flightProgress)))
+            }
     ) {
 
         CompositionLocalProvider(LocalViewConfiguration provides viewerViewConfiguration) {
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier.fillMaxSize(),
-                userScrollEnabled = !zoomed && !dismissInProgress,
+                userScrollEnabled = !zoomed && !dismissInProgress && !closing,
                 key = { images.getOrNull(it)?.key() ?: it },
             ) { page ->
                 val image = images.getOrNull(page) ?: return@HorizontalPager
@@ -204,6 +254,7 @@ fun GalleryViewer(
                     resetRequest = resetRequest,
                     dismiss = dismissState.takeIf { isCurrent },
                     dismissible = !closing,
+                    returnFlight = returnFlight.takeIf { isCurrent },
                     onTap = controls::onTap,
                     onDismissStart = ::onDismissStart,
                     onDismissEnd = ::onDismissEnd,
@@ -340,6 +391,7 @@ private fun ZoomableImage(
     onDismissStart: () -> Unit,
     onDismissEnd: (velocity: Float) -> Unit,
     onDismissCancel: () -> Unit,
+    returnFlight: ViewerReturnFlight?,
     onZoomedChange: (Boolean) -> Unit,
     onLoadedChange: (Boolean) -> Unit,
 ) {
@@ -473,6 +525,10 @@ private fun ZoomableImage(
                 }
             }
             .graphicsLayer {
+                if (returnFlight != null) {
+                    with(returnFlight) { applyTo(pageSize = this@graphicsLayer.size, ratio = image.ratio) }
+                    return@graphicsLayer
+                }
                 // The swipe down only happens at 1x, where the zoom offset is zero
                 val dismissScale = dismiss?.scale ?: 1f
                 scaleX = scale * dismissScale

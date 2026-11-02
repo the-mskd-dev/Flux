@@ -23,6 +23,14 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInRoot
+import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -66,6 +74,21 @@ fun GalleryScreenContent(
 ) {
 
     val columns = if (rememberScreenDimensions().isLarge) 3 else 2
+    val gridState = rememberLazyStaggeredGridState()
+    fun GalleryImage.key() = "$type$path"
+
+    // Bounds of the thumbnails on screen, in root coordinates, so the dismissed viewer image flies back to its own.
+    // Only read when the viewer closes, hence a plain map rather than a state.
+    val thumbnailBounds = remember { mutableMapOf<String, Rect>() }
+    // The thumbnail of the image shown in the viewer is hidden, as the viewer image stands for it
+    val viewedKey = viewerIndex?.let { images.getOrNull(it) }?.key()
+
+    // Keeps the thumbnail of the viewed image on screen, so the viewer image always has a place to go back to
+    val imagesOffset = if (failure != null) 1 else 0
+    LaunchedEffect(viewerIndex) {
+        val itemIndex = (viewerIndex ?: return@LaunchedEffect) + imagesOffset
+        if (gridState.layoutInfo.visibleItemsInfo.none { it.index == itemIndex }) gridState.scrollToItem(itemIndex)
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -89,7 +112,8 @@ fun GalleryScreenContent(
             }
 
             LazyVerticalStaggeredGrid(
-                    modifier = Modifier.fillMaxSize(),
+                state = gridState,
+                modifier = Modifier.fillMaxSize(),
                 columns = StaggeredGridCells.Fixed(columns),
                 contentPadding = PaddingValues(
                     start = FluxUI.Space.medium,
@@ -123,11 +147,15 @@ fun GalleryScreenContent(
                     }
                 }
 
-                itemsIndexed(items = images, key = { _, it -> "${it.type}${it.path}" }) { index, image ->
+                itemsIndexed(items = images, key = { _, it -> it.key() }) { index, image ->
 
+                    val key = image.key()
+                    DisposableEffect(key) { onDispose { thumbnailBounds.remove(key) } }
                     AsyncImage(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .onGloballyPositioned { thumbnailBounds[key] = Rect(it.positionInRoot(), it.size.toSize()) }
+                            .alpha(if (key == viewedKey) 0f else 1f)
                             .clip(FluxUI.shapes.corners)
                             .clickable { sendIntent(GalleryIntent.OnImageTap(index)) }
                             .aspectRatio(image.ratio.takeIf { it > 0f } ?: 1f),
@@ -164,7 +192,9 @@ fun GalleryScreenContent(
                     onPageChange = { sendIntent(GalleryIntent.OnViewerPageChange(it)) },
                     onDownload = { sendIntent(GalleryIntent.OnImageDownloadTap) },
                     onUseImage = { sendIntent(GalleryIntent.OnUseImageTap) },
-                    onClose = { sendIntent(GalleryIntent.OnViewerClose) }
+                    onClose = { sendIntent(GalleryIntent.OnViewerClose) },
+                    thumbnailShape = FluxUI.shapes.corners,
+                    thumbnailBounds = { thumbnailBounds[it.key()] },
                 )
             }
         }

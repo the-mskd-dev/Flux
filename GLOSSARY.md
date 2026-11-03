@@ -63,7 +63,7 @@ TMDB image of an Artwork showing its stylised title, on a transparent background
 _Avoid_: Title image, Wordmark, Titre graphique
 
 **Artwork image**:
-Image shown at the top of an Artwork page: its Backdrop, or its Poster when the blurred header is enabled (Movie only). It is the matching Custom image if there is one, otherwise the TMDB one. A tap opens it in the Gallery when a TMDB token is configured.
+Image shown at the top of an Artwork page: its Backdrop, or its Poster when the blurred header is enabled (Movie only). It is the matching Custom image if there is one, otherwise the TMDB one. A tap opens it in the Gallery when a TMDB token is configured, except while it shows the selected Episode and that Episode is a Spoiler: the tap then reveals or hides the Episode.
 _Avoid_: Header image, banner, bannière
 
 **Custom image**:

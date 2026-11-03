@@ -26,6 +26,7 @@ fun ArtworkHeader(
     fullArtwork: FullArtwork,
     currentMedia: Media,
     selectedSeason: Int?,
+    isArtworkImageBlurred: Boolean = false,
     sendIntent: (ArtworkIntent) -> Unit
 ) {
 
@@ -50,6 +51,7 @@ fun ArtworkHeader(
             fullArtwork = fullArtwork,
             currentMedia = currentMedia,
             selectedSeason = selectedSeason,
+            isBlurred = isArtworkImageBlurred,
             onClick = { sendIntent(ArtworkIntent.OnArtworkImageClick) }
         )
 

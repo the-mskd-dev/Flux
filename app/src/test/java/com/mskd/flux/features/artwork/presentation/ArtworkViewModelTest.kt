@@ -550,7 +550,7 @@ class ArtworkViewModelTest : FunSpec({
             blurredIds(episodes = episodes) shouldBe setOf(MediaMockups.episode1.id)
         }
 
-        test("episode shown in the overview is not blurred, but is when a summary is shown") {
+        test("episode to watch shown in the overview is also blurred in the list") {
             observeArtworkUseCase = mockk()
             val started = listOf(
                 MediaMockups.episode1.copy(status = Status.WATCHED),
@@ -558,7 +558,7 @@ class ArtworkViewModelTest : FunSpec({
                 MediaMockups.episode3,
             )
             // Season started: the selected Episode is displayed as EpisodeOverview.
-            blurredIds(episodes = started) shouldBe setOf(MediaMockups.episode3.id)
+            blurredIds(episodes = started) shouldBe setOf(MediaMockups.episode2.id, MediaMockups.episode3.id)
         }
 
         test("unknown artwork episodes are never blurred") {
@@ -690,6 +690,110 @@ class ArtworkViewModelTest : FunSpec({
             }
         }
 
+        suspend fun ReceiveTurbine<ArtworkUiState>.artworkImageBlurred() =
+            (expectMostRecentItem().state as State.Content).content.isArtworkImageBlurred
+
+        test("artwork image of the selected episode to watch is blurred, and revealed with it") {
+            openShow()
+            viewModel.uiState.test {
+                artworkImageBlurred() shouldBe true
+
+                viewModel.handleIntent(ArtworkIntent.ToggleEpisodeSpoiler(ep1))
+                artworkImageBlurred() shouldBe false
+
+                viewModel.handleIntent(ArtworkIntent.ToggleEpisodeSpoiler(ep1))
+                artworkImageBlurred() shouldBe true
+
+                viewModel.handleIntent(ArtworkIntent.ExpandEpisodeDescription(ep1))
+                artworkImageBlurred() shouldBe false
+            }
+        }
+
+        test("artwork image of the next episode to watch is blurred in a started season") {
+            observeArtworkUseCase = mockk()
+            every { settingsDataStore.flow } returns settingsFlow
+            every { observeArtworkUseCase(any()) } returns flowOf(
+                State.Content(
+                    MediaMockups.fullShow.copy(
+                        episodes = MediaMockups.episodes.map {
+                            if (it.id == ep1.id) it.copy(status = Status.WATCHED) else it
+                        }.toImmutableList()
+                    )
+                )
+            )
+            updateVm(MediaMockups.showArtwork.id)
+            viewModel.uiState.test {
+                val content = (expectMostRecentItem().state as State.Content).content
+                content.selectedMedia.mediaId shouldBe MediaMockups.episode2.id
+                content.isArtworkImageBlurred shouldBe true
+            }
+        }
+
+        test("tapping the artwork image of a masked episode reveals then hides it, without opening the gallery") {
+            openShow()
+            viewModel.uiState.test {
+                artworkImageBlurred() shouldBe true
+                viewModel.event.test {
+                    viewModel.handleIntent(ArtworkIntent.OnArtworkImageClick)
+                    expectNoEvents()
+                }
+                var content = (expectMostRecentItem().state as State.Content).content
+                content.isArtworkImageBlurred shouldBe false
+                content.blurredEpisodeIds shouldBe allIds - ep1.id
+
+                viewModel.handleIntent(ArtworkIntent.OnArtworkImageClick)
+                content = (expectMostRecentItem().state as State.Content).content
+                content.isArtworkImageBlurred shouldBe true
+                content.blurredEpisodeIds shouldBe allIds
+            }
+        }
+
+        test("tapping the artwork image opens the gallery when the selected episode is not a spoiler") {
+            observeArtworkUseCase = mockk()
+            every { settingsDataStore.flow } returns MutableStateFlow(SettingsDataStore.State(blurSpoilers = false))
+            every { observeArtworkUseCase(any()) } returns flowOf(State.Content(MediaMockups.fullShow))
+            updateVm(MediaMockups.showArtwork.id)
+            viewModel.uiState.test {
+                expectMostRecentItem()
+                viewModel.event.test {
+                    viewModel.handleIntent(ArtworkIntent.OnArtworkImageClick)
+                    awaitItem() shouldBe ArtworkEvent.NavigateToGallery(artworkId = MediaMockups.showArtwork.id, contentType = ContentType.SHOW)
+                }
+            }
+        }
+
+        test("artwork image is readable when the option is disabled") {
+            observeArtworkUseCase = mockk()
+            every { settingsDataStore.flow } returns MutableStateFlow(SettingsDataStore.State(blurSpoilers = false))
+            every { observeArtworkUseCase(any()) } returns flowOf(State.Content(MediaMockups.fullShow))
+            updateVm(MediaMockups.showArtwork.id)
+            viewModel.uiState.test { artworkImageBlurred() shouldBe false }
+        }
+
+        test("artwork image is readable when the selected episode is watching") {
+            observeArtworkUseCase = mockk()
+            every { settingsDataStore.flow } returns settingsFlow
+            every { observeArtworkUseCase(any()) } returns flowOf(
+                State.Content(
+                    MediaMockups.fullShow.copy(
+                        episodes = MediaMockups.episodes.map {
+                            if (it.id == ep1.id) it.copy(status = Status.IS_WATCHING) else it
+                        }.toImmutableList()
+                    )
+                )
+            )
+            updateVm(MediaMockups.showArtwork.id)
+            viewModel.uiState.test { artworkImageBlurred() shouldBe false }
+        }
+
+        test("artwork image of a movie is never blurred") {
+            observeArtworkUseCase = mockk()
+            every { settingsDataStore.flow } returns settingsFlow
+            every { observeArtworkUseCase(any()) } returns flowOf(State.Content(MediaMockups.fullMovie))
+            updateVm(MediaMockups.fullMovie.artwork.id)
+            viewModel.uiState.test { artworkImageBlurred() shouldBe false }
+        }
+
         test("spoiler ids stay listed when an episode is revealed") {
             openShow()
             viewModel.uiState.test {
@@ -819,9 +923,32 @@ class ArtworkViewModelTest : FunSpec({
             })) shouldBe false
         }
 
-        test("season with a watched episode is readable") {
-            blurredOf(show(episodes = MediaMockups.episodes.mapIndexed { i, e ->
+        test("next episode to watch shown in the overview is blurred, a tap reveals its description and artwork image") {
+            open(show(episodes = MediaMockups.episodes.mapIndexed { i, e ->
                 if (i == 0) e.copy(status = Status.WATCHED) else e
+            }))
+            viewModel.uiState.test {
+                var content = (expectMostRecentItem().state as State.Content).content
+                (content.overview as ArtworkOverviewContent.EpisodeOverview).episode.id shouldBe MediaMockups.episode2.id
+                content.isOverviewSpoiler shouldBe true
+                content.isOverviewBlurred shouldBe true
+                content.isArtworkImageBlurred shouldBe true
+
+                viewModel.handleIntent(ArtworkIntent.ToggleOverviewSpoiler)
+                content = (expectMostRecentItem().state as State.Content).content
+                content.isOverviewBlurred shouldBe false
+                content.isArtworkImageBlurred shouldBe false
+
+                viewModel.handleIntent(ArtworkIntent.ToggleOverviewSpoiler)
+                content = (expectMostRecentItem().state as State.Content).content
+                content.isOverviewBlurred shouldBe true
+                content.isArtworkImageBlurred shouldBe true
+            }
+        }
+
+        test("episode in progress shown in the overview is readable") {
+            blurredOf(show(episodes = MediaMockups.episodes.mapIndexed { i, e ->
+                if (i == 0) e.copy(status = Status.WATCHED) else if (i == 1) e.copy(status = Status.IS_WATCHING) else e
             })) shouldBe false
         }
 

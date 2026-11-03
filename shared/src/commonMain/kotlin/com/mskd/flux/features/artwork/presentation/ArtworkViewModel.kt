@@ -125,7 +125,7 @@ class ArtworkViewModel(
             is ArtworkIntent.OpenEpisodeInfo -> urlLauncher.open(url = intent.episode.infoUrl)
             is ArtworkIntent.OpenFileExplorer -> filesLauncher.open(file = intent.media.file)
             is ArtworkIntent.OnPersonClick -> _event.emit(ArtworkEvent.NavigateToPerson(person = intent.person))
-            ArtworkIntent.OnArtworkImageClick -> navigateToGallery()
+            ArtworkIntent.OnArtworkImageClick -> onArtworkImageClick()
 
             // Dialogs
             ArtworkIntent.CloseDialog -> closeDialog()
@@ -145,7 +145,7 @@ class ArtworkViewModel(
             is ArtworkIntent.ExpandEpisodeDescription -> expandEpisodeDescription(episode = intent.episode)
             ArtworkIntent.CollapseEpisodeDescription -> collapseEpisodeDescription()
             is ArtworkIntent.ToggleEpisodeSpoiler -> toggleEpisodeSpoiler(episode = intent.episode)
-            ArtworkIntent.ToggleOverviewSpoiler -> _userState.update { it.copy(isOverviewRevealed = !it.isOverviewRevealed) }
+            ArtworkIntent.ToggleOverviewSpoiler -> toggleOverviewSpoiler()
         }
     }
 
@@ -164,9 +164,13 @@ class ArtworkViewModel(
         ) ?: return State.Error()
 
         val overview = resolveOverview(dataState.fullArtwork, selectedMedia, season)
-        val spoilerIds = resolveSpoilerEpisodeIds(dataState, (overview as? ArtworkOverviewContent.EpisodeOverview)?.episode)
-        val isOverviewSpoiler = resolveIsOverviewSpoiler(dataState)
+        val spoilerIds = resolveSpoilerEpisodeIds(dataState)
         val readableIds = userState.revealedEpisodeIds + listOfNotNull(userState.expandedEpisodeId)
+        val blurredIds = (spoilerIds - readableIds).toImmutableSet()
+        // An Episode shown in ArtworkOverview shares its revealed state with the Episode itself.
+        val overviewEpisodeId = (overview as? ArtworkOverviewContent.EpisodeOverview)?.episode?.id
+        val isOverviewSpoiler = if (overviewEpisodeId != null) overviewEpisodeId in spoilerIds else resolveIsSeasonOverviewSpoiler(dataState)
+        val isOverviewBlurred = if (overviewEpisodeId != null) overviewEpisodeId in blurredIds else isOverviewSpoiler && !userState.isOverviewRevealed
 
         return State.Content(
             ArtworkContent(
@@ -175,10 +179,11 @@ class ArtworkViewModel(
                 selectedSeason = season,
                 overview = overview,
                 isOverviewSpoiler = isOverviewSpoiler,
-                isOverviewBlurred = isOverviewSpoiler && !userState.isOverviewRevealed,
+                isOverviewBlurred = isOverviewBlurred,
                 expandedEpisodeId = userState.expandedEpisodeId,
                 spoilerEpisodeIds = spoilerIds,
-                blurredEpisodeIds = (spoilerIds - readableIds).toImmutableSet(),
+                blurredEpisodeIds = blurredIds,
+                isArtworkImageBlurred = (selectedMedia as? Episode)?.id in blurredIds,
                 useExternalPlayer = dataState.useExternalPlayer,
                 people = dataState.people,
                 identification = dataState.identification,
@@ -198,7 +203,7 @@ class ArtworkViewModel(
     }
 
     /** Only a Season description whose Episodes are all still to watch is a spoiler. */
-    private fun resolveIsOverviewSpoiler(dataState: ArtworkDataState): Boolean {
+    private fun resolveIsSeasonOverviewSpoiler(dataState: ArtworkDataState): Boolean {
         if (!dataState.blurSpoilers) return false
         val show = dataState.fullArtwork as? FullArtwork.FullShow ?: return false
         if (show.seasons.find { it.season == season }?.description.isNullOrEmpty()) return false
@@ -206,12 +211,11 @@ class ArtworkViewModel(
         return episodes.isNotEmpty() && episodes.all { it.status == Status.TO_WATCH }
     }
 
-    /** The Episode displayed in ArtworkOverview is excluded: its description is already visible there. */
-    private fun resolveSpoilerEpisodeIds(dataState: ArtworkDataState, overviewEpisode: Episode?): ImmutableSet<Long> {
+    private fun resolveSpoilerEpisodeIds(dataState: ArtworkDataState): ImmutableSet<Long> {
         if (!dataState.blurSpoilers) return persistentSetOf()
         val episodes = (dataState.fullArtwork as? FullArtwork.FullShow)?.episodes ?: return persistentSetOf()
         return episodes
-            .filter { it.status == Status.TO_WATCH && !it.isUnknown && it.id != overviewEpisode?.id }
+            .filter { it.status == Status.TO_WATCH && !it.isUnknown }
             .map { it.id }
             .toImmutableSet()
     }
@@ -259,6 +263,14 @@ class ArtworkViewModel(
                     ?: episodes.firstEpisodeToWatch()
             }
         }
+    }
+
+    /** While the selected Episode is a Spoiler, its Artwork image reveals / hides it instead of opening the Gallery. */
+    private suspend fun onArtworkImageClick() {
+        val content = artworkContent ?: return
+        val episode = content.selectedMedia as? Episode
+        if (episode != null && episode.id in content.spoilerEpisodeIds) toggleEpisodeSpoiler(episode = episode)
+        else navigateToGallery()
     }
 
     private suspend fun navigateToGallery() {
@@ -385,6 +397,14 @@ class ArtworkViewModel(
                 revealedEpisodeIds = (if (episode.id in revealed) revealed - episode.id else revealed + episode.id)
                     .toImmutableSet()
             )
+        }
+    }
+
+    /** An Episode shown in ArtworkOverview is revealed as the Episode itself, Artwork image included. */
+    private fun toggleOverviewSpoiler() {
+        when (val overview = artworkContent?.overview) {
+            is ArtworkOverviewContent.EpisodeOverview -> toggleEpisodeSpoiler(episode = overview.episode)
+            else -> _userState.update { it.copy(isOverviewRevealed = !it.isOverviewRevealed) }
         }
     }
 

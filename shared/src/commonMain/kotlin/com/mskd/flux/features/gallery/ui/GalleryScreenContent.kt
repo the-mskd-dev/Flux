@@ -31,6 +31,10 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.unit.toSize
+import androidx.compose.animation.ExitTransition
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -83,6 +87,9 @@ fun GalleryScreenContent(
     val thumbnailBounds = remember { mutableMapOf<String, Rect>() }
     // The thumbnail of the image shown in the viewer is hidden, as the viewer image stands for it
     val viewedKey = viewerIndex?.let { images.getOrNull(it) }?.key()
+
+    // Whether the viewer closes with its image back on the thumbnail, read by the transition when it closes
+    var viewerReturnedToThumbnail by remember { mutableStateOf(false) }
 
     // Keeps the thumbnail of the viewed image on screen, so the viewer image always has a place to go back to
     val imagesOffset = if (failure != null) 1 else 0
@@ -158,7 +165,10 @@ fun GalleryScreenContent(
                             .onGloballyPositioned { thumbnailBounds[key] = Rect(it.positionInRoot(), it.size.toSize()) }
                             .alpha(if (key == viewedKey) 0f else 1f)
                             .clip(FluxUI.shapes.corners)
-                            .clickable { sendIntent(GalleryIntent.OnImageTap(index)) }
+                            .clickable {
+                                viewerReturnedToThumbnail = false
+                                sendIntent(GalleryIntent.OnImageTap(index))
+                            }
                             .aspectRatio(image.ratio.takeIf { it > 0f } ?: 1f),
                         model = ImageRequest.Builder(LocalPlatformContext.current)
                             .data(image.thumbnailUrl)
@@ -182,7 +192,12 @@ fun GalleryScreenContent(
             targetState = viewerIndex,
             modifier = Modifier.fillMaxSize(),
             contentKey = { it != null },
-            transitionSpec = { fadeIn() togetherWith fadeOut() using null }
+            transitionSpec = {
+                // Once the image is back on its thumbnail the viewer is already invisible: a fade out would only keep
+                // it over the grid, swallowing the touches until it ends
+                val exit = if (viewerReturnedToThumbnail) ExitTransition.None else fadeOut()
+                fadeIn() togetherWith exit using null
+            }
         ) { index ->
             if (index != null) {
                 GalleryViewer(
@@ -194,6 +209,10 @@ fun GalleryScreenContent(
                     onDownload = { sendIntent(GalleryIntent.OnImageDownloadTap) },
                     onUseImage = { sendIntent(GalleryIntent.OnUseImageTap) },
                     onClose = { sendIntent(GalleryIntent.OnViewerClose) },
+                    onReturnedToThumbnail = {
+                        viewerReturnedToThumbnail = true
+                        sendIntent(GalleryIntent.OnViewerClose)
+                    },
                     thumbnailShape = FluxUI.shapes.corners,
                     thumbnailBounds = { thumbnailBounds[it.key()] },
                 )

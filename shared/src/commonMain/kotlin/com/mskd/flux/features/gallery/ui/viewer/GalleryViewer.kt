@@ -48,8 +48,10 @@ private const val DOUBLE_TAP_TIMEOUT_MS = 200L
 /**
  * Full screen overlay showing the images in their original resolution, one page per image.
  * The pager is locked while the current image is zoomed so that a drag pans the image instead.
- * At 1x, a mainly vertical drag down moves the image like a bottom sheet to dismiss the viewer: the image then flies
- * back to its thumbnail, found in [thumbnailBounds] (in root coordinates) and rounded like [thumbnailShape].
+ * At 1x, a mainly vertical drag down moves the image like a bottom sheet to dismiss the viewer. Dismissed by the swipe
+ * down or by Back, the image flies back to its thumbnail, found in [thumbnailBounds] (in root coordinates) and rounded
+ * like [thumbnailShape], then [onReturnedToThumbnail] closes the viewer. Without a thumbnail on screen, the image
+ * slides down and [onClose] closes the viewer.
  */
 @Composable
 fun GalleryViewer(
@@ -61,6 +63,7 @@ fun GalleryViewer(
     onDownload: () -> Unit,
     onUseImage: () -> Unit,
     onClose: () -> Unit,
+    onReturnedToThumbnail: () -> Unit,
     thumbnailShape: CornerBasedShape,
     thumbnailBounds: (GalleryImage) -> Rect?,
 ) {
@@ -95,8 +98,11 @@ fun GalleryViewer(
         dismissAnimation = scope.launch { dismissState.animateTo(0f, spring(), velocity) }
     }
 
-    fun dismiss(velocity: Float) {
+    fun dismiss(velocity: Float = 0f) {
+        if (closing) return
         closing = true
+        dismissAnimation?.cancel()
+        controls.hide()
         val image = images.getOrNull(pagerState.currentPage)
         val flight = image?.let {
             returnFlightOrNull(viewerBounds, it.ratio, dismissState, thumbnailBounds(it), thumbnailShape, density)
@@ -105,7 +111,7 @@ fun GalleryViewer(
             returnFlight = flight
             scope.launch {
                 flight.fly()
-                onClose()
+                onReturnedToThumbnail()
             }
         } else {
             // Without a thumbnail to go back to, the image keeps moving down while the viewer fades out
@@ -136,8 +142,8 @@ fun GalleryViewer(
         snapshotFlow { pagerState.currentPage }.collect { currentOnPageChange(it) }
     }
 
-    // Back first zooms the image out, then closes the viewer
-    BackGesture(onBack = { if (zoomed) zoomOutRequest++ else onClose() })
+    // Back first zooms the image out, then dismisses the viewer like the swipe down
+    BackGesture(onBack = { if (zoomed) zoomOutRequest++ else dismiss() })
 
     Box(
         modifier = Modifier

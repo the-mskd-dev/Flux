@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.util.lerp
 
-private const val RETURN_FLIGHT_MS = 350
+private const val RETURN_FLIGHT_MS = 200
 
 /**
  * The dismissed image flying from where it is on screen back to its thumbnail in the Gallery grid, Google Photos

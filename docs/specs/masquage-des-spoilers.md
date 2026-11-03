@@ -99,7 +99,7 @@ Indépendamment de l'option, le bloc de description en haut de la page d'un Artw
 - Le rayon de flou est animé (~300 ms) entre masqué et lisible, que le changement vienne d'un tap, d'un dépli ou d'un changement de Status.
 - Si le délégué RenderScript ne fonctionne pas avec l'entrée « contenu » sur API 29-30, le voile de repli de Haze est accepté.
 - Le grisage des Episode Unavailable est conservé et se cumule avec le flou.
-- L'Artwork image, lorsqu'elle affiche l'image de l'Episode sélectionné, est floutée tant que cet Episode n'est pas commencé (`TO_WATCH`, hors Unknown Artwork), y compris lorsque sa description est affichée dans `ArtworkOverview` (elle y est alors masquée aussi) ; elle devient lisible dès qu'il est révélé (tap sur sa description dans la liste ou dans le bloc), déplié ou commencé. Le tap sur cette image ouvre toujours la Gallery. `ArtworkContent` expose cet état résolu (`isArtworkImageBlurred`).
+- L'Artwork image, lorsqu'elle affiche l'image de l'Episode sélectionné, est floutée tant que cet Episode n'est pas commencé (`TO_WATCH`, hors Unknown Artwork), y compris lorsque sa description est affichée dans `ArtworkOverview` (elle y est alors masquée aussi) ; elle devient lisible dès qu'il est révélé (tap sur sa description dans la liste ou dans le bloc), déplié ou commencé. Tant que l'Episode sélectionné est un Spoiler, le tap sur cette image le révèle / masque (description, item de la liste et image) au lieu d'ouvrir la Gallery ; sinon il ouvre la Gallery comme avant. `ArtworkContent` expose cet état résolu (`isArtworkImageBlurred`).
 
 **Accessibilité** :
 - Tant qu'une description est masquée, sa sémantique est remplacée par un libellé « Spoiler masqué » (localisé) avec une action d'accessibilité « Révéler ».

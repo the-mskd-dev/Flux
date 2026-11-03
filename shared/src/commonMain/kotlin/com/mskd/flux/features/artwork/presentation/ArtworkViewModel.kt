@@ -125,7 +125,7 @@ class ArtworkViewModel(
             is ArtworkIntent.OpenEpisodeInfo -> urlLauncher.open(url = intent.episode.infoUrl)
             is ArtworkIntent.OpenFileExplorer -> filesLauncher.open(file = intent.media.file)
             is ArtworkIntent.OnPersonClick -> _event.emit(ArtworkEvent.NavigateToPerson(person = intent.person))
-            ArtworkIntent.OnArtworkImageClick -> navigateToGallery()
+            ArtworkIntent.OnArtworkImageClick -> onArtworkImageClick()
 
             // Dialogs
             ArtworkIntent.CloseDialog -> closeDialog()
@@ -263,6 +263,14 @@ class ArtworkViewModel(
                     ?: episodes.firstEpisodeToWatch()
             }
         }
+    }
+
+    /** While the selected Episode is a Spoiler, its Artwork image reveals / hides it instead of opening the Gallery. */
+    private suspend fun onArtworkImageClick() {
+        val content = artworkContent ?: return
+        val episode = content.selectedMedia as? Episode
+        if (episode != null && episode.id in content.spoilerEpisodeIds) toggleEpisodeSpoiler(episode = episode)
+        else navigateToGallery()
     }
 
     private suspend fun navigateToGallery() {

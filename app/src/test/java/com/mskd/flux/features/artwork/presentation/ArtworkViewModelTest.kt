@@ -729,6 +729,39 @@ class ArtworkViewModelTest : FunSpec({
             }
         }
 
+        test("tapping the artwork image of a masked episode reveals then hides it, without opening the gallery") {
+            openShow()
+            viewModel.uiState.test {
+                artworkImageBlurred() shouldBe true
+                viewModel.event.test {
+                    viewModel.handleIntent(ArtworkIntent.OnArtworkImageClick)
+                    expectNoEvents()
+                }
+                var content = (expectMostRecentItem().state as State.Content).content
+                content.isArtworkImageBlurred shouldBe false
+                content.blurredEpisodeIds shouldBe allIds - ep1.id
+
+                viewModel.handleIntent(ArtworkIntent.OnArtworkImageClick)
+                content = (expectMostRecentItem().state as State.Content).content
+                content.isArtworkImageBlurred shouldBe true
+                content.blurredEpisodeIds shouldBe allIds
+            }
+        }
+
+        test("tapping the artwork image opens the gallery when the selected episode is not a spoiler") {
+            observeArtworkUseCase = mockk()
+            every { settingsDataStore.flow } returns MutableStateFlow(SettingsDataStore.State(blurSpoilers = false))
+            every { observeArtworkUseCase(any()) } returns flowOf(State.Content(MediaMockups.fullShow))
+            updateVm(MediaMockups.showArtwork.id)
+            viewModel.uiState.test {
+                expectMostRecentItem()
+                viewModel.event.test {
+                    viewModel.handleIntent(ArtworkIntent.OnArtworkImageClick)
+                    awaitItem() shouldBe ArtworkEvent.NavigateToGallery(artworkId = MediaMockups.showArtwork.id, contentType = ContentType.SHOW)
+                }
+            }
+        }
+
         test("artwork image is readable when the option is disabled") {
             observeArtworkUseCase = mockk()
             every { settingsDataStore.flow } returns MutableStateFlow(SettingsDataStore.State(blurSpoilers = false))

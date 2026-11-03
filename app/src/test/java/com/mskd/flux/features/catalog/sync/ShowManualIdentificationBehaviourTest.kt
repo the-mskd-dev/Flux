@@ -47,7 +47,7 @@ class ShowManualIdentificationBehaviourTest : FunSpec({
         artwork.isManuallyIdentified shouldBe true
         harness.catalog.getSeasons().map { it.artworkId to it.season } shouldContainExactlyInAnyOrder listOf(lostPages.id to 1, lostPages.id to 2)
         harness.catalog.getEpisodes(artworkId = lostPages.id).map { it.file.name to it.title } shouldContainExactlyInAnyOrder listOf(
-            "Breaking Bad S01E01.mkv" to "Le début",
+            "Breaking Bad S01E01.mkv" to "The Beginning",
             "Breaking Bad S01E02.mkv" to "The Missing Page",
             "Breaking Bad S02E01.mkv" to "The Next Chapter",
         )

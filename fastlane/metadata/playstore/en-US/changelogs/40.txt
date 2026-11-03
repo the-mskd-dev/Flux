@@ -1,0 +1,4 @@
+- Feature: Display artwork logos instead of titles
+- Feature: Manual selection of movie and show data
+- Feature: Poster and banner selection
+- Feature: Blurred spoilers on the episode image, title and overview

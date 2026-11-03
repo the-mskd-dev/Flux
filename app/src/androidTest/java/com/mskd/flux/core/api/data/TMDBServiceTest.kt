@@ -304,12 +304,12 @@ class TMDBServiceTest : KoinTest {
             language = language
         )
 
-        println("id : ${result.id}")
-        println("title : ${result.title}")
-        println("description : ${result.description}")
-        println("imagePath : ${result.imagePath}")
-        println("season : ${result.season}")
-        println("number of episodes : ${result.episodes.size}")
+        println("id : ${result?.id}")
+        println("title : ${result?.title}")
+        println("description : ${result?.description}")
+        println("imagePath : ${result?.imagePath}")
+        println("season : ${result?.season}")
+        println("number of episodes : ${result?.episodes?.size}")
     }
 
     @Test

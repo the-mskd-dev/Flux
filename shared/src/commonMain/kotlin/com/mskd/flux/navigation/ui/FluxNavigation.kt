@@ -68,6 +68,12 @@ fun FluxNavigation(
                 crashLogger.addBreadcrumb(message = "clear backstack then navigate to $route")
                 backStack.add(route)
             },
+            replace = { route ->
+                transitions = Transition.Fade to Transition.Fade
+                crashLogger.addBreadcrumb(message = "replace ${backStack.lastOrNull() as? Route} by $route")
+                backStack.removeLastOrNull()
+                backStack.add(route)
+            },
         )
     }
 
@@ -120,6 +126,7 @@ fun FluxNavigation(
                     ShowScreen(
                         navigate = { route -> navigator.navigate(route) },
                         onBack = { navigator.onBack() },
+                        replaceShow = { artworkId -> navigator.replace(entry.copy(artworkId = artworkId, rgb = null)) },
                         artworkId = entry.artworkId,
                         colorScheme = createColorScheme(
                             theme = customization.uiTheme,

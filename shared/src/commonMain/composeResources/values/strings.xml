@@ -268,7 +268,16 @@
     <string name="chapters">Chapters</string>
     <string name="chapter_number">Chapter %1$d</string>
     <string name="gallery_image_download">Download image</string>
+    <string name="gallery_use_as_poster">Use as poster</string>
+    <string name="gallery_use_as_backdrop">Use as backdrop</string>
+    <string name="gallery_current_poster">Current poster</string>
+    <string name="gallery_current_backdrop">Current backdrop</string>
     <string name="gallery_image_download_succeeded">Image saved</string>
     <string name="gallery_image_download_failed">Couldn't download the image</string>
     <string name="gallery_image_download_show">Show</string>
+    <string name="identification_select_data">Select data</string>
+    <string name="identification_current">Current</string>
+    <string name="identification_no_result">No result</string>
+    <string name="identification_search_failed">Couldn\'t search TMDB</string>
+    <string name="identification_failed">Couldn\'t retrieve the data of this artwork. Please try again.</string>
 </resources>

@@ -10,6 +10,8 @@ import com.mskd.flux.di.modulePlatform
 import com.mskd.flux.features.catalog.domain.sync.SyncPipeline
 import com.mskd.flux.features.catalog.domain.sync.step.CatalogStep
 import com.mskd.flux.features.gallery.presentation.GalleryViewModel
+import com.mskd.flux.features.identification.domain.usecase.IdentifyManuallyUseCase
+import com.mskd.flux.features.identification.presentation.IdentificationViewModel
 import com.mskd.flux.features.people.presentation.PersonViewModel
 import com.mskd.flux.features.player.domain.model.PlayerParams
 import com.mskd.flux.features.player.presentation.PlayerViewModel
@@ -46,7 +48,9 @@ class KoinModulesTest : FunSpec({
                 definition<PersonViewModel>(Person::class),
                 definition<GalleryViewModel>(Long::class, ContentType::class),
                 definition<CatalogStep>(List::class),
-                definition<SyncPipeline>(List::class)
+                definition<SyncPipeline>(List::class),
+                definition<IdentifyManuallyUseCase>(List::class),
+                definition<IdentificationViewModel>(Long::class)
             )
         )
 

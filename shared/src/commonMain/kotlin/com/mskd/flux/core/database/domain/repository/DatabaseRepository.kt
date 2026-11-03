@@ -6,6 +6,7 @@ import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.artwork.Season
+import com.mskd.flux.core.model.core.ImagesPaths
 import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.features.sources.domain.model.UserFolder
 import kotlinx.coroutines.flow.Flow
@@ -30,10 +31,29 @@ interface DatabaseRepository {
     /** Saves an Artwork with its seasons, medias and people in a single transaction: a folder is never saved halfway. */
     suspend fun saveSyncedFolder(artwork: Artwork, seasons: List<Season>, medias: List<Media>, people: List<Person>)
 
+    /**
+     * Saves, like [saveSyncedFolder], the Media of [sourceArtworkId] re-identified to [artwork] by a Manual identification.
+     * The history entry of the source Artwork follows its Media (on a merge, the most recent entry is kept), and the source
+     * Artwork, left empty, is deleted with its people. The Custom image of the source Artwork does not follow; the one [artwork] had in the Catalog is kept.
+     */
+    suspend fun saveIdentifiedFolder(sourceArtworkId: Long, artwork: Artwork, seasons: List<Season>, medias: List<Media>, people: List<Person>)
+
     // Artworks
     suspend fun getArtwork(artworkId: Long) : Artwork?
     suspend fun getArtworks(includePrivates: Boolean = false) : List<Artwork>
     suspend fun getArtworks(artworkIds: List<Long>) : List<Artwork>
+
+    /** Sets the custom Backdrop of the Artwork (Custom image), without rewriting the rest of it. */
+    suspend fun setArtworkCustomBackdrop(artworkId: Long, path: String?)
+
+    /** Sets the custom Poster of the Artwork (Custom image), without rewriting the rest of it. */
+    suspend fun setArtworkCustomPoster(artworkId: Long, path: String?)
+
+    /** Clears the custom Backdrop and custom Poster of every Artwork: the TMDB images are shown again. */
+    suspend fun clearCustomImages()
+
+    /** Writes only the Logo path of the Artwork (see [Artwork.logoPath]): its other data and its user state are kept. */
+    suspend fun setArtworkLogo(artworkId: Long, logoPath: String?)
 
     // Privacy
     suspend fun setArtworkPrivate(artworkId: Long, isPrivate: Boolean)
@@ -46,6 +66,12 @@ interface DatabaseRepository {
     suspend fun getMedias() : List<Media>
     suspend fun getMediasNotInFiles(files: List<UserFile>) : List<Media>
     suspend fun getNextEpisodeFor(episode: Episode) : Episode?
+
+    /** The Media of the Artworks identified manually (Manual identification). */
+    suspend fun getManuallyIdentifiedMedias() : List<Media>
+
+    /** Forgets every Manual identification: the files are identified by name search again. */
+    suspend fun clearManualIdentifications()
 
     // Movies
     suspend fun getMovie(artworkId: Long) : Movie?
@@ -63,7 +89,7 @@ interface DatabaseRepository {
     suspend fun getUnknownMedias() : List<Episode>
 
     // Images
-    suspend fun getAllImagesPaths() : List<String>
+    suspend fun getAllImagesPaths() : ImagesPaths
 
     // Update
     suspend fun updateRealPaths(files: List<UserFile>)

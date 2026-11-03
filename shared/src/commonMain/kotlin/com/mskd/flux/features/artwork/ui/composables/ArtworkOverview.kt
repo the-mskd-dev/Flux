@@ -41,7 +41,11 @@ fun ArtworkOverview(
                     title = overview.episode.title,
                     description = overview.episode.description,
                     topDetails = { EpisodesDetails(episode = overview.episode) },
-                    subtitle = { MediaDetailsHorizontal(media = overview.episode) }
+                    subtitle = { MediaDetailsHorizontal(media = overview.episode) },
+                    isSpoiler = isSpoiler,
+                    isBlurred = isBlurred,
+                    isTitleSpoiler = true,
+                    onToggleSpoiler = onToggleSpoiler,
                 )
             }
 

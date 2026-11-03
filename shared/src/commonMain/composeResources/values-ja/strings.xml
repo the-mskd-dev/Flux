@@ -249,7 +249,16 @@
     <string name="chapters">チャプター</string>
     <string name="chapter_number">チャプター %1$d</string>
     <string name="gallery_image_download">画像をダウンロード</string>
+    <string name="gallery_use_as_poster">ポスターとして使用</string>
+    <string name="gallery_use_as_backdrop">背景として使用</string>
+    <string name="gallery_current_poster">現在のポスター</string>
+    <string name="gallery_current_backdrop">現在の背景</string>
     <string name="gallery_image_download_succeeded">画像を保存しました</string>
     <string name="gallery_image_download_failed">画像をダウンロードできませんでした</string>
     <string name="gallery_image_download_show">表示</string>
+    <string name="identification_select_data">データを選択</string>
+    <string name="identification_current">現在</string>
+    <string name="identification_no_result">結果なし</string>
+    <string name="identification_search_failed">TMDBを検索できませんでした</string>
+    <string name="identification_failed">この作品のデータを取得できませんでした。もう一度お試しください。</string>
 </resources>

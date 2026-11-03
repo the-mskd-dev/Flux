@@ -12,6 +12,7 @@ import com.mskd.flux.core.datastore.domain.UserDataStore
 import com.mskd.flux.core.model.core.AppInfo
 import com.mskd.flux.core.model.files.FileSource
 import com.mskd.flux.core.model.files.UserFile
+import com.mskd.flux.core.model.language.Language
 import com.mskd.flux.core.network.tmdb.data.TMDB_MAX_REQUESTS
 import com.mskd.flux.core.network.tmdb.data.moduleTmdb
 import com.mskd.flux.core.network.tmdb.data.tmdbHttpClient
@@ -19,12 +20,17 @@ import com.mskd.flux.di.Qualifiers
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
+import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
 import com.mskd.flux.features.catalog.fake.FakeCatalogSyncCoordinator
 import com.mskd.flux.features.catalog.moduleCatalog
 import com.mskd.flux.features.files.domain.datasource.FilesDataSource
 import com.mskd.flux.features.files.domain.usecase.GetFileDurationUseCase
 import com.mskd.flux.features.files.fake.FakeFilesDataSource
 import com.mskd.flux.features.files.moduleFiles
+import com.mskd.flux.features.history.data.dao.HistoryDao
+import com.mskd.flux.features.history.moduleHistory
+import com.mskd.flux.features.identification.domain.usecase.IdentifyManuallyUseCase
+import com.mskd.flux.features.identification.moduleIdentification
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import com.mskd.flux.features.images.fake.FakeImagesPrefetchManager
 import com.mskd.flux.features.people.domain.repository.PeopleRepository
@@ -53,7 +59,7 @@ import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.time.Duration.Companion.seconds
 
 /**
- * Drives the Synchro through its only entry point, the Synchro use case, with the real Synchro graph.
+ * Drives the Sync through its only entry point, the Sync use case, with the real Sync graph.
  * Only the outer dependencies are replaced: in-memory Sources, TMDB simulated at the HTTP level,
  * in-memory Room database and datastores.
  *
@@ -80,9 +86,12 @@ internal class SyncHarness(tmdbToken: String = "test-token", tmdbMaxRequests: In
 
     private val recorderScope = CoroutineScope(SupervisorJob() + Dispatchers.Unconfined)
 
+    /** The images prefetch, counting its requests. */
+    val prefetch = FakeImagesPrefetchManager()
+
     private val _states = CopyOnWriteArrayList<SyncState>()
 
-    /** Successive values of the Synchro state since the harness creation. */
+    /** Successive values of the Sync state since the harness creation. */
     val states: List<SyncState> get() = _states.toList()
 
     private val koinApplication = koinApplication {
@@ -93,6 +102,8 @@ internal class SyncHarness(tmdbToken: String = "test-token", tmdbMaxRequests: In
             moduleCatalog,
             moduleFiles,
             modulePeople,
+            moduleHistory,
+            moduleIdentification,
             module {
                 single<RoomDatabase.Builder<FluxDatabase>> {
                     Room.inMemoryDatabaseBuilder(mockk<Context>(relaxed = true), FluxDatabase::class.java)
@@ -103,7 +114,7 @@ internal class SyncHarness(tmdbToken: String = "test-token", tmdbMaxRequests: In
                 single<TokenDataStore> { TokenDataStoreImpl(tokenDataStore = InMemoryPreferencesDataStore(), appInfo = get()) }
                 single<UserDataStore> { UserDataStoreImpl(userDataStore = InMemoryPreferencesDataStore(), json = get()) }
                 single<PrivateFolderDataStore> { PrivateFolderDataStoreImpl(privateFolderDataStore = InMemoryPreferencesDataStore()) }
-                single<ImagesPrefetchManager> { FakeImagesPrefetchManager() }
+                single<ImagesPrefetchManager> { prefetch }
                 single<GetFileDurationUseCase> {
                     object : GetFileDurationUseCase {
                         override suspend fun invoke(file: UserFile): Int {
@@ -127,7 +138,9 @@ internal class SyncHarness(tmdbToken: String = "test-token", tmdbMaxRequests: In
 
     private val useCase: SyncCatalogUseCase = koin.get()
 
-    /** The Catalogue, as persisted in the database. */
+    private val updateLanguageUseCase: UpdateLanguageUseCase = koin.get()
+
+    /** The Catalog, as persisted in the database. */
     val catalog: DatabaseRepository = koin.get()
 
     val people: PeopleRepository = koin.get()
@@ -137,6 +150,13 @@ internal class SyncHarness(tmdbToken: String = "test-token", tmdbMaxRequests: In
     val settings: SettingsDataStore = koin.get()
 
     val user: UserDataStore = koin.get()
+
+    val token: TokenDataStore = koin.get()
+
+    /** The Manual identification, outside of any Sync. */
+    val identifyManually: IdentifyManuallyUseCase = koin.get()
+
+    val history: HistoryDao = koin.get()
 
     init {
         recorderScope.launch { useCase.state.collect { _states += it } }
@@ -154,23 +174,39 @@ internal class SyncHarness(tmdbToken: String = "test-token", tmdbMaxRequests: In
     fun customFile(root: String, name: String): UserFile =
         UserFile(name = name, path = "$root/document/$name", realPath = name, source = FileSource.SAF)
 
+    /** Makes every Artwork of the Catalog never searched for a Logo, like a Catalog synchronised before the Logo existed. */
+    suspend fun forgetLogos() =
+        catalog.getArtworks(includePrivates = true).forEach { catalog.setArtworkLogo(artworkId = it.id, logoPath = null) }
+
     /** Runs a light sync and waits for its end. */
     suspend fun lightSync() {
         requestLightSync()
         awaitIdle()
     }
 
-    /** Runs a Synchro complète and waits for its end. */
+    /** Runs a Full sync and waits for its end. */
     suspend fun fullSync() {
         requestFullSync()
         awaitIdle()
+    }
+
+    /** Changes the data language like the Settings do, then waits for the Catalog to be updated. */
+    suspend fun changeDataLanguage(language: Language) {
+        requestDataLanguageChange(language)
+        awaitIdle()
+    }
+
+    /** Changes the data language like the Settings do, without waiting for the Catalog to be updated. */
+    suspend fun requestDataLanguageChange(language: Language) {
+        settings.setDataLanguage(language)
+        updateLanguageUseCase()
     }
 
     fun requestLightSync() = useCase(onlyNew = true)
 
     fun requestFullSync() = useCase(onlyNew = false)
 
-    /** Waits for the Synchro to end, along with the background work it started. */
+    /** Waits for the Sync to end, along with the background work it started. */
     suspend fun awaitIdle() = withTimeout(10.seconds) {
         useCase.state.first { it is SyncState.Idle }
         while (true) {

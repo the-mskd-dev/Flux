@@ -1,0 +1,14 @@
+{
+  "id": 3573,
+  "name": "Season 2",
+  "overview": "Walt and Jesse expand their business.",
+  "poster_path": "/breaking-bad-s2.jpg",
+  "season_number": 2,
+  "episodes": [
+    {
+      "id": 62092, "show_id": 1396, "name": "Seven Thirty-Seven", "overview": "Walt and Jesse realize how dire their situation is.",
+      "runtime": 47, "episode_number": 1, "season_number": 2, "still_path": "/seven-thirty-seven.jpg",
+      "vote_average": 8.1, "vote_count": 200, "air_date": "2009-03-08", "crew": []
+    }
+  ]
+}

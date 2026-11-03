@@ -1,0 +1,25 @@
+{
+  "id": 1396,
+  "translations": [
+    {
+      "iso_639_1": "de",
+      "iso_3166_1": "DE",
+      "name": "Deutsch",
+      "english_name": "German",
+      "data": {
+        "name": "Breaking Bad",
+        "overview": "Walter White, ein Chemielehrer, beginnt Methamphetamin herzustellen."
+      }
+    },
+    {
+      "iso_639_1": "en",
+      "iso_3166_1": "US",
+      "name": "English",
+      "english_name": "English",
+      "data": {
+        "name": "Breaking Bad",
+        "overview": "Walter White, a chemistry teacher, turns to manufacturing methamphetamine."
+      }
+    }
+  ]
+}

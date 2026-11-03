@@ -7,6 +7,7 @@ import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.core.State
+import com.mskd.flux.features.identification.presentation.IdentificationAvailability
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.persistentListOf
@@ -17,7 +18,8 @@ data class ArtworkDataState(
     val fullArtwork: FullArtwork,
     val useExternalPlayer: Boolean,
     val blurSpoilers: Boolean,
-    val people: ImmutableList<Person> = persistentListOf()
+    val people: ImmutableList<Person> = persistentListOf(),
+    val identification: IdentificationAvailability = IdentificationAvailability.HIDDEN,
 )
 
 @Immutable
@@ -40,8 +42,11 @@ data class ArtworkContent(
     val expandedEpisodeId: Long? = null,
     val spoilerEpisodeIds: ImmutableSet<Long> = persistentSetOf(),
     val blurredEpisodeIds: ImmutableSet<Long> = persistentSetOf(),
+    /** The Artwork image shows the selected Episode: it is hidden while that Episode is. */
+    val isArtworkImageBlurred: Boolean = false,
     val useExternalPlayer: Boolean,
     val people: ImmutableList<Person> = persistentListOf(),
+    val identification: IdentificationAvailability = IdentificationAvailability.HIDDEN,
     val dialog: ArtworkDialog?,
 )
 
@@ -53,6 +58,7 @@ data class ArtworkUiState(
 sealed class ArtworkDialog {
     data class EpisodeStatusConfirmation(val episode: Episode) : ArtworkDialog()
     object ResetProgressConfirmation : ArtworkDialog()
+    data object Identification : ArtworkDialog()
 }
 
 sealed interface ArtworkIntent {
@@ -68,6 +74,10 @@ sealed interface ArtworkIntent {
     // Dialogs
     data object CloseDialog: ArtworkIntent
     data object ShowResetProgressDialog : ArtworkIntent
+    data object ShowIdentificationDialog : ArtworkIntent
+
+    // Manual identification
+    data class OnIdentified(val artworkId: Long) : ArtworkIntent
 
     // Status
     data object ResetProgress: ArtworkIntent
@@ -87,4 +97,6 @@ sealed interface ArtworkEvent {
     data class PlayMedia(val media: Media, val externalPlayer: Boolean) : ArtworkEvent
     data class NavigateToPerson(val person: Person) : ArtworkEvent
     data class NavigateToGallery(val artworkId: Long, val contentType: ContentType) : ArtworkEvent
+    /** Replaces the page by the one of [artworkId]: back must not lead to the previous Artwork, which may no longer exist. */
+    data class ReplaceArtwork(val artworkId: Long) : ArtworkEvent
 }

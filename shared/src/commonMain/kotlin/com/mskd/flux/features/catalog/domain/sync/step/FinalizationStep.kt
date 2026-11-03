@@ -7,14 +7,14 @@ import com.mskd.flux.features.catalog.domain.sync.SyncStep
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import kotlin.time.Clock
 
-/** Saves the Synchro time and version code, then starts the background work without waiting for it. */
+/** Saves the Sync time and version code, then starts the background work without waiting for it. */
 class FinalizationStep(
     private val user: UserDataStore,
     private val appInfo: AppInfo,
     private val imagesPrefetchManager: ImagesPrefetchManager,
 ) : SyncStep {
 
-    override fun units(context: SyncContext) = 1
+    override suspend fun units(context: SyncContext) = 1
 
     override suspend fun run(context: SyncContext) {
 

@@ -1,0 +1,9 @@
+{
+  "id": 1396,
+  "backdrops": [],
+  "posters": [],
+  "logos": [
+    { "file_path": "/breaking-bad-de.png", "aspect_ratio": 2.5, "vote_average": 6.0, "iso_639_1": "de" },
+    { "file_path": "/breaking-bad-textless.png", "aspect_ratio": 2.5, "vote_average": 4.0, "iso_639_1": null }
+  ]
+}

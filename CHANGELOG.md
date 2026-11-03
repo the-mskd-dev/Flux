@@ -1,8 +1,6 @@
-## Version 1.9.0
+## Version 1.9.1
 
-- Feature: Blurred spoilers
-- Feature: Posters gallery
-- Feature: Support TMDB ID in file name
-- Core: Refacto synchro
-- Core: Improve player UI performances
-- Fix : Save when no subtitle is selected
+- Feature: Display artwork logos instead of titles
+- Feature: Manual selection of movie and show data
+- Feature: Poster and banner selection
+- Feature: Blurred spoilers on the episode image, title and overview

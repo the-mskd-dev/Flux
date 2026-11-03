@@ -251,7 +251,16 @@
     <string name="chapters">Capitoli</string>
     <string name="chapter_number">Capitolo %1$d</string>
     <string name="gallery_image_download">Scarica l'immagine</string>
+    <string name="gallery_use_as_poster">Usa come poster</string>
+    <string name="gallery_use_as_backdrop">Usa come sfondo</string>
+    <string name="gallery_current_poster">Poster attuale</string>
+    <string name="gallery_current_backdrop">Sfondo attuale</string>
     <string name="gallery_image_download_succeeded">Immagine salvata</string>
     <string name="gallery_image_download_failed">Impossibile scaricare l'immagine</string>
     <string name="gallery_image_download_show">Mostra</string>
+    <string name="identification_select_data">Seleziona i dati</string>
+    <string name="identification_current">Attuale</string>
+    <string name="identification_no_result">Nessun risultato</string>
+    <string name="identification_search_failed">Impossibile cercare su TMDB</string>
+    <string name="identification_failed">Impossibile recuperare i dati di quest\'opera. Riprova.</string>
 </resources>

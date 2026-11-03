@@ -2,6 +2,7 @@ package com.mskd.flux.core.network.tmdb.data.dto.show
 
 import com.mskd.flux.core.network.tmdb.data.dto.TranslationsDto
 import com.mskd.flux.core.network.tmdb.data.dto.genre.GenreDto
+import com.mskd.flux.core.network.tmdb.data.dto.images.ImagesDto
 import com.mskd.flux.core.network.tmdb.data.dto.people.PeopleDto
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -26,7 +27,8 @@ data class ShowDto(
     val genres: List<GenreDto>,
     @SerialName("adult")
     val nsfw: Boolean = false,
-    // Appended to the details call (append_to_response=translations,credits)
+    // Appended to the details call (append_to_response=translations,credits,images)
     val translations: TranslationsDto? = null,
     val credits: PeopleDto? = null,
+    val images: ImagesDto? = null,
 )

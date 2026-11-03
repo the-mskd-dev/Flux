@@ -550,7 +550,7 @@ class ArtworkViewModelTest : FunSpec({
             blurredIds(episodes = episodes) shouldBe setOf(MediaMockups.episode1.id)
         }
 
-        test("episode shown in the overview is not blurred, but is when a summary is shown") {
+        test("episode to watch shown in the overview is also blurred in the list") {
             observeArtworkUseCase = mockk()
             val started = listOf(
                 MediaMockups.episode1.copy(status = Status.WATCHED),
@@ -558,7 +558,7 @@ class ArtworkViewModelTest : FunSpec({
                 MediaMockups.episode3,
             )
             // Season started: the selected Episode is displayed as EpisodeOverview.
-            blurredIds(episodes = started) shouldBe setOf(MediaMockups.episode3.id)
+            blurredIds(episodes = started) shouldBe setOf(MediaMockups.episode2.id, MediaMockups.episode3.id)
         }
 
         test("unknown artwork episodes are never blurred") {
@@ -890,9 +890,32 @@ class ArtworkViewModelTest : FunSpec({
             })) shouldBe false
         }
 
-        test("season with a watched episode is readable") {
-            blurredOf(show(episodes = MediaMockups.episodes.mapIndexed { i, e ->
+        test("next episode to watch shown in the overview is blurred, a tap reveals its description and artwork image") {
+            open(show(episodes = MediaMockups.episodes.mapIndexed { i, e ->
                 if (i == 0) e.copy(status = Status.WATCHED) else e
+            }))
+            viewModel.uiState.test {
+                var content = (expectMostRecentItem().state as State.Content).content
+                (content.overview as ArtworkOverviewContent.EpisodeOverview).episode.id shouldBe MediaMockups.episode2.id
+                content.isOverviewSpoiler shouldBe true
+                content.isOverviewBlurred shouldBe true
+                content.isArtworkImageBlurred shouldBe true
+
+                viewModel.handleIntent(ArtworkIntent.ToggleOverviewSpoiler)
+                content = (expectMostRecentItem().state as State.Content).content
+                content.isOverviewBlurred shouldBe false
+                content.isArtworkImageBlurred shouldBe false
+
+                viewModel.handleIntent(ArtworkIntent.ToggleOverviewSpoiler)
+                content = (expectMostRecentItem().state as State.Content).content
+                content.isOverviewBlurred shouldBe true
+                content.isArtworkImageBlurred shouldBe true
+            }
+        }
+
+        test("episode in progress shown in the overview is readable") {
+            blurredOf(show(episodes = MediaMockups.episodes.mapIndexed { i, e ->
+                if (i == 0) e.copy(status = Status.WATCHED) else if (i == 1) e.copy(status = Status.IS_WATCHING) else e
             })) shouldBe false
         }
 

@@ -28,10 +28,10 @@ import com.mskd.flux.features.artwork.presentation.ArtworkEvent
 import com.mskd.flux.features.artwork.presentation.ArtworkIntent
 import com.mskd.flux.features.artwork.presentation.ArtworkOverviewContent
 import com.mskd.flux.features.artwork.presentation.ArtworkViewModel
-import com.mskd.flux.features.identification.presentation.IdentificationAvailability
 import com.mskd.flux.features.artwork.ui.ArtworkContentLarge
 import com.mskd.flux.features.artwork.ui.ArtworkContentRegular
 import com.mskd.flux.features.artwork.ui.composables.ArtworkDropDownMenu
+import com.mskd.flux.features.identification.presentation.IdentificationAvailability
 import com.mskd.flux.features.identification.ui.IdentificationDialog
 import com.mskd.flux.features.player.domain.model.PlayerParams
 import com.mskd.flux.mockups.MediaMockups

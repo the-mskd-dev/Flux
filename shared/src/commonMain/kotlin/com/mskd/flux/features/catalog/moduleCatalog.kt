@@ -14,10 +14,10 @@ import com.mskd.flux.features.catalog.domain.sync.step.CatalogStep
 import com.mskd.flux.features.catalog.domain.sync.step.FinalizationStep
 import com.mskd.flux.features.catalog.domain.sync.step.GenresStep
 import com.mskd.flux.features.catalog.domain.sync.step.LogosStep
-import com.mskd.flux.features.catalog.domain.sync.step.UserChoicesResetStep
 import com.mskd.flux.features.catalog.domain.sync.step.MissingFilesStep
 import com.mskd.flux.features.catalog.domain.sync.step.NsfwPrivateStep
 import com.mskd.flux.features.catalog.domain.sync.step.ScanStep
+import com.mskd.flux.features.catalog.domain.sync.step.UserChoicesResetStep
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.catalog.domain.usecase.syncGenres.SyncGenresUseCase
 import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase

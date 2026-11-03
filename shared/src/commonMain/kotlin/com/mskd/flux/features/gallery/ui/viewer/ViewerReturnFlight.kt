@@ -92,7 +92,7 @@ fun returnFlightOrNull(
     )
 }
 
-/** Bounds of an image of [ratio] (width / height) displayed with ContentScale.Fit, centerd in [container]. */
+/** Bounds of an image of [ratio] (width / height) displayed with ContentScale.Fit, centered in [container]. */
 fun fittedImageRect(container: Size, ratio: Float): Rect {
     val size = if (container.width / container.height > ratio) Size(container.height * ratio, container.height)
     else Size(container.width, container.width / ratio)

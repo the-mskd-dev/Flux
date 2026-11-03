@@ -5,8 +5,8 @@ import coil3.disk.DiskCache
 import com.mskd.flux.features.gallery.domain.datasource.CachedImageDataSource
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
-import okio.use
 
 /**
  * Reads the disk cache of Coil, which holds the raw response of the images already displayed, keyed by their URL.

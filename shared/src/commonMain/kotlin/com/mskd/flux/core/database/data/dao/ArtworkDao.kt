@@ -55,11 +55,37 @@ interface ArtworkDao {
     @Query("SELECT id FROM artworks WHERE isPrivate = 1")
     suspend fun getPrivateArtworkIds() : List<Long>
 
+    @Query("SELECT id FROM artworks WHERE manuallyIdentified = 1")
+    suspend fun getManuallyIdentifiedArtworkIds() : List<Long>
+
+    @Query("UPDATE artworks SET manuallyIdentified = 0 WHERE manuallyIdentified = 1")
+    suspend fun clearManualIdentifications()
+
     @Query("UPDATE artworks SET isPrivate = 1 WHERE nsfw = 1")
     suspend fun setNsfwArtworksPrivate()
 
     @Query("SELECT id FROM artworks WHERE nsfw = 1")
     suspend fun getNsfwArtworkIds() : List<Long>
+
+//endregion
+
+//region Logo
+
+    @Query("UPDATE artworks SET logoPath = :logoPath WHERE id = :artworkId")
+    suspend fun setArtworkLogo(artworkId: Long, logoPath: String?)
+
+//endregion
+
+//region Custom image
+
+    @Query("UPDATE artworks SET customBackdropPath = :path WHERE id = :artworkId")
+    suspend fun setArtworkCustomBackdrop(artworkId: Long, path: String?)
+
+    @Query("UPDATE artworks SET customPosterPath = :path WHERE id = :artworkId")
+    suspend fun setArtworkCustomPoster(artworkId: Long, path: String?)
+
+    @Query("UPDATE artworks SET customBackdropPath = NULL, customPosterPath = NULL WHERE customBackdropPath IS NOT NULL OR customPosterPath IS NOT NULL")
+    suspend fun clearCustomImages()
 
 //endregion
 
@@ -83,7 +109,7 @@ interface ArtworkDao {
 
 //region Images
 
-    @Query("SELECT imagePath, bannerPath FROM artworks")
+    @Query("SELECT imagePath, bannerPath, logoPath, customBackdropPath, customPosterPath FROM artworks")
     suspend fun getArtworksImages() : List<ArtworkImagesProjection>
 
 //endregion

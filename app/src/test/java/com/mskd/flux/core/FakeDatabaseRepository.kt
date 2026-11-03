@@ -7,6 +7,7 @@ import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Movie
 import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.artwork.Season
+import com.mskd.flux.core.model.core.ImagesPaths
 import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.mockups.MediaMockups
@@ -54,6 +55,14 @@ class FakeDatabaseRepository : DatabaseRepository {
         return MediaMockups.artworks.filter { artworkIds.contains(it.id) }
     }
 
+    override suspend fun setArtworkCustomBackdrop(artworkId: Long, path: String?) {}
+
+    override suspend fun setArtworkCustomPoster(artworkId: Long, path: String?) {}
+
+    override suspend fun clearCustomImages() {}
+
+    override suspend fun setArtworkLogo(artworkId: Long, logoPath: String?) {}
+
     override suspend fun setArtworkPrivate(artworkId: Long, isPrivate: Boolean) {}
 
     override suspend fun clearPrivateArtworks() {}
@@ -67,6 +76,13 @@ class FakeDatabaseRepository : DatabaseRepository {
     override suspend fun getNsfwArtworkIds(): List<Long> {
         return MediaMockups.artworks.filter { it.nsfw }.map { it.id }
     }
+
+    override suspend fun getManuallyIdentifiedMedias(): List<Media> {
+        val artworkIds = MediaMockups.artworks.filter { it.isManuallyIdentified }.map { it.id }
+        return MediaMockups.allMedias.filter { it.artworkId in artworkIds }
+    }
+
+    override suspend fun clearManualIdentifications() {}
 
     override suspend fun getMedias(): List<Media> {
         return MediaMockups.allMedias
@@ -113,8 +129,8 @@ class FakeDatabaseRepository : DatabaseRepository {
         return MediaMockups.unknowns
     }
 
-    override suspend fun getAllImagesPaths(): List<String> {
-        return emptyList()
+    override suspend fun getAllImagesPaths(): ImagesPaths {
+        return ImagesPaths()
     }
 
     override suspend fun updateRealPaths(files: List<UserFile>) {}
@@ -127,6 +143,8 @@ class FakeDatabaseRepository : DatabaseRepository {
     override suspend fun saveSeasons(seasons: List<Season>) {}
 
     override suspend fun saveSyncedFolder(artwork: Artwork, seasons: List<Season>, medias: List<Media>, people: List<Person>) {}
+
+    override suspend fun saveIdentifiedFolder(sourceArtworkId: Long, artwork: Artwork, seasons: List<Season>, medias: List<Media>, people: List<Person>) {}
 
     override suspend fun deleteArtworks(artworks: List<Artwork>) {}
     

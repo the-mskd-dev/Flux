@@ -21,5 +21,10 @@ data class ArtworkEntity(
     @ColumnInfo(defaultValue = "0")
     val nsfw: Boolean = false,
     @ColumnInfo(defaultValue = "")
-    val genreIds: List<Int> = emptyList()
+    val genreIds: List<Int> = emptyList(),
+    val logoPath: String? = null,
+    @ColumnInfo(defaultValue = "0")
+    val manuallyIdentified: Boolean = false,
+    val customBackdropPath: String? = null,
+    val customPosterPath: String? = null,
 )

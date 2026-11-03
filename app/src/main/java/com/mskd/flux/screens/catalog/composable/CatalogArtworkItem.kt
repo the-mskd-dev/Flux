@@ -10,6 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.mskd.flux.core.model.artwork.Artwork
+import com.mskd.flux.core.model.artwork.shownPosterPath
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.ui.media.MediaItem
 import com.mskd.flux.ui.modal.menu.FluxPopUpMenu
@@ -36,7 +37,7 @@ fun CatalogArtworkItem(
 
         MediaItem(
             modifier = Modifier.fillMaxSize(),
-            path = artwork.imagePath,
+            path = artwork.shownPosterPath,
             onClick = { rgb -> sendIntent(CatalogIntent.OnArtworkClick(artwork = artwork, rgb = rgb)) },
             onLongClick = { if (privateFolderEnabled) menuExpanded = true },
             description = artwork.title

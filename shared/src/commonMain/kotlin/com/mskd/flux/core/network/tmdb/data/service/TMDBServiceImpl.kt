@@ -15,13 +15,14 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
+import io.ktor.http.HttpStatusCode
 import kotlin.coroutines.cancellation.CancellationException
 
 class TMDBServiceImpl(private val client: HttpClient) : TMDBService {
 
     private companion object {
-        /** Translations and credits come with the details: no separate call. */
-        const val APPENDED_DETAILS = "translations,credits"
+        /** Translations, credits and images (for the Logo) come with the details: no separate call. */
+        const val APPENDED_DETAILS = "translations,credits,images"
     }
 
     //region Auth
@@ -54,6 +55,7 @@ class TMDBServiceImpl(private val client: HttpClient) : TMDBService {
         .get("movie/$id") {
             parameter("language", language)
             parameter("append_to_response", APPENDED_DETAILS)
+            parameter("include_image_language", imageLanguages(language))
         }.body()
 
     override suspend fun getMovieTranslations(artworkId: Long): TranslationsDto = client
@@ -112,6 +114,7 @@ class TMDBServiceImpl(private val client: HttpClient) : TMDBService {
         .get("tv/$artworkId") {
             parameter("language", language)
             parameter("append_to_response", APPENDED_DETAILS)
+            parameter("include_image_language", imageLanguages(language))
         }.body()
 
     override suspend fun getShowTranslations(artworkId: Long): TranslationsDto = client
@@ -177,10 +180,10 @@ class TMDBServiceImpl(private val client: HttpClient) : TMDBService {
         id: Long,
         season: Int,
         language: String
-    ): SeasonDto = client
+    ): SeasonDto? = client
         .get("tv/$id/season/$season") {
             parameter("language", language)
-        }.body()
+        }.takeUnless { it.status == HttpStatusCode.NotFound }?.body()
 
     override suspend fun getSeasonTranslations(
         artworkId: Long,

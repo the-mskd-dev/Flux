@@ -26,6 +26,7 @@ import com.mskd.flux.features.artwork.presentation.ArtworkOverviewContent
 import com.mskd.flux.features.artwork.ui.composables.ArtworkButtons
 import com.mskd.flux.features.artwork.ui.composables.ArtworkImage
 import com.mskd.flux.features.artwork.ui.composables.ArtworkOverview
+import com.mskd.flux.features.artwork.ui.composables.ArtworkTitle
 import com.mskd.flux.features.people.ui.components.people.PeopleList
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.PeopleMockup
@@ -51,6 +52,7 @@ fun ArtworkContentLarge(
     expandedEpisodeId: Long?,
     spoilerEpisodeIds: Set<Long>,
     blurredEpisodeIds: Set<Long>,
+    isArtworkImageBlurred: Boolean,
     scaffoldInnerPadding: PaddingValues,
     sendIntent: (ArtworkIntent) -> Unit,
 ) {
@@ -67,6 +69,7 @@ fun ArtworkContentLarge(
                 currentMedia = selectedMedia,
                 selectedSeason = selectedSeason,
                 orientation = Orientation.Horizontal,
+                isBlurred = isArtworkImageBlurred,
                 onClick = { sendIntent(ArtworkIntent.OnArtworkImageClick) }
             )
 
@@ -84,14 +87,17 @@ fun ArtworkContentLarge(
 
             item {
 
-                Text.MainTitle(
-                    modifier = Modifier.wrapContentWidth(),
-                    text = when (fullArtwork) {
-                        is FullArtwork.FullMovie -> fullArtwork.artwork.title
-                        is FullArtwork.FullShow -> fullArtwork.seasons.find { it.season == selectedSeason }?.title ?: fullArtwork.artwork.title
-                    },
-                    color = MaterialTheme.colorScheme.onBackground,
-                )
+                when (fullArtwork) {
+                    is FullArtwork.FullMovie -> ArtworkTitle(
+                        modifier = Modifier.wrapContentWidth(),
+                        artwork = fullArtwork.artwork,
+                    )
+                    is FullArtwork.FullShow -> Text.MainTitle(
+                        modifier = Modifier.wrapContentWidth(),
+                        text = fullArtwork.seasons.find { it.season == selectedSeason }?.title ?: fullArtwork.artwork.title,
+                        color = MaterialTheme.colorScheme.onBackground,
+                    )
+                }
 
             }
 
@@ -223,6 +229,7 @@ fun ArtworkContentLargeMovie_Preview() {
             expandedEpisodeId = null,
             spoilerEpisodeIds = emptySet(),
             blurredEpisodeIds = emptySet(),
+            isArtworkImageBlurred = false,
             scaffoldInnerPadding = PaddingValues.Zero,
             sendIntent = {}
         )
@@ -244,6 +251,7 @@ fun ArtworkContentLargeShow_Preview() {
             expandedEpisodeId = null,
             spoilerEpisodeIds = emptySet(),
             blurredEpisodeIds = emptySet(),
+            isArtworkImageBlurred = false,
             scaffoldInnerPadding = PaddingValues.Zero,
             sendIntent = {}
         )

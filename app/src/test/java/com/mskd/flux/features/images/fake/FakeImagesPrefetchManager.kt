@@ -9,7 +9,10 @@ class FakeImagesPrefetchManager : ImagesPrefetchManager {
     override val state: Flow<ImagesPrefetchManager.State> =
         MutableStateFlow(ImagesPrefetchManager.State.Idle)
 
-    override fun prefetchImages() {
+    var prefetchCount = 0
+        private set
 
+    override fun prefetchImages() {
+        prefetchCount++
     }
 }

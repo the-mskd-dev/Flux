@@ -25,3 +25,5 @@ fun String?.uppercaseFirstLetter() : String? {
 val String.tmdbImage : String get() = Constants.TMDB.IMAGE + this
 
 val String.tmdbImageLarge : String get() = Constants.TMDB.IMAGE_LARGE + this
+
+val String.tmdbLogo : String get() = Constants.TMDB.IMAGE_LOGO + this

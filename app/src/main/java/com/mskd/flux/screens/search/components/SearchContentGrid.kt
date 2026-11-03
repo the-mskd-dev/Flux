@@ -20,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.core.model.artwork.Artwork
+import com.mskd.flux.core.model.artwork.shownPosterPath
 import com.mskd.flux.features.search.presentation.SearchIntent
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.ui.FluxThemePreview
@@ -62,7 +63,7 @@ fun SearchContentGrid(
                     modifier = Modifier
                         .width(itemWidth)
                         .aspectRatio(FluxUI.Dimension.itemRatio),
-                    path = artwork.imagePath,
+                    path = artwork.shownPosterPath,
                     description = artwork.title,
                     onClick = { sendIntent(SearchIntent.OnArtworkTap(artwork = artwork, rgb = it)) }
                 )

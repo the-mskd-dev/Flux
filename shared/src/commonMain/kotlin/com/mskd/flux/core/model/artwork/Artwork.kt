@@ -11,6 +11,10 @@ import kotlinx.collections.immutable.persistentListOf
  * @property imagePath Path to the main image of the artwork.
  * @property bannerPath Path to the banner image of the artwork.
  * @property type Content type of the artwork, which can be a movie or a show.
+ * @property logoPath Path to the Logo of the artwork: null when never searched, empty when TMDB has none.
+ * @property isManuallyIdentified True when the user chose this Artwork for its Media (Manual identification).
+ * @property customBackdropPath Backdrop chosen by the user in the Gallery (Custom image), null when none.
+ * @property customPosterPath Poster chosen by the user in the Gallery (Custom image), null when none.
  */
 data class Artwork(
     val id: Long = 0,
@@ -22,6 +26,10 @@ data class Artwork(
     val genreIds: ImmutableList<Int> = persistentListOf(),
     val isPrivate: Boolean = false,
     val nsfw: Boolean = false,
+    val logoPath: String? = null,
+    val isManuallyIdentified: Boolean = false,
+    val customBackdropPath: String? = null,
+    val customPosterPath: String? = null,
 
     val lastModification: Long? = null,
 ) {

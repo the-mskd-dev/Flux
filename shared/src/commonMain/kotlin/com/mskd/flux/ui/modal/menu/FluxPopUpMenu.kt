@@ -40,7 +40,10 @@ fun FluxPopUpMenu(
                     colors = MenuDefaults.itemColors(
                         textColor = MaterialTheme.colorScheme.onTertiaryContainer,
                         leadingIconColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                        disabledTextColor = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = .38f),
+                        disabledLeadingIconColor = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = .38f),
                     ),
+                    enabled = item.enabled,
                     onClick = item.onClick,
                     text = { Text.Card.Body(text = item.text) },
                     leadingIcon = item.leadingIcon,

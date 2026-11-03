@@ -23,6 +23,7 @@ import androidx.constraintlayout.compose.Dimension
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.features.artwork.ui.composables.ArtworkImageFull
+import com.mskd.flux.features.artwork.ui.composables.ArtworkTitle
 import com.mskd.flux.features.artwork.ui.composables.GenresTags
 import com.mskd.flux.features.people.ui.components.people.PeopleList
 import com.mskd.flux.features.show.presentation.ShowIntent
@@ -82,7 +83,7 @@ fun ShowContentRegular(
                     fullArtwork = fullShow,
                 )
 
-                Text.MainTitle(
+                ArtworkTitle(
                     modifier = Modifier
                         .constrainAs(title) {
                             start.linkTo(parent.start,FluxUI.Space.medium)
@@ -91,8 +92,7 @@ fun ShowContentRegular(
                             bottom.linkTo(image.bottom)
                             width = Dimension.preferredWrapContent
                         },
-                    text = fullShow.artwork.title,
-                    color = MaterialTheme.colorScheme.onBackground,
+                    artwork = fullShow.artwork,
                 )
 
             }

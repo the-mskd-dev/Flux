@@ -4,15 +4,17 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
- * Images of a movie or TV show retrieved from TMDB. Logos are not read.
+ * Images of a movie or TV show retrieved from TMDB.
  *
  * @property backdrops Horizontal images.
  * @property posters Vertical images.
+ * @property logos Stylised titles on a transparent background.
  */
 @Serializable
 data class ImagesDto(
     val backdrops: List<ImageDto> = emptyList(),
     val posters: List<ImageDto> = emptyList(),
+    val logos: List<ImageDto> = emptyList(),
 )
 
 /**

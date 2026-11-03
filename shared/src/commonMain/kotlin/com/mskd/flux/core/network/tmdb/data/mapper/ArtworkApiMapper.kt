@@ -6,6 +6,7 @@ import com.mskd.flux.core.network.tmdb.data.dto.ArtworkDto
 import com.mskd.flux.core.network.tmdb.data.dto.MediaTypeDto
 import com.mskd.flux.core.network.tmdb.data.dto.movie.MovieDto
 import com.mskd.flux.core.network.tmdb.data.dto.show.ShowDto
+import com.mskd.flux.core.network.tmdb.domain.model.ArtworkCandidate
 import kotlinx.collections.immutable.toImmutableList
 
 fun ArtworkDto.toDomain() : Artwork {
@@ -21,7 +22,14 @@ fun ArtworkDto.toDomain() : Artwork {
     )
 }
 
-fun MovieDto.toArtwork() : Artwork {
+fun ArtworkDto.toCandidate() : ArtworkCandidate {
+    return ArtworkCandidate(
+        artwork = this.toDomain(),
+        year = this.releaseDate?.take(4)?.toIntOrNull()
+    )
+}
+
+fun MovieDto.toArtwork(logoPath: String? = null) : Artwork {
     return Artwork(
         id = this.id,
         title = this.title,
@@ -30,11 +38,12 @@ fun MovieDto.toArtwork() : Artwork {
         bannerPath = this.bannerPath.orEmpty(),
         type = ContentType.MOVIE,
         genreIds = this.genres.map { it.id }.toImmutableList(),
-        nsfw = this.nsfw
+        nsfw = this.nsfw,
+        logoPath = logoPath
     )
 }
 
-fun ShowDto.toArtwork() : Artwork {
+fun ShowDto.toArtwork(logoPath: String? = null) : Artwork {
     return Artwork(
         id = this.id,
         title = this.title,
@@ -43,6 +52,7 @@ fun ShowDto.toArtwork() : Artwork {
         bannerPath = this.bannerPath.orEmpty(),
         type = ContentType.SHOW,
         genreIds = this.genres.map { it.id }.toImmutableList(),
-        nsfw = this.nsfw
+        nsfw = this.nsfw,
+        logoPath = logoPath
     )
 }

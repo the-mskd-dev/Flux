@@ -27,11 +27,14 @@ import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import com.mskd.flux.core.model.artwork.ArtworkHeaderMode
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Media
+import com.mskd.flux.core.model.artwork.artworkImagePath
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.ui.FluxPreview
+import com.mskd.flux.ui.blurContent
 import com.mskd.flux.ui.image.FluxImage
 import com.mskd.flux.ui.image.Image
 import com.mskd.flux.ui.theme.FluxTheme
@@ -45,6 +48,7 @@ fun ArtworkImage(
     currentMedia: Media? = null,
     selectedSeason: Int? = null,
     orientation: Orientation = Orientation.Vertical,
+    isBlurred: Boolean = false,
     onClick: (() -> Unit)? = null
 ) {
 
@@ -61,7 +65,8 @@ fun ArtworkImage(
             modifier = clickableModifier,
             fullArtwork = fullArtwork,
             currentMedia = currentMedia,
-            orientation = orientation
+            orientation = orientation,
+            isBlurred = isBlurred
         )
     }
 
@@ -72,11 +77,12 @@ fun ArtworkImageFull(
     modifier: Modifier,
     fullArtwork: FullArtwork,
     currentMedia: Media? = null,
-    orientation: Orientation = Orientation.Vertical
+    orientation: Orientation = Orientation.Vertical,
+    isBlurred: Boolean = false
 ) {
 
     val episode = currentMedia as? Episode
-    val imagePath = episode?.imagePath ?: fullArtwork.artwork.bannerPath
+    val imagePath = episode?.imagePath ?: fullArtwork.artwork.artworkImagePath(ArtworkHeaderMode.NORMAL)
     var imageSize by remember { mutableIntStateOf(0) }
 
     Box(modifier = modifier.onSizeChanged { imageSize = if (orientation == Orientation.Vertical) it.height else it.width }) {
@@ -84,6 +90,9 @@ fun ArtworkImageFull(
         FluxImage(
             modifier = Modifier
                 .matchParentSize()
+                // Stronger than the Episode thumbnails: the image is much larger, a light blur still shows the scene.
+                // Stronger than the Episode thumbnails: the image is much larger, a light blur still shows the scene.
+                .blurContent(blurred = isBlurred, radius = 24.dp)
                 .alpha(.8f),
             path = imagePath,
             contentDescription = "background ${fullArtwork.artwork.title}"
@@ -128,7 +137,7 @@ fun ArtworkImageBlurred(
 ) {
 
     val imageUrl = when (fullArtwork) {
-        is FullArtwork.FullMovie -> fullArtwork.imagePath.tmdbImage
+        is FullArtwork.FullMovie -> fullArtwork.artwork.artworkImagePath(ArtworkHeaderMode.BLURRED).tmdbImage
         is FullArtwork.FullShow -> fullArtwork.seasons.find { it.season == selectedSeason }?.imagePath?.tmdbImage ?: fullArtwork.imagePath.tmdbImage
     }
 

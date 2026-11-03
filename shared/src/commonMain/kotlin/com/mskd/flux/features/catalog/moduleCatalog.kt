@@ -13,9 +13,11 @@ import com.mskd.flux.features.catalog.domain.sync.enrichment.SeasonsEnrichment
 import com.mskd.flux.features.catalog.domain.sync.step.CatalogStep
 import com.mskd.flux.features.catalog.domain.sync.step.FinalizationStep
 import com.mskd.flux.features.catalog.domain.sync.step.GenresStep
+import com.mskd.flux.features.catalog.domain.sync.step.LogosStep
 import com.mskd.flux.features.catalog.domain.sync.step.MissingFilesStep
 import com.mskd.flux.features.catalog.domain.sync.step.NsfwPrivateStep
 import com.mskd.flux.features.catalog.domain.sync.step.ScanStep
+import com.mskd.flux.features.catalog.domain.sync.step.UserChoicesResetStep
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.catalog.domain.usecase.syncGenres.SyncGenresUseCase
 import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
@@ -29,14 +31,16 @@ val moduleCatalog = module {
     singleOf(::ScanStep)
     singleOf(::MissingFilesStep)
     singleOf(::GenresStep)
+    singleOf(::UserChoicesResetStep)
     singleOf(::NsfwPrivateStep)
+    singleOf(::LogosStep)
     singleOf(::FinalizationStep)
 
     single {
         CatalogStep(
             database = get(),
             enrichments = listOf(
-                IdentificationEnrichment(api = get()),
+                IdentificationEnrichment(api = get(), database = get()),
                 DetailsEnrichment(api = get()),
                 SeasonsEnrichment(api = get()),
                 DurationsEnrichment(getFileDurationUseCase = get()),
@@ -50,7 +54,9 @@ val moduleCatalog = module {
             steps = listOf(
                 get<MissingFilesStep>(),
                 get<GenresStep>(),
+                get<UserChoicesResetStep>(),
                 get<CatalogStep>(),
+                get<LogosStep>(),
                 get<NsfwPrivateStep>(),
                 get<FinalizationStep>(),
             )
@@ -71,6 +77,7 @@ val moduleCatalog = module {
             settings = get(),
             coordinator = get(),
             syncGenresUseCase = get(),
+            imagesPrefetchManager = get(),
         )
     }
 

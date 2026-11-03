@@ -449,7 +449,7 @@ class DatabaseRepositoryImplTest {
     //region Images
 
     @Test
-    fun getAllImagesPaths_returns_all_image_paths_from_artworks_seasons_and_medias() = runTest {
+    fun getAllImagesPaths_returns_all_image_paths_from_artworks_seasons_and_medias_and_logos_apart() = runTest {
         // Given
         repository.saveArtworks(MediaMockups.artworks)
         repository.saveMedias(MediaMockups.allMedias)
@@ -464,8 +464,9 @@ class DatabaseRepositoryImplTest {
         val expectedSeasonImages = MediaMockups.seasons.mapNotNull { it.imagePath }.filter { it.isNotBlank() }
         val expectedAll = expectedArtworkImages + expectedMediasImages + expectedSeasonImages
 
-        assertEquals(expectedAll.size, result.size)
-        assertTrue(result.containsAll(expectedAll))
+        assertEquals(expectedAll.size, result.images.size)
+        assertTrue(result.images.containsAll(expectedAll))
+        assertEquals(MediaMockups.artworks.map { it.logoPath }.sortedBy { it.orEmpty() }, result.logos.sortedBy { it.orEmpty() })
     }
 
     //endregion

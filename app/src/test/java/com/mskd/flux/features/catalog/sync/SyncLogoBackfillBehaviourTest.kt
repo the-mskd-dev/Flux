@@ -11,8 +11,8 @@ import kotlinx.coroutines.withTimeout
 import kotlin.time.Duration.Companion.seconds
 
 /**
- * Logo given by the Étape "Logos" to the Artwork already in the Catalogue, observed through the Catalogue in database,
- * the Synchro state and the TMDB calls. See .scratch/artwork-logos/specs.md.
+ * Logo given by the "Logos" Sync step to the Artwork already in the Catalog, observed through the Catalog in database,
+ * the Sync state and the TMDB calls. See .scratch/artwork-logos/specs.md.
  */
 class SyncLogoBackfillBehaviourTest : FunSpec({
 
@@ -29,7 +29,7 @@ class SyncLogoBackfillBehaviourTest : FunSpec({
 
     fun imagesCallCount() = harness.tmdb.callCount("movie/{id}/images") + harness.tmdb.callCount("tv/{id}/images")
 
-    /** A Catalogue synchronised before the Logo existed: its Artwork have never been searched for a Logo. */
+    /** A Catalog synchronised before the Logo existed: its Artwork have never been searched for a Logo. */
     suspend fun oldCatalog(vararg files: String) {
         harness.deviceStorage.availableFiles = files.map { harness.deviceFile(it) }
         harness.lightSync()
@@ -37,7 +37,7 @@ class SyncLogoBackfillBehaviourTest : FunSpec({
         harness.tmdb.resetCalls()
     }
 
-    test("an old Artwork gets its Logo in a light Synchro, with one images call") {
+    test("an old Artwork gets its Logo in a light Sync, with one images call") {
 
         // Given
         oldCatalog("Inception (2010).mkv", "Breaking Bad S01E01.mkv")
@@ -55,7 +55,7 @@ class SyncLogoBackfillBehaviourTest : FunSpec({
 
     }
 
-    test("in a Synchro complète, an old Artwork gets its Logo from the details call, with no images call") {
+    test("in a Full sync, an old Artwork gets its Logo from the details call, with no images call") {
 
         // Given
         oldCatalog("Inception (2010).mkv")
@@ -69,7 +69,7 @@ class SyncLogoBackfillBehaviourTest : FunSpec({
 
     }
 
-    test("in a Synchro complète, the progress accounts only for the Logos left to the Étape") {
+    test("in a Full sync, the progress accounts only for the Logos left to the step") {
 
         // Given
         oldCatalog("Inception (2010).mkv", "Breaking Bad S01E01.mkv")
@@ -135,7 +135,7 @@ class SyncLogoBackfillBehaviourTest : FunSpec({
 
     }
 
-    test("a failed Logo lookup is retried at the next Synchro, without any Fichier en échec") {
+    test("a failed Logo lookup is retried at the next Sync, without any Failed file") {
 
         // Given
         oldCatalog("Inception (2010).mkv")
@@ -232,7 +232,7 @@ class SyncLogoBackfillBehaviourTest : FunSpec({
 
     }
 
-    test("each Logo is saved as soon as it is found, before the end of the Synchro") {
+    test("each Logo is saved as soon as it is found, before the end of the Sync") {
 
         // Given
         oldCatalog("Inception (2010).mkv", "Breaking Bad S01E01.mkv")
@@ -254,7 +254,7 @@ class SyncLogoBackfillBehaviourTest : FunSpec({
 
     }
 
-    test("the progress accounts for the Logos, never goes backwards and only reaches 100 % when the Synchro ends") {
+    test("the progress accounts for the Logos, never goes backwards and only reaches 100 % when the Sync ends") {
 
         // Given
         oldCatalog("Inception (2010).mkv", "Breaking Bad S01E01.mkv", "Forgotten Tale (2015).mkv")
@@ -275,7 +275,7 @@ class SyncLogoBackfillBehaviourTest : FunSpec({
         progresses.zipWithNext().all { (previous, next) -> next >= previous } shouldBe true
         progresses.distinct().size shouldBeGreaterThan 1
         progresses.dropLast(1).all { it < 1f } shouldBe true
-        // Two Logos out of three are done: the Synchro is far from its end
+        // Two Logos out of three are done: the Sync is far from its end
         (duringLogos < 0.9f) shouldBe true
         harness.states.last().shouldBeInstanceOf<SyncState.Idle>()
 

@@ -8,8 +8,8 @@
 
 - [ ] The option is in the Show page `FluxPopupMenu`, with the same availability rules as 01, and is absent for the Unknown Artwork.
 - [ ] All the Media of the Show, whatever their file-name title, are re-identified, with the Seasons and episodes enrichment replayed under the chosen TMDB ID.
-- [ ] An episode or Season that does not exist in the chosen Show becomes a Fichier non reconnu (Unknown Artwork); a transient failure gives a Fichier en échec. There is no atomicity.
-- [ ] A merge into an existing Show in the Catalogue works: Seasons and episodes are combined, and the most recent history is kept.
+- [ ] An episode or Season that does not exist in the chosen Show becomes an Unrecognized file (Unknown Artwork); a transient failure gives a Failed file. There is no atomicity.
+- [ ] A merge into an existing Show in the Catalog works: Seasons and episodes are combined, and the most recent history is kept.
 - [ ] Status, Progress, history and the private flag are kept as in 01.
-- [ ] Tests cover: missing Season goes to Unknown Artwork, network failure gives a Fichier en échec, merge, and history migration.
+- [ ] Tests cover: missing Season goes to Unknown Artwork, network failure gives a Failed file, merge, and history migration.
 - [ ] `./gradlew :app:testFossDebugUnitTest` passes.

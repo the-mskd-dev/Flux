@@ -9,10 +9,10 @@ import com.mskd.flux.report.Trace
 import kotlinx.coroutines.CancellationException
 
 /**
- * Identification manuelle: every Média of an Artwork is re-identified to the Artwork chosen by the user, by replaying the
- * [enrichments] of the Synchro under its TMDB ID. The result is marked as manually identified, and is Private when the
+ * Manual identification: every Media of an Artwork is re-identified to the Artwork chosen by the user, by replaying the
+ * [enrichments] of the Sync under its TMDB ID. The result is marked as manually identified, and is Private when the
  * source or the chosen Artwork is. When the chosen Artwork cannot be fetched, or has none of the files, nothing is saved:
- * the Médias stay where they are.
+ * the Media stay where they are.
  */
 class IdentifyManuallyUseCase(
     private val database: DatabaseRepository,
@@ -21,7 +21,7 @@ class IdentifyManuallyUseCase(
 
     private companion object { const val TAG = "IdentifyManuallyUseCase" }
 
-    /** The ID of the Artwork the Médias now belong to. */
+    /** The ID of the Artwork the Media now belong to. */
     suspend operator fun invoke(artworkId: Long, target: Artwork): Result<Long> = try {
         Result.success(identify(artworkId = artworkId, target = target))
     } catch (e: CancellationException) {

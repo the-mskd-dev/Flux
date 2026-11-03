@@ -6,7 +6,7 @@ Where it applies: the movie header of the Artwork screen, the movie title of the
 
 This ticket also defines the single URL used to display a Logo (TMDB `w500`), which the prefetch (ticket 04) must reuse.
 
-**Blocked by:** 01: A new Artwork gets its Logo during the Synchro
+**Blocked by:** 01: A new Artwork gets its Logo during the Sync
 
 **Status:** ready-for-agent
 
@@ -19,4 +19,4 @@ This ticket also defines the single URL used to display a Logo (TMDB `w500`), wh
 - [ ] The content description of the Logo is the Artwork title.
 - [ ] A single URL builder (TMDB `w500`) is used for display and is reusable by the prefetch.
 - [ ] Previews exist for: with Logo, without Logo, loading or failed.
-- [ ] Manual check: after a Synchro online, a new Artwork shows its Logo on the movie and Show pages (phone and large layouts); an Artwork without Logo shows the title text.
+- [ ] Manual check: after a Sync online, a new Artwork shows its Logo on the movie and Show pages (phone and large layouts); an Artwork without Logo shows the title text.

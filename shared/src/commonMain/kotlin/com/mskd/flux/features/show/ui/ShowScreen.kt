@@ -229,7 +229,7 @@ fun ShowDropDownMenu(
                 },
                 leadingIcon = { Icon(painter = painterResource(Res.drawable.ic_eraser), contentDescription = stringResource(Res.string.reset_progress)) },
             ),
-            // Identification manuelle
+            // Manual identification
             FluxPopUpMenuItem(
                 text = stringResource(Res.string.identification_select_data),
                 onClick = {

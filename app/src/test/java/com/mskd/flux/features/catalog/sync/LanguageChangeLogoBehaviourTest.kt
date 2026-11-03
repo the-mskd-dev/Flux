@@ -11,7 +11,7 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 /**
- * Logo chosen again when the data language changes, observed through the Catalogue in database,
+ * Logo chosen again when the data language changes, observed through the Catalog in database,
  * the TMDB calls and the images prefetch. See .scratch/artwork-logos/specs.md.
  */
 class LanguageChangeLogoBehaviourTest : FunSpec({
@@ -27,14 +27,14 @@ class LanguageChangeLogoBehaviourTest : FunSpec({
     suspend fun logoOf(title: String): String? =
         harness.catalog.getArtworks(includePrivates = true).single { it.title == title }.logoPath
 
-    /** A Catalogue synchronised in English, with the Logos chosen in English. */
+    /** A Catalog synchronised in English, with the Logos chosen in English. */
     suspend fun englishCatalog(vararg files: String) {
         harness.deviceStorage.availableFiles = files.map { harness.deviceFile(it) }
         harness.lightSync()
         harness.tmdb.resetCalls()
     }
 
-    test("the Logo of every Artwork is chosen again in the new language, without any Synchro") {
+    test("the Logo of every Artwork is chosen again in the new language, without any Sync") {
 
         // Given
         englishCatalog("Inception (2010).mkv", "Breaking Bad S01E01.mkv")

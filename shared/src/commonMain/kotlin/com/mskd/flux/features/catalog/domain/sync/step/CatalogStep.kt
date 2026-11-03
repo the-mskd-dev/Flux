@@ -9,13 +9,14 @@ import com.mskd.flux.features.catalog.domain.sync.enrichment.FolderDraft
 import com.mskd.flux.report.Trace
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.supervisorScope
 
 /**
  * Applies the chain of [enrichments] to every folder of the files to fetch, in parallel, saving each folder in a transaction as soon as it is fetched.
- * A folder that fails never stops the others: its files are Fichiers en échec, not persisted.
+ * A folder that fails never stops the others: its files are Failed files, not persisted.
  */
 class CatalogStep(
     private val database: DatabaseRepository,
@@ -72,7 +73,7 @@ class CatalogStep(
 
     }
 
-    /** Saved as soon as the folder is fetched: the Catalogue fills up and the work done survives an interruption. */
+    /** Saved as soon as the folder is fetched: the Catalog fills up and the work done survives an interruption. */
     private suspend fun save(draft: FolderDraft) {
         val artwork = draft.artwork ?: return
         try {

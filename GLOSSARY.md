@@ -1,236 +1,223 @@
 # Flux
 
-Flux organise les UserFile de l'utilisateur en Catalog (enrichi via TMDB) et les lit en mémorisant leur Progress.
+Flux organizes the user's UserFile into a Catalog (enriched through TMDB) and plays them while remembering their Progress.
 
-## Modèles
+## Models
 
 **Artwork**:
-Film ou série tel qu'identifié sur TMDB, porteur des métadonnées, indépendamment des Media qui y sont rattachés.
-_Avoid_: Œuvre, Content, Title, Media
+Movie or series as identified on TMDB, carrying the metadata, independently of the Media attached to it.
+_Avoid_: Œuvre, Content, Title, Media, Affiche, poster
 
 **ContentType**:
-Nature d'un Artwork : MOVIE (film) ou SHOW (série).
-_Avoid_: Media type, catégorie
+Nature of an Artwork: MOVIE (film) or SHOW (series).
+_Avoid_: Media type, category
 
 **Show**:
-Artwork de type SHOW.
+Artwork of type SHOW.
 _Avoid_: Série, TV show
 
 **Unknown Artwork**:
-Show spécial qui regroupe, sous forme d'Episode, les Media dont le UserFile n'a pu être associé à aucun Artwork TMDB, y compris les films.
+Special Show that gathers, as Episode, the Media whose UserFile could not be matched to any TMDB Artwork, films included.
 _Avoid_: Others, Autres, Inconnu
 
 **Media**:
-Élément lisible associé à un UserFile : un Movie ou un Episode.
-_Avoid_: Vidéo, fichier
+Playable item attached to a UserFile: a Movie or an Episode.
+_Avoid_: Vidéo, file, Média
 
 **Movie**:
-Media d'un Artwork de type MOVIE : l'élément lisible, pas l'œuvre. Un Artwork MOVIE a exactement un Movie.
+Media of an Artwork of type MOVIE: the playable item, not the work. A MOVIE Artwork has exactly one Movie.
 _Avoid_: Film
 
 **Episode**:
-Media d'un Show, identifié par son numéro de saison et son numéro d'épisode. Un Show peut avoir plusieurs Episode.
+Media of a Show, identified by its season number and its episode number. A Show can have several Episode.
 
 **Season**:
-Regroupement des Episode d'un Show par numéro de saison. Un Episode peut exister sans Season correspondante.
+Grouping of the Episode of a Show by season number. An Episode can exist without a matching Season.
 
 **Unavailable**:
-Se dit d'un Media dont le UserFile est momentanément inaccessible (UserFolder déconnecté, permission révoquée) : il reste dans le Catalog mais ne peut pas être lu.
-_Avoid_: Supprimé, manquant, offline
+Said of a Media whose UserFile is temporarily inaccessible (UserFolder disconnected, permission revoked): it stays in the Catalog but cannot be played.
+_Avoid_: Deleted, missing, offline
 
 **Status**:
-État de visionnage d'un Media : à voir, en cours ou vu. Le statut d'un Artwork n'est que la synthèse de celui de ses Media.
-_Avoid_: État, vu/non vu
+Watching state of a Media: to watch, in progress or watched. The status of an Artwork is only the summary of that of its Media.
+_Avoid_: State, watched/unwatched
 
 **Progress**:
-Position de lecture d'un Media, mise à jour pendant la lecture et mémorisée pour la reprise.
-_Avoid_: Historique, currentTime, Position
+Playback position of a Media, updated during playback and remembered for resuming.
+_Avoid_: History, currentTime, Position
 
 **Genre**:
-Genre de l'Artwork.
-_Avoid_: Type, catégorie
+Genre of the Artwork.
+_Avoid_: Type, category
 
 **Backdrop**:
-Image TMDB 16:9 d'un Artwork, en paysage.
+16:9 TMDB image of an Artwork, in landscape.
 _Avoid_: Fanart, banner, bannière
 
 **Poster**:
-Image TMDB 2:3 d'un Artwork, en portrait.
+2:3 TMDB image of an Artwork, in portrait.
 _Avoid_: Affiche, cover, jaquette
 
 **Logo**:
-Image TMDB d'un Artwork représentant son titre stylisé, sur fond transparent. Elle remplace le titre texte sur la page de l'Artwork lorsqu'elle est disponible. Un Artwork a au plus un Logo.
+TMDB image of an Artwork showing its stylised title, on a transparent background. It replaces the title text on the Artwork page when it is available. An Artwork has at most one Logo.
 _Avoid_: Title image, Wordmark, Titre graphique
 
 **Artwork image**:
-Image affichée en haut de la page d'un Artwork. Un tap l'ouvre dans la Gallery lorsqu'un token TMDB est configuré.
+Image shown at the top of an Artwork page: its Backdrop, or its Poster when the blurred header is enabled (Movie only). It is the matching Custom image if there is one, otherwise the TMDB one. A tap opens it in the Gallery when a TMDB token is configured.
 _Avoid_: Header image, banner, bannière
 
+**Custom image**:
+Backdrop or Poster chosen by the user in the Gallery to replace the TMDB one. The custom Backdrop replaces the Backdrop of the Artwork image; the custom Poster replaces the Poster of the Artwork image (blurred header) and the Artwork thumbnail in the Catalog, the search and the Private Folder. An Artwork, Movie or Show, has at most one custom Backdrop and one custom Poster. It is kept by the Light sync and cleared by the Full sync and the Identification reset. A Manual identification does not carry over the one of the source Artwork; the target Artwork keeps its own if it was already in the Catalog.
+_Avoid_: Image personnalisée, Affiche personnalisée, override
+
 **Gallery**:
-Page listant toutes les images TMDB d'un Artwork (Backdrop et Poster, toutes langues) dans une seule grille triée par note décroissante, avec un visualiseur plein écran zoomable. Pour un Show, uniquement les images du Show lui-même, pas celles des Season ni des Episode. Rien n'est stocké localement.
+Page listing all the TMDB images of an Artwork (Backdrop and Poster, all languages) in a single grid sorted by descending rating, with a zoomable full-screen viewer. For a Show, only the images of the Show itself, not those of its Season or Episode. Nothing is stored locally.
 _Avoid_: Galerie d'images, Images, Photos
 
 **Image Download**:
-Copie, dans le stockage d'images de l'appareil, d'une image de la Gallery en résolution originale. Elle sort de Flux : le Catalog ne la connaît pas.
+Copy, into the device's image storage, of a Gallery image in original resolution. It leaves Flux: the Catalog does not know about it.
 _Avoid_: Download, Save, Export, Sauvegarde
 
 **Spoiler**:
-Description ou image d'un Episode à voir, ou description d'une Season dont tous les Episode sont à voir. Les Movie, le Show lui-même et l'Unknown Artwork n'ont pas de Spoiler.
+Description or image of an Episode to watch, or description of a Season whose Episode are all to watch. Movies, the Show itself and the Unknown Artwork have no Spoiler.
 _Avoid_: Spoil
 
-**Masquage des spoilers**:
-Option facultative qui rend les Spoiler illisibles sur la page d'un Artwork, jusqu'à ce que l'utilisateur les révèle.
-_Avoid_: Flou, blur, anti-spoiler
+**Spoiler masking**:
+Optional setting that makes the Spoiler unreadable on an Artwork page, until the user reveals them.
+_Avoid_: Masquage des spoilers, Flou, blur, anti-spoiler
 
-## Personnes
+## People
 
 **Person**:
-Individu, identifié par TMDB, ayant participé à un ou plusieurs Artwork.
+Individual, identified by TMDB, who took part in one or more Artwork.
 _Avoid_: People, Credit, intervenant
 
 **Cast**:
-Ensemble des Person qui interprètent un personnage dans un Artwork.
-_Avoid_: Acteurs, casting, distribution
+All the Person who play a character in an Artwork.
+_Avoid_: Actors, casting, distribution
 
 **Crew**:
-Ensemble des Person ayant un poste technique sur un Artwork (réalisation, scénario…).
-_Avoid_: Équipe, staff
+All the Person holding a technical position on an Artwork (directing, writing…).
+_Avoid_: Team, staff
 
 **Role**:
-Personnage (pour le Cast) ou poste (pour le Crew) d'une Person dans un Artwork.
-_Avoid_: Job, character, fonction
+Character (for the Cast) or position (for the Crew) of a Person in an Artwork.
+_Avoid_: Job, character, function
 
 ## Catalog
 
 **Catalog**:
-Ensemble des Artwork et Media connus de Flux pour l'utilisateur.
-_Avoid_: Bibliothèque, Library, Collection
+All the Artwork and Media known to Flux for the user.
+_Avoid_: Catalogue, Bibliothèque, Library, Collection
 
 **UserFile**:
-Fichier vidéo présent sur l'appareil de l'utilisateur, à l'origine d'un Media.
-_Avoid_: Fichier local, vidéo
+Video file present on the user's device, at the origin of a Media.
+_Avoid_: Local file, video
 
 **UserFolder**:
-Dossier de l'appareil que l'utilisateur a confié à Flux pour y chercher des UserFile.
-_Avoid_: Source, répertoire
+Device folder that the user entrusted to Flux to look for UserFile in it.
+_Avoid_: Source, directory
 
 **Sync**:
-Opération qui parcourt les UserFolder et rapproche chaque UserFile d'un Artwork TMDB pour mettre à jour le Catalog.
-_Avoid_: Scan, refresh, import, matching
+Operation that walks the UserFolder and matches each UserFile with a TMDB Artwork to align the Catalog with the files and the TMDB data.
+_Avoid_: Synchro, Scan, refresh, import, matching
 
 **Private Artwork**:
-Artwork masqué du Catalog, accessible uniquement dans le Private Folder.
+Artwork hidden from the Catalog, only reachable in the Private Folder; it stays private as long as it exists.
+_Avoid_: Artwork privé, hidden Artwork
 
 **Private Folder**:
-Espace protégé par code PIN regroupant les Private Artwork.
-_Avoid_: Coffre, dossier caché
+PIN-protected space gathering the Private Artwork.
+_Avoid_: Vault, hidden folder
 
-## Lecteur
+## Player
 
 **Interface**:
-Couche de contrôles du lecteur (barre du haut, boutons de lecture, barre de progression) affichée au tap et masquée automatiquement.
-_Avoid_: Contrôles, UI, overlay
+Layer of player controls (top bar, playback buttons, progress bar) shown on tap and hidden automatically.
+_Avoid_: Controls, UI, overlay
 
 **Seek overlay**:
-Indication éphémère du saut effectué (retour ou avance rapide) et de sa durée cumulée.
+Short-lived indication of the jump performed (rewind or fast forward) and of its cumulated duration.
 _Avoid_: Double-tap overlay
 
 **Ambient overlay**:
-Indication éphémère de la valeur de volume ou de luminosité pendant un geste vertical.
+Short-lived indication of the volume or brightness value during a vertical gesture.
 _Avoid_: Volume overlay, brightness overlay
 
 **Chapter**:
-Section nommée ou numérotée d'un Media, telle que décrite dans son UserFile. Un Chapter est soit un Opening, soit un Ending, soit un Chapter ordinaire.
-_Avoid_: Segment, marqueur, partie
+Named or numbered section of a Media, as described in its UserFile. A Chapter is either an Opening, an Ending, or an ordinary Chapter.
+_Avoid_: Segment, marker, part
 
 **Opening**:
-Chapter correspondant au générique de début d'un Media.
+Chapter matching the opening credits of a Media.
 _Avoid_: Intro, OP, générique
 
 **Ending**:
-Chapter correspondant à un générique de fin d'un Media. Un Media peut en avoir plusieurs (générique, scène post-générique, second générique).
+Chapter matching an end credits sequence of a Media. A Media can have several (credits, post-credits scene, second credits).
 _Avoid_: Outro, ED, Credits, générique
 
 **Chapter button**:
-Action contextuelle proposée pendant la lecture : passer un Opening ou un Ending, ou lancer le Next Episode.
+Contextual action offered during playback: skip an Opening or an Ending, or start the Next Episode.
 _Avoid_: Skip button
 
 **Next Episode**:
-Episode qui suit, dans le même Show, celui en cours de lecture (par saison puis numéro). Un Movie, le dernier Episode d'un Show et les Episode de l'Unknown Artwork n'en ont pas.
+Episode that follows, in the same Show, the one being played (by season then number). A Movie, the last Episode of a Show and the Episode of the Unknown Artwork have none.
 _Avoid_: Prochain épisode, Up next
 
 **Settings sheet**:
-Feuille de réglages du lecteur, soit générale, soit dédiée au choix d'une piste audio, de sous-titres ou d'un Chapter.
+Player settings sheet, either general or dedicated to choosing an audio track, a subtitle track or a Chapter.
 _Avoid_: Bottom sheet, menu
 
 **Track**:
-Piste audio ou de sous-titres sélectionnable d'un Media.
-_Avoid_: Stream, langue
+Selectable audio or subtitle track of a Media.
+_Avoid_: Stream, language
 
 ## Language
 
-**Catalogue**:
-L'ensemble des Artworks, Saisons et Médias connus de l'application pour les fichiers de l'utilisateur.
-_Avoid_: Bibliothèque, library
-
 **Source**:
-Un emplacement d'où proviennent les fichiers de l'utilisateur (stockage de l'appareil ou dossier personnalisé).
-_Avoid_: Provider, dossier racine
+A location the user's files come from (device storage or custom folder).
+_Avoid_: Provider, root folder
 
-**Source indisponible**:
-Une Source custom qui ne peut pas être lue pour l'instant ; ses données sont conservées.
-_Avoid_: Source supprimée
+**Unavailable source**:
+A custom Source that cannot be read for now; its data is kept.
+_Avoid_: Source indisponible, deleted Source
 
-**Fichier manquant**:
-Un fichier connu du Catalogue qui n'existe plus alors que sa Source est disponible ; ses données sont supprimées.
-_Avoid_: Fichier perdu, fichier orphelin
+**Missing file**:
+A file known to the Catalog that no longer exists while its Source is available; its data is deleted.
+_Avoid_: Fichier manquant, lost file, orphan file
 
-**Artwork**:
-La fiche TMDB d'un film ou d'une série à laquelle des fichiers sont rattachés.
-_Avoid_: Affiche, poster, titre
+**Light sync**:
+A Sync that only processes the new files and removes the Missing files.
+_Avoid_: Synchro légère, incremental sync, onlyNew
 
-**Artwork privé**:
-Un Artwork masqué du Catalogue public et placé dans le dossier privé ; il le reste tant qu'il existe.
-_Avoid_: Artwork caché, hidden
+**Full sync**:
+An explicitly requested Sync that fetches the TMDB data of every file again.
+_Avoid_: Synchro complète, resync
 
-**Média**:
-Un fichier lisible rattaché à un Artwork : un film ou un épisode.
+**Sync progress**:
+The completion percentage of a Sync, computed from the units of work declared by its Sync steps and Enrichments; it never goes backwards.
+_Avoid_: Progression de synchro
 
-**Synchro**:
-Le processus qui aligne le Catalogue sur les fichiers des Sources et les données TMDB.
-_Avoid_: Sync, rafraîchissement
+**Sync step**:
+A global processing of the Sync (scan, removal of Missing files, genres, catalog, finalization…) that declares its work, runs it and signals its progress.
+_Avoid_: Étape de synchro, Fetcher, resolver
 
-**Synchro légère**:
-Une Synchro qui ne traite que les nouveaux fichiers et retire les Fichiers manquants.
-_Avoid_: Synchro incrémentale, onlyNew
+**Enrichment**:
+A piece of data fetched for an Artwork during the catalog Sync step (identification, details, seasons, translations, credits, durations); adding a TMDB piece of data almost always means adding an Enrichment.
+_Avoid_: Enrichissement, Resolver, metadata fetcher
 
-**Synchro complète**:
-Une Synchro demandée explicitement qui récupère à nouveau les données TMDB de tous les fichiers.
-_Avoid_: Full sync, resynchronisation
+**Failed file**:
+A file whose TMDB fetch failed (network, API, missing token); nothing is saved and it is retried at the next Sync.
+_Avoid_: Fichier en échec, unknown file, UNKNOWN
 
-**Progression de synchro**:
-Le pourcentage d'avancement d'une Synchro, calculé sur les unités de travail déclarées par ses Étapes et Enrichissements ; elle ne recule jamais.
+**Manual identification**:
+Choice, by the user, of the TMDB Artwork that all the Media of an Artwork are attached to. It prevails over the name search, including for the new files of a Light sync. It is cleared by an Identification reset or a Full sync, and is not possible when a file of the Artwork carries a TMDB ID in its name.
+_Avoid_: Identification manuelle, Data selection, rematch, correction
 
-**Étape de synchro**:
-Un traitement global de la Synchro (scan, suppression des Fichiers manquants, genres, catalogue, finalisation…) qui déclare son travail, l'exécute et signale sa progression.
-_Avoid_: Fetcher, resolver, step
+**Identification reset**:
+Clearing of the Manual identification of an Artwork: each of its files gets back the Artwork the name search gives it. The Status and the Progress of the Media are kept.
+_Avoid_: Réinitialisation, Reset (alone, ambiguous with the progress reset), cancellation
 
-**Enrichissement**:
-Une donnée récupérée pour un Artwork pendant l'Étape catalogue (identification, détails, saisons, traductions, credits, durées) ; ajouter une donnée TMDB revient presque toujours à ajouter un Enrichissement.
-_Avoid_: Resolver, metadata fetcher
-
-**Fichier en échec**:
-Un fichier dont la récupération TMDB a échoué (réseau, API, token absent) ; rien n'est enregistré et il est retenté à la Synchro suivante.
-_Avoid_: Fichier inconnu, UNKNOWN
-
-**Identification manuelle**:
-Choix, par l'utilisateur, de l'Artwork TMDB auquel sont rattachés tous les Média d'un Artwork. Il prévaut sur la recherche par nom, y compris pour les nouveaux fichiers d'une Synchro légère. Il est effacé par une Réinitialisation ou une Synchro complète, et n'est pas possible quand un fichier de l'Artwork porte un TMDB ID dans son nom.
-_Avoid_: Sélection des données, rematch, correction
-
-**Réinitialisation**:
-Effacement de l'Identification manuelle d'un Artwork : chacun de ses fichiers retrouve l'Artwork que la recherche par nom lui attribue. Le Status et la Progress des Média sont conservés.
-_Avoid_: Reset, annulation
-
-**Fichier non reconnu**:
-Un fichier que TMDB ne permet pas d'identifier ; il est enregistré comme Média sans Artwork connu.
-_Avoid_: Fichier en échec
+**Unrecognized file**:
+A file that TMDB cannot identify; it is saved as a Media with no known Artwork.
+_Avoid_: Fichier non reconnu, Failed file

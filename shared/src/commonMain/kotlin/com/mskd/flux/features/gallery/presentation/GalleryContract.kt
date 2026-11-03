@@ -18,7 +18,18 @@ data class GalleryContent(
     val images: List<GalleryImage>,
     val viewerIndex: Int? = null,
     val imageDownloadRunning: Boolean = false,
+    val artworkImageButton: ArtworkImageButton = ArtworkImageButton.HIDDEN,
 )
+
+/** The "Use as poster" / "Use as backdrop" button of the viewer, for the image shown. */
+enum class ArtworkImageButton {
+    /** The image cannot become a Custom image (viewer closed, or a Sync runs). */
+    HIDDEN,
+    /** "Use as poster" / "Use as backdrop": the image can become the Custom image of its type. */
+    AVAILABLE,
+    /** "Current poster" / "Current backdrop": the image is already the Poster or Backdrop shown for the Artwork. */
+    CURRENT,
+}
 
 sealed interface GalleryIntent {
     data object OnBackTap : GalleryIntent
@@ -28,6 +39,7 @@ sealed interface GalleryIntent {
     data object OnViewerClose : GalleryIntent
     data object OnImageDownloadTap : GalleryIntent
     data object OnShowDownloadedImageTap : GalleryIntent
+    data object OnUseImageTap : GalleryIntent
 }
 
 sealed interface GalleryEvent {

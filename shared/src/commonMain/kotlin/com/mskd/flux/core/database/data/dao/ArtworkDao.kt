@@ -76,6 +76,19 @@ interface ArtworkDao {
 
 //endregion
 
+//region Custom image
+
+    @Query("UPDATE artworks SET customBackdropPath = :path WHERE id = :artworkId")
+    suspend fun setArtworkCustomBackdrop(artworkId: Long, path: String?)
+
+    @Query("UPDATE artworks SET customPosterPath = :path WHERE id = :artworkId")
+    suspend fun setArtworkCustomPoster(artworkId: Long, path: String?)
+
+    @Query("UPDATE artworks SET customBackdropPath = NULL, customPosterPath = NULL WHERE customBackdropPath IS NOT NULL OR customPosterPath IS NOT NULL")
+    suspend fun clearCustomImages()
+
+//endregion
+
 //region Delete
 
     @Query("DELETE FROM artworks WHERE id IN (:artworkIds)")
@@ -96,7 +109,7 @@ interface ArtworkDao {
 
 //region Images
 
-    @Query("SELECT imagePath, bannerPath, logoPath FROM artworks")
+    @Query("SELECT imagePath, bannerPath, logoPath, customBackdropPath, customPosterPath FROM artworks")
     suspend fun getArtworksImages() : List<ArtworkImagesProjection>
 
 //endregion

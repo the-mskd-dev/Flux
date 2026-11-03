@@ -11,8 +11,8 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 
 /**
- * Behaviour of the Identification manuelle of a Movie, observed through the Catalogue in database.
- * See .scratch/identification-manuelle/specs.md.
+ * Behaviour of the Manual identification of a Movie, observed through the Catalog in database.
+ * See .scratch/manual-identification/specs.md.
  */
 class ManualIdentificationBehaviourTest : FunSpec({
 
@@ -81,7 +81,7 @@ class ManualIdentificationBehaviourTest : FunSpec({
 
     }
 
-    test("choosing an Artwork of the Catalogue merges into it, Private when it was, keeping its more recent history entry") {
+    test("choosing an Artwork of the Catalog merges into it, Private when it was, keeping its more recent history entry") {
 
         // Given
         harness.deviceStorage.availableFiles = listOf(

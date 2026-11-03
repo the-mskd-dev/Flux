@@ -32,9 +32,9 @@ interface DatabaseRepository {
     suspend fun saveSyncedFolder(artwork: Artwork, seasons: List<Season>, medias: List<Media>, people: List<Person>)
 
     /**
-     * Saves, like [saveSyncedFolder], the Médias of [sourceArtworkId] re-identified to [artwork] by an Identification manuelle.
-     * The history entry of the source Artwork follows its Média (on a merge, the most recent entry is kept), and the source
-     * Artwork, left empty, is deleted with its people.
+     * Saves, like [saveSyncedFolder], the Media of [sourceArtworkId] re-identified to [artwork] by a Manual identification.
+     * The history entry of the source Artwork follows its Media (on a merge, the most recent entry is kept), and the source
+     * Artwork, left empty, is deleted with its people. The Custom image of the source Artwork does not follow; the one [artwork] had in the Catalog is kept.
      */
     suspend fun saveIdentifiedFolder(sourceArtworkId: Long, artwork: Artwork, seasons: List<Season>, medias: List<Media>, people: List<Person>)
 
@@ -42,6 +42,15 @@ interface DatabaseRepository {
     suspend fun getArtwork(artworkId: Long) : Artwork?
     suspend fun getArtworks(includePrivates: Boolean = false) : List<Artwork>
     suspend fun getArtworks(artworkIds: List<Long>) : List<Artwork>
+
+    /** Sets the custom Backdrop of the Artwork (Custom image), without rewriting the rest of it. */
+    suspend fun setArtworkCustomBackdrop(artworkId: Long, path: String?)
+
+    /** Sets the custom Poster of the Artwork (Custom image), without rewriting the rest of it. */
+    suspend fun setArtworkCustomPoster(artworkId: Long, path: String?)
+
+    /** Clears the custom Backdrop and custom Poster of every Artwork: the TMDB images are shown again. */
+    suspend fun clearCustomImages()
 
     /** Writes only the Logo path of the Artwork (see [Artwork.logoPath]): its other data and its user state are kept. */
     suspend fun setArtworkLogo(artworkId: Long, logoPath: String?)
@@ -58,10 +67,10 @@ interface DatabaseRepository {
     suspend fun getMediasNotInFiles(files: List<UserFile>) : List<Media>
     suspend fun getNextEpisodeFor(episode: Episode) : Episode?
 
-    /** The Médias of the Artworks identified manually (Identification manuelle). */
+    /** The Media of the Artworks identified manually (Manual identification). */
     suspend fun getManuallyIdentifiedMedias() : List<Media>
 
-    /** Forgets every Identification manuelle: the files are identified by name search again. */
+    /** Forgets every Manual identification: the files are identified by name search again. */
     suspend fun clearManualIdentifications()
 
     // Movies

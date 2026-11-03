@@ -8,10 +8,10 @@ import com.mskd.flux.report.Trace
 import kotlinx.coroutines.CancellationException
 
 /**
- * TMDB seasons and episodes of the show of a folder. The files of a season that fails are Fichiers en échec.
+ * TMDB seasons and episodes of the show of a folder. The files of a season that fails are Failed files.
  *
- * @param missingSeasonIsUnknown True when the files of a season the show does not have are Fichiers non reconnus
- * rather than Fichiers en échec: the user chose the show (Identification manuelle), so the season will never be found.
+ * @param missingSeasonIsUnknown True when the files of a season the show does not have are Unrecognized files
+ * rather than Failed files: the user chose the show (Manual identification), so the season will never be found.
  */
 class SeasonsEnrichment(
     private val api: ApiRepository,

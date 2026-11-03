@@ -15,8 +15,8 @@ import kotlinx.coroutines.supervisorScope
 
 /**
  * Gives their Logo to the Artwork never searched for one (see [Artwork.logoPath]), in parallel within the TMDB call limit,
- * saving each Logo as soon as it is found. A failed lookup leaves the Artwork unsearched, retried at the next Synchro:
- * it is no Fichier en échec and never stops the Synchro.
+ * saving each Logo as soon as it is found. A failed lookup leaves the Artwork unsearched, retried at the next Sync:
+ * it is no Failed file and never stops the Sync.
  */
 class LogosStep(
     private val database: DatabaseRepository,
@@ -26,7 +26,7 @@ class LogosStep(
 
     private companion object { const val TAG = "LogosStep" }
 
-    /** The Artwork whose files the catalogue step fetches again get their Logo from the details call, not from this step. */
+    /** The Artwork whose files the catalog step fetches again get their Logo from the details call, not from this step. */
     override suspend fun units(context: SyncContext): Int {
         val fetchedPaths = context.filesToFetch.map { it.path }.toSet()
         val refreshedIds = database.getMedias().filter { it.file.path in fetchedPaths }.map { it.artworkId }.toSet()
@@ -35,7 +35,7 @@ class LogosStep(
 
     override suspend fun run(context: SyncContext) {
 
-        // The catalogue step may have saved Artwork without Logo since the declaration: the progress widens by itself
+        // The catalog step may have saved Artwork without Logo since the declaration: the progress widens by itself
         supervisorScope {
             artworksToSearch().map { artwork ->
                 async(Dispatchers.IO) {

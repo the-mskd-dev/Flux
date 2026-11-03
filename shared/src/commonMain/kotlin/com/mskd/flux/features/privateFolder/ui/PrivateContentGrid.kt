@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.mskd.flux.core.model.artwork.Artwork
+import com.mskd.flux.core.model.artwork.shownPosterPath
 import com.mskd.flux.features.privateFolder.presentation.PrivateFolderIntent
 import com.mskd.flux.features.privateFolder.presentation.PrivateFolderUiState
 import com.mskd.flux.mockups.MediaMockups
@@ -92,7 +93,7 @@ fun PrivateArtworkItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(FluxUI.Dimension.itemRatio),
-            path = artwork.imagePath,
+            path = artwork.shownPosterPath,
             onClick = { rgb -> sendIntent(PrivateFolderIntent.OnArtworkTap(artwork = artwork, rgb = rgb)) },
             onLongClick = { menuExpanded = true },
             description = artwork.title

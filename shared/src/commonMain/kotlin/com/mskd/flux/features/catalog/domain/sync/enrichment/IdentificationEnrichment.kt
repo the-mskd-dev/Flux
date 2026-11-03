@@ -11,8 +11,8 @@ import com.mskd.flux.report.Trace
 import kotlinx.coroutines.CancellationException
 
 /**
- * Identification of the Artwork of a folder: the TMDB ID has priority, then the Identification manuelle, then the TMDB
- * search by name. See docs/adr/0001-identification-manuelle-par-titre-de-fichier.md.
+ * Identification of the Artwork of a folder: the TMDB ID has priority, then the Manual identification, then the TMDB
+ * search by name. See docs/adr/0001-manual-identification-by-file-name-title.md.
  */
 class IdentificationEnrichment(
     private val api: ApiRepository,
@@ -34,12 +34,12 @@ class IdentificationEnrichment(
 
         draft.artwork = artwork
 
-        // Fichiers non reconnus: saved as Médias without known Artwork
+        // Unrecognized files: saved as Media without known Artwork
         if (artwork.isUnknown) draft.medias = folder.files.map { Episode(it) }
 
     }
 
-    /** The manually identified Artwork of a known Média of the same type with the same (title, year) in its file name. */
+    /** The manually identified Artwork of a known Media of the same type with the same (title, year) in its file name. */
     private suspend fun getManuallyIdentifiedArtwork(folder: CatalogFolder, file: UserFile): Artwork? {
 
         val media = database.getManuallyIdentifiedMedias().firstOrNull { media ->
@@ -48,7 +48,7 @@ class IdentificationEnrichment(
         } ?: return null
 
         return database.getArtwork(artworkId = media.artworkId)
-            ?.also { Trace.info(TAG, "${file.name} follows the Identification manuelle of artwork ${it.id}") }
+            ?.also { Trace.info(TAG, "${file.name} follows the Manual identification of artwork ${it.id}") }
 
     }
 

@@ -5,7 +5,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
 /**
- * Logo of the Artwork recorded by the Synchro, observed through the Catalogue in database and the TMDB calls.
+ * Logo of the Artwork recorded by the Sync, observed through the Catalog in database and the TMDB calls.
  * See .scratch/artwork-logos/specs.md.
  */
 class SyncLogoBehaviourTest : FunSpec({
@@ -80,7 +80,7 @@ class SyncLogoBehaviourTest : FunSpec({
 
     }
 
-    test("a Synchro complète refreshes the Logo") {
+    test("a Full sync refreshes the Logo") {
 
         // Given
         harness.settings.setDataLanguage(Language.ENGLISH)

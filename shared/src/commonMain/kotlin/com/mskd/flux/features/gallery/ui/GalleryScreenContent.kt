@@ -1,6 +1,7 @@
 package com.mskd.flux.features.gallery.ui
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
@@ -18,16 +19,27 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.itemsIndexed
+import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.toSize
 import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
@@ -35,8 +47,10 @@ import coil3.request.crossfade
 import com.mskd.flux.features.gallery.domain.model.GalleryImage
 import com.mskd.flux.features.gallery.domain.model.GalleryImageType
 import com.mskd.flux.features.gallery.domain.model.thumbnailUrl
+import com.mskd.flux.features.gallery.presentation.ArtworkImageButton
 import com.mskd.flux.features.gallery.presentation.GalleryFailure
 import com.mskd.flux.features.gallery.presentation.GalleryIntent
+import com.mskd.flux.features.gallery.ui.viewer.GalleryViewer
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.components.FluxScaffold
@@ -59,11 +73,30 @@ fun GalleryScreenContent(
     failure: GalleryFailure? = null,
     viewerIndex: Int? = null,
     imageDownloadRunning: Boolean = false,
+    artworkImageButton: ArtworkImageButton = ArtworkImageButton.HIDDEN,
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     sendIntent: (GalleryIntent) -> Unit,
 ) {
 
     val columns = if (rememberScreenDimensions().isLarge) 3 else 2
+    val gridState = rememberLazyStaggeredGridState()
+    fun GalleryImage.key() = "$type$path"
+
+    // Bounds of the thumbnails on screen, in root coordinates, so the dismissed viewer image flies back to its own.
+    // Only read when the viewer closes, hence a plain map rather than a state.
+    val thumbnailBounds = remember { mutableMapOf<String, Rect>() }
+    // The thumbnail of the image shown in the viewer is hidden, as the viewer image stands for it
+    val viewedKey = viewerIndex?.let { images.getOrNull(it) }?.key()
+
+    // Whether the viewer closes with its image back on the thumbnail, read by the transition when it closes
+    var viewerReturnedToThumbnail by remember { mutableStateOf(false) }
+
+    // Keeps the thumbnail of the viewed image on screen, so the viewer image always has a place to go back to
+    val imagesOffset = if (failure != null) 1 else 0
+    LaunchedEffect(viewerIndex) {
+        val itemIndex = (viewerIndex ?: return@LaunchedEffect) + imagesOffset
+        if (gridState.layoutInfo.visibleItemsInfo.none { it.index == itemIndex }) gridState.scrollToItem(itemIndex)
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -87,7 +120,8 @@ fun GalleryScreenContent(
             }
 
             LazyVerticalStaggeredGrid(
-                    modifier = Modifier.fillMaxSize(),
+                state = gridState,
+                modifier = Modifier.fillMaxSize(),
                 columns = StaggeredGridCells.Fixed(columns),
                 contentPadding = PaddingValues(
                     start = FluxUI.Space.medium,
@@ -121,13 +155,20 @@ fun GalleryScreenContent(
                     }
                 }
 
-                itemsIndexed(items = images, key = { _, it -> "${it.type}${it.path}" }) { index, image ->
+                itemsIndexed(items = images, key = { _, it -> it.key() }) { index, image ->
 
+                    val key = image.key()
+                    DisposableEffect(key) { onDispose { thumbnailBounds.remove(key) } }
                     AsyncImage(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .onGloballyPositioned { thumbnailBounds[key] = Rect(it.positionInRoot(), it.size.toSize()) }
+                            .alpha(if (key == viewedKey) 0f else 1f)
                             .clip(FluxUI.shapes.corners)
-                            .clickable { sendIntent(GalleryIntent.OnImageTap(index)) }
+                            .clickable {
+                                viewerReturnedToThumbnail = false
+                                sendIntent(GalleryIntent.OnImageTap(index))
+                            }
                             .aspectRatio(image.ratio.takeIf { it > 0f } ?: 1f),
                         model = ImageRequest.Builder(LocalPlatformContext.current)
                             .data(image.thumbnailUrl)
@@ -151,16 +192,29 @@ fun GalleryScreenContent(
             targetState = viewerIndex,
             modifier = Modifier.fillMaxSize(),
             contentKey = { it != null },
-            transitionSpec = { fadeIn() togetherWith fadeOut() using null }
+            transitionSpec = {
+                // Once the image is back on its thumbnail the viewer is already invisible: a fade out would only keep
+                // it over the grid, swallowing the touches until it ends
+                val exit = if (viewerReturnedToThumbnail) ExitTransition.None else fadeOut()
+                fadeIn() togetherWith exit using null
+            }
         ) { index ->
             if (index != null) {
                 GalleryViewer(
                     images = images,
                     initialIndex = index,
                     imageDownloadRunning = imageDownloadRunning,
+                    artworkImageButton = artworkImageButton,
                     onPageChange = { sendIntent(GalleryIntent.OnViewerPageChange(it)) },
                     onDownload = { sendIntent(GalleryIntent.OnImageDownloadTap) },
-                    onClose = { sendIntent(GalleryIntent.OnViewerClose) }
+                    onUseImage = { sendIntent(GalleryIntent.OnUseImageTap) },
+                    onClose = { sendIntent(GalleryIntent.OnViewerClose) },
+                    onReturnedToThumbnail = {
+                        viewerReturnedToThumbnail = true
+                        sendIntent(GalleryIntent.OnViewerClose)
+                    },
+                    thumbnailShape = FluxUI.shapes.corners,
+                    thumbnailBounds = { thumbnailBounds[it.key()] },
                 )
             }
         }

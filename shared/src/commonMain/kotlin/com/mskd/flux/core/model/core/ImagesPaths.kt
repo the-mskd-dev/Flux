@@ -1,7 +1,7 @@
 package com.mskd.flux.core.model.core
 
 /**
- * TMDB image paths of the Catalogue to prefetch.
+ * TMDB image paths of the Catalog to prefetch.
  * Logos are kept separate since they are prefetched in a single size, unlike the other images.
  * A Logo path is null or empty when the Artwork has no Logo.
  */

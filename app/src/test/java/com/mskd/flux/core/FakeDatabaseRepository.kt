@@ -55,6 +55,12 @@ class FakeDatabaseRepository : DatabaseRepository {
         return MediaMockups.artworks.filter { artworkIds.contains(it.id) }
     }
 
+    override suspend fun setArtworkCustomBackdrop(artworkId: Long, path: String?) {}
+
+    override suspend fun setArtworkCustomPoster(artworkId: Long, path: String?) {}
+
+    override suspend fun clearCustomImages() {}
+
     override suspend fun setArtworkLogo(artworkId: Long, logoPath: String?) {}
 
     override suspend fun setArtworkPrivate(artworkId: Long, isPrivate: Boolean) {}

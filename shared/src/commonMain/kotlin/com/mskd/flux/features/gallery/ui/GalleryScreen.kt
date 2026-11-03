@@ -4,9 +4,9 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.runtime.Composable
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -94,6 +94,7 @@ fun GalleryScreen(
                     failure = uiState.failure,
                     viewerIndex = state.content.viewerIndex,
                     imageDownloadRunning = state.content.imageDownloadRunning,
+                    artworkImageButton = state.content.artworkImageButton,
                     snackbarHostState = snackbarHostState,
                     sendIntent = { viewModel.handleIntent(it) }
                 )

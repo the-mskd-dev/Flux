@@ -74,7 +74,7 @@ sealed interface ArtworkIntent {
     data object ShowResetProgressDialog : ArtworkIntent
     data object ShowIdentificationDialog : ArtworkIntent
 
-    // Identification manuelle
+    // Manual identification
     data class OnIdentified(val artworkId: Long) : ArtworkIntent
 
     // Status

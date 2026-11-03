@@ -10,8 +10,8 @@ import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.shouldBe
 
 /**
- * Behaviour of the Identification manuelle of a Show, observed through the Catalogue in database.
- * See .scratch/identification-manuelle/specs.md.
+ * Behaviour of the Manual identification of a Show, observed through the Catalog in database.
+ * See .scratch/manual-identification/specs.md.
  */
 class ShowManualIdentificationBehaviourTest : FunSpec({
 
@@ -76,7 +76,7 @@ class ShowManualIdentificationBehaviourTest : FunSpec({
 
     }
 
-    test("the episodes of a Season that fails are Fichiers en échec: they stay where they were, with their Status, and the others move") {
+    test("the episodes of a Season that fails are Failed files: they stay where they were, with their Status, and the others move") {
 
         // Given
         harness.deviceStorage.availableFiles = listOf(
@@ -154,7 +154,7 @@ class ShowManualIdentificationBehaviourTest : FunSpec({
 
     }
 
-    test("choosing a Show of the Catalogue merges the Seasons and episodes into it, keeping the most recent history entry") {
+    test("choosing a Show of the Catalog merges the Seasons and episodes into it, keeping the most recent history entry") {
 
         // Given
         harness.deviceStorage.availableFiles = listOf(

@@ -2,6 +2,7 @@ package com.mskd.flux.features.show.presentation
 
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
+import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.artwork.PersonType
@@ -30,7 +31,6 @@ import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
-import com.mskd.flux.core.model.artwork.Artwork
 
 class ShowViewModelTest : FunSpec({
 
@@ -277,7 +277,7 @@ class ShowViewModelTest : FunSpec({
         }
     }
 
-    context("Identification manuelle") {
+    context("Manual identification") {
 
         fun showWith(artwork: Artwork = MediaMockups.showArtwork, fileName: String? = null) {
             val episodes = MediaMockups.episodes.mapIndexed { index, episode ->
@@ -314,7 +314,7 @@ class ShowViewModelTest : FunSpec({
             identification() shouldBe IdentificationAvailability.HIDDEN
         }
 
-        test("disabled during a Synchro, enabled again once it ends") {
+        test("disabled during a Sync, enabled again once it ends") {
             syncState.value = SyncState.Syncing(full = false)
             updateVm()
             viewModel.uiState.test {

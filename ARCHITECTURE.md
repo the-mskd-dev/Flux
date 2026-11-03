@@ -46,6 +46,10 @@ Each feature must consist of 3 distinct files:
 1. **KMP Isolation Rule 🚨**:
    - When implementing or refactoring the Domain layer (UseCases, Models) or Data layer (Repositories, Data Sources), you are **strictly forbidden from using any** `android.*` **or** `androidx.*` **imports** (such as `Context`, `Bundle`, `Intent`, or `Log`).
      - You MUST write this code in pure Kotlin as if it were already located in the `commonMain` module. If platform-specific Android APIs are absolutely required, define a pure Kotlin interface in the domain layer and implement it in the Android application module, or use the `expect`/`actual` pattern.
+2. **CMP Isolation Rule 🚨**:
+   - When implementing UI in the shared:commonMain package, you should use Compose Multiplatform only. Composables with `androidx` packages are forbidden.
+3. **English only 🚨**:
+   - In the whole code, specs, tickets, GLOSSARY.md, you should use English only. Other languages are authorized only in strings.xml files. 
 
 ### Context & File scanning
 

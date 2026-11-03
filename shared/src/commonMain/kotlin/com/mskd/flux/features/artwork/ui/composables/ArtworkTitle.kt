@@ -1,12 +1,9 @@
 package com.mskd.flux.features.artwork.ui.composables
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -17,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.unit.dp
 import coil3.ColorImage
 import coil3.annotation.ExperimentalCoilApi
 import coil3.compose.AsyncImagePainter
@@ -28,12 +24,12 @@ import coil3.compose.rememberAsyncImagePainter
 import coil3.request.ErrorResult
 import coil3.request.ImageRequest
 import com.mskd.flux.core.model.artwork.Artwork
+import com.mskd.flux.features.images.domain.LOGO_REQUEST_SIZE
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.PortraitPreview
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.features.images.domain.LOGO_REQUEST_SIZE
 import com.mskd.flux.utils.extensions.tmdbLogo
 
 /**

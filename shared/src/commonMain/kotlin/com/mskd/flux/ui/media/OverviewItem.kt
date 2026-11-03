@@ -43,6 +43,8 @@ fun OverviewItem(
     fixedSize: Boolean = false,
     isSpoiler: Boolean = false,
     isBlurred: Boolean = false,
+    // Blur the title with the description, when the title itself is a spoiler (an Episode title).
+    isTitleSpoiler: Boolean = false,
     onToggleSpoiler: () -> Unit = {},
     topDetails: @Composable () -> Unit = {},
     subtitle: @Composable () -> Unit = {}
@@ -51,6 +53,7 @@ fun OverviewItem(
     var expanded by remember { mutableStateOf(fixedSize) }
     var isOverflowing by remember { mutableStateOf(false) }
     var hasLaidOut by remember { mutableStateOf(false) }
+    val isHidden = isBlurred && !expanded
 
     Surface(
         modifier = modifier.fillMaxWidth(),
@@ -82,7 +85,9 @@ fun OverviewItem(
                 topDetails()
 
                 Text.Content.Title(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .blurText(blurred = isTitleSpoiler && isHidden),
                     text = title,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
@@ -97,11 +102,11 @@ fun OverviewItem(
                     .spoilerToggle(
                         // Expanded text is readable without being revealed: a tap must not reveal it for good.
                         isSpoiler = isSpoiler && !(expanded && isBlurred),
-                        isBlurred = isBlurred && !expanded,
+                        isBlurred = isHidden,
                         onToggle = onToggleSpoiler
                     )
                     .animateContentSize()
-                    .blurText(blurred = isBlurred && !expanded),
+                    .blurText(blurred = isHidden),
                 text = description,
                 textAlign = TextAlign.Left,
                 color = MaterialTheme.colorScheme.onSurface,

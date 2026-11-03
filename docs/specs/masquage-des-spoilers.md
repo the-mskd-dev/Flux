@@ -99,6 +99,7 @@ Indépendamment de l'option, le bloc de description en haut de la page d'un Artw
 - Le rayon de flou est animé (~300 ms) entre masqué et lisible, que le changement vienne d'un tap, d'un dépli ou d'un changement de Status.
 - Si le délégué RenderScript ne fonctionne pas avec l'entrée « contenu » sur API 29-30, le voile de repli de Haze est accepté.
 - Le grisage des Episode Unavailable est conservé et se cumule avec le flou.
+- L'Artwork image, lorsqu'elle affiche l'image de l'Episode sélectionné, suit l'état de cet Episode : floutée tant qu'il est masqué, lisible dès qu'il est révélé, déplié ou commencé. Le tap sur cette image ouvre toujours la Gallery. `ArtworkContent` expose cet état résolu (`isArtworkImageBlurred`).
 
 **Accessibilité** :
 - Tant qu'une description est masquée, sa sémantique est remplacée par un libellé « Spoiler masqué » (localisé) avec une action d'accessibilité « Révéler ».
@@ -132,7 +133,7 @@ Indépendamment de l'option, le bloc de description en haut de la page d'un Artw
 ## Out of Scope
 
 - La page d'un Show hors page Artwork (liste des Season, aperçu d'une Season à l'appui long).
-- L'Artwork image en haut de la page, les Poster, Backdrop et la Gallery.
+- L'Artwork image en haut de la page lorsqu'elle n'affiche pas l'image d'un Episode (Backdrop, Poster du blurred header), les Poster, Backdrop et la Gallery.
 - Les autres écrans affichant des Media : accueil / « continuer à regarder », recherche, page d'une Person, lecteur (y compris le Chapter button « épisode suivant »).
 - Les titres d'Episode, même s'ils peuvent être révélateurs.
 - La persistance de l'état révélé entre deux visites de la page.

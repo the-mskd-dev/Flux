@@ -124,6 +124,7 @@ fun ArtworkScreen(
                         expandedEpisodeId = content.expandedEpisodeId,
                         spoilerEpisodeIds = content.spoilerEpisodeIds,
                         blurredEpisodeIds = content.blurredEpisodeIds,
+                        isArtworkImageBlurred = content.isArtworkImageBlurred,
                         identification = content.identification,
                         dialog = content.dialog,
                         sendIntent = viewModel::handleIntent
@@ -149,6 +150,7 @@ fun ArtworkScreenContent(
     expandedEpisodeId: Long?,
     spoilerEpisodeIds: Set<Long>,
     blurredEpisodeIds: Set<Long>,
+    isArtworkImageBlurred: Boolean = false,
     identification: IdentificationAvailability = IdentificationAvailability.HIDDEN,
     dialog: ArtworkDialog?,
     sendIntent: (ArtworkIntent) -> Unit
@@ -205,6 +207,7 @@ fun ArtworkScreenContent(
                 expandedEpisodeId = expandedEpisodeId,
                 spoilerEpisodeIds = spoilerEpisodeIds,
                 blurredEpisodeIds = blurredEpisodeIds,
+                isArtworkImageBlurred = isArtworkImageBlurred,
                 scaffoldInnerPadding = innerPadding,
                 sendIntent = sendIntent,
             )
@@ -220,6 +223,7 @@ fun ArtworkScreenContent(
                 expandedEpisodeId = expandedEpisodeId,
                 spoilerEpisodeIds = spoilerEpisodeIds,
                 blurredEpisodeIds = blurredEpisodeIds,
+                isArtworkImageBlurred = isArtworkImageBlurred,
                 scaffoldInnerPadding = innerPadding,
                 sendIntent = sendIntent,
             )

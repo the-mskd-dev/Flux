@@ -46,6 +46,7 @@ fun ArtworkContentRegular(
     expandedEpisodeId: Long?,
     spoilerEpisodeIds: Set<Long>,
     blurredEpisodeIds: Set<Long>,
+    isArtworkImageBlurred: Boolean,
     scaffoldInnerPadding: PaddingValues,
     sendIntent: (ArtworkIntent) -> Unit,
 ) {
@@ -64,6 +65,7 @@ fun ArtworkContentRegular(
                 fullArtwork = fullArtwork,
                 currentMedia = selectedMedia,
                 selectedSeason = selectedSeason,
+                isArtworkImageBlurred = isArtworkImageBlurred,
                 sendIntent = sendIntent
             )
 
@@ -182,6 +184,7 @@ fun ArtworkContentMovie_Preview() {
             expandedEpisodeId = null,
             spoilerEpisodeIds = emptySet(),
             blurredEpisodeIds = emptySet(),
+            isArtworkImageBlurred = false,
             scaffoldInnerPadding = PaddingValues.Zero,
             sendIntent = {}
         )
@@ -203,6 +206,7 @@ fun ArtworkContentShow_Preview() {
             expandedEpisodeId = null,
             spoilerEpisodeIds = emptySet(),
             blurredEpisodeIds = emptySet(),
+            isArtworkImageBlurred = false,
             scaffoldInnerPadding = PaddingValues.Zero,
             sendIntent = {}
         )

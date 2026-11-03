@@ -690,6 +690,57 @@ class ArtworkViewModelTest : FunSpec({
             }
         }
 
+        suspend fun ReceiveTurbine<ArtworkUiState>.artworkImageBlurred() =
+            (expectMostRecentItem().state as State.Content).content.isArtworkImageBlurred
+
+        test("artwork image of the selected episode to watch is blurred, and revealed with it") {
+            openShow()
+            viewModel.uiState.test {
+                artworkImageBlurred() shouldBe true
+
+                viewModel.handleIntent(ArtworkIntent.ToggleEpisodeSpoiler(ep1))
+                artworkImageBlurred() shouldBe false
+
+                viewModel.handleIntent(ArtworkIntent.ToggleEpisodeSpoiler(ep1))
+                artworkImageBlurred() shouldBe true
+
+                viewModel.handleIntent(ArtworkIntent.ExpandEpisodeDescription(ep1))
+                artworkImageBlurred() shouldBe false
+            }
+        }
+
+        test("artwork image is readable when the option is disabled") {
+            observeArtworkUseCase = mockk()
+            every { settingsDataStore.flow } returns MutableStateFlow(SettingsDataStore.State(blurSpoilers = false))
+            every { observeArtworkUseCase(any()) } returns flowOf(State.Content(MediaMockups.fullShow))
+            updateVm(MediaMockups.showArtwork.id)
+            viewModel.uiState.test { artworkImageBlurred() shouldBe false }
+        }
+
+        test("artwork image is readable when the selected episode is watching") {
+            observeArtworkUseCase = mockk()
+            every { settingsDataStore.flow } returns settingsFlow
+            every { observeArtworkUseCase(any()) } returns flowOf(
+                State.Content(
+                    MediaMockups.fullShow.copy(
+                        episodes = MediaMockups.episodes.map {
+                            if (it.id == ep1.id) it.copy(status = Status.IS_WATCHING) else it
+                        }.toImmutableList()
+                    )
+                )
+            )
+            updateVm(MediaMockups.showArtwork.id)
+            viewModel.uiState.test { artworkImageBlurred() shouldBe false }
+        }
+
+        test("artwork image of a movie is never blurred") {
+            observeArtworkUseCase = mockk()
+            every { settingsDataStore.flow } returns settingsFlow
+            every { observeArtworkUseCase(any()) } returns flowOf(State.Content(MediaMockups.fullMovie))
+            updateVm(MediaMockups.fullMovie.artwork.id)
+            viewModel.uiState.test { artworkImageBlurred() shouldBe false }
+        }
+
         test("spoiler ids stay listed when an episode is revealed") {
             openShow()
             viewModel.uiState.test {

@@ -167,6 +167,7 @@ class ArtworkViewModel(
         val spoilerIds = resolveSpoilerEpisodeIds(dataState, (overview as? ArtworkOverviewContent.EpisodeOverview)?.episode)
         val isOverviewSpoiler = resolveIsOverviewSpoiler(dataState)
         val readableIds = userState.revealedEpisodeIds + listOfNotNull(userState.expandedEpisodeId)
+        val blurredIds = (spoilerIds - readableIds).toImmutableSet()
 
         return State.Content(
             ArtworkContent(
@@ -178,7 +179,8 @@ class ArtworkViewModel(
                 isOverviewBlurred = isOverviewSpoiler && !userState.isOverviewRevealed,
                 expandedEpisodeId = userState.expandedEpisodeId,
                 spoilerEpisodeIds = spoilerIds,
-                blurredEpisodeIds = (spoilerIds - readableIds).toImmutableSet(),
+                blurredEpisodeIds = blurredIds,
+                isArtworkImageBlurred = (selectedMedia as? Episode)?.id in blurredIds,
                 useExternalPlayer = dataState.useExternalPlayer,
                 people = dataState.people,
                 identification = dataState.identification,

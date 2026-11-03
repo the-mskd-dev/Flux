@@ -42,6 +42,8 @@ data class ArtworkContent(
     val expandedEpisodeId: Long? = null,
     val spoilerEpisodeIds: ImmutableSet<Long> = persistentSetOf(),
     val blurredEpisodeIds: ImmutableSet<Long> = persistentSetOf(),
+    /** The Artwork image shows the selected Episode: it is hidden while that Episode is. */
+    val isArtworkImageBlurred: Boolean = false,
     val useExternalPlayer: Boolean,
     val people: ImmutableList<Person> = persistentListOf(),
     val identification: IdentificationAvailability = IdentificationAvailability.HIDDEN,

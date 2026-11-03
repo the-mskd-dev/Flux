@@ -709,6 +709,26 @@ class ArtworkViewModelTest : FunSpec({
             }
         }
 
+        test("artwork image of the next episode to watch is blurred in a started season") {
+            observeArtworkUseCase = mockk()
+            every { settingsDataStore.flow } returns settingsFlow
+            every { observeArtworkUseCase(any()) } returns flowOf(
+                State.Content(
+                    MediaMockups.fullShow.copy(
+                        episodes = MediaMockups.episodes.map {
+                            if (it.id == ep1.id) it.copy(status = Status.WATCHED) else it
+                        }.toImmutableList()
+                    )
+                )
+            )
+            updateVm(MediaMockups.showArtwork.id)
+            viewModel.uiState.test {
+                val content = (expectMostRecentItem().state as State.Content).content
+                content.selectedMedia.mediaId shouldBe MediaMockups.episode2.id
+                content.isArtworkImageBlurred shouldBe true
+            }
+        }
+
         test("artwork image is readable when the option is disabled") {
             observeArtworkUseCase = mockk()
             every { settingsDataStore.flow } returns MutableStateFlow(SettingsDataStore.State(blurSpoilers = false))

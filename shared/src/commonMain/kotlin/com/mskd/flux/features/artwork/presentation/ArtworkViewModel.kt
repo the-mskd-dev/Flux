@@ -180,7 +180,7 @@ class ArtworkViewModel(
                 expandedEpisodeId = userState.expandedEpisodeId,
                 spoilerEpisodeIds = spoilerIds,
                 blurredEpisodeIds = blurredIds,
-                isArtworkImageBlurred = (selectedMedia as? Episode)?.id in blurredIds,
+                isArtworkImageBlurred = resolveIsArtworkImageBlurred(dataState, selectedMedia, readableIds),
                 useExternalPlayer = dataState.useExternalPlayer,
                 people = dataState.people,
                 identification = dataState.identification,
@@ -206,6 +206,20 @@ class ArtworkViewModel(
         if (show.seasons.find { it.season == season }?.description.isNullOrEmpty()) return false
         val episodes = show.episodes.filter { it.season == season && !it.isUnknown }
         return episodes.isNotEmpty() && episodes.all { it.status == Status.TO_WATCH }
+    }
+
+    /**
+     * The Artwork image shows the selected Episode: it is hidden until that Episode is started, even when
+     * its description is shown in ArtworkOverview. A reveal or an expand of the Episode makes it readable.
+     */
+    private fun resolveIsArtworkImageBlurred(
+        dataState: ArtworkDataState,
+        selectedMedia: Media,
+        readableIds: Set<Long>,
+    ): Boolean {
+        if (!dataState.blurSpoilers) return false
+        val episode = selectedMedia as? Episode ?: return false
+        return episode.status == Status.TO_WATCH && !episode.isUnknown && episode.id !in readableIds
     }
 
     /** The Episode displayed in ArtworkOverview is excluded: its description is already visible there. */

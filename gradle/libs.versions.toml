@@ -211,8 +211,7 @@ shared-image = [
 ]
 shared-room = [
     "androidx-sqlite-bundled",
-    "androidx-room-runtime",
-    "androidx-room-ktx"
+    "androidx-room-runtime"
 ]
 shared-datastore = [
     "androidx-datastore",

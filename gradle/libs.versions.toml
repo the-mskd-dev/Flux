@@ -47,8 +47,8 @@ coil = "3.6.3"
 acra = "5.13.1"
 
 # -- Testing --
-kotest = "6.2.4"
-mockk = "1.14.11"
+kotest = "6.2.6"
+mockk = "1.14.12"
 
 [libraries]
 
@@ -154,7 +154,7 @@ firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics
 junit = { group = "junit", name = "junit", version = "4.13.2" }
 kotest = { group = "io.kotest", name = "kotest-runner-junit5", version.ref = "kotest"}
 kotest-property = { group = "io.kotest", name = "kotest-property", version.ref = "kotest" }
-mockwebserver = { group = "com.squareup.okhttp3", name = "mockwebserver", version = "5.5.0" }
+mockwebserver = { group = "com.squareup.okhttp3", name = "mockwebserver", version = "5.5.1" }
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 mockk-android = { group = "io.mockk", name = "mockk-android", version.ref = "mockk" }
 turbine = { group = "app.cash.turbine", name = "turbine", version = "1.2.1" }

@@ -5,10 +5,10 @@ android-minSdk = "29"
 android-targetSdk = "37"
 
 # -- Build & Plugins --
-agp = "9.3.1"
-kotlin = "2.4.10"
-ksp = "2.3.9"
-koinPlugin = "1.1.0"
+agp = "9.5.1"
+kotlin = "2.4.21"
+ksp = "2.3.13"
+koinPlugin = "1.2.3"
 firebaseCrashlyticsPlugin = "3.0.8"
 googleServices = "4.5.0"
 

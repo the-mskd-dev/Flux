@@ -21,7 +21,7 @@ compose = "1.13.0-alpha01"
 lifecycle = "2.11.0"
 
 # -- Kotlin --
-kotlinxSerializationCore = "1.11.0"
+kotlinxSerializationCore = "1.12.0"
 
 # -- UI --
 haze = "2.0.1"
@@ -81,7 +81,7 @@ compose-material-adaptive-navigation = { group = "org.jetbrains.compose.material
 # -- Kotlin --
 kotlinx-serialization-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "kotlinxSerializationCore" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationCore" }
-kotlinx-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version = "0.5.1" }
+kotlinx-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version = "0.5.2" }
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version = "0.8.0" }
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
 
@@ -161,7 +161,7 @@ turbine = { group = "app.cash.turbine", name = "turbine", version = "1.2.1" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version = "1.11.0" }
 koin-test = { group = "io.insert-koin", name = "koin-test", version.ref = "koin" }
 koin-test-junit4 = { group = "io.insert-koin", name = "koin-test-junit4", version.ref = "koin" }
-kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version = "2.3.21" }
+kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version = "2.4.21" }
 androidx-test-ext = { group = "androidx.test.ext", name = "junit", version = "1.3.0" }
 androidx-test-espresso = { group = "androidx.test.espresso", name = "espresso-core", version = "3.7.0" }
 truth = { group = "com.google.truth", name = "truth", version = "1.4.5" }

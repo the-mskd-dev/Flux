@@ -44,7 +44,7 @@ nextlib = "1.11.1-0.18.0"
 coil = "3.6.3"
 
 # -- ACRA --
-acra = "5.13.1"
+acra = "5.14.2"
 
 # -- Testing --
 kotest = "6.2.6"
@@ -146,7 +146,7 @@ acra-mail = { group = "ch.acra", name = "acra-mail", version.ref = "acra" }
 acra-dialog = { group = "ch.acra", name = "acra-dialog", version.ref = "acra" }
 
 # -- Firebase --
-firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version = "34.19.0" } # PLAY_STORE
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version = "35.1.0" } # PLAY_STORE
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" } # PLAY_STORE
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" } # PLAY_STORE
 

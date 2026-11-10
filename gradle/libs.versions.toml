@@ -5,7 +5,7 @@ android-minSdk = "29"
 android-targetSdk = "37"
 
 # -- Build & Plugins --
-agp = "9.3.0"
+agp = "9.3.1"
 kotlin = "2.4.21"
 ksp = "2.3.13"
 koinPlugin = "1.2.3"

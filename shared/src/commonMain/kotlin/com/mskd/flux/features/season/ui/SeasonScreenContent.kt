@@ -1,0 +1,152 @@
+package com.mskd.flux.features.season.ui
+
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import com.mskd.flux.features.artwork.ui.composables.ArtworkPageDialogs
+import com.mskd.flux.features.identification.presentation.IdentificationAvailability
+import com.mskd.flux.features.season.presentation.SeasonContent
+import com.mskd.flux.features.season.presentation.SeasonDialog
+import com.mskd.flux.features.season.presentation.SeasonIntent
+import com.mskd.flux.ui.FluxPreview
+import com.mskd.flux.ui.components.FluxScaffold
+import com.mskd.flux.ui.dimensions.rememberScreenDimensions
+import com.mskd.flux.ui.modal.dialog.FluxDialog
+import com.mskd.flux.ui.modal.menu.FluxPopUpMenu
+import com.mskd.flux.ui.modal.menu.FluxPopUpMenuItem
+import com.mskd.flux.ui.text.Text
+import com.mskd.flux.ui.theme.FluxTheme
+import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.ic_eraser
+import flux.shared.generated.resources.ic_search
+import flux.shared.generated.resources.identification_select_data
+import flux.shared.generated.resources.mark_previous_episodes_as_watched
+import flux.shared.generated.resources.more_info
+import flux.shared.generated.resources.reset_progress
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
+
+@Composable
+fun SeasonScreenContent(
+    content: SeasonContent,
+    sendIntent: (SeasonIntent) -> Unit,
+) {
+
+    val isLargeScreen = rememberScreenDimensions().isLarge
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    var showMenu by remember { mutableStateOf(false) }
+
+    FluxScaffold(
+        // The large layout shows the title beside the image
+        title = if (isLargeScreen) null else content.title,
+        animatedTitle = true,
+        actions = {
+            IconButton(
+                onClick = { showMenu = true },
+                content = {
+                    Icon(
+                        imageVector = Icons.Default.MoreVert,
+                        tint = MaterialTheme.colorScheme.onBackground,
+                        contentDescription = "menu button"
+                    )
+                }
+            )
+
+            SeasonDropDownMenu(
+                isVisible = showMenu,
+                identification = content.identification,
+                onDismissRequest = { showMenu = false },
+                sendIntent = sendIntent
+            )
+        },
+        onBackTap = { sendIntent(SeasonIntent.OnBackTap) },
+        scrollBehavior = scrollBehavior
+    ) { innerPadding ->
+
+        if (isLargeScreen) {
+            SeasonContentLarge(content = content, scaffoldInnerPadding = innerPadding, sendIntent = sendIntent)
+        } else {
+            SeasonContentRegular(content = content, scaffoldInnerPadding = innerPadding, sendIntent = sendIntent)
+        }
+
+    }
+
+    FluxDialog(
+        isVisible = content.dialog is SeasonDialog.EpisodeStatusConfirmation,
+        content = {
+            Text.Content.Body(text = stringResource(Res.string.mark_previous_episodes_as_watched))
+        },
+        onDismiss = { sendIntent(SeasonIntent.CloseDialog) },
+        onValidate = { sendIntent(SeasonIntent.MarkPreviousEpisodesAsWatched) }
+    )
+
+    ArtworkPageDialogs(
+        artworkId = content.fullShow.artwork.id,
+        isIdentificationVisible = content.dialog is SeasonDialog.Identification,
+        isResetProgressVisible = content.dialog is SeasonDialog.ResetProgressConfirmation,
+        onDismiss = { sendIntent(SeasonIntent.CloseDialog) },
+        onIdentified = { artworkId, type -> sendIntent(SeasonIntent.OnIdentified(artworkId = artworkId, type = type)) },
+        onResetProgress = { sendIntent(SeasonIntent.ResetProgress) },
+    )
+
+}
+
+@Composable
+fun SeasonDropDownMenu(
+    isVisible: Boolean,
+    identification: IdentificationAvailability,
+    onDismissRequest: () -> Unit,
+    sendIntent: (SeasonIntent) -> Unit
+) {
+
+    FluxPopUpMenu(
+        isVisible = isVisible,
+        onDismissRequest = onDismissRequest,
+        items = listOfNotNull(
+            FluxPopUpMenuItem(
+                text = stringResource(Res.string.more_info),
+                onClick = {
+                    sendIntent(SeasonIntent.OpenSeasonInfo)
+                    onDismissRequest()
+                },
+                leadingIcon = { Icon(imageVector = Icons.Outlined.Info, contentDescription = stringResource(Res.string.more_info)) },
+            ),
+            FluxPopUpMenuItem(
+                text = stringResource(Res.string.reset_progress),
+                onClick = {
+                    sendIntent(SeasonIntent.ShowResetProgressDialog)
+                    onDismissRequest()
+                },
+                leadingIcon = { Icon(painter = painterResource(Res.drawable.ic_eraser), contentDescription = stringResource(Res.string.reset_progress)) },
+            ),
+            // Manual identification
+            FluxPopUpMenuItem(
+                text = stringResource(Res.string.identification_select_data),
+                onClick = {
+                    sendIntent(SeasonIntent.ShowIdentificationDialog)
+                    onDismissRequest()
+                },
+                leadingIcon = { Icon(painter = painterResource(Res.drawable.ic_search), contentDescription = stringResource(Res.string.identification_select_data)) },
+                enabled = identification == IdentificationAvailability.ENABLED,
+            ).takeIf { identification != IdentificationAvailability.HIDDEN },
+        )
+    )
+
+}
+
+@FluxPreview
+@Composable
+fun SeasonScreenContent_Preview() {
+    FluxTheme {
+        SeasonScreenContent(content = previewSeasonContent, sendIntent = {})
+    }
+}

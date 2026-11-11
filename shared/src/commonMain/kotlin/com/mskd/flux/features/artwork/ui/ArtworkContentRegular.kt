@@ -65,7 +65,7 @@ fun ArtworkContentRegular(
                 // The content is already inset by the page padding
                 titleHorizontalMargin = FluxUI.Space.medium * 2,
                 onImageClick = { sendIntent(ArtworkIntent.OnArtworkImageClick) },
-                buttons = { modifier -> ArtworkButtons(modifier = modifier, media = selectedMedia, sendIntent = sendIntent) }
+                buttons = { modifier -> ArtworkButtons(modifier = modifier, media = selectedMedia, onPlay = { sendIntent(ArtworkIntent.PlayMedia(media = it)) }, onChangeWatchStatus = { sendIntent(ArtworkIntent.ChangeWatchStatus(media = it)) }) }
             )
 
         }
@@ -97,7 +97,7 @@ fun ArtworkContentRegular(
                 spoilerEpisodeIds = spoilerEpisodeIds,
                 blurredEpisodeIds = blurredEpisodeIds,
                 titleColor = episodesTitleColor,
-                sendIntent = sendIntent,
+                actions = artworkEpisodeActions(sendIntent),
             )
         }
 

@@ -10,7 +10,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.mskd.flux.core.model.artwork.Episode
-import com.mskd.flux.features.artwork.presentation.ArtworkIntent
+import com.mskd.flux.ui.media.episode.EpisodeActions
 import com.mskd.flux.ui.media.episode.EpisodeDropDownMenu
 import com.mskd.flux.ui.media.episode.EpisodeItem
 import com.mskd.flux.ui.text.Text
@@ -30,7 +30,7 @@ fun LazyListScope.episodeList(
     spoilerEpisodeIds: Set<Long>,
     blurredEpisodeIds: Set<Long>,
     titleColor: Color,
-    sendIntent: (ArtworkIntent) -> Unit,
+    actions: EpisodeActions,
 ) {
 
     if (episodes.isEmpty()) return
@@ -62,24 +62,18 @@ fun LazyListScope.episodeList(
             modifier = Modifier.animateItem(),
             episode = episode,
             isSelected = episode.id == selectedMediaId,
-            onClick = { sendIntent(ArtworkIntent.PlayMedia(media = episode)) },
+            onClick = { actions.onPlay(episode) },
             isExpanded = episode.id == expandedEpisodeId,
             isBlurred = episode.id in blurredEpisodeIds,
             isSpoiler = episode.id in spoilerEpisodeIds,
-            onToggleSpoiler = { sendIntent(ArtworkIntent.ToggleEpisodeSpoiler(episode = episode)) },
-            onReadMoreTap = {
-                if (it) {
-                    sendIntent(ArtworkIntent.ExpandEpisodeDescription(episode = episode))
-                } else {
-                    sendIntent(ArtworkIntent.CollapseEpisodeDescription)
-                }
-            },
+            onToggleSpoiler = { actions.onToggleSpoiler(episode) },
+            onReadMoreTap = { expanded -> if (expanded) actions.onExpand(episode) else actions.onCollapse() },
             dropDownMenu = { isVisible, onDismissRequest ->
                 EpisodeDropDownMenu(
                     isVisible = isVisible,
                     episode = episode,
                     onDismissRequest = onDismissRequest,
-                    sendIntent = sendIntent
+                    actions = actions,
                 )
             }
         )

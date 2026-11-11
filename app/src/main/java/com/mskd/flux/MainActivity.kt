@@ -17,6 +17,7 @@ import com.mskd.flux.screens.artwork.ArtworkScreen
 import com.mskd.flux.screens.catalog.CatalogScreen
 import com.mskd.flux.screens.player.PlayerScreen
 import com.mskd.flux.screens.search.SearchScreen
+import com.mskd.flux.screens.season.SeasonScreen
 import com.mskd.flux.screens.sources.SourcesScreen
 import com.mskd.flux.screens.unknown.UnknownScreen
 import com.mskd.flux.system.rememberNotificationsPermission
@@ -73,6 +74,20 @@ class MainActivity : ComponentActivity() {
                                 navigate = { route -> nav.navigate(route) },
                                 onBack = { nav.onBack() },
                                 onIdentified = { artworkId, type -> nav.replace(identifiedDestination(artworkId = artworkId, type = type)) },
+                                artworkId = entry.artworkId,
+                                season = entry.season,
+                                colorScheme = createColorScheme(
+                                    theme = customization.uiTheme,
+                                    color = customization.color ?: entry.rgb
+                                )
+                            )
+                        }
+                        entry<Route.Season> { entry ->
+                            SeasonScreen(
+                                navigate = { route -> nav.navigate(route) },
+                                onBack = { nav.onBack() },
+                                // The Show page of the identified Artwork, right below, is replaced too
+                                onIdentified = { artworkId, type -> nav.replacePagesOf(entry.artworkId, identifiedDestination(artworkId = artworkId, type = type)) },
                                 artworkId = entry.artworkId,
                                 season = entry.season,
                                 colorScheme = createColorScheme(

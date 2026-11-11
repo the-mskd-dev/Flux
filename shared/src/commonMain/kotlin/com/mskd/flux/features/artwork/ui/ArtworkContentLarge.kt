@@ -103,7 +103,8 @@ fun ArtworkContentLarge(
 
                 ArtworkButtons(
                     media = selectedMedia,
-                    sendIntent = sendIntent
+                    onPlay = { sendIntent(ArtworkIntent.PlayMedia(media = it)) },
+                    onChangeWatchStatus = { sendIntent(ArtworkIntent.ChangeWatchStatus(media = it)) },
                 )
 
             }
@@ -135,7 +136,7 @@ fun ArtworkContentLarge(
                     spoilerEpisodeIds = spoilerEpisodeIds,
                     blurredEpisodeIds = blurredEpisodeIds,
                     titleColor = episodesTitleColor,
-                    sendIntent = sendIntent,
+                    actions = artworkEpisodeActions(sendIntent),
                 )
             }
 

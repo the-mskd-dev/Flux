@@ -33,7 +33,6 @@ import com.mskd.flux.features.show.ui.composables.SeasonDialog
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.PeopleMockup
 import com.mskd.flux.navigation.domain.Route
-import com.mskd.flux.navigation.domain.Route.Artwork
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.components.ErrorScreen
@@ -71,7 +70,7 @@ fun ShowScreen(
             when (event) {
                 ShowEvent.BackToPreviousScreen -> onBack()
                 is ShowEvent.Identified -> onIdentified(event.artworkId, event.type)
-                is ShowEvent.NavigateToSeason -> navigate(Artwork(artworkId = event.artworkId, season = event.season, rgb = event.rgb))
+                is ShowEvent.NavigateToSeason -> navigate(Route.Season(artworkId = event.artworkId, season = event.season, rgb = event.rgb))
                 is ShowEvent.NavigateToPerson -> navigate(Route.Person(person = event.person))
                 is ShowEvent.NavigateToGallery -> navigate(Route.Gallery(artworkId = event.artworkId, contentType = event.contentType))
             }

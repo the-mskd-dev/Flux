@@ -58,6 +58,14 @@ _Avoid_: Fanart, banner, bannière
 2:3 TMDB image of an Artwork, in portrait.
 _Avoid_: Affiche, cover, jaquette
 
+**Artwork page**:
+Page of an Artwork, generic term for a Movie page, a Show page or a Season page.
+_Avoid_: Media page, Detail page, Fiche
+
+**Season page**:
+Page of one Season of a Show, reached from the Show page, listing its Episode. It shows the Season summary, the Episode actions and their Spoiler masking, and always the Backdrop as Artwork image.
+_Avoid_: Episodes page, Page saison
+
 **Logo**:
 TMDB image of an Artwork showing its stylised title, on a transparent background. It replaces the title text on the Artwork page when it is available. An Artwork has at most one Logo.
 _Avoid_: Title image, Wordmark, Titre graphique

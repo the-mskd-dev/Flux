@@ -4,12 +4,12 @@
 
 **Blocked by:** 01 (shared base ViewModel), 02 (shared page composables)
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] The Show page navigates to the season route for each season; the Artwork page is no longer opened for seasons.
-- [ ] The Season page lists only the episodes of its season, masks unseen episode descriptions per the spoiler setting, and lets the user change season.
-- [ ] No people section and no blurred header on the Season page; a custom image chosen in the gallery shows on the page.
-- [ ] Identification and reset progress behave as on the other pages; identifying as a series leads to the Show page, as a movie to the movie page.
-- [ ] ViewModel tests (Kotest FunSpec, MockK, Turbine) cover loading, identification, reset progress, external player result, gallery navigation and spoiler masking.
-- [ ] `GLOSSARY.md` defines "Season page" (page of one Season of a Show, reached from the Show page, listing its Episode); "Artwork page" stays the generic term.
-- [ ] `./gradlew :app:testFossDebugUnitTest` passes.
+- [x] The Show page navigates to the season route for each season; the Artwork page is no longer opened for seasons.
+- [x] The Season page lists only the episodes of its season, masks unseen episode descriptions per the spoiler setting, and lets the user change season. (The season is changed from the Show page: no in-page season picker, as decided with the user.)
+- [x] No people section and no blurred header on the Season page; a custom image chosen in the gallery shows on the page. (in code; not checked on a device)
+- [x] Identification and reset progress behave as on the other pages; identifying as a series leads to the Show page, as a movie to the movie page. Identification is now offered on the Season page, and it replaces the Show page below as well.
+- [x] ViewModel tests (Kotest FunSpec, MockK, Turbine) cover loading, identification, reset progress, external player result, gallery navigation and spoiler masking.
+- [x] `GLOSSARY.md` defines "Season page" (page of one Season of a Show, reached from the Show page, listing its Episode); "Artwork page" stays the generic term.
+- [x] `./gradlew :app:testFossDebugUnitTest` passes.

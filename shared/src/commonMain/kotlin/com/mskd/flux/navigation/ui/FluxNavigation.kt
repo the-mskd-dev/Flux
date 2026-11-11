@@ -36,6 +36,7 @@ import com.mskd.flux.navigation.domain.identifiedDestination
 import com.mskd.flux.navigation.domain.navConfig
 import com.mskd.flux.navigation.domain.navigateToTab
 import com.mskd.flux.navigation.domain.popScreen
+import com.mskd.flux.navigation.domain.replacePagesOf
 import com.mskd.flux.navigation.ui.navigationBar.FluxNavigationBar
 import com.mskd.flux.report.CrashLogger
 import com.mskd.flux.ui.theme.createColorScheme
@@ -74,6 +75,11 @@ fun FluxNavigation(
                 crashLogger.addBreadcrumb(message = "replace ${backStack.lastOrNull() as? Route} by $route")
                 backStack.removeLastOrNull()
                 backStack.add(route)
+            },
+            replacePagesOf = { artworkId, route ->
+                transitions = Transition.Fade to Transition.Fade
+                crashLogger.addBreadcrumb(message = "replace the pages of artwork $artworkId by $route")
+                backStack.replacePagesOf(artworkId = artworkId, route = route)
             },
         )
     }

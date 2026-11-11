@@ -105,7 +105,7 @@ fun ArtworkPageHeader_Preview() {
                 showTitle = true,
                 pageType = ArtworkPageType.MOVIE,
                 onImageClick = {},
-                buttons = { modifier -> ArtworkButtons(modifier = modifier, media = MediaMockups.movie, sendIntent = {}) }
+                buttons = { modifier -> ArtworkButtons(modifier = modifier, media = MediaMockups.movie, onPlay = {}, onChangeWatchStatus = {}) }
             )
 
         }

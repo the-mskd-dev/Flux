@@ -8,13 +8,13 @@
 
 [![X (formerly Twitter) Follow](https://img.shields.io/twitter/follow/themskddev?style=for-the-badge)](https://x.com/themskddev)
 
-<p align="center">
-  <img src="fastlane/metadata/android/en-US/images/icon.png" width="128" alt="Flux logo">
-</p>
-
 ---
 
 # Flux
+
+<p align="center">
+  <img src="fastlane/metadata/android/en-US/images/icon.png" width="128" alt="Flux logo">
+</p>
 
 **Flux** is a modern, open-source media library and video player for Android. It scans your local video files, fetches rich metadata (posters, descriptions, genres...) from [The Movie Database (TMDB)](https://www.themoviedb.org/), and organises everything into a clean, browsable library. **Here you can find the completely free, ad-free, and tracker-free version.**
 

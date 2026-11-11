@@ -4,7 +4,7 @@ import com.mskd.flux.core.model.artwork.ContentType
 
 /**
  * The page reached after a Manual identification, from the [type] of the new Artwork [artworkId]: the movie page for a
- * film, the Show page for a series. The season of the previous page is dropped, and so is its colour, which belonged to
+ * Movie, the Show page for a Show. The season of the previous page is dropped, and so is its colour, which belonged to
  * the previous Artwork.
  */
 fun identifiedDestination(artworkId: Long, type: ContentType): Route = when (type) {

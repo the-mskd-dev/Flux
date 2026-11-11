@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.core.model.artwork.FullArtwork
+import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.ui.composables.ArtworkPageDialogs
@@ -31,7 +32,6 @@ import com.mskd.flux.features.show.presentation.ShowViewModel
 import com.mskd.flux.features.show.ui.composables.SeasonDialog
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.PeopleMockup
-import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.navigation.domain.Route.Artwork
 import com.mskd.flux.ui.FluxPreview

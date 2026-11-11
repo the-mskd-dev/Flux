@@ -1067,6 +1067,15 @@ class ArtworkViewModelTest : FunSpec({
             }
         }
 
+        test("a season identified as a series sends the new Artwork as a series, so the season is dropped") {
+            currentSeason = 2
+            updateVm(MediaMockups.showArtwork.id)
+            viewModel.event.test {
+                viewModel.handleIntent(ArtworkIntent.OnIdentified(artworkId = 42L, type = ContentType.SHOW))
+                awaitItem() shouldBe ArtworkEvent.Identified(artworkId = 42L, type = ContentType.SHOW)
+            }
+        }
+
     }
 
 })

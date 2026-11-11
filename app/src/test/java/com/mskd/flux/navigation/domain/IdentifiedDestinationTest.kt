@@ -14,9 +14,4 @@ class IdentifiedDestinationTest : FunSpec({
         identifiedDestination(artworkId = 42L, type = ContentType.SHOW) shouldBe Route.Show(artworkId = 42L, rgb = null)
     }
 
-    test("a season identified as a series leads to the Show page: the season is dropped") {
-        // Identified from Route.Artwork(artworkId = 7L, season = 2): the destination carries no season
-        identifiedDestination(artworkId = 42L, type = ContentType.SHOW) shouldBe Route.Show(artworkId = 42L, rgb = null)
-    }
-
 })

@@ -2,6 +2,7 @@ package com.mskd.flux.features.artwork.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Media
@@ -136,7 +137,7 @@ class ArtworkViewModel(
             ArtworkIntent.ShowIdentificationDialog -> showIdentificationDialog()
 
             // Manual identification
-            is ArtworkIntent.OnIdentified -> onIdentified(artworkId = intent.artworkId)
+            is ArtworkIntent.OnIdentified -> onIdentified(artworkId = intent.artworkId, type = intent.type)
 
             // Status
             is ArtworkIntent.ChangeWatchStatus -> changeWatchStatus(media = intent.media)
@@ -356,9 +357,9 @@ class ArtworkViewModel(
         _userState.update { it.copy(dialog = ArtworkDialog.Identification) }
     }
 
-    private suspend fun onIdentified(artworkId: Long) {
+    private suspend fun onIdentified(artworkId: Long, type: ContentType) {
         _userState.update { it.copy(dialog = null) }
-        emit(ArtworkEvent.ReplaceArtwork(artworkId = artworkId))
+        emit(ArtworkEvent.Identified(artworkId = artworkId, type = type))
     }
 
     private suspend fun resetProgress() {

@@ -105,7 +105,7 @@ class ShowViewModel(
             ShowIntent.ShowIdentificationDialog -> showIdentificationDialog()
 
             // Manual identification
-            is ShowIntent.OnIdentified -> onIdentified(artworkId = intent.artworkId)
+            is ShowIntent.OnIdentified -> onIdentified(artworkId = intent.artworkId, type = intent.type)
 
             // Other
             ShowIntent.OpenShowInfo -> openShowInfo()
@@ -143,9 +143,9 @@ class ShowViewModel(
         _userState.update { ShowDialog.Identification }
     }
 
-    private suspend fun onIdentified(artworkId: Long) {
+    private suspend fun onIdentified(artworkId: Long, type: ContentType) {
         _userState.update { null }
-        emit(ShowEvent.ReplaceShow(artworkId = artworkId))
+        emit(ShowEvent.Identified(artworkId = artworkId, type = type))
     }
 
     private suspend fun openShowInfo() {

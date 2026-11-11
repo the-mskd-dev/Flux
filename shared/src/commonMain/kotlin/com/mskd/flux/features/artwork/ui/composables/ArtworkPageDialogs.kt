@@ -1,6 +1,7 @@
 package com.mskd.flux.features.artwork.ui.composables
 
 import androidx.compose.runtime.Composable
+import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.features.identification.ui.IdentificationDialog
 import com.mskd.flux.ui.components.ResetProgressDialog
 
@@ -13,7 +14,7 @@ fun ArtworkPageDialogs(
     isIdentificationVisible: Boolean,
     isResetProgressVisible: Boolean,
     onDismiss: () -> Unit,
-    onIdentified: (artworkId: Long) -> Unit,
+    onIdentified: (artworkId: Long, type: ContentType) -> Unit,
     onResetProgress: () -> Unit,
 ) {
 

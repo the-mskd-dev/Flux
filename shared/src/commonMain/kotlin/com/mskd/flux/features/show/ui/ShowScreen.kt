@@ -31,6 +31,7 @@ import com.mskd.flux.features.show.presentation.ShowViewModel
 import com.mskd.flux.features.show.ui.composables.SeasonDialog
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.PeopleMockup
+import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.navigation.domain.Route.Artwork
 import com.mskd.flux.ui.FluxPreview
@@ -59,7 +60,7 @@ fun ShowScreen(
     colorScheme: ColorScheme,
     navigate: (Route) -> Unit,
     onBack: () -> Unit,
-    replaceShow: (artworkId: Long) -> Unit,
+    onIdentified: (artworkId: Long, type: ContentType) -> Unit,
     viewModel: ShowViewModel = koinViewModel(parameters = { parametersOf(artworkId) })
 ) {
 
@@ -69,7 +70,7 @@ fun ShowScreen(
         viewModel.event.collect { event ->
             when (event) {
                 ShowEvent.BackToPreviousScreen -> onBack()
-                is ShowEvent.ReplaceShow -> replaceShow(event.artworkId)
+                is ShowEvent.Identified -> onIdentified(event.artworkId, event.type)
                 is ShowEvent.NavigateToSeason -> navigate(Artwork(artworkId = event.artworkId, season = event.season, rgb = event.rgb))
                 is ShowEvent.NavigateToPerson -> navigate(Route.Person(person = event.person))
                 is ShowEvent.NavigateToGallery -> navigate(Route.Gallery(artworkId = event.artworkId, contentType = event.contentType))
@@ -186,7 +187,7 @@ fun ShowScreenContent(
             isIdentificationVisible = dialog is ShowDialog.Identification,
             isResetProgressVisible = dialog is ShowDialog.ResetProgress,
             onDismiss = { sendIntent(ShowIntent.CloseDialog) },
-            onIdentified = { artworkId -> sendIntent(ShowIntent.OnIdentified(artworkId = artworkId)) },
+            onIdentified = { artworkId, type -> sendIntent(ShowIntent.OnIdentified(artworkId = artworkId, type = type)) },
             onResetProgress = { sendIntent(ShowIntent.ResetProgress) },
         )
 

@@ -11,6 +11,7 @@ import androidx.compose.runtime.getValue
 import com.mskd.flux.app.AppViewModel
 import com.mskd.flux.features.connectivity.domain.ConnectivityRepository
 import com.mskd.flux.navigation.domain.Route
+import com.mskd.flux.navigation.domain.identifiedDestination
 import com.mskd.flux.navigation.ui.FluxNavigation
 import com.mskd.flux.screens.artwork.ArtworkScreen
 import com.mskd.flux.screens.catalog.CatalogScreen
@@ -71,7 +72,7 @@ class MainActivity : ComponentActivity() {
                             ArtworkScreen(
                                 navigate = { route -> nav.navigate(route) },
                                 onBack = { nav.onBack() },
-                                replaceArtwork = { artworkId -> nav.replace(entry.copy(artworkId = artworkId, season = null)) },
+                                onIdentified = { artworkId, type -> nav.replace(identifiedDestination(artworkId = artworkId, type = type)) },
                                 artworkId = entry.artworkId,
                                 season = entry.season,
                                 colorScheme = createColorScheme(

@@ -1052,15 +1052,16 @@ class ArtworkViewModelTest : FunSpec({
             }
         }
 
-        test("once identified, the dialog closes and the page is replaced by the new Artwork") {
+        test("once identified as a movie, the dialog closes and the new Artwork is sent with its type") {
+            currentSeason = null
             updateVm(MediaMockups.movieArtwork.id)
             viewModel.uiState.test {
                 awaitItem()
                 viewModel.handleIntent(ArtworkIntent.ShowIdentificationDialog)
                 awaitItem()
                 viewModel.event.test {
-                    viewModel.handleIntent(ArtworkIntent.OnIdentified(artworkId = 42L))
-                    awaitItem() shouldBe ArtworkEvent.ReplaceArtwork(artworkId = 42L)
+                    viewModel.handleIntent(ArtworkIntent.OnIdentified(artworkId = 42L, type = ContentType.MOVIE))
+                    awaitItem() shouldBe ArtworkEvent.Identified(artworkId = 42L, type = ContentType.MOVIE)
                 }
                 (awaitItem().state as State.Content).content.dialog shouldBe null
             }

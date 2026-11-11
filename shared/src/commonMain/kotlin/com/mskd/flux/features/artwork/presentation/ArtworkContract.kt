@@ -77,7 +77,7 @@ sealed interface ArtworkIntent {
     data object ShowIdentificationDialog : ArtworkIntent
 
     // Manual identification
-    data class OnIdentified(val artworkId: Long) : ArtworkIntent
+    data class OnIdentified(val artworkId: Long, val type: ContentType) : ArtworkIntent
 
     // Status
     data object ResetProgress: ArtworkIntent
@@ -97,6 +97,9 @@ sealed interface ArtworkEvent {
     data class PlayMedia(val media: Media, val externalPlayer: Boolean) : ArtworkEvent
     data class NavigateToPerson(val person: Person) : ArtworkEvent
     data class NavigateToGallery(val artworkId: Long, val contentType: ContentType) : ArtworkEvent
-    /** Replaces the page by the one of [artworkId]: back must not lead to the previous Artwork, which may no longer exist. */
-    data class ReplaceArtwork(val artworkId: Long) : ArtworkEvent
+    /**
+     * The Media now belong to [artworkId], of the given [type]: the navigation replaces the page by the one matching [type].
+     * Back must not lead to the previous Artwork, which may no longer exist.
+     */
+    data class Identified(val artworkId: Long, val type: ContentType) : ArtworkEvent
 }

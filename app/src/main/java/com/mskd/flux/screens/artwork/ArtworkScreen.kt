@@ -60,7 +60,7 @@ fun ArtworkScreen(
     colorScheme: ColorScheme,
     navigate: (Route) -> Unit,
     onBack: () -> Unit,
-    replaceArtwork: (artworkId: Long) -> Unit,
+    onIdentified: (artworkId: Long, type: ContentType) -> Unit,
     viewModel: ArtworkViewModel = koinViewModel(parameters = { parametersOf(artworkId, season) })
 ) {
 
@@ -75,7 +75,7 @@ fun ArtworkScreen(
         viewModel.event.collect { event ->
             when (event) {
                 ArtworkEvent.BackToPreviousScreen -> onBack()
-                is ArtworkEvent.ReplaceArtwork -> replaceArtwork(event.artworkId)
+                is ArtworkEvent.Identified -> onIdentified(event.artworkId, event.type)
                 is ArtworkEvent.NavigateToPerson -> navigate(Route.Person(person = event.person))
                 is ArtworkEvent.NavigateToGallery -> navigate(Route.Gallery(artworkId = event.artworkId, contentType = event.contentType))
                 is ArtworkEvent.PlayMedia -> {
@@ -244,7 +244,7 @@ fun ArtworkScreenContent(
         isIdentificationVisible = dialog is ArtworkDialog.Identification,
         isResetProgressVisible = dialog is ArtworkDialog.ResetProgressConfirmation,
         onDismiss = { sendIntent(ArtworkIntent.CloseDialog) },
-        onIdentified = { artworkId -> sendIntent(ArtworkIntent.OnIdentified(artworkId = artworkId)) },
+        onIdentified = { artworkId, type -> sendIntent(ArtworkIntent.OnIdentified(artworkId = artworkId, type = type)) },
         onResetProgress = { sendIntent(ArtworkIntent.ResetProgress) },
     )
 

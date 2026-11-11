@@ -32,6 +32,7 @@ import com.mskd.flux.features.show.ui.ShowScreen
 import com.mskd.flux.features.token.ui.TokenScreen
 import com.mskd.flux.navigation.domain.FluxNavigator
 import com.mskd.flux.navigation.domain.Route
+import com.mskd.flux.navigation.domain.identifiedDestination
 import com.mskd.flux.navigation.domain.navConfig
 import com.mskd.flux.navigation.domain.navigateToTab
 import com.mskd.flux.navigation.domain.popScreen
@@ -126,7 +127,7 @@ fun FluxNavigation(
                     ShowScreen(
                         navigate = { route -> navigator.navigate(route) },
                         onBack = { navigator.onBack() },
-                        replaceShow = { artworkId -> navigator.replace(entry.copy(artworkId = artworkId, rgb = null)) },
+                        onIdentified = { artworkId, type -> navigator.replace(identifiedDestination(artworkId = artworkId, type = type)) },
                         artworkId = entry.artworkId,
                         colorScheme = createColorScheme(
                             theme = customization.uiTheme,

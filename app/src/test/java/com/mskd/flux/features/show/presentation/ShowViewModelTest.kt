@@ -339,14 +339,14 @@ class ShowViewModelTest : FunSpec({
             }
         }
 
-        test("once identified, the dialog closes and the page is replaced by the new Show") {
+        test("once identified, the dialog closes and the new Artwork is sent with its type") {
             viewModel.uiState.test {
                 awaitItem()
                 viewModel.handleIntent(ShowIntent.ShowIdentificationDialog)
                 awaitItem()
                 viewModel.event.test {
-                    viewModel.handleIntent(ShowIntent.OnIdentified(artworkId = 42L))
-                    awaitItem() shouldBe ShowEvent.ReplaceShow(artworkId = 42L)
+                    viewModel.handleIntent(ShowIntent.OnIdentified(artworkId = 42L, type = ContentType.SHOW))
+                    awaitItem() shouldBe ShowEvent.Identified(artworkId = 42L, type = ContentType.SHOW)
                 }
                 (awaitItem().state as State.Content).content.dialog shouldBe null
             }

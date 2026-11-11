@@ -39,21 +39,28 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ArtworkViewModel(
-    private val artworkId: Long,
+    artworkId: Long,
     private val season: Int?,
     private val filesLauncher: FilesLauncher,
     private val urlLauncher: UrlLauncher,
     settingsDataStore: SettingsDataStore,
-    private val tokenDataStore: TokenDataStore,
+    tokenDataStore: TokenDataStore,
     catalogSyncCoordinator: CatalogSyncCoordinator,
     observeArtworkUseCase: ObserveArtworkUseCase,
     getPeopleUseCase: GetPeopleUseCase,
     private val changeMediaStatus: ChangeMediaStatusUseCase,
     private val markPreviousAsWatched: MarkPreviousAsWatchedUseCase,
-    private val resetProgress: ResetProgressUseCase,
+    resetProgress: ResetProgressUseCase,
     private val resolvePlaybackAction: ResolvePlaybackActionUseCase,
-    private val recordPlaybackResult: SaveProgressUseCase
-) : ViewModel() {
+    recordPlaybackResult: SaveProgressUseCase
+) : ArtworkPageViewModel<ArtworkUiState, ArtworkIntent, ArtworkEvent>(
+    artworkId = artworkId,
+    observeArtworkUseCase = observeArtworkUseCase,
+    tokenDataStore = tokenDataStore,
+    catalogSyncCoordinator = catalogSyncCoordinator,
+    resetProgressUseCase = resetProgress,
+    recordPlaybackResult = recordPlaybackResult,
+) {
 
     //region Computed properties
 
@@ -65,19 +72,15 @@ class ArtworkViewModel(
 
     //region Flow
 
-    private val _event = MutableSharedFlow<ArtworkEvent>()
-    val event = _event.asSharedFlow()
-
     private val _userState = MutableStateFlow(ArtworkUserState())
 
     private val settingsAndSync = combine(
         settingsDataStore.flow,
-        tokenDataStore.flow,
-        catalogSyncCoordinator.state,
-    ) { settings, token, sync -> Triple(settings, token.isNotBlank(), sync is SyncState.Syncing) }
+        tokenAndSync,
+    ) { settings, (tokenAvailable, syncing) -> Triple(settings, tokenAvailable, syncing) }
 
-    val uiState: StateFlow<ArtworkUiState> = combine(
-        observeArtworkUseCase(artworkId = artworkId),
+    override val uiState: StateFlow<ArtworkUiState> = combine(
+        observedArtwork,
         settingsAndSync,
         getPeopleUseCase(artworkId = artworkId),
         _userState,
@@ -116,15 +119,15 @@ class ArtworkViewModel(
 
     //region Public Methods
 
-    fun handleIntent(intent: ArtworkIntent) = viewModelScope.launch {
+    override suspend fun onIntent(intent: ArtworkIntent) {
         when (intent) {
             //Navigation
-            ArtworkIntent.OnBackTap -> _event.emit(ArtworkEvent.BackToPreviousScreen)
+            ArtworkIntent.OnBackTap -> emit(ArtworkEvent.BackToPreviousScreen)
             is ArtworkIntent.PlayMedia -> playMedia(media = intent.media, forceInternal = intent.forceInternal)
             ArtworkIntent.OpenArtworkInfo -> openArtworkInfo()
             is ArtworkIntent.OpenEpisodeInfo -> urlLauncher.open(url = intent.episode.infoUrl)
             is ArtworkIntent.OpenFileExplorer -> filesLauncher.open(file = intent.media.file)
-            is ArtworkIntent.OnPersonClick -> _event.emit(ArtworkEvent.NavigateToPerson(person = intent.person))
+            is ArtworkIntent.OnPersonClick -> emit(ArtworkEvent.NavigateToPerson(person = intent.person))
             ArtworkIntent.OnArtworkImageClick -> onArtworkImageClick()
 
             // Dialogs
@@ -141,7 +144,7 @@ class ArtworkViewModel(
             ArtworkIntent.ResetProgress -> resetProgress()
 
             // Other
-            is ArtworkIntent.OnExternalPlayerResult -> onExternalPlayerResult(intent.progress)
+            is ArtworkIntent.OnExternalPlayerResult -> onExternalPlayerResult(media = artworkContent?.selectedMedia, progress = intent.progress)
             is ArtworkIntent.ExpandEpisodeDescription -> expandEpisodeDescription(episode = intent.episode)
             ArtworkIntent.CollapseEpisodeDescription -> collapseEpisodeDescription()
             is ArtworkIntent.ToggleEpisodeSpoiler -> toggleEpisodeSpoiler(episode = intent.episode)
@@ -276,7 +279,7 @@ class ArtworkViewModel(
     private suspend fun navigateToGallery() {
         if (!tokenDataStore.tokenIsAvailable()) return
         val artwork = fullArtwork?.artwork ?: return
-        _event.emit(ArtworkEvent.NavigateToGallery(artworkId = artwork.id, contentType = artwork.type))
+        emit(ArtworkEvent.NavigateToGallery(artworkId = artwork.id, contentType = artwork.type))
     }
 
     private suspend fun playMedia(media: Media, forceInternal: Boolean) {
@@ -286,7 +289,7 @@ class ArtworkViewModel(
         _userState.update { it.copy(selectedMedia = media) }
 
         when (val action = resolvePlaybackAction(media = media, forceInternal = forceInternal)) {
-            is PlaybackAction.OpenPlayer -> _event.emit(ArtworkEvent.PlayMedia(
+            is PlaybackAction.OpenPlayer -> emit(ArtworkEvent.PlayMedia(
                 media = action.media,
                 externalPlayer = action.externalPlayer,
             ))
@@ -344,12 +347,6 @@ class ArtworkViewModel(
 
     }
 
-    private suspend fun onExternalPlayerResult(progress: Long) {
-        artworkContent?.selectedMedia?.let {
-            recordPlaybackResult(media = it, progress = progress)
-        }
-    }
-
     private fun showResetProgressDialog() {
         _userState.update { it.copy(dialog = ArtworkDialog.ResetProgressConfirmation) }
     }
@@ -361,7 +358,7 @@ class ArtworkViewModel(
 
     private suspend fun onIdentified(artworkId: Long) {
         _userState.update { it.copy(dialog = null) }
-        _event.emit(ArtworkEvent.ReplaceArtwork(artworkId = artworkId))
+        emit(ArtworkEvent.ReplaceArtwork(artworkId = artworkId))
     }
 
     private suspend fun resetProgress() {

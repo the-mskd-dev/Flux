@@ -213,7 +213,7 @@ class SeasonViewModelTest : FunSpec({
             viewModel.uiState.test {
                 expectMostRecentItem()
                 viewModel.handleIntent(SeasonIntent.ChangeWatchStatus(media = MediaMockups.episode2))
-                content().dialog shouldBe SeasonDialog.EpisodeStatusConfirmation(episode = MediaMockups.episode2)
+                content().dialog shouldBe SeasonPageDialog.EpisodeStatusConfirmation(episode = MediaMockups.episode2)
 
                 viewModel.handleIntent(SeasonIntent.CloseDialog)
                 content().dialog shouldBe null
@@ -236,7 +236,7 @@ class SeasonViewModelTest : FunSpec({
             viewModel.uiState.test {
                 expectMostRecentItem()
                 viewModel.handleIntent(SeasonIntent.ChangeWatchStatus(media = MediaMockups.episode3))
-                content().dialog shouldBe SeasonDialog.EpisodeStatusConfirmation(episode = MediaMockups.episode3)
+                content().dialog shouldBe SeasonPageDialog.EpisodeStatusConfirmation(episode = MediaMockups.episode3)
             }
         }
 
@@ -248,7 +248,7 @@ class SeasonViewModelTest : FunSpec({
             viewModel.uiState.test {
                 expectMostRecentItem()
                 viewModel.handleIntent(SeasonIntent.ShowResetProgressDialog)
-                content().dialog shouldBe SeasonDialog.ResetProgressConfirmation
+                content().dialog shouldBe SeasonPageDialog.ResetProgressConfirmation
                 viewModel.handleIntent(SeasonIntent.CloseDialog)
                 content().dialog shouldBe null
             }
@@ -549,7 +549,7 @@ class SeasonViewModelTest : FunSpec({
                 syncState.value = SyncState.Idle()
                 content().identification shouldBe IdentificationAvailability.ENABLED
                 viewModel.handleIntent(SeasonIntent.ShowIdentificationDialog)
-                content().dialog shouldBe SeasonDialog.Identification
+                content().dialog shouldBe SeasonPageDialog.Identification
             }
         }
 
@@ -558,7 +558,7 @@ class SeasonViewModelTest : FunSpec({
                 viewModel.uiState.test {
                     expectMostRecentItem()
                     viewModel.handleIntent(SeasonIntent.ShowIdentificationDialog)
-                    content().dialog shouldBe SeasonDialog.Identification
+                    content().dialog shouldBe SeasonPageDialog.Identification
                     viewModel.event.test {
                         viewModel.handleIntent(SeasonIntent.OnIdentified(artworkId = 42L, type = type))
                         awaitItem() shouldBe SeasonEvent.Identified(artworkId = 42L, type = type)

@@ -64,7 +64,7 @@ class SeasonViewModel(
         val expandedEpisodeId: Long? = null,
         val revealedEpisodeIds: Set<Long> = emptySet(),
         val isOverviewRevealed: Boolean = false,
-        val dialog: SeasonDialog? = null,
+        val dialog: SeasonPageDialog? = null,
     )
 
     //region Flow
@@ -90,7 +90,7 @@ class SeasonViewModel(
                     tokenAvailable = tokenAvailable,
                     syncing = syncing,
                 )
-                SeasonUiState(state = content(fullShow, settings.blurSpoilers, identification, userState))
+                SeasonUiState(state = buildContent(fullShow, settings.blurSpoilers, identification, userState))
             }
         }
 
@@ -122,7 +122,7 @@ class SeasonViewModel(
 
             // Dialogs
             SeasonIntent.CloseDialog -> setDialog(null)
-            SeasonIntent.ShowResetProgressDialog -> setDialog(SeasonDialog.ResetProgressConfirmation)
+            SeasonIntent.ShowResetProgressDialog -> setDialog(SeasonPageDialog.ResetProgressConfirmation)
             SeasonIntent.ShowIdentificationDialog -> showIdentificationDialog()
 
             // Manual identification
@@ -146,7 +146,7 @@ class SeasonViewModel(
 
     //region Private Methods
 
-    private fun content(
+    private fun buildContent(
         fullShow: FullArtwork.FullShow,
         blurSpoilers: Boolean,
         identification: IdentificationAvailability,
@@ -189,7 +189,7 @@ class SeasonViewModel(
     /** Only a Season description whose Episode are all still to watch is a spoiler. */
     private fun isSeasonOverviewSpoiler(fullShow: FullArtwork.FullShow, episodes: List<Episode>, blurSpoilers: Boolean): Boolean {
         if (!blurSpoilers) return false
-        if (fullShow.seasons.find { it.season == season }?.description.isNullOrEmpty()) return false
+        if (fullShow.season(season)?.description.isNullOrEmpty()) return false
         val known = episodes.filter { !it.isUnknown }
         return known.isNotEmpty() && known.all { it.status == Status.TO_WATCH }
     }
@@ -212,7 +212,7 @@ class SeasonViewModel(
         return if ((selectedEpisode.status == Status.IS_WATCHING || seasonStarted) && !seasonFinished) {
             ArtworkOverviewContent.EpisodeOverview(episode = selectedEpisode)
         } else {
-            val description = fullShow.seasons.find { it.season == season }?.description?.takeIf { it.isNotEmpty() }
+            val description = fullShow.season(season)?.description?.takeIf { it.isNotEmpty() }
                 ?: fullShow.artwork.description.takeIf { it.isNotEmpty() }
             ArtworkOverviewContent.Summary(description = description)
         }
@@ -246,7 +246,7 @@ class SeasonViewModel(
     }
 
     private suspend fun openSeasonInfo() {
-        val url = seasonContent?.fullShow?.seasons?.find { it.season == season }?.infoUrl ?: return
+        val url = seasonContent?.fullShow?.season(season)?.infoUrl ?: return
         urlLauncher.open(url = url)
     }
 
@@ -262,20 +262,20 @@ class SeasonViewModel(
             && media is Episode
             && allEpisodes.getPreviousEpisodesFor(media).any { it.status != Status.WATCHED }
         ) {
-            setDialog(SeasonDialog.EpisodeStatusConfirmation(episode = media))
+            setDialog(SeasonPageDialog.EpisodeStatusConfirmation(episode = media))
         }
 
     }
 
     private suspend fun markPreviousEpisodesAsWatched() {
-        val episode = (_userState.value.dialog as? SeasonDialog.EpisodeStatusConfirmation)?.episode ?: return
+        val episode = (_userState.value.dialog as? SeasonPageDialog.EpisodeStatusConfirmation)?.episode ?: return
         markPreviousAsWatched(episode = episode)
         setDialog(null)
     }
 
     private fun showIdentificationDialog() {
         if (seasonContent?.identification != IdentificationAvailability.ENABLED) return
-        setDialog(SeasonDialog.Identification)
+        setDialog(SeasonPageDialog.Identification)
     }
 
     private suspend fun onIdentified(artworkId: Long, type: ContentType) {
@@ -289,7 +289,7 @@ class SeasonViewModel(
         _userState.update { it.copy(selectedEpisodeId = content.episodes.first().id, dialog = null) }
     }
 
-    private fun setDialog(dialog: SeasonDialog?) {
+    private fun setDialog(dialog: SeasonPageDialog?) {
         _userState.update { it.copy(dialog = dialog) }
     }
 

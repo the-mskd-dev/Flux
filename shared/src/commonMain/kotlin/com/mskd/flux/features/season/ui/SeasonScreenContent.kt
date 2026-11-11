@@ -15,7 +15,7 @@ import androidx.compose.runtime.setValue
 import com.mskd.flux.features.artwork.ui.composables.ArtworkPageDialogs
 import com.mskd.flux.features.identification.presentation.IdentificationAvailability
 import com.mskd.flux.features.season.presentation.SeasonContent
-import com.mskd.flux.features.season.presentation.SeasonDialog
+import com.mskd.flux.features.season.presentation.SeasonPageDialog
 import com.mskd.flux.features.season.presentation.SeasonIntent
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.components.FluxScaffold
@@ -81,7 +81,7 @@ fun SeasonScreenContent(
     }
 
     FluxDialog(
-        isVisible = content.dialog is SeasonDialog.EpisodeStatusConfirmation,
+        isVisible = content.dialog is SeasonPageDialog.EpisodeStatusConfirmation,
         content = {
             Text.Content.Body(text = stringResource(Res.string.mark_previous_episodes_as_watched))
         },
@@ -91,8 +91,8 @@ fun SeasonScreenContent(
 
     ArtworkPageDialogs(
         artworkId = content.fullShow.artwork.id,
-        isIdentificationVisible = content.dialog is SeasonDialog.Identification,
-        isResetProgressVisible = content.dialog is SeasonDialog.ResetProgressConfirmation,
+        isIdentificationVisible = content.dialog is SeasonPageDialog.Identification,
+        isResetProgressVisible = content.dialog is SeasonPageDialog.ResetProgressConfirmation,
         onDismiss = { sendIntent(SeasonIntent.CloseDialog) },
         onIdentified = { artworkId, type -> sendIntent(SeasonIntent.OnIdentified(artworkId = artworkId, type = type)) },
         onResetProgress = { sendIntent(SeasonIntent.ResetProgress) },

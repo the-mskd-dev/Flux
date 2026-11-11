@@ -6,6 +6,7 @@ import androidx.navigation3.runtime.NavKey
 fun NavBackStack<NavKey>.popScreen() {
     if (this.size > 1) this.removeLastOrNull()
 }
+
 /**
  * Replaces the current page, and the pages of the same Artwork [artworkId] right below it (the Show page under a Season
  * page), by [route]: back must not lead to a page of an Artwork that may no longer exist.

@@ -1,7 +1,5 @@
 package com.mskd.flux.features.artwork.ui
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -19,20 +16,16 @@ import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.features.artwork.presentation.ArtworkIntent
 import com.mskd.flux.features.artwork.presentation.ArtworkOverviewContent
-import com.mskd.flux.features.artwork.ui.composables.ArtworkHeader
 import com.mskd.flux.features.artwork.ui.composables.ArtworkOverview
+import com.mskd.flux.features.artwork.ui.composables.ArtworkButtons
+import com.mskd.flux.features.artwork.ui.composables.ArtworkPageHeader
+import com.mskd.flux.features.artwork.ui.composables.episodeList
 import com.mskd.flux.features.people.ui.components.people.PeopleList
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.PeopleMockup
 import com.mskd.flux.ui.PortraitPreview
-import com.mskd.flux.ui.media.episode.EpisodeDropDownMenu
-import com.mskd.flux.ui.media.episode.EpisodeItem
-import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
-import flux.shared.generated.resources.Res
-import flux.shared.generated.resources.episodes
-import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun ArtworkContentRegular(
@@ -51,6 +44,8 @@ fun ArtworkContentRegular(
     sendIntent: (ArtworkIntent) -> Unit,
 ) {
 
+    val episodesTitleColor = MaterialTheme.colorScheme.onBackground
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -60,13 +55,18 @@ fun ArtworkContentRegular(
 
         item {
 
-            ArtworkHeader(
+            ArtworkPageHeader(
                 modifier = Modifier.fillMaxWidth(),
                 fullArtwork = fullArtwork,
                 currentMedia = selectedMedia,
                 selectedSeason = selectedSeason,
-                isArtworkImageBlurred = isArtworkImageBlurred,
-                sendIntent = sendIntent
+                showTitle = fullArtwork is FullArtwork.FullMovie,
+                useBlurredHeader = true,
+                isImageBlurred = isArtworkImageBlurred,
+                // The content is already inset by the page padding
+                titleHorizontalMargin = FluxUI.Space.medium * 2,
+                onImageClick = { sendIntent(ArtworkIntent.OnArtworkImageClick) },
+                buttons = { modifier -> ArtworkButtons(modifier = modifier, media = selectedMedia, sendIntent = sendIntent) }
             )
 
         }
@@ -91,67 +91,15 @@ fun ArtworkContentRegular(
         }
 
         (fullArtwork as? FullArtwork.FullShow)?.let { show ->
-
-            val episodes = show.episodes.filter { it.season == selectedSeason }
-
-            if (episodes.isNotEmpty()) {
-
-                item {
-
-                    Column(verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)) {
-
-                        Text.Content.Title(
-                            modifier = Modifier.fillMaxWidth(),
-                            text = stringResource(Res.string.episodes),
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
-
-                    }
-
-                }
-
-                item {
-                    Spacer(modifier = Modifier.height(FluxUI.Space.medium))
-                }
-
-                items(
-                    items = episodes.sortedBy { it.number },
-                    key = { e -> e.id to e.currentTime }
-                ) { episode ->
-
-
-                    EpisodeItem(
-                        modifier = Modifier.animateItem(),
-                        episode = episode,
-                        isSelected = episode.id == selectedMedia.mediaId,
-                        onClick = { sendIntent(ArtworkIntent.PlayMedia(media = episode)) },
-                        isExpanded = episode.id == expandedEpisodeId,
-                        isBlurred = episode.id in blurredEpisodeIds,
-                        isSpoiler = episode.id in spoilerEpisodeIds,
-                        onToggleSpoiler = { sendIntent(ArtworkIntent.ToggleEpisodeSpoiler(episode = episode)) },
-                        onReadMoreTap = {
-                            if (it) {
-                                sendIntent(ArtworkIntent.ExpandEpisodeDescription(episode = episode))
-                            } else {
-                                sendIntent(ArtworkIntent.CollapseEpisodeDescription)
-                            }
-                        },
-                        dropDownMenu = { isVisible, onDismissRequest ->
-                            EpisodeDropDownMenu(
-                                isVisible = isVisible,
-                                episode = episode,
-                                onDismissRequest = onDismissRequest,
-                                sendIntent = sendIntent
-                            )
-                        }
-                    )
-
-                    Spacer(modifier = Modifier.height(FluxUI.Space.small))
-
-                }
-
-            }
-
+            episodeList(
+                episodes = show.episodes.filter { it.season == selectedSeason },
+                selectedMediaId = selectedMedia.mediaId,
+                expandedEpisodeId = expandedEpisodeId,
+                spoilerEpisodeIds = spoilerEpisodeIds,
+                blurredEpisodeIds = blurredEpisodeIds,
+                titleColor = episodesTitleColor,
+                sendIntent = sendIntent,
+            )
         }
 
         if (people.isNotEmpty()) {

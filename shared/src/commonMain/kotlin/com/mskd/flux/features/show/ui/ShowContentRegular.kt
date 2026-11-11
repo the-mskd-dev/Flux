@@ -1,11 +1,9 @@
 package com.mskd.flux.features.show.ui
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,28 +16,22 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Person
-import com.mskd.flux.features.artwork.ui.composables.ArtworkImageFull
-import com.mskd.flux.features.artwork.ui.composables.ArtworkTitle
-import com.mskd.flux.features.artwork.ui.composables.GenresTags
+import com.mskd.flux.features.artwork.presentation.ArtworkOverviewContent
+import com.mskd.flux.features.artwork.ui.composables.ArtworkOverview
+import com.mskd.flux.features.artwork.ui.composables.ArtworkPageHeader
 import com.mskd.flux.features.people.ui.components.people.PeopleList
 import com.mskd.flux.features.show.presentation.ShowIntent
 import com.mskd.flux.features.show.ui.composables.SeasonItem
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.PeopleMockup
 import com.mskd.flux.ui.PortraitPreview
-import com.mskd.flux.ui.bleedHorizontal
-import com.mskd.flux.ui.media.OverviewItem
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
-import flux.shared.generated.resources.no_summary
 import flux.shared.generated.resources.seasons
-import flux.shared.generated.resources.summary
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -62,41 +54,12 @@ fun ShowContentRegular(
 
         item(span = { GridItemSpan(maxLineSpan) }) {
 
-            ConstraintLayout(modifier = Modifier
-                .bleedHorizontal()
-                .fillMaxWidth()
-            ) {
-
-                val (image, title) = createRefs()
-
-                ArtworkImageFull(
-                    modifier = Modifier
-                        .constrainAs(image) {
-                            start.linkTo(parent.start)
-                            top.linkTo(parent.top)
-                            end.linkTo(parent.end)
-                            width = Dimension.fillToConstraints
-                        }
-                        .fillMaxWidth()
-                        .aspectRatio(FluxUI.Ratio.rectangle)
-                        .clickable { sendIntent(ShowIntent.OnArtworkImageClick) },
-                    fullArtwork = fullShow,
-                )
-
-                ArtworkTitle(
-                    modifier = Modifier
-                        .constrainAs(title) {
-                            start.linkTo(parent.start,FluxUI.Space.medium)
-                            end.linkTo(parent.end, FluxUI.Space.medium)
-                            top.linkTo(image.bottom)
-                            bottom.linkTo(image.bottom)
-                            width = Dimension.preferredWrapContent
-                        },
-                    artwork = fullShow.artwork,
-                )
-
-            }
-
+            ArtworkPageHeader(
+                fullArtwork = fullShow,
+                showTitle = true,
+                useBlurredHeader = false,
+                onImageClick = { sendIntent(ShowIntent.OnArtworkImageClick) },
+            )
 
         }
 
@@ -110,10 +73,11 @@ fun ShowContentRegular(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                OverviewItem(
-                    title = stringResource(Res.string.summary),
-                    description = fullShow.artwork.description.ifEmpty { stringResource(Res.string.no_summary) },
-                    topDetails = { GenresTags(genres = fullShow.genres) }
+                ArtworkOverview(
+                    overview = ArtworkOverviewContent.ShowOverview(
+                        description = fullShow.artwork.description.ifEmpty { null },
+                        genres = fullShow.genres,
+                    )
                 )
 
                 Text.Content.Title(

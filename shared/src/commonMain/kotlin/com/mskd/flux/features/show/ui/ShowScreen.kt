@@ -22,8 +22,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.core.State
+import com.mskd.flux.features.artwork.ui.composables.ArtworkPageDialogs
 import com.mskd.flux.features.identification.presentation.IdentificationAvailability
-import com.mskd.flux.features.identification.ui.IdentificationDialog
 import com.mskd.flux.features.show.presentation.ShowDialog
 import com.mskd.flux.features.show.presentation.ShowEvent
 import com.mskd.flux.features.show.presentation.ShowIntent
@@ -38,7 +38,6 @@ import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.components.ErrorScreen
 import com.mskd.flux.ui.components.FluxScaffold
 import com.mskd.flux.ui.components.LoadingScreen
-import com.mskd.flux.ui.components.ResetProgressDialog
 import com.mskd.flux.ui.dimensions.rememberScreenDimensions
 import com.mskd.flux.ui.modal.menu.FluxPopUpMenu
 import com.mskd.flux.ui.modal.menu.FluxPopUpMenuItem
@@ -182,20 +181,14 @@ fun ShowScreenContent(
             )
         }
 
-        if (dialog is ShowDialog.Identification) {
-            IdentificationDialog(
-                artworkId = fullShow.artwork.id,
-                onDismiss = { sendIntent(ShowIntent.CloseDialog) },
-                onIdentified = { artworkId -> sendIntent(ShowIntent.OnIdentified(artworkId = artworkId)) },
-            )
-        }
-
-        if (dialog is ShowDialog.ResetProgress) {
-            ResetProgressDialog(
-                onValidate = { sendIntent(ShowIntent.ResetProgress) },
-                onDismiss = { sendIntent(ShowIntent.CloseDialog) }
-            )
-        }
+        ArtworkPageDialogs(
+            artworkId = fullShow.artwork.id,
+            isIdentificationVisible = dialog is ShowDialog.Identification,
+            isResetProgressVisible = dialog is ShowDialog.ResetProgress,
+            onDismiss = { sendIntent(ShowIntent.CloseDialog) },
+            onIdentified = { artworkId -> sendIntent(ShowIntent.OnIdentified(artworkId = artworkId)) },
+            onResetProgress = { sendIntent(ShowIntent.ResetProgress) },
+        )
 
     }
 

@@ -49,12 +49,14 @@ fun ArtworkImage(
     selectedSeason: Int? = null,
     orientation: Orientation = Orientation.Vertical,
     isBlurred: Boolean = false,
+    /** Whether the blurred header may be used, when the user chose it. */
+    useBlurredHeader: Boolean = true,
     onClick: (() -> Unit)? = null
 ) {
 
     val clickableModifier = if (onClick != null) modifier.clickable(onClick = onClick) else modifier
 
-    if (FluxUI.global.oldBlurredHeader) {
+    if (useBlurredHeader && FluxUI.global.oldBlurredHeader) {
         ArtworkImageBlurred(
             modifier = clickableModifier,
             fullArtwork = fullArtwork,
@@ -90,7 +92,6 @@ fun ArtworkImageFull(
         FluxImage(
             modifier = Modifier
                 .matchParentSize()
-                // Stronger than the Episode thumbnails: the image is much larger, a light blur still shows the scene.
                 // Stronger than the Episode thumbnails: the image is much larger, a light blur still shows the scene.
                 .blurContent(blurred = isBlurred, radius = 24.dp)
                 .alpha(.8f),

@@ -31,8 +31,8 @@ import com.mskd.flux.features.artwork.presentation.ArtworkViewModel
 import com.mskd.flux.features.artwork.ui.ArtworkContentLarge
 import com.mskd.flux.features.artwork.ui.ArtworkContentRegular
 import com.mskd.flux.features.artwork.ui.composables.ArtworkDropDownMenu
+import com.mskd.flux.features.artwork.ui.composables.ArtworkPageDialogs
 import com.mskd.flux.features.identification.presentation.IdentificationAvailability
-import com.mskd.flux.features.identification.ui.IdentificationDialog
 import com.mskd.flux.features.player.domain.model.PlayerParams
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.navigation.domain.Route
@@ -41,7 +41,6 @@ import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.components.ErrorScreen
 import com.mskd.flux.ui.components.FluxScaffold
 import com.mskd.flux.ui.components.LoadingScreen
-import com.mskd.flux.ui.components.ResetProgressDialog
 import com.mskd.flux.ui.dimensions.rememberScreenDimensions
 import com.mskd.flux.ui.modal.dialog.FluxDialog
 import com.mskd.flux.ui.text.Text
@@ -240,20 +239,14 @@ fun ArtworkScreenContent(
         onValidate = { sendIntent(ArtworkIntent.MarkPreviousEpisodesAsWatched) }
     )
 
-    if (dialog is ArtworkDialog.Identification) {
-        IdentificationDialog(
-            artworkId = fullArtwork.artwork.id,
-            onDismiss = { sendIntent(ArtworkIntent.CloseDialog) },
-            onIdentified = { artworkId -> sendIntent(ArtworkIntent.OnIdentified(artworkId = artworkId)) },
-        )
-    }
-
-    if (dialog is ArtworkDialog.ResetProgressConfirmation) {
-        ResetProgressDialog(
-            onValidate = { sendIntent(ArtworkIntent.ResetProgress) },
-            onDismiss = { sendIntent(ArtworkIntent.CloseDialog) }
-        )
-    }
+    ArtworkPageDialogs(
+        artworkId = fullArtwork.artwork.id,
+        isIdentificationVisible = dialog is ArtworkDialog.Identification,
+        isResetProgressVisible = dialog is ArtworkDialog.ResetProgressConfirmation,
+        onDismiss = { sendIntent(ArtworkIntent.CloseDialog) },
+        onIdentified = { artworkId -> sendIntent(ArtworkIntent.OnIdentified(artworkId = artworkId)) },
+        onResetProgress = { sendIntent(ArtworkIntent.ResetProgress) },
+    )
 
 }
 

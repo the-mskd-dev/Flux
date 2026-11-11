@@ -1,6 +1,5 @@
 package com.mskd.flux.features.show.ui
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,23 +22,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Person
-import com.mskd.flux.features.artwork.ui.composables.ArtworkImageFull
+import com.mskd.flux.features.artwork.presentation.ArtworkOverviewContent
+import com.mskd.flux.features.artwork.ui.composables.ArtworkImage
+import com.mskd.flux.features.artwork.ui.composables.ArtworkOverview
 import com.mskd.flux.features.artwork.ui.composables.ArtworkTitle
-import com.mskd.flux.features.artwork.ui.composables.GenresTags
 import com.mskd.flux.features.people.ui.components.people.PeopleList
 import com.mskd.flux.features.show.presentation.ShowIntent
 import com.mskd.flux.features.show.ui.composables.SeasonItem
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.PeopleMockup
 import com.mskd.flux.ui.LandscapePreview
-import com.mskd.flux.ui.media.OverviewItem
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
-import flux.shared.generated.resources.no_summary
 import flux.shared.generated.resources.seasons
-import flux.shared.generated.resources.summary
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -56,12 +53,12 @@ fun ShowContentLarge(
 
         Box(modifier = Modifier.weight(.5f),) {
 
-            ArtworkImageFull(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clickable { sendIntent(ShowIntent.OnArtworkImageClick) },
+            ArtworkImage(
+                modifier = Modifier.fillMaxSize(),
                 fullArtwork = fullShow,
                 orientation = Orientation.Horizontal,
+                useBlurredHeader = false,
+                onClick = { sendIntent(ShowIntent.OnArtworkImageClick) }
             )
 
         }
@@ -95,11 +92,12 @@ fun ShowContentLarge(
 
             item(span = { GridItemSpan(maxLineSpan) }) {
 
-                OverviewItem(
+                ArtworkOverview(
                     modifier = Modifier.padding(horizontal = FluxUI.Space.medium),
-                    title = stringResource(Res.string.summary),
-                    description = fullShow.artwork.description.ifEmpty { stringResource(Res.string.no_summary) },
-                    topDetails = { GenresTags(genres = fullShow.genres) }
+                    overview = ArtworkOverviewContent.ShowOverview(
+                        description = fullShow.artwork.description.ifEmpty { null },
+                        genres = fullShow.genres,
+                    )
                 )
 
             }

@@ -7,40 +7,48 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import coil3.annotation.ExperimentalCoilApi
-import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Media
-import com.mskd.flux.features.artwork.presentation.ArtworkIntent
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.bleedHorizontal
 import com.mskd.flux.ui.theme.FluxUI
 
+/**
+ * Header of an Artwork page in the regular layout: the Artwork image across the whole screen width,
+ * the Artwork title over the bottom of the image, and the page [buttons] below.
+ *
+ * @param useBlurredHeader whether the image may use the blurred header, when the user chose it.
+ * @param titleHorizontalMargin margin between the title and the screen edges.
+ */
 @Composable
-fun ArtworkHeader(
-    modifier: Modifier,
+fun ArtworkPageHeader(
+    modifier: Modifier = Modifier,
     fullArtwork: FullArtwork,
-    currentMedia: Media,
-    selectedSeason: Int?,
-    isArtworkImageBlurred: Boolean = false,
-    sendIntent: (ArtworkIntent) -> Unit
+    currentMedia: Media? = null,
+    selectedSeason: Int? = null,
+    showTitle: Boolean,
+    useBlurredHeader: Boolean,
+    isImageBlurred: Boolean = false,
+    titleHorizontalMargin: Dp = FluxUI.Space.medium,
+    onImageClick: () -> Unit,
+    buttons: (@Composable (Modifier) -> Unit)? = null,
 ) {
-
-    val isMovie = fullArtwork.artwork.type == ContentType.MOVIE
 
     ConstraintLayout(
         modifier = modifier
+            .bleedHorizontal()
+            .fillMaxWidth()
     ) {
 
-        val (image, text, buttons) = createRefs()
+        val (image, text, buttonsRef) = createRefs()
 
         ArtworkImage(
             modifier = Modifier
-                .bleedHorizontal()
                 .constrainAs(image) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
@@ -51,16 +59,17 @@ fun ArtworkHeader(
             fullArtwork = fullArtwork,
             currentMedia = currentMedia,
             selectedSeason = selectedSeason,
-            isBlurred = isArtworkImageBlurred,
-            onClick = { sendIntent(ArtworkIntent.OnArtworkImageClick) }
+            isBlurred = isImageBlurred,
+            useBlurredHeader = useBlurredHeader,
+            onClick = onImageClick
         )
 
-        if (isMovie) {
+        if (showTitle) {
             ArtworkTitle(
                 modifier = Modifier.constrainAs(text) {
                     top.linkTo(image.bottom)
-                    start.linkTo(parent.start, FluxUI.Space.medium)
-                    end.linkTo(parent.end, FluxUI.Space.medium)
+                    start.linkTo(parent.start, titleHorizontalMargin)
+                    end.linkTo(parent.end, titleHorizontalMargin)
                     bottom.linkTo(image.bottom)
                     width = Dimension.preferredWrapContent
                 },
@@ -68,37 +77,36 @@ fun ArtworkHeader(
             )
         }
 
-        ArtworkButtons(
-            modifier = Modifier.constrainAs(buttons) {
-                if (isMovie) top.linkTo(text.bottom, FluxUI.Space.large)
+        buttons?.invoke(
+            Modifier.constrainAs(buttonsRef) {
+                if (showTitle) top.linkTo(text.bottom, FluxUI.Space.large)
                 else top.linkTo(image.bottom, FluxUI.Space.large)
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
-            },
-            media = currentMedia,
-            sendIntent = sendIntent
+            }
         )
 
     }
 
 }
 
-@OptIn(ExperimentalCoilApi::class)
 @FluxPreview
 @Composable
-fun ArtworkHeader_Preview() {
+fun ArtworkPageHeader_Preview() {
     FluxThemePreview {
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.TopCenter
         ) {
 
-            ArtworkHeader(
+            ArtworkPageHeader(
                 modifier = Modifier.fillMaxWidth(),
-                fullArtwork = MediaMockups.fullShow,
-                currentMedia = MediaMockups.episode1,
-                selectedSeason = 1,
-                sendIntent = {}
+                fullArtwork = MediaMockups.fullMovie,
+                currentMedia = MediaMockups.movie,
+                showTitle = true,
+                useBlurredHeader = false,
+                onImageClick = {},
+                buttons = { modifier -> ArtworkButtons(modifier = modifier, media = MediaMockups.movie, sendIntent = {}) }
             )
 
         }

@@ -1,19 +1,15 @@
 package com.mskd.flux.features.artwork.ui
 
 import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,18 +23,14 @@ import com.mskd.flux.features.artwork.ui.composables.ArtworkButtons
 import com.mskd.flux.features.artwork.ui.composables.ArtworkImage
 import com.mskd.flux.features.artwork.ui.composables.ArtworkOverview
 import com.mskd.flux.features.artwork.ui.composables.ArtworkTitle
+import com.mskd.flux.features.artwork.ui.composables.episodeList
 import com.mskd.flux.features.people.ui.components.people.PeopleList
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.PeopleMockup
 import com.mskd.flux.ui.LandscapePreview
-import com.mskd.flux.ui.media.episode.EpisodeDropDownMenu
-import com.mskd.flux.ui.media.episode.EpisodeItem
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
-import flux.shared.generated.resources.Res
-import flux.shared.generated.resources.episodes
-import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun ArtworkContentLarge(
@@ -56,6 +48,8 @@ fun ArtworkContentLarge(
     scaffoldInnerPadding: PaddingValues,
     sendIntent: (ArtworkIntent) -> Unit,
 ) {
+
+    val episodesTitleColor = MaterialTheme.colorScheme.onPrimaryContainer
 
     Row(
         modifier = Modifier.fillMaxSize()
@@ -134,66 +128,15 @@ fun ArtworkContentLarge(
             }
 
             (fullArtwork as? FullArtwork.FullShow)?.let { show ->
-
-                val episodes = show.episodes.filter { it.season == selectedSeason }
-
-                if (episodes.isNotEmpty()) {
-
-                    item {
-
-                        Column(verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)) {
-
-                            Text.Content.Title(
-                                modifier = Modifier.fillMaxWidth(),
-                                text = stringResource(Res.string.episodes),
-                                color = MaterialTheme.colorScheme.onPrimaryContainer
-                            )
-
-                        }
-
-                    }
-
-                    item {
-                        Spacer(modifier = Modifier.height(FluxUI.Space.medium))
-                    }
-
-                    items(
-                        items = episodes.sortedBy { it.number },
-                        key = { e -> e.id to e.currentTime}
-                    ) { episode ->
-
-                        EpisodeItem(
-                            modifier = Modifier.animateItem(),
-                            episode = episode,
-                            isSelected = episode.id == selectedMedia.mediaId,
-                            isExpanded = episode.id == expandedEpisodeId,
-                            isBlurred = episode.id in blurredEpisodeIds,
-                            isSpoiler = episode.id in spoilerEpisodeIds,
-                            onToggleSpoiler = { sendIntent(ArtworkIntent.ToggleEpisodeSpoiler(episode = episode)) },
-                            onClick = { sendIntent(ArtworkIntent.PlayMedia(media = episode)) },
-                            onReadMoreTap = {
-                                if (it) {
-                                    sendIntent(ArtworkIntent.ExpandEpisodeDescription(episode = episode))
-                                } else {
-                                    sendIntent(ArtworkIntent.CollapseEpisodeDescription)
-                                }
-                            },
-                            dropDownMenu = { isVisible, onDismissRequest ->
-                                EpisodeDropDownMenu(
-                                    isVisible = isVisible,
-                                    episode = episode,
-                                    onDismissRequest = onDismissRequest,
-                                    sendIntent = sendIntent
-                                )
-                            }
-                        )
-
-                        Spacer(modifier = Modifier.height(FluxUI.Space.small))
-
-                    }
-
-                }
-
+                episodeList(
+                    episodes = show.episodes.filter { it.season == selectedSeason },
+                    selectedMediaId = selectedMedia.mediaId,
+                    expandedEpisodeId = expandedEpisodeId,
+                    spoilerEpisodeIds = spoilerEpisodeIds,
+                    blurredEpisodeIds = blurredEpisodeIds,
+                    titleColor = episodesTitleColor,
+                    sendIntent = sendIntent,
+                )
             }
 
             if (people.isNotEmpty()) {

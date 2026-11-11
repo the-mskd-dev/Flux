@@ -6,8 +6,8 @@
 
 **Status:** done
 
-- [ ] One pure header-mode rule takes the page type (movie, show, season) and the setting; the Artwork page and the Show page both use it.
-- [ ] Unit tests cover one case per page type and setting value.
-- [ ] A Show page shows the blurred header when the setting is on and the backdrop when it is off.
-- [ ] `GLOSSARY.md` "Artwork image" says the blurred header is available for a Movie page and a Show page, not for a Season page.
-- [ ] `./gradlew :app:testFossDebugUnitTest` passes.
+- [x] One pure header-mode rule takes the page type (movie, show, season) and the setting; the Artwork page and the Show page both use it.
+- [x] Unit tests cover one case per page type and setting value.
+- [x] A Show page shows the blurred header when the setting is on and the backdrop when it is off. (in code; not checked on a device)
+- [x] `GLOSSARY.md` "Artwork image" says the blurred header is available for a Movie page and a Show page, not for a Season page.
+- [x] `./gradlew :app:testFossDebugUnitTest` passes.

@@ -22,7 +22,7 @@ import com.mskd.flux.ui.theme.FluxUI
  * Header of an Artwork page in the regular layout: the Artwork image across the whole screen width,
  * the Artwork title over the bottom of the image, and the page [buttons] below.
  *
- * @param useBlurredHeader whether the image may use the blurred header, when the user chose it.
+ * @param allowBlurredHeader whether the image may use the blurred header, when the user chose it.
  * @param titleHorizontalMargin margin between the title and the screen edges.
  */
 @Composable
@@ -32,7 +32,7 @@ fun ArtworkPageHeader(
     currentMedia: Media? = null,
     selectedSeason: Int? = null,
     showTitle: Boolean,
-    useBlurredHeader: Boolean,
+    allowBlurredHeader: Boolean,
     isImageBlurred: Boolean = false,
     titleHorizontalMargin: Dp = FluxUI.Space.medium,
     onImageClick: () -> Unit,
@@ -60,7 +60,7 @@ fun ArtworkPageHeader(
             currentMedia = currentMedia,
             selectedSeason = selectedSeason,
             isBlurred = isImageBlurred,
-            useBlurredHeader = useBlurredHeader,
+            allowBlurredHeader = allowBlurredHeader,
             onClick = onImageClick
         )
 
@@ -104,7 +104,7 @@ fun ArtworkPageHeader_Preview() {
                 fullArtwork = MediaMockups.fullMovie,
                 currentMedia = MediaMockups.movie,
                 showTitle = true,
-                useBlurredHeader = false,
+                allowBlurredHeader = false,
                 onImageClick = {},
                 buttons = { modifier -> ArtworkButtons(modifier = modifier, media = MediaMockups.movie, sendIntent = {}) }
             )

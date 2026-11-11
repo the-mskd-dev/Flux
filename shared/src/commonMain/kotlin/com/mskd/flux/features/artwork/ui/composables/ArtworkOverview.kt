@@ -28,7 +28,7 @@ fun ArtworkOverview(
     onToggleSpoiler: () -> Unit = {},
 ) {
 
-    // The Show page draws its overview without the card, which keeps the overview shadow.
+    // The Show page draws its overview without the card the other pages use.
     if (overview is ArtworkOverviewContent.ShowOverview) {
         ArtworkOverviewItem(overview, modifier, isSpoiler, isBlurred, onToggleSpoiler)
     } else {

@@ -57,7 +57,7 @@ fun ShowContentRegular(
             ArtworkPageHeader(
                 fullArtwork = fullShow,
                 showTitle = true,
-                useBlurredHeader = false,
+                allowBlurredHeader = false,
                 onImageClick = { sendIntent(ShowIntent.OnArtworkImageClick) },
             )
 

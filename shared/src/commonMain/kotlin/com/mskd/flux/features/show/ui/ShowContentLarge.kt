@@ -57,7 +57,7 @@ fun ShowContentLarge(
                 modifier = Modifier.fillMaxSize(),
                 fullArtwork = fullShow,
                 orientation = Orientation.Horizontal,
-                useBlurredHeader = false,
+                allowBlurredHeader = false,
                 onClick = { sendIntent(ShowIntent.OnArtworkImageClick) }
             )
 

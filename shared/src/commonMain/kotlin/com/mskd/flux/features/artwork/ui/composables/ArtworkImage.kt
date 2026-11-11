@@ -50,13 +50,13 @@ fun ArtworkImage(
     orientation: Orientation = Orientation.Vertical,
     isBlurred: Boolean = false,
     /** Whether the blurred header may be used, when the user chose it. */
-    useBlurredHeader: Boolean = true,
+    allowBlurredHeader: Boolean = true,
     onClick: (() -> Unit)? = null
 ) {
 
     val clickableModifier = if (onClick != null) modifier.clickable(onClick = onClick) else modifier
 
-    if (useBlurredHeader && FluxUI.global.oldBlurredHeader) {
+    if (allowBlurredHeader && FluxUI.global.oldBlurredHeader) {
         ArtworkImageBlurred(
             modifier = clickableModifier,
             fullArtwork = fullArtwork,

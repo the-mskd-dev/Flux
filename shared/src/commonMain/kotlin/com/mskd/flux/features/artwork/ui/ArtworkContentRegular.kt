@@ -61,7 +61,7 @@ fun ArtworkContentRegular(
                 currentMedia = selectedMedia,
                 selectedSeason = selectedSeason,
                 showTitle = fullArtwork is FullArtwork.FullMovie,
-                useBlurredHeader = true,
+                allowBlurredHeader = true,
                 isImageBlurred = isArtworkImageBlurred,
                 // The content is already inset by the page padding
                 titleHorizontalMargin = FluxUI.Space.medium * 2,

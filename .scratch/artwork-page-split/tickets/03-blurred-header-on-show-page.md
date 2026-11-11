@@ -4,7 +4,7 @@
 
 **Blocked by:** 02 (shared page composables)
 
-**Status:** ready-for-agent
+**Status:** done
 
 - [ ] One pure header-mode rule takes the page type (movie, show, season) and the setting; the Artwork page and the Show page both use it.
 - [ ] Unit tests cover one case per page type and setting value.

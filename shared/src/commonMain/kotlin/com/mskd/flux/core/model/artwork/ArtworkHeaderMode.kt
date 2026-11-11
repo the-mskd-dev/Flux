@@ -2,7 +2,7 @@ package com.mskd.flux.core.model.artwork
 
 /**
  * What the header of an Artwork page shows as Artwork image: the Backdrop, or the Poster with the blurred header.
- * Only a Movie page has a blurred header.
+ * A Movie page and a Show page use the blurred header when the user enabled it; a Season page always shows the Backdrop.
  */
 enum class ArtworkHeaderMode {
     NORMAL,
@@ -10,8 +10,10 @@ enum class ArtworkHeaderMode {
 
     companion object {
 
-        fun of(type: ContentType, blurredHeader: Boolean): ArtworkHeaderMode =
-            if (type == ContentType.MOVIE && blurredHeader) BLURRED else NORMAL
+        fun of(pageType: ArtworkPageType, blurredHeader: Boolean): ArtworkHeaderMode = when (pageType) {
+            ArtworkPageType.MOVIE, ArtworkPageType.SHOW -> if (blurredHeader) BLURRED else NORMAL
+            ArtworkPageType.SEASON -> NORMAL
+        }
 
     }
 }

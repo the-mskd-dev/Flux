@@ -59,9 +59,8 @@ fun ArtworkContentRegular(
                 modifier = Modifier.fillMaxWidth(),
                 fullArtwork = fullArtwork,
                 currentMedia = selectedMedia,
-                selectedSeason = selectedSeason,
                 showTitle = fullArtwork is FullArtwork.FullMovie,
-                allowBlurredHeader = true,
+                pageType = fullArtwork.pageType,
                 isImageBlurred = isArtworkImageBlurred,
                 // The content is already inset by the page padding
                 titleHorizontalMargin = FluxUI.Space.medium * 2,

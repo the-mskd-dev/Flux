@@ -61,9 +61,9 @@ fun ArtworkContentLarge(
                 modifier = Modifier.fillMaxSize(),
                 fullArtwork = fullArtwork,
                 currentMedia = selectedMedia,
-                selectedSeason = selectedSeason,
                 orientation = Orientation.Horizontal,
                 isBlurred = isArtworkImageBlurred,
+                pageType = fullArtwork.pageType,
                 onClick = { sendIntent(ArtworkIntent.OnArtworkImageClick) }
             )
 

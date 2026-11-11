@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import com.mskd.flux.core.model.artwork.ArtworkPageType
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.mockups.MediaMockups
@@ -22,7 +23,7 @@ import com.mskd.flux.ui.theme.FluxUI
  * Header of an Artwork page in the regular layout: the Artwork image across the whole screen width,
  * the Artwork title over the bottom of the image, and the page [buttons] below.
  *
- * @param allowBlurredHeader whether the image may use the blurred header, when the user chose it.
+ * @param pageType page showing the header: with the user setting, it decides whether the blurred header is used.
  * @param titleHorizontalMargin margin between the title and the screen edges.
  */
 @Composable
@@ -30,9 +31,8 @@ fun ArtworkPageHeader(
     modifier: Modifier = Modifier,
     fullArtwork: FullArtwork,
     currentMedia: Media? = null,
-    selectedSeason: Int? = null,
     showTitle: Boolean,
-    allowBlurredHeader: Boolean,
+    pageType: ArtworkPageType,
     isImageBlurred: Boolean = false,
     titleHorizontalMargin: Dp = FluxUI.Space.medium,
     onImageClick: () -> Unit,
@@ -58,9 +58,8 @@ fun ArtworkPageHeader(
                 .aspectRatio(FluxUI.Ratio.rectangle),
             fullArtwork = fullArtwork,
             currentMedia = currentMedia,
-            selectedSeason = selectedSeason,
             isBlurred = isImageBlurred,
-            allowBlurredHeader = allowBlurredHeader,
+            pageType = pageType,
             onClick = onImageClick
         )
 
@@ -104,7 +103,7 @@ fun ArtworkPageHeader_Preview() {
                 fullArtwork = MediaMockups.fullMovie,
                 currentMedia = MediaMockups.movie,
                 showTitle = true,
-                allowBlurredHeader = false,
+                pageType = ArtworkPageType.MOVIE,
                 onImageClick = {},
                 buttons = { modifier -> ArtworkButtons(modifier = modifier, media = MediaMockups.movie, sendIntent = {}) }
             )

@@ -20,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.mskd.flux.core.model.artwork.ArtworkPageType
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.features.artwork.presentation.ArtworkOverviewContent
@@ -57,7 +58,7 @@ fun ShowContentLarge(
                 modifier = Modifier.fillMaxSize(),
                 fullArtwork = fullShow,
                 orientation = Orientation.Horizontal,
-                allowBlurredHeader = false,
+                pageType = ArtworkPageType.SHOW,
                 onClick = { sendIntent(ShowIntent.OnArtworkImageClick) }
             )
 

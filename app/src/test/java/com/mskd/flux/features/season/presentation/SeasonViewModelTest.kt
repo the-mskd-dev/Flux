@@ -53,8 +53,6 @@ class SeasonViewModelTest : FunSpec({
     lateinit var resetProgress: ResetProgressUseCase
     lateinit var resolvePlaybackAction: ResolvePlaybackActionUseCase
     lateinit var recordPlaybackResult: SaveProgressUseCase
-    lateinit var token: MutableStateFlow<String>
-    lateinit var syncState: MutableStateFlow<SyncState>
 
     val updateVm: (id: Long, season: Int) -> Unit = { id, season ->
 
@@ -72,7 +70,7 @@ class SeasonViewModelTest : FunSpec({
             observeArtworkUseCase = observeArtworkUseCase,
             settingsDataStore = settingsDataStore,
             tokenDataStore = tokenDataStore,
-            catalogSyncCoordinator = mockk<CatalogSyncCoordinator> { every { state } returns syncState },
+            catalogSyncCoordinator = mockk<CatalogSyncCoordinator> { every { state } returns MutableStateFlow(SyncState.Idle()) },
             changeMediaStatus = changeMediaStatus,
             markPreviousAsWatched = markPreviousAsWatched,
             resetProgress = resetProgress,
@@ -88,11 +86,9 @@ class SeasonViewModelTest : FunSpec({
 
         observeArtworkUseCase = FakeObserveArtworkUseCase()
 
-        token = MutableStateFlow("token")
-        syncState = MutableStateFlow(SyncState.Idle())
         tokenDataStore = mockk(relaxed = true) {
             coEvery { tokenIsAvailable() } returns true
-            every { flow } returns token
+            every { flow } returns MutableStateFlow("token")
         }
 
         settingsDataStore = mockk(relaxed = true) {

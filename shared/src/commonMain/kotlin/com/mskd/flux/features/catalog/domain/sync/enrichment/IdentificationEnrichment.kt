@@ -39,12 +39,19 @@ class IdentificationEnrichment(
 
     }
 
-    /** The manually identified Artwork of a known Media of the same type with the same (title, year) in its file name. */
+    /**
+     * The manually identified Artwork of a known Media of the same type with the same (title, year) in its file name.
+     * Every file of the folder must have that (title, year): a folder grouped by TMDB ID can mix file-name titles, and
+     * then follows its TMDB ID.
+     */
     private suspend fun getManuallyIdentifiedArtwork(folder: CatalogFolder, file: UserFile): Artwork? {
+
+        val titleYear = folder.files.map { it.nameProperties.let { properties -> properties.title to properties.year } }.distinct().singleOrNull()
+            ?: return null
 
         val media = database.getManuallyIdentifiedMedias().firstOrNull { media ->
             val properties = media.file.nameProperties
-            media.file.isEpisode == file.isEpisode && properties.title == folder.title && properties.year == folder.year
+            media.file.isEpisode == file.isEpisode && (properties.title to properties.year) == titleYear
         } ?: return null
 
         return database.getArtwork(artworkId = media.artworkId)

@@ -96,6 +96,26 @@ class NewFilesManualIdentificationBehaviourTest : FunSpec({
 
     }
 
+    listOf(
+        listOf("Breaking Bad S01E02 {tmdb-1396}.mkv", "Some Other Name S02E01 {tmdb-1396}.mkv"),
+        listOf("Some Other Name S02E01 {tmdb-1396}.mkv", "Breaking Bad S01E02 {tmdb-1396}.mkv"),
+    ).forEach { names ->
+        test("new files of the same TMDB ID with mixed file-name titles all get the Artwork of that TMDB ID, whatever their order: $names") {
+
+            // Given
+            givenManuallyIdentifiedShow()
+
+            // When
+            harness.deviceStorage.availableFiles += names.map { harness.deviceFile(it) }
+            harness.lightSync()
+
+            // Then
+            harness.catalog.getEpisodes(artworkId = breakingBad).map { it.file.name } shouldContainExactlyInAnyOrder names
+            harness.catalog.getEpisodes(artworkId = lostPages.id).map { it.file.name } shouldBe listOf("Breaking Bad S01E01.mkv")
+
+        }
+    }
+
     test("a new file of another file-name title is identified by name search") {
 
         // Given

@@ -64,7 +64,6 @@ class ShowViewModel(
                             people = people,
                             identification = IdentificationAvailability.of(
                                 artwork = fullShow.artwork,
-                                files = fullShow.episodes.map { it.file },
                                 tokenAvailable = tokenAvailable,
                                 syncing = syncing,
                             ),

@@ -302,9 +302,9 @@ class MovieViewModelTest : FunSpec({
             content().identification shouldBe IdentificationAvailability.HIDDEN
         }
 
-        test("hidden when the file name carries a TMDB ID") {
+        test("offered when the file name carries a TMDB ID") {
             movieWith(fileName = "Your Name {tmdb-372058}.mkv")
-            content().identification shouldBe IdentificationAvailability.HIDDEN
+            content().identification shouldBe IdentificationAvailability.ENABLED
         }
 
         test("disabled during a Sync, enabled again once it ends") {

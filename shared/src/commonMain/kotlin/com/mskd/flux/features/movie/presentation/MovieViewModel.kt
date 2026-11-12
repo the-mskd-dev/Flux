@@ -72,10 +72,8 @@ class MovieViewModel(
                             fullMovie = fullMovie,
                             overview = ArtworkOverviewContent.MovieOverview(movie = fullMovie.movie, genres = fullMovie.genres),
                             people = people,
-                            // A TMDB ID in a file name has priority over the Manual identification
                             identification = IdentificationAvailability.of(
                                 artwork = fullMovie.artwork,
-                                files = listOf(fullMovie.movie.file),
                                 tokenAvailable = tokenAvailable,
                                 syncing = syncing,
                             ),

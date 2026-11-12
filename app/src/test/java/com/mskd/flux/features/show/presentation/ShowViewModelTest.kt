@@ -304,9 +304,9 @@ class ShowViewModelTest : FunSpec({
             identification() shouldBe IdentificationAvailability.HIDDEN
         }
 
-        test("hidden when the name of one of the files carries a TMDB ID") {
+        test("offered when the name of one of the files carries a TMDB ID") {
             showWith(fileName = "Dark S01E01 {tmdb-70523}.mkv")
-            identification() shouldBe IdentificationAvailability.HIDDEN
+            identification() shouldBe IdentificationAvailability.ENABLED
         }
 
         test("hidden on the Unknown Artwork") {

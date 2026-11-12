@@ -86,7 +86,6 @@ class SeasonViewModel(
                     ?: return@combine SeasonUiState(state = State.Error())
                 val identification = IdentificationAvailability.of(
                     artwork = fullShow.artwork,
-                    files = fullShow.episodes.map { it.file },
                     tokenAvailable = tokenAvailable,
                     syncing = syncing,
                 )

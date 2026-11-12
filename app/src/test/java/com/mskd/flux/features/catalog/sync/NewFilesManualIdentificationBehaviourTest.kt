@@ -53,25 +53,46 @@ class NewFilesManualIdentificationBehaviourTest : FunSpec({
 
     }
 
-    test("a TMDB ID in the folder name wins over the Manual identification") {
+    test("a new episode with a TMDB ID in its folder name follows the Manual identification of its file-name title") {
 
         // Given
         givenManuallyIdentifiedShow()
 
         // When
         harness.deviceStorage.availableFiles += UserFile(
-            name = "Breaking Bad S02E01.mkv",
-            path = "${SyncHarness.DEVICE_ROOT}Breaking Bad S02E01.mkv",
-            realPath = "Breaking Bad {tmdb-$breakingBad}/Breaking Bad S02E01.mkv",
+            name = "Breaking Bad S01E02.mkv",
+            path = "${SyncHarness.DEVICE_ROOT}Breaking Bad S01E02.mkv",
+            realPath = "Breaking Bad {tmdb-$breakingBad}/Breaking Bad S01E02.mkv",
             source = FileSource.LOCAL,
         )
         harness.lightSync()
 
         // Then
-        harness.catalog.getEpisodes(artworkId = breakingBad).map { it.file.name } shouldBe listOf("Breaking Bad S02E01.mkv")
+        harness.tmdb.callCount("tv/$breakingBad") shouldBe 0
+        harness.tmdb.callCount("search/tv") shouldBe 0
+        harness.catalog.getArtwork(artworkId = breakingBad) shouldBe null
+        harness.catalog.getEpisodes(artworkId = lostPages.id).map { it.file.name to it.id } shouldContainExactlyInAnyOrder listOf(
+            "Breaking Bad S01E01.mkv" to lostPagesS01E01,
+            "Breaking Bad S01E02.mkv" to lostPagesS01E02,
+        )
+        harness.catalog.getArtwork(artworkId = lostPages.id)?.isManuallyIdentified shouldBe true
+
+    }
+
+    test("a new file with a TMDB ID in its name and another file-name title gets the Artwork of that TMDB ID") {
+
+        // Given
+        givenManuallyIdentifiedShow()
+
+        // When
+        harness.deviceStorage.availableFiles += harness.deviceFile("Some Other Name S02E01 {tmdb-$breakingBad}.mkv")
+        harness.lightSync()
+
+        // Then
+        harness.tmdb.callCount("search/tv") shouldBe 0
+        harness.catalog.getEpisodes(artworkId = breakingBad).map { it.file.name } shouldBe listOf("Some Other Name S02E01 {tmdb-$breakingBad}.mkv")
         harness.catalog.getEpisodes(artworkId = lostPages.id).map { it.file.name } shouldBe listOf("Breaking Bad S01E01.mkv")
         harness.catalog.getArtwork(artworkId = breakingBad)?.isManuallyIdentified shouldBe false
-        harness.catalog.getArtwork(artworkId = lostPages.id)?.isManuallyIdentified shouldBe true
 
     }
 

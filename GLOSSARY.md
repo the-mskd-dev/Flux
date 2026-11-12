@@ -219,11 +219,11 @@ A file whose TMDB fetch failed (network, API, missing token); nothing is saved a
 _Avoid_: Fichier en échec, unknown file, UNKNOWN
 
 **Manual identification**:
-Choice, by the user, of the TMDB Artwork that all the Media of an Artwork are attached to. It prevails over the name search, including for the new files of a Light sync. It is cleared by an Identification reset or a Full sync, and is not possible when a file of the Artwork carries a TMDB ID in its name.
+Choice, by the user, of the TMDB Artwork that all the Media of an Artwork are attached to. It prevails over the TMDB ID in the name of a file (file name or folder path) and over the name search, including for the new files of a Light sync. It is cleared by an Identification reset or a Full sync, after which the TMDB ID in the name applies again.
 _Avoid_: Identification manuelle, Data selection, rematch, correction
 
 **Identification reset**:
-Clearing of the Manual identification of an Artwork: each of its files gets back the Artwork the name search gives it. The Status and the Progress of the Media are kept.
+Clearing of the Manual identification of an Artwork: each of its files gets back the Artwork of the TMDB ID in its name, or else the one the name search gives it. The Status and the Progress of the Media are kept.
 _Avoid_: Réinitialisation, Reset (alone, ambiguous with the progress reset), cancellation
 
 **Unrecognized file**:

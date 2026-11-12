@@ -538,6 +538,17 @@ class SeasonViewModelTest : FunSpec({
             identification() shouldBe IdentificationAvailability.HIDDEN
         }
 
+        test("offered when the folder of one of the files carries a TMDB ID") {
+            val episodes = MediaMockups.episodes.mapIndexed { index, episode ->
+                if (index == 0) episode.copy(file = episode.file.copy(realPath = "Dark {tmdb-70523}/${episode.file.name}")) else episode
+            }
+            observeArtworkUseCase = mockk {
+                every { this@mockk(any()) } returns flowOf(State.Content(MediaMockups.fullShow.copy(episodes = episodes.toImmutableList())))
+            }
+            updateVm(MediaMockups.showArtwork.id, 1)
+            identification() shouldBe IdentificationAvailability.ENABLED
+        }
+
         test("disabled during a Sync, and the dialog opens only once it ends") {
             syncState.value = SyncState.Syncing(full = false)
             updateVm(MediaMockups.showArtwork.id, 1)

@@ -31,7 +31,7 @@ sealed class Route : NavKey {
     @Serializable
     data class Person(val person: com.mskd.flux.core.model.artwork.Person) : Route()
 
-    /** Movie page of the Artwork [artworkId], a film. */
+    /** Movie page of the Artwork [artworkId], of type MOVIE. */
     @Serializable
     data class Movie(val artworkId: Long, val rgb: Int?): Route()
 

@@ -2,7 +2,7 @@ package com.mskd.flux.navigation.domain
 
 import com.mskd.flux.core.model.artwork.ContentType
 
-/** The page of the Artwork [artworkId], from its [type]: the movie page for a Movie, the Show page for a Show. */
+/** The page of the Artwork [artworkId], from its [type]: the Movie page for a MOVIE, the Show page for a SHOW. */
 fun artworkPage(artworkId: Long, type: ContentType, rgb: Int?): Route = when (type) {
     ContentType.MOVIE -> Route.Movie(artworkId = artworkId, rgb = rgb)
     ContentType.SHOW -> Route.Show(artworkId = artworkId, rgb = rgb)

@@ -6,7 +6,11 @@ import io.kotest.matchers.shouldBe
 import kotlinx.serialization.PolymorphicSerializer
 import kotlinx.serialization.json.Json
 
-/** A back stack saved by a previous version is decoded with the same routes module as [navConfig]. */
+/**
+ * A back stack saved by a previous version is decoded with the same routes module as [navConfig]. Json stands in for the
+ * SavedState decoder, which has no local JVM implementation here: like `ignoreUnknownKeys`, the SavedState decoder only
+ * reads the fields a class declares, so the old route's fields are ignored by [Route.Unrestorable].
+ */
 class UnrestorableRouteTest : FunSpec({
 
     val json = Json {

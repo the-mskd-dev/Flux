@@ -7,6 +7,7 @@ import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
+import com.mskd.flux.features.artwork.presentation.ArtworkViewModel
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.identification.presentation.IdentificationAvailability
@@ -25,29 +26,27 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ShowViewModel(
-    private val artworkId: Long,
+    artworkId: Long,
     private val urlLauncher: UrlLauncher,
     observeArtworkUseCase: ObserveArtworkUseCase,
     getPeopleUseCase: GetPeopleUseCase,
-    private val tokenDataStore: TokenDataStore,
+    tokenDataStore: TokenDataStore,
     catalogSyncCoordinator: CatalogSyncCoordinator,
-    private val resetProgress: ResetProgressUseCase,
-) : ViewModel() {
+    resetProgress: ResetProgressUseCase,
+) : ArtworkViewModel<ShowUiState, ShowIntent, ShowEvent>(
+    artworkId = artworkId,
+    observeArtworkUseCase = observeArtworkUseCase,
+    tokenDataStore = tokenDataStore,
+    catalogSyncCoordinator = catalogSyncCoordinator,
+    resetProgressUseCase = resetProgress,
+) {
 
     //region Flow
 
-    private val _event = MutableSharedFlow<ShowEvent>()
-    val event = _event.asSharedFlow()
-
     private val _userState = MutableStateFlow<ShowDialog?>(null)
 
-    private val tokenAndSync = combine(
-        tokenDataStore.flow,
-        catalogSyncCoordinator.state,
-    ) { token, sync -> token.isNotBlank() to (sync is SyncState.Syncing) }
-
-    val uiState: StateFlow<ShowUiState> = combine(
-        observeArtworkUseCase(artworkId = artworkId),
+    override val uiState: StateFlow<ShowUiState> = combine(
+        observedArtwork,
         getPeopleUseCase(artworkId = artworkId),
         tokenAndSync,
         _userState,
@@ -65,7 +64,6 @@ class ShowViewModel(
                             people = people,
                             identification = IdentificationAvailability.of(
                                 artwork = fullShow.artwork,
-                                files = fullShow.episodes.map { it.file },
                                 tokenAvailable = tokenAvailable,
                                 syncing = syncing,
                             ),
@@ -91,12 +89,12 @@ class ShowViewModel(
 
     //region Public Methods
 
-    fun handleIntent(intent: ShowIntent) = viewModelScope.launch {
+    override suspend fun onIntent(intent: ShowIntent) {
         when (intent) {
             // Navigation
-            ShowIntent.OnBackTap -> _event.emit(ShowEvent.BackToPreviousScreen)
+            ShowIntent.OnBackTap -> emit(ShowEvent.BackToPreviousScreen)
             is ShowIntent.OnSeasonClick -> navigateToSeason(season = intent.season, rgb = intent.rgb)
-            is ShowIntent.OnPersonClick -> _event.emit(ShowEvent.NavigateToPerson(person = intent.person))
+            is ShowIntent.OnPersonClick -> emit(ShowEvent.NavigateToPerson(person = intent.person))
             ShowIntent.OnArtworkImageClick -> navigateToGallery()
 
             // Dialogs
@@ -106,7 +104,7 @@ class ShowViewModel(
             ShowIntent.ShowIdentificationDialog -> showIdentificationDialog()
 
             // Manual identification
-            is ShowIntent.OnIdentified -> onIdentified(artworkId = intent.artworkId)
+            is ShowIntent.OnIdentified -> onIdentified(artworkId = intent.artworkId, type = intent.type)
 
             // Other
             ShowIntent.OpenShowInfo -> openShowInfo()
@@ -120,11 +118,11 @@ class ShowViewModel(
 
     private suspend fun navigateToGallery() {
         if (!tokenDataStore.tokenIsAvailable()) return
-        _event.emit(ShowEvent.NavigateToGallery(artworkId = artworkId, contentType = ContentType.SHOW))
+        emit(ShowEvent.NavigateToGallery(artworkId = artworkId, contentType = ContentType.SHOW))
     }
 
     private suspend fun navigateToSeason(season: Int, rgb: Int?) {
-        _event.emit(ShowEvent.NavigateToSeason(artworkId = artworkId, season = season, rgb = rgb))
+        emit(ShowEvent.NavigateToSeason(artworkId = artworkId, season = season, rgb = rgb))
     }
 
     private fun closeDialog() {
@@ -144,9 +142,9 @@ class ShowViewModel(
         _userState.update { ShowDialog.Identification }
     }
 
-    private suspend fun onIdentified(artworkId: Long) {
+    private suspend fun onIdentified(artworkId: Long, type: ContentType) {
         _userState.update { null }
-        _event.emit(ShowEvent.ReplaceShow(artworkId = artworkId))
+        emit(ShowEvent.Identified(artworkId = artworkId, type = type))
     }
 
     private suspend fun openShowInfo() {

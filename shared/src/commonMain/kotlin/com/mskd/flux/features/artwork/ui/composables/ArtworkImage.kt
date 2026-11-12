@@ -28,6 +28,7 @@ import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.mskd.flux.core.model.artwork.ArtworkHeaderMode
+import com.mskd.flux.core.model.artwork.ArtworkPageType
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Media
@@ -46,22 +47,21 @@ fun ArtworkImage(
     modifier: Modifier,
     fullArtwork: FullArtwork,
     currentMedia: Media? = null,
-    selectedSeason: Int? = null,
     orientation: Orientation = Orientation.Vertical,
     isBlurred: Boolean = false,
+    /** Page showing the image: with the user setting, it decides whether the blurred header is used. */
+    pageType: ArtworkPageType,
     onClick: (() -> Unit)? = null
 ) {
 
     val clickableModifier = if (onClick != null) modifier.clickable(onClick = onClick) else modifier
 
-    if (FluxUI.global.oldBlurredHeader) {
-        ArtworkImageBlurred(
+    when (ArtworkHeaderMode.of(pageType = pageType, blurredHeader = FluxUI.global.oldBlurredHeader)) {
+        ArtworkHeaderMode.BLURRED -> ArtworkImageBlurred(
             modifier = clickableModifier,
             fullArtwork = fullArtwork,
-            selectedSeason = selectedSeason
         )
-    } else {
-        ArtworkImageFull(
+        ArtworkHeaderMode.NORMAL -> ArtworkImageFull(
             modifier = clickableModifier,
             fullArtwork = fullArtwork,
             currentMedia = currentMedia,
@@ -90,7 +90,6 @@ fun ArtworkImageFull(
         FluxImage(
             modifier = Modifier
                 .matchParentSize()
-                // Stronger than the Episode thumbnails: the image is much larger, a light blur still shows the scene.
                 // Stronger than the Episode thumbnails: the image is much larger, a light blur still shows the scene.
                 .blurContent(blurred = isBlurred, radius = 24.dp)
                 .alpha(.8f),
@@ -132,14 +131,10 @@ fun ArtworkImageFull(
 fun ArtworkImageBlurred(
     modifier: Modifier,
     fullArtwork: FullArtwork,
-    selectedSeason: Int?,
     ratio: Float = 2f/3f
 ) {
 
-    val imageUrl = when (fullArtwork) {
-        is FullArtwork.FullMovie -> fullArtwork.artwork.artworkImagePath(ArtworkHeaderMode.BLURRED).tmdbImage
-        is FullArtwork.FullShow -> fullArtwork.seasons.find { it.season == selectedSeason }?.imagePath?.tmdbImage ?: fullArtwork.imagePath.tmdbImage
-    }
+    val imageUrl = fullArtwork.artwork.artworkImagePath(ArtworkHeaderMode.BLURRED).tmdbImage
 
     var imageHeight by remember { mutableIntStateOf(0) }
     val imageRequest = ImageRequest.Builder(LocalPlatformContext.current)
@@ -223,7 +218,6 @@ fun ArtworkImage_Blurred_Preview() {
         ArtworkImageBlurred(
             modifier = Modifier.aspectRatio(6f / 5f),
             fullArtwork = MediaMockups.fullShow,
-            selectedSeason = null
         )
     }
 }

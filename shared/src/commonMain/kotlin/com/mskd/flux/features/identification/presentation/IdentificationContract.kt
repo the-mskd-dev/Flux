@@ -2,6 +2,7 @@ package com.mskd.flux.features.identification.presentation
 
 import androidx.compose.runtime.Immutable
 import com.mskd.flux.core.model.artwork.Artwork
+import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.core.State
 import kotlinx.collections.immutable.ImmutableList
 
@@ -29,6 +30,6 @@ sealed interface IdentificationIntent {
 }
 
 sealed interface IdentificationEvent {
-    /** The Media now belong to [artworkId]. */
-    data class Identified(val artworkId: Long) : IdentificationEvent
+    /** The Media now belong to [artworkId], of the given [type]. */
+    data class Identified(val artworkId: Long, val type: ContentType) : IdentificationEvent
 }

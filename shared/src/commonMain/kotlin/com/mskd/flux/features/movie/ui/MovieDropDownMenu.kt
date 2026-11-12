@@ -1,11 +1,11 @@
-package com.mskd.flux.features.artwork.ui.composables
+package com.mskd.flux.features.movie.ui
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import com.mskd.flux.core.model.artwork.FullArtwork
-import com.mskd.flux.features.artwork.presentation.ArtworkIntent
+import com.mskd.flux.features.movie.presentation.MovieIntent
 import com.mskd.flux.features.identification.presentation.IdentificationAvailability
 import com.mskd.flux.ui.modal.menu.FluxPopUpMenu
 import com.mskd.flux.ui.modal.menu.FluxPopUpMenuItem
@@ -21,12 +21,12 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun ArtworkDropDownMenu(
+fun MovieDropDownMenu(
     isVisible: Boolean,
-    fullArtwork: FullArtwork,
+    fullMovie: FullArtwork.FullMovie,
     identification: IdentificationAvailability,
     onDismissRequest: () -> Unit,
-    sendIntent: (ArtworkIntent) -> Unit
+    sendIntent: (MovieIntent) -> Unit
 ) {
 
     FluxPopUpMenu(
@@ -39,7 +39,7 @@ fun ArtworkDropDownMenu(
                 FluxPopUpMenuItem(
                     text = stringResource(Res.string.more_info),
                     onClick = {
-                        sendIntent(ArtworkIntent.OpenArtworkInfo)
+                        sendIntent(MovieIntent.OpenMovieInfo)
                         onDismissRequest()
                     },
                     leadingIcon = {
@@ -56,7 +56,7 @@ fun ArtworkDropDownMenu(
                 FluxPopUpMenuItem(
                     text = stringResource(Res.string.reset_progress),
                     onClick = {
-                        sendIntent(ArtworkIntent.ShowResetProgressDialog)
+                        sendIntent(MovieIntent.ShowResetProgressDialog)
                         onDismissRequest()
                     },
                     leadingIcon = {
@@ -74,7 +74,7 @@ fun ArtworkDropDownMenu(
                     FluxPopUpMenuItem(
                         text = stringResource(Res.string.identification_select_data),
                         onClick = {
-                            sendIntent(ArtworkIntent.ShowIdentificationDialog)
+                            sendIntent(MovieIntent.ShowIdentificationDialog)
                             onDismissRequest()
                         },
                         leadingIcon = {
@@ -88,24 +88,22 @@ fun ArtworkDropDownMenu(
                 )
             }
 
-            // Open in file explorer (only for movies)
-            if (fullArtwork is FullArtwork.FullMovie) {
-                add(
-                    FluxPopUpMenuItem(
-                        text = stringResource(Res.string.open_in_file_explorer),
-                        onClick = {
-                            sendIntent(ArtworkIntent.OpenFileExplorer(media = fullArtwork.movie))
-                            onDismissRequest()
-                        },
-                        leadingIcon = {
-                            Icon(
-                                painter = painterResource(Res.drawable.ic_file_explorer),
-                                contentDescription = stringResource(Res.string.reset_progress)
-                            )
-                        },
-                    )
+            // Open in file explorer
+            add(
+                FluxPopUpMenuItem(
+                    text = stringResource(Res.string.open_in_file_explorer),
+                    onClick = {
+                        sendIntent(MovieIntent.OpenFileExplorer(media = fullMovie.movie))
+                        onDismissRequest()
+                    },
+                    leadingIcon = {
+                        Icon(
+                            painter = painterResource(Res.drawable.ic_file_explorer),
+                            contentDescription = stringResource(Res.string.open_in_file_explorer)
+                        )
+                    },
                 )
-            }
+            )
         }
     )
 

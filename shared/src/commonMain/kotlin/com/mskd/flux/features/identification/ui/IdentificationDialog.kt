@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.features.identification.presentation.IdentificationEvent
 import com.mskd.flux.features.identification.presentation.IdentificationIntent
 import com.mskd.flux.features.identification.presentation.IdentificationUiState
@@ -28,7 +29,7 @@ import org.koin.core.parameter.parametersOf
 fun IdentificationDialog(
     artworkId: Long,
     onDismiss: () -> Unit,
-    onIdentified: (artworkId: Long) -> Unit,
+    onIdentified: (artworkId: Long, type: ContentType) -> Unit,
     viewModel: IdentificationViewModel = koinViewModel(key = "identification_$artworkId", parameters = { parametersOf(artworkId) }),
 ) {
 
@@ -37,7 +38,7 @@ fun IdentificationDialog(
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
             when (event) {
-                is IdentificationEvent.Identified -> onIdentified(event.artworkId)
+                is IdentificationEvent.Identified -> onIdentified(event.artworkId, event.type)
             }
         }
     }

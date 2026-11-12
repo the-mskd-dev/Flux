@@ -1,5 +1,6 @@
 package com.mskd.flux.features.people.ui
 
+import com.mskd.flux.core.model.artwork.ContentType
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -15,6 +16,7 @@ import com.mskd.flux.features.people.presentation.PeopleIntent
 import com.mskd.flux.features.people.presentation.PersonViewModel
 import com.mskd.flux.mockups.PeopleMockup
 import com.mskd.flux.navigation.domain.Route
+import com.mskd.flux.navigation.domain.artworkPage
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.components.ErrorScreen
@@ -39,8 +41,8 @@ fun PersonScreen(
         viewModel.event.collect { event ->
             when (event) {
                 PeopleEvent.BackToPreviousScreen -> onBack()
-                is PeopleEvent.NavigateToMovie -> navigate(Route.Artwork(artworkId = event.artworkId, season = null, rgb = event.rgb))
-                is PeopleEvent.NavigateToShow -> navigate(Route.Show(artworkId = event.artworkId, rgb = event.rgb))
+                is PeopleEvent.NavigateToMovie -> navigate(artworkPage(artworkId = event.artworkId, type = ContentType.MOVIE, rgb = event.rgb))
+                is PeopleEvent.NavigateToShow -> navigate(artworkPage(artworkId = event.artworkId, type = ContentType.SHOW, rgb = event.rgb))
             }
         }
     }

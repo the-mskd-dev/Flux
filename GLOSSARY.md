@@ -58,12 +58,20 @@ _Avoid_: Fanart, banner, bannière
 2:3 TMDB image of an Artwork, in portrait.
 _Avoid_: Affiche, cover, jaquette
 
+**Artwork page**:
+Page of an Artwork, generic term for a Movie page, a Show page or a Season page.
+_Avoid_: Media page, Detail page, Fiche
+
+**Season page**:
+Page of one Season of a Show, reached from the Show page, listing its Episode. It shows the Season summary, the Episode actions and their Spoiler masking, and always the Backdrop as Artwork image.
+_Avoid_: Episodes page, Page saison
+
 **Logo**:
 TMDB image of an Artwork showing its stylised title, on a transparent background. It replaces the title text on the Artwork page when it is available. An Artwork has at most one Logo.
 _Avoid_: Title image, Wordmark, Titre graphique
 
 **Artwork image**:
-Image shown at the top of an Artwork page: its Backdrop, or its Poster when the blurred header is enabled (Movie only). It is the matching Custom image if there is one, otherwise the TMDB one. A tap opens it in the Gallery when a TMDB token is configured, except while it shows the selected Episode and that Episode is a Spoiler: the tap then reveals or hides the Episode.
+Image shown at the top of an Artwork page: its Backdrop, or its Poster when the blurred header is enabled. The blurred header is available for a Movie page and a Show page, not for a Season page, which always shows the Backdrop. It is the matching Custom image if there is one, otherwise the TMDB one. A tap opens it in the Gallery when a TMDB token is configured, except while it shows the selected Episode and that Episode is a Spoiler: the tap then reveals or hides the Episode.
 _Avoid_: Header image, banner, bannière
 
 **Custom image**:
@@ -211,11 +219,11 @@ A file whose TMDB fetch failed (network, API, missing token); nothing is saved a
 _Avoid_: Fichier en échec, unknown file, UNKNOWN
 
 **Manual identification**:
-Choice, by the user, of the TMDB Artwork that all the Media of an Artwork are attached to. It prevails over the name search, including for the new files of a Light sync. It is cleared by an Identification reset or a Full sync, and is not possible when a file of the Artwork carries a TMDB ID in its name.
+Choice, by the user, of the TMDB Artwork that all the Media of an Artwork are attached to. It prevails over the TMDB ID in the name of a file (file name or folder path) and over the name search, including for the new files of a Light sync. It is cleared by an Identification reset or a Full sync, after which the TMDB ID in the name applies again.
 _Avoid_: Identification manuelle, Data selection, rematch, correction
 
 **Identification reset**:
-Clearing of the Manual identification of an Artwork: each of its files gets back the Artwork the name search gives it. The Status and the Progress of the Media are kept.
+Clearing of the Manual identification of an Artwork: each of its files gets back the Artwork of the TMDB ID in its name, or else the one the name search gives it. The Status and the Progress of the Media are kept.
 _Avoid_: Réinitialisation, Reset (alone, ambiguous with the progress reset), cancellation
 
 **Unrecognized file**:

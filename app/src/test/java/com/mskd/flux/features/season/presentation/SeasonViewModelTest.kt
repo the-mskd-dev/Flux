@@ -14,7 +14,6 @@ import com.mskd.flux.features.artwork.fake.FakeObserveArtworkUseCase
 import com.mskd.flux.features.artwork.presentation.ArtworkOverviewContent
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.model.SyncState
-import com.mskd.flux.features.identification.presentation.IdentificationAvailability
 import com.mskd.flux.features.player.domain.model.PlaybackAction
 import com.mskd.flux.features.player.domain.usecase.ResolvePlaybackActionUseCase
 import com.mskd.flux.features.progress.domain.usecase.ChangeMediaStatusUseCase
@@ -519,64 +518,6 @@ class SeasonViewModelTest : FunSpec({
         test("the season description is readable when the option is disabled") {
             open(blurSpoilers = false)
             loaded().isOverviewBlurred shouldBe false
-        }
-
-    }
-
-    context("Manual identification") {
-
-        suspend fun identification(): IdentificationAvailability =
-            (viewModel.uiState.first { it.state is State.Content }.state as State.Content).content.identification
-
-        test("offered on a Season with a TMDB token") {
-            identification() shouldBe IdentificationAvailability.ENABLED
-        }
-
-        test("hidden without TMDB token") {
-            token.value = ""
-            updateVm(MediaMockups.showArtwork.id, 1)
-            identification() shouldBe IdentificationAvailability.HIDDEN
-        }
-
-        test("offered when the folder of one of the files carries a TMDB ID") {
-            val episodes = MediaMockups.episodes.mapIndexed { index, episode ->
-                if (index == 0) episode.copy(file = episode.file.copy(realPath = "Dark {tmdb-70523}/${episode.file.name}")) else episode
-            }
-            observeArtworkUseCase = mockk {
-                every { this@mockk(any()) } returns flowOf(State.Content(MediaMockups.fullShow.copy(episodes = episodes.toImmutableList())))
-            }
-            updateVm(MediaMockups.showArtwork.id, 1)
-            identification() shouldBe IdentificationAvailability.ENABLED
-        }
-
-        test("disabled during a Sync, and the dialog opens only once it ends") {
-            syncState.value = SyncState.Syncing(full = false)
-            updateVm(MediaMockups.showArtwork.id, 1)
-            viewModel.uiState.test {
-                content().identification shouldBe IdentificationAvailability.DISABLED
-                viewModel.handleIntent(SeasonIntent.ShowIdentificationDialog)
-                expectNoEvents()
-
-                syncState.value = SyncState.Idle()
-                content().identification shouldBe IdentificationAvailability.ENABLED
-                viewModel.handleIntent(SeasonIntent.ShowIdentificationDialog)
-                content().dialog shouldBe SeasonPageDialog.Identification
-            }
-        }
-
-        listOf(ContentType.SHOW, ContentType.MOVIE).forEach { type ->
-            test("once identified as a $type, the dialog closes and the new Artwork is sent with its type") {
-                viewModel.uiState.test {
-                    expectMostRecentItem()
-                    viewModel.handleIntent(SeasonIntent.ShowIdentificationDialog)
-                    content().dialog shouldBe SeasonPageDialog.Identification
-                    viewModel.event.test {
-                        viewModel.handleIntent(SeasonIntent.OnIdentified(artworkId = 42L, type = type))
-                        awaitItem() shouldBe SeasonEvent.Identified(artworkId = 42L, type = type)
-                    }
-                    content().dialog shouldBe null
-                }
-            }
         }
 
     }

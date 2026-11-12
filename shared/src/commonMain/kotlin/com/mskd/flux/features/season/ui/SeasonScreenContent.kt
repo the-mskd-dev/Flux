@@ -12,13 +12,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.mskd.flux.features.artwork.ui.composables.ArtworkDialogs
-import com.mskd.flux.features.identification.presentation.IdentificationAvailability
 import com.mskd.flux.features.season.presentation.SeasonContent
 import com.mskd.flux.features.season.presentation.SeasonPageDialog
 import com.mskd.flux.features.season.presentation.SeasonIntent
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.components.FluxScaffold
+import com.mskd.flux.ui.components.ResetProgressDialog
 import com.mskd.flux.ui.dimensions.rememberScreenDimensions
 import com.mskd.flux.ui.modal.dialog.FluxDialog
 import com.mskd.flux.ui.modal.menu.FluxPopUpMenu
@@ -27,8 +26,6 @@ import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_eraser
-import flux.shared.generated.resources.ic_search
-import flux.shared.generated.resources.identification_select_data
 import flux.shared.generated.resources.mark_previous_episodes_as_watched
 import flux.shared.generated.resources.more_info
 import flux.shared.generated.resources.reset_progress
@@ -63,7 +60,6 @@ fun SeasonScreenContent(
 
             SeasonDropDownMenu(
                 isVisible = showMenu,
-                identification = content.identification,
                 onDismissRequest = { showMenu = false },
                 sendIntent = sendIntent
             )
@@ -89,21 +85,18 @@ fun SeasonScreenContent(
         onValidate = { sendIntent(SeasonIntent.MarkPreviousEpisodesAsWatched) }
     )
 
-    ArtworkDialogs(
-        artworkId = content.fullShow.artwork.id,
-        isIdentificationVisible = content.dialog is SeasonPageDialog.Identification,
-        isResetProgressVisible = content.dialog is SeasonPageDialog.ResetProgressConfirmation,
-        onDismiss = { sendIntent(SeasonIntent.CloseDialog) },
-        onIdentified = { artworkId, type -> sendIntent(SeasonIntent.OnIdentified(artworkId = artworkId, type = type)) },
-        onResetProgress = { sendIntent(SeasonIntent.ResetProgress) },
-    )
+    if (content.dialog is SeasonPageDialog.ResetProgressConfirmation) {
+        ResetProgressDialog(
+            onValidate = { sendIntent(SeasonIntent.ResetProgress) },
+            onDismiss = { sendIntent(SeasonIntent.CloseDialog) }
+        )
+    }
 
 }
 
 @Composable
 fun SeasonDropDownMenu(
     isVisible: Boolean,
-    identification: IdentificationAvailability,
     onDismissRequest: () -> Unit,
     sendIntent: (SeasonIntent) -> Unit
 ) {
@@ -111,7 +104,7 @@ fun SeasonDropDownMenu(
     FluxPopUpMenu(
         isVisible = isVisible,
         onDismissRequest = onDismissRequest,
-        items = listOfNotNull(
+        items = listOf(
             FluxPopUpMenuItem(
                 text = stringResource(Res.string.more_info),
                 onClick = {
@@ -128,16 +121,6 @@ fun SeasonDropDownMenu(
                 },
                 leadingIcon = { Icon(painter = painterResource(Res.drawable.ic_eraser), contentDescription = stringResource(Res.string.reset_progress)) },
             ),
-            // Manual identification
-            FluxPopUpMenuItem(
-                text = stringResource(Res.string.identification_select_data),
-                onClick = {
-                    sendIntent(SeasonIntent.ShowIdentificationDialog)
-                    onDismissRequest()
-                },
-                leadingIcon = { Icon(painter = painterResource(Res.drawable.ic_search), contentDescription = stringResource(Res.string.identification_select_data)) },
-                enabled = identification == IdentificationAvailability.ENABLED,
-            ).takeIf { identification != IdentificationAvailability.HIDDEN },
         )
     )
 

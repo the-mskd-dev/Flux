@@ -8,7 +8,6 @@ import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.presentation.ArtworkOverviewContent
-import com.mskd.flux.features.identification.presentation.IdentificationAvailability
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.persistentSetOf
@@ -28,7 +27,6 @@ data class SeasonContent(
     val blurredEpisodeIds: ImmutableSet<Long> = persistentSetOf(),
     /** The Artwork image shows the selected Episode: it is hidden while that Episode is. */
     val isArtworkImageBlurred: Boolean = false,
-    val identification: IdentificationAvailability = IdentificationAvailability.HIDDEN,
     val dialog: SeasonPageDialog? = null,
 ) {
     /** Title of the Season, or of the Show when the Season has none. */
@@ -46,7 +44,6 @@ data class SeasonUiState(
 sealed interface SeasonPageDialog {
     data class EpisodeStatusConfirmation(val episode: Episode) : SeasonPageDialog
     data object ResetProgressConfirmation : SeasonPageDialog
-    data object Identification : SeasonPageDialog
 }
 
 sealed interface SeasonIntent {
@@ -61,10 +58,6 @@ sealed interface SeasonIntent {
     // Dialogs
     data object CloseDialog : SeasonIntent
     data object ShowResetProgressDialog : SeasonIntent
-    data object ShowIdentificationDialog : SeasonIntent
-
-    // Manual identification
-    data class OnIdentified(val artworkId: Long, val type: ContentType) : SeasonIntent
 
     // Status
     data object ResetProgress : SeasonIntent
@@ -83,9 +76,4 @@ sealed interface SeasonEvent {
     data object BackToPreviousScreen : SeasonEvent
     data class PlayMedia(val media: Media, val externalPlayer: Boolean) : SeasonEvent
     data class NavigateToGallery(val artworkId: Long, val contentType: ContentType) : SeasonEvent
-    /**
-     * The Media now belong to [artworkId], of the given [type]: the navigation replaces the page by the one matching [type].
-     * The season is dropped. Back must not lead to the previous Show, which may no longer exist.
-     */
-    data class Identified(val artworkId: Long, val type: ContentType) : SeasonEvent
 }

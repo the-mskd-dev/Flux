@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.player.domain.model.PlayerParams
 import com.mskd.flux.features.season.presentation.SeasonEvent
@@ -34,7 +33,6 @@ fun SeasonScreen(
     colorScheme: ColorScheme,
     navigate: (Route) -> Unit,
     onBack: () -> Unit,
-    onIdentified: (artworkId: Long, type: ContentType) -> Unit,
     viewModel: SeasonViewModel = koinViewModel(parameters = { parametersOf(artworkId, season) })
 ) {
 
@@ -49,7 +47,6 @@ fun SeasonScreen(
         viewModel.event.collect { event ->
             when (event) {
                 SeasonEvent.BackToPreviousScreen -> onBack()
-                is SeasonEvent.Identified -> onIdentified(event.artworkId, event.type)
                 is SeasonEvent.NavigateToGallery -> navigate(Route.Gallery(artworkId = event.artworkId, contentType = event.contentType))
                 is SeasonEvent.PlayMedia -> {
                     if (event.externalPlayer)

@@ -11,7 +11,6 @@ import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtwo
 import com.mskd.flux.features.artwork.presentation.ArtworkOverviewContent
 import com.mskd.flux.features.artwork.presentation.ArtworkViewModel
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
-import com.mskd.flux.features.identification.presentation.IdentificationAvailability
 import com.mskd.flux.features.player.domain.model.PlaybackAction
 import com.mskd.flux.features.player.domain.usecase.ResolvePlaybackActionUseCase
 import com.mskd.flux.features.progress.domain.usecase.ChangeMediaStatusUseCase
@@ -74,9 +73,8 @@ class SeasonViewModel(
     override val uiState: StateFlow<SeasonUiState> = combine(
         observedArtwork,
         settingsDataStore.flow,
-        tokenAndSync,
         _userState,
-    ) { artworkState, settings, (tokenAvailable, syncing), userState ->
+    ) { artworkState, settings, userState ->
 
         when (artworkState) {
             is State.Loading -> SeasonUiState(state = State.Loading)
@@ -84,12 +82,7 @@ class SeasonViewModel(
             is State.Content -> {
                 val fullShow = artworkState.content as? FullArtwork.FullShow
                     ?: return@combine SeasonUiState(state = State.Error())
-                val identification = IdentificationAvailability.of(
-                    artwork = fullShow.artwork,
-                    tokenAvailable = tokenAvailable,
-                    syncing = syncing,
-                )
-                SeasonUiState(state = buildContent(fullShow, settings.blurSpoilers, identification, userState))
+                SeasonUiState(state = buildContent(fullShow, settings.blurSpoilers, userState))
             }
         }
 
@@ -122,10 +115,6 @@ class SeasonViewModel(
             // Dialogs
             SeasonIntent.CloseDialog -> setDialog(null)
             SeasonIntent.ShowResetProgressDialog -> setDialog(SeasonPageDialog.ResetProgressConfirmation)
-            SeasonIntent.ShowIdentificationDialog -> showIdentificationDialog()
-
-            // Manual identification
-            is SeasonIntent.OnIdentified -> onIdentified(artworkId = intent.artworkId, type = intent.type)
 
             // Status
             is SeasonIntent.ChangeWatchStatus -> changeWatchStatus(media = intent.media)
@@ -148,7 +137,6 @@ class SeasonViewModel(
     private fun buildContent(
         fullShow: FullArtwork.FullShow,
         blurSpoilers: Boolean,
-        identification: IdentificationAvailability,
         userState: UserState,
     ): State<SeasonContent> {
 
@@ -179,7 +167,6 @@ class SeasonViewModel(
                 spoilerEpisodeIds = spoilerIds,
                 blurredEpisodeIds = blurredIds,
                 isArtworkImageBlurred = selectedEpisode.id in blurredIds,
-                identification = identification,
                 dialog = userState.dialog,
             )
         )
@@ -270,16 +257,6 @@ class SeasonViewModel(
         val episode = (_userState.value.dialog as? SeasonPageDialog.EpisodeStatusConfirmation)?.episode ?: return
         markPreviousAsWatched(episode = episode)
         setDialog(null)
-    }
-
-    private fun showIdentificationDialog() {
-        if (seasonContent?.identification != IdentificationAvailability.ENABLED) return
-        setDialog(SeasonPageDialog.Identification)
-    }
-
-    private suspend fun onIdentified(artworkId: Long, type: ContentType) {
-        setDialog(null)
-        emit(SeasonEvent.Identified(artworkId = artworkId, type = type))
     }
 
     private suspend fun resetProgress() {

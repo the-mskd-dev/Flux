@@ -85,8 +85,6 @@ class MainActivity : ComponentActivity() {
                             SeasonScreen(
                                 navigate = { route -> nav.navigate(route) },
                                 onBack = { nav.onBack() },
-                                // The Show page of the identified Artwork, right below, is replaced too
-                                onIdentified = { artworkId, type -> nav.replacePagesOf(entry.artworkId, identifiedDestination(artworkId = artworkId, type = type)) },
                                 artworkId = entry.artworkId,
                                 season = entry.season,
                                 colorScheme = createColorScheme(

@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 
 /**
  * Behaviour shared by the Artwork pages (Movie page, Season page, Show page): observing the Artwork,
- * the token / sync status used by the Manual identification, reset of progression, external player result,
+ * the token / sync status used by the Manual identification of the Movie and Show pages, reset of progression, external player result,
  * and the shape of the intent dispatching.
  *
  * A page only overrides how its content is mapped ([uiState]) and how its own intents are handled ([onIntent]).

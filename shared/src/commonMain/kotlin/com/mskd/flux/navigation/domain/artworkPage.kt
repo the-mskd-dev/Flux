@@ -10,6 +10,6 @@ fun artworkPage(artworkId: Long, type: ContentType, rgb: Int?): Route = when (ty
 
 /**
  * The page reached after a Manual identification, from the [type] of the new Artwork [artworkId]: see [artworkPage].
- * The season of the previous page is dropped, and so is its colour, which belonged to the previous Artwork.
+ * The colour of the previous page is dropped: it belonged to the previous Artwork.
  */
 fun identifiedDestination(artworkId: Long, type: ContentType): Route = artworkPage(artworkId = artworkId, type = type, rgb = null)

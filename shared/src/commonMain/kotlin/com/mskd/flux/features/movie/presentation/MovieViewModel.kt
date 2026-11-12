@@ -8,7 +8,7 @@ import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.features.artwork.presentation.ArtworkOverviewContent
-import com.mskd.flux.features.artwork.presentation.ArtworkPageViewModel
+import com.mskd.flux.features.artwork.presentation.ArtworkViewModel
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.identification.presentation.IdentificationAvailability
 import com.mskd.flux.features.people.domain.usecase.GetPeopleUseCase
@@ -39,7 +39,7 @@ class MovieViewModel(
     resetProgress: ResetProgressUseCase,
     private val resolvePlaybackAction: ResolvePlaybackActionUseCase,
     recordPlaybackResult: SaveProgressUseCase,
-) : ArtworkPageViewModel<MovieUiState, MovieIntent, MovieEvent>(
+) : ArtworkViewModel<MovieUiState, MovieIntent, MovieEvent>(
     artworkId = artworkId,
     observeArtworkUseCase = observeArtworkUseCase,
     tokenDataStore = tokenDataStore,

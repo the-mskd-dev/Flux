@@ -4,9 +4,9 @@
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] The shared base ViewModel is named `ArtworkViewModel`, and the shared composables no longer carry `Page` in their names.
-- [ ] `ArtworkPageType` and `artworkPage` are unchanged.
-- [ ] No behaviour change: existing tests pass without behavioural edits.
-- [ ] `./gradlew :app:testFossDebugUnitTest` passes.
+- [x] The shared base ViewModel is named `ArtworkViewModel`, and the shared composables no longer carry `Page` in their names.
+- [x] `ArtworkPageType` and `artworkPage` are unchanged.
+- [x] No behaviour change: existing tests pass without behavioural edits.
+- [x] `./gradlew :app:testFossDebugUnitTest` passes.

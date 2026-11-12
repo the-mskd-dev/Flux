@@ -12,7 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.mskd.flux.features.artwork.ui.composables.ArtworkPageDialogs
+import com.mskd.flux.features.artwork.ui.composables.ArtworkDialogs
 import com.mskd.flux.features.identification.presentation.IdentificationAvailability
 import com.mskd.flux.features.season.presentation.SeasonContent
 import com.mskd.flux.features.season.presentation.SeasonPageDialog
@@ -89,7 +89,7 @@ fun SeasonScreenContent(
         onValidate = { sendIntent(SeasonIntent.MarkPreviousEpisodesAsWatched) }
     )
 
-    ArtworkPageDialogs(
+    ArtworkDialogs(
         artworkId = content.fullShow.artwork.id,
         isIdentificationVisible = content.dialog is SeasonPageDialog.Identification,
         isResetProgressVisible = content.dialog is SeasonPageDialog.ResetProgressConfirmation,

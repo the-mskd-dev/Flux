@@ -23,7 +23,7 @@ import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.core.State
-import com.mskd.flux.features.artwork.ui.composables.ArtworkPageDialogs
+import com.mskd.flux.features.artwork.ui.composables.ArtworkDialogs
 import com.mskd.flux.features.identification.presentation.IdentificationAvailability
 import com.mskd.flux.features.show.presentation.ShowDialog
 import com.mskd.flux.features.show.presentation.ShowEvent
@@ -181,7 +181,7 @@ fun ShowScreenContent(
             )
         }
 
-        ArtworkPageDialogs(
+        ArtworkDialogs(
             artworkId = fullShow.artwork.id,
             isIdentificationVisible = dialog is ShowDialog.Identification,
             isResetProgressVisible = dialog is ShowDialog.ResetProgress,

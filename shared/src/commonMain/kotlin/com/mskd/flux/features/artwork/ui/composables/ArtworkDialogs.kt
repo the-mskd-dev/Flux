@@ -9,7 +9,7 @@ import com.mskd.flux.ui.components.ResetProgressDialog
  * Dialogs shared by the Artwork pages: the Manual identification of the Artwork, and the reset of its Progress.
  */
 @Composable
-fun ArtworkPageDialogs(
+fun ArtworkDialogs(
     artworkId: Long,
     isIdentificationVisible: Boolean,
     isResetProgressVisible: Boolean,

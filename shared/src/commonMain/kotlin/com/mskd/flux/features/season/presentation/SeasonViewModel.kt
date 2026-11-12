@@ -9,7 +9,7 @@ import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.features.artwork.presentation.ArtworkOverviewContent
-import com.mskd.flux.features.artwork.presentation.ArtworkPageViewModel
+import com.mskd.flux.features.artwork.presentation.ArtworkViewModel
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.identification.presentation.IdentificationAvailability
 import com.mskd.flux.features.player.domain.model.PlaybackAction
@@ -50,7 +50,7 @@ class SeasonViewModel(
     resetProgress: ResetProgressUseCase,
     private val resolvePlaybackAction: ResolvePlaybackActionUseCase,
     recordPlaybackResult: SaveProgressUseCase,
-) : ArtworkPageViewModel<SeasonUiState, SeasonIntent, SeasonEvent>(
+) : ArtworkViewModel<SeasonUiState, SeasonIntent, SeasonEvent>(
     artworkId = artworkId,
     observeArtworkUseCase = observeArtworkUseCase,
     tokenDataStore = tokenDataStore,

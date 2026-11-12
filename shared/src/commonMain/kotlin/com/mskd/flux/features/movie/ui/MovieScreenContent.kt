@@ -11,7 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.mskd.flux.features.artwork.ui.composables.ArtworkPageDialogs
+import com.mskd.flux.features.artwork.ui.composables.ArtworkDialogs
 import com.mskd.flux.features.movie.presentation.MovieContent
 import com.mskd.flux.features.movie.presentation.MovieIntent
 import com.mskd.flux.features.movie.presentation.MoviePageDialog
@@ -66,7 +66,7 @@ fun MovieScreenContent(
 
     }
 
-    ArtworkPageDialogs(
+    ArtworkDialogs(
         artworkId = content.fullMovie.artwork.id,
         isIdentificationVisible = content.dialog is MoviePageDialog.Identification,
         isResetProgressVisible = content.dialog is MoviePageDialog.ResetProgressConfirmation,

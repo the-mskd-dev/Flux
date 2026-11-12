@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
  *
  * A page only overrides how its content is mapped ([uiState]) and how its own intents are handled ([onIntent]).
  */
-abstract class ArtworkPageViewModel<UiState, Intent, Event>(
+abstract class ArtworkViewModel<UiState, Intent, Event>(
     protected val artworkId: Long,
     observeArtworkUseCase: ObserveArtworkUseCase,
     protected val tokenDataStore: TokenDataStore,

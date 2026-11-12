@@ -27,7 +27,7 @@ import com.mskd.flux.ui.theme.FluxUI
  * @param titleHorizontalMargin margin between the title and the screen edges.
  */
 @Composable
-fun ArtworkPageHeader(
+fun ArtworkHeader(
     modifier: Modifier = Modifier,
     fullArtwork: FullArtwork,
     currentMedia: Media? = null,
@@ -91,14 +91,14 @@ fun ArtworkPageHeader(
 
 @FluxPreview
 @Composable
-fun ArtworkPageHeader_Preview() {
+fun ArtworkHeader_Preview() {
     FluxThemePreview {
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.TopCenter
         ) {
 
-            ArtworkPageHeader(
+            ArtworkHeader(
                 modifier = Modifier.fillMaxWidth(),
                 fullArtwork = MediaMockups.fullMovie,
                 currentMedia = MediaMockups.movie,

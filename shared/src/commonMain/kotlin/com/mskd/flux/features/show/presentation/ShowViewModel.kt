@@ -7,7 +7,7 @@ import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
-import com.mskd.flux.features.artwork.presentation.ArtworkPageViewModel
+import com.mskd.flux.features.artwork.presentation.ArtworkViewModel
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.identification.presentation.IdentificationAvailability
@@ -33,7 +33,7 @@ class ShowViewModel(
     tokenDataStore: TokenDataStore,
     catalogSyncCoordinator: CatalogSyncCoordinator,
     resetProgress: ResetProgressUseCase,
-) : ArtworkPageViewModel<ShowUiState, ShowIntent, ShowEvent>(
+) : ArtworkViewModel<ShowUiState, ShowIntent, ShowEvent>(
     artworkId = artworkId,
     observeArtworkUseCase = observeArtworkUseCase,
     tokenDataStore = tokenDataStore,

@@ -20,6 +20,6 @@ fun MutableList<NavKey>.replacePagesOf(artworkId: Long, route: Route) {
 private fun NavKey.isPageOf(artworkId: Long): Boolean = when (this) {
     is Route.Show -> this.artworkId == artworkId
     is Route.Season -> this.artworkId == artworkId
-    is Route.Artwork -> this.artworkId == artworkId
+    is Route.Movie -> this.artworkId == artworkId
     else -> false
 }

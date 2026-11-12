@@ -7,7 +7,7 @@ import io.kotest.matchers.shouldBe
 class IdentifiedDestinationTest : FunSpec({
 
     test("a movie leads to the movie page of the new Artwork") {
-        identifiedDestination(artworkId = 42L, type = ContentType.MOVIE) shouldBe Route.Artwork(artworkId = 42L, season = null, rgb = null)
+        identifiedDestination(artworkId = 42L, type = ContentType.MOVIE) shouldBe Route.Movie(artworkId = 42L, rgb = null)
     }
 
     test("a series leads to the Show page of the new Artwork") {

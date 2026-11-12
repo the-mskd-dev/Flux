@@ -1,0 +1,15 @@
+package com.mskd.flux.navigation.domain
+
+import com.mskd.flux.core.model.artwork.ContentType
+
+/** The page of the Artwork [artworkId], from its [type]: the movie page for a Movie, the Show page for a Show. */
+fun artworkPage(artworkId: Long, type: ContentType, rgb: Int?): Route = when (type) {
+    ContentType.MOVIE -> Route.Movie(artworkId = artworkId, rgb = rgb)
+    ContentType.SHOW -> Route.Show(artworkId = artworkId, rgb = rgb)
+}
+
+/**
+ * The page reached after a Manual identification, from the [type] of the new Artwork [artworkId]: see [artworkPage].
+ * The season of the previous page is dropped, and so is its colour, which belonged to the previous Artwork.
+ */
+fun identifiedDestination(artworkId: Long, type: ContentType): Route = artworkPage(artworkId = artworkId, type = type, rgb = null)

@@ -6,6 +6,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -190,6 +191,10 @@ fun FluxNavigation(
                         },
                         fromSetup = entry.fromSetup
                     )
+                }
+                entry<Route.Unrestorable> {
+                    // A page saved by a previous version: it leaves the back stack as soon as it is shown
+                    LaunchedEffect(Unit) { navigator.onBack() }
                 }
                 entry<Route.Message> {
                     MessageScreen(

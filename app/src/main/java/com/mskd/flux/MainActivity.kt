@@ -13,8 +13,8 @@ import com.mskd.flux.features.connectivity.domain.ConnectivityRepository
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.navigation.domain.identifiedDestination
 import com.mskd.flux.navigation.ui.FluxNavigation
-import com.mskd.flux.screens.artwork.ArtworkScreen
 import com.mskd.flux.screens.catalog.CatalogScreen
+import com.mskd.flux.screens.movie.MovieScreen
 import com.mskd.flux.screens.player.PlayerScreen
 import com.mskd.flux.screens.search.SearchScreen
 import com.mskd.flux.screens.season.SeasonScreen
@@ -69,13 +69,12 @@ class MainActivity : ComponentActivity() {
                                 navigate = { route -> nav.navigate(route) },
                             )
                         }
-                        entry<Route.Artwork> { entry ->
-                            ArtworkScreen(
+                        entry<Route.Movie> { entry ->
+                            MovieScreen(
                                 navigate = { route -> nav.navigate(route) },
                                 onBack = { nav.onBack() },
                                 onIdentified = { artworkId, type -> nav.replace(identifiedDestination(artworkId = artworkId, type = type)) },
                                 artworkId = entry.artworkId,
-                                season = entry.season,
                                 colorScheme = createColorScheme(
                                     theme = customization.uiTheme,
                                     color = customization.color ?: entry.rgb

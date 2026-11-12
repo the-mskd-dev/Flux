@@ -14,6 +14,7 @@ import com.mskd.flux.features.player.modulePlayer
 import com.mskd.flux.features.privateFolder.modulePrivateFolder
 import com.mskd.flux.features.progress.moduleProgress
 import com.mskd.flux.features.search.moduleSearch
+import com.mskd.flux.features.movie.moduleMovie
 import com.mskd.flux.features.season.moduleSeason
 import com.mskd.flux.features.settings.moduleSettings
 import com.mskd.flux.features.setup.moduleSetup
@@ -39,6 +40,7 @@ val moduleFeatures = module {
         modulePrivateFolder,
         moduleProgress,
         moduleSearch,
+        moduleMovie,
         moduleSeason,
         moduleSettings,
         moduleSetup,

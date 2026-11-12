@@ -1,5 +1,6 @@
 package com.mskd.flux.screens.catalog
 
+import com.mskd.flux.core.model.artwork.ContentType
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
@@ -50,6 +51,7 @@ import com.mskd.flux.features.player.domain.model.PlayerParams
 import com.mskd.flux.mockups.DetailsMockup
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.navigation.domain.Route
+import com.mskd.flux.navigation.domain.artworkPage
 import com.mskd.flux.navigation.domain.Route.Player
 import com.mskd.flux.screens.catalog.composable.CatalogEmptyContent
 import com.mskd.flux.screens.catalog.composable.CatalogHeader
@@ -92,8 +94,8 @@ fun CatalogScreen(
         viewModel.event.collect { event ->
             when (event) {
                 is CatalogEvent.NavigateToSearch -> navigate(Route.Search(withGenre = event.genre, withType = event.category))
-                is CatalogEvent.NavigateToMovie -> navigate(Route.Artwork(artworkId = event.artworkId, season = null, rgb = event.rgb))
-                is CatalogEvent.NavigateToShow -> navigate(Route.Show(artworkId = event.artworkId, rgb = event.rgb))
+                is CatalogEvent.NavigateToMovie -> navigate(artworkPage(artworkId = event.artworkId, type = ContentType.MOVIE, rgb = event.rgb))
+                is CatalogEvent.NavigateToShow -> navigate(artworkPage(artworkId = event.artworkId, type = ContentType.SHOW, rgb = event.rgb))
                 CatalogEvent.NavigateToUnknown -> navigate(Route.UnknownArtworks)
                 CatalogEvent.NavigateToHowTo -> navigate(Route.HowTo)
                 CatalogEvent.NavigateToSettings -> navigate(Route.Settings)

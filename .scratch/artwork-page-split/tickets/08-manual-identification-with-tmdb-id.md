@@ -4,12 +4,12 @@
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] The Manual identification option is shown, and enabled outside a Sync, on the Movie, Show and Season pages when a file has a TMDB ID in its name. It is still hidden for the Unknown Artwork and when no TMDB token is set.
-- [ ] Tests of the identification availability rule cover the case of a file with a TMDB ID.
-- [ ] During a Sync, a file with a TMDB ID in its name whose (title, year) matches a known Media of a manually identified Artwork is attached to that Artwork, without a lookup by TMDB ID. Tests cover this case, the TMDB ID case without a Manual identification, and the name search fallback.
-- [ ] After an Identification reset or a Full sync, a file with a TMDB ID in its name gets back the Artwork of that TMDB ID.
-- [ ] ADR 0001 and `GLOSSARY.md` "Manual identification" state the new priority order and no longer say that a TMDB ID in a file name prevents a Manual identification. The comments in the code that state the old order are updated.
-- [ ] No database schema change and no data migration.
-- [ ] `./gradlew :app:testFossDebugUnitTest` passes.
+- [x] The Manual identification option is shown, and enabled outside a Sync, on the Movie, Show and Season pages when a file has a TMDB ID in its name. It is still hidden for the Unknown Artwork and when no TMDB token is set.
+- [x] Tests of the identification availability rule cover the case of a file with a TMDB ID. (Through the Movie, Show and Season ViewModel tests; the folder path case on the Season page.)
+- [x] During a Sync, a file with a TMDB ID in its name whose (title, year) matches a known Media of a manually identified Artwork is attached to that Artwork, without a lookup by TMDB ID. Tests cover this case, the TMDB ID case without a Manual identification, and the name search fallback. (Decided per folder: a folder grouped by TMDB ID whose files have mixed (title, year) follows its TMDB ID, see ADR 0001.)
+- [x] After an Identification reset or a Full sync, a file with a TMDB ID in its name gets back the Artwork of that TMDB ID. (Tested through the Full sync: there is no per-Artwork Identification reset action in the code yet.)
+- [x] ADR 0001 and `GLOSSARY.md` "Manual identification" state the new priority order and no longer say that a TMDB ID in a file name prevents a Manual identification. The comments in the code that state the old order are updated.
+- [x] No database schema change and no data migration.
+- [x] `./gradlew :app:testFossDebugUnitTest` passes.

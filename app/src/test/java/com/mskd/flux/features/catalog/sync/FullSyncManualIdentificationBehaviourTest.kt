@@ -43,7 +43,7 @@ class FullSyncManualIdentificationBehaviourTest : FunSpec({
 
     }
 
-    test("a manually identified file with a TMDB ID in its name keeps the choice through a Light sync, and gets back the Artwork of its TMDB ID after a Full sync") {
+    test("a manually identified file with a TMDB ID in its name gets back the Artwork of its TMDB ID after a Full sync") {
 
         // Given
         val fileName = "Breaking Bad S01E01 {tmdb-$breakingBad}.mkv"

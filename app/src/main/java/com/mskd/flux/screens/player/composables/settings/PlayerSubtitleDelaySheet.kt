@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.widthIn
@@ -35,6 +36,8 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.features.player.presentation.PlayerIntent
+import com.mskd.flux.features.player.presentation.SettingsSheet
+import com.mskd.flux.features.player.ui.PlayerSheetTopBar
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.global.expressivePressScale
 import com.mskd.flux.ui.text.Text
@@ -72,17 +75,19 @@ fun PlayerSubtitleDelaySheet(
             tonalElevation = AlertDialogDefaults.TonalElevation
         ) {
 
-            Column(
-                modifier = Modifier.padding(FluxUI.Space.large),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large)
-            ) {
+            Column {
 
-                Text.Content.Title(text = stringResource(Res.string.subtitle_delay))
+                PlayerSheetTopBar(
+                    title = stringResource(Res.string.subtitle_delay),
+                    onBack = { sendIntent(PlayerIntent.ShowSettings(sheet = SettingsSheet.Settings)) },
+                )
 
                 Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(FluxUI.Space.large),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
+                    horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.medium, Alignment.CenterHorizontally)
                 ) {
 
                     StepButton(

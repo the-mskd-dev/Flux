@@ -469,16 +469,17 @@ object Text {
             overflow: TextOverflow = TextOverflow.Clip,
             maxLines: Int = Int.MAX_VALUE,
             minLines: Int = 1,
+            allowEmpty: Boolean = false
         ) {
 
-            if (text.isNullOrBlank())
+            if (text.isNullOrBlank() && !allowEmpty)
                 return
 
             val style = Style.listBody()
             val textColor = color.takeOrElse { style.color.takeOrElse { LocalContentColor.current } }
 
             Text(
-                text = text,
+                text = text.orEmpty(),
                 color = textColor,
                 modifier = modifier,
                 autoSize = autoSize,

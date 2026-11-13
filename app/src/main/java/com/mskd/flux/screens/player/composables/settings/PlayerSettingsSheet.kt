@@ -158,6 +158,7 @@ fun PlayerSettingsItem(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             text = value,
+            allowEmpty = true
         )
 
         Icon(

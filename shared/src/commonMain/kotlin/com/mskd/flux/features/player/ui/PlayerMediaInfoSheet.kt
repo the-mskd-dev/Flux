@@ -9,13 +9,8 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.BasicAlertDialog
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -67,29 +62,10 @@ fun PlayerMediaInfoSheet(
                     .fillMaxWidth()
             ) {
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = FluxUI.Space.small, end = FluxUI.Space.medium, top = FluxUI.Space.small, bottom = FluxUI.Space.small),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
-                ) {
-
-                    IconButton(onClick = onBack) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                            contentDescription = "back button"
-                        )
-                    }
-
-                    Text.Content.Title(
-                        modifier = Modifier.weight(1f),
-                        text = stringResource(Res.string.media_info),
-                    )
-
-                }
-
-                HorizontalDivider(modifier = Modifier.fillMaxWidth())
+                PlayerSheetTopBar(
+                    title = stringResource(Res.string.media_info),
+                    onBack = onBack,
+                )
 
                 MediaInfoRow(
                     label = stringResource(Res.string.container),

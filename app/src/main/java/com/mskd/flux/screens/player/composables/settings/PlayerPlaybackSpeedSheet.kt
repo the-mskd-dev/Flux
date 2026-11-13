@@ -24,6 +24,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import com.mskd.flux.features.player.presentation.PlayerIntent
+import com.mskd.flux.features.player.presentation.SettingsSheet
+import com.mskd.flux.features.player.ui.PlayerSheetTopBar
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
@@ -61,14 +63,10 @@ fun PlayerPlaybackSpeedSheet(
                             .background(MaterialTheme.colorScheme.surfaceContainerHigh)
                     ) {
 
-                        Text.Content.Title(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = FluxUI.Space.large, start = FluxUI.Space.medium, end = FluxUI.Space.medium, bottom = FluxUI.Space.medium),
-                            text = stringResource(Res.string.playback_speed),
+                        PlayerSheetTopBar(
+                            title = stringResource(Res.string.playback_speed),
+                            onBack = { sendIntent(PlayerIntent.ShowSettings(sheet = SettingsSheet.Settings)) },
                         )
-
-                        HorizontalDivider(modifier = Modifier.fillMaxWidth())
 
                     }
 

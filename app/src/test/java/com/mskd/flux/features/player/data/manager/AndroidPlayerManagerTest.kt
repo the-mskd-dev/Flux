@@ -6,8 +6,12 @@ import androidx.media3.common.MimeTypes
 import androidx.media3.common.Player
 import androidx.media3.common.TrackGroup
 import androidx.media3.common.Tracks
+import androidx.media3.common.text.Cue
+import androidx.media3.common.text.CueGroup
 import com.mskd.flux.configs.fluxExtensions
+import com.mskd.flux.features.player.domain.model.CueAnchor
 import com.mskd.flux.features.player.domain.model.MediaInfo
+import com.mskd.flux.features.player.domain.model.SubtitleCue
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.mockk
@@ -72,6 +76,20 @@ class AndroidPlayerManagerTest : FunSpec({
         )
 
         manager.progress.first() shouldBe 0L
+    }
+
+    test("cues reach the subtitles flow as platform-independent cues, with their placement") {
+        val sign = Cue.Builder()
+            .setText("Translated sign")
+            .setLine(0.05f, Cue.LINE_TYPE_FRACTION)
+            .setLineAnchor(Cue.ANCHOR_TYPE_START)
+            .build()
+
+        manager.onCues(CueGroup(listOf(sign), 0L))
+
+        manager.subtitles.first() shouldBe listOf(
+            SubtitleCue(text = "Translated sign", line = 0.05f, lineAnchor = CueAnchor.START)
+        )
     }
 
     test("chosen speed reaches the player and is exposed in state") {

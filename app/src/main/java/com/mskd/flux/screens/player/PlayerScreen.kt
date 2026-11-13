@@ -54,6 +54,8 @@ import androidx.media3.ui.compose.ContentFrame
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.core.model.enums.Side
 import com.mskd.flux.features.player.domain.model.PlayerParams
+import com.mskd.flux.features.player.domain.model.SubtitleCue
+import com.mskd.flux.features.player.ui.composables.PlayerSubtitles
 import com.mskd.flux.features.player.presentation.AmbientOverlay
 import com.mskd.flux.features.player.presentation.PlayerIntent
 import com.mskd.flux.features.player.presentation.PlayerInterfaceState
@@ -69,7 +71,6 @@ import com.mskd.flux.screens.player.composables.playerInterface.PlayerAmbientOve
 import com.mskd.flux.screens.player.composables.playerInterface.PlayerBoostPill
 import com.mskd.flux.screens.player.composables.playerInterface.PlayerInterface
 import com.mskd.flux.screens.player.composables.playerInterface.PlayerSeekOverlay
-import com.mskd.flux.screens.player.composables.playerInterface.PlayerSubtitles
 import com.mskd.flux.screens.player.composables.settings.PlayerSettings
 import com.mskd.flux.ui.components.ErrorScreen
 import com.mskd.flux.ui.components.LoadingScreen
@@ -188,7 +189,7 @@ fun PlayerContent(
     isPlaying: StateFlow<Boolean>,
     volume: Flow<Int>,
     windowStateHolder: WindowStateHolder,
-    subtitles: () -> List<String?>,
+    subtitles: () -> List<SubtitleCue>,
     progress: () -> Long,
     focusRequester: FocusRequester,
     sendIntent: (PlayerIntent) -> Unit
@@ -398,10 +399,8 @@ fun PlayerContent(
         if (!isInPip) {
 
             PlayerSubtitles(
-                modifier = Modifier
-                    .layoutId("subtitles")
-                    .padding(bottom = FluxUI.Space.large),
-                subtitles = subtitles,
+                modifier = Modifier.layoutId("subtitles"),
+                cues = subtitles,
                 smallText = isPortrait
             )
 
@@ -477,9 +476,14 @@ fun playerConstraintSet(videoSize: VideoSize) = remember( videoSize) {
             height = Dimension.ratio(playerRatio)
         }
 
+        // Same box as the player: positioned cues are fractions of the video frame
         constrain(subtitles) {
+            top.linkTo(player.top)
+            start.linkTo(player.start)
+            end.linkTo(player.end)
             bottom.linkTo(player.bottom)
-            centerHorizontallyTo(parent)
+            width = Dimension.fillToConstraints
+            height = Dimension.fillToConstraints
         }
 
         constrain(playerInterface) {

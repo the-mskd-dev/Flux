@@ -15,6 +15,7 @@ import com.mskd.flux.features.player.domain.manager.PlayerManager
 import com.mskd.flux.features.player.domain.manager.SeekPrecision
 import com.mskd.flux.features.player.domain.mapper.toPlayerTrack
 import com.mskd.flux.features.player.domain.model.PlayerParams
+import com.mskd.flux.features.player.domain.model.SubtitleCue
 import com.mskd.flux.features.player.domain.model.VideoChapter
 import com.mskd.flux.features.player.domain.model.VideoChapterType
 import com.mskd.flux.features.player.domain.model.currentAt
@@ -100,8 +101,8 @@ class PlayerViewModel<out T>(
     private val _overlays = MutableStateFlow(PlayerOverlays())
     val overlays: StateFlow<PlayerOverlays> = _overlays.asStateFlow()
 
-    private val _subtitles = MutableStateFlow<List<String?>>(emptyList())
-    val subtitles: StateFlow<List<String?>> = _subtitles.asStateFlow()
+    private val _subtitles = MutableStateFlow<List<SubtitleCue>>(emptyList())
+    val subtitles: StateFlow<List<SubtitleCue>> = _subtitles.asStateFlow()
 
     // Chapters of the loaded Media, read once when it loads
     private val chapters = MutableStateFlow<List<VideoChapter>>(emptyList())

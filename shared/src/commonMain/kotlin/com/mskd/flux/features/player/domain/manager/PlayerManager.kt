@@ -3,6 +3,7 @@ package com.mskd.flux.features.player.domain.manager
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.player.PlayerTrack
 import com.mskd.flux.features.player.domain.model.MediaInfo
+import com.mskd.flux.features.player.domain.model.SubtitleCue
 import kotlinx.coroutines.flow.Flow
 
 interface PlayerManager<out T> {
@@ -25,7 +26,8 @@ interface PlayerManager<out T> {
 
     val flow: Flow<State<T>>
 
-    val subtitles: Flow<List<String?>>
+    /** Cues currently on screen, in the platform-independent model. */
+    val subtitles: Flow<List<SubtitleCue>>
 
     val progress: Flow<Long>
 

@@ -27,8 +27,10 @@ import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.player.PlayerTrack
 import com.mskd.flux.features.player.data.manager.AndroidPlayerManager.Companion.MAX_DECODER_RECOVERY_ATTEMPTS
 import com.mskd.flux.features.player.domain.manager.PlayerManager
+import com.mskd.flux.features.player.data.mapper.toSubtitleCue
 import com.mskd.flux.features.player.domain.manager.SeekPrecision
 import com.mskd.flux.features.player.domain.model.MediaInfo
+import com.mskd.flux.features.player.domain.model.SubtitleCue
 import com.mskd.flux.features.player.domain.usecase.SaveTrackLanguageUseCase
 import com.mskd.flux.report.Trace
 import com.mskd.flux.services.PlayerService
@@ -83,8 +85,8 @@ class AndroidPlayerManager(
     override val flow: Flow<PlayerManager.State<Player>> = _state.asStateFlow()
     private val readyState get() = _state.value as? PlayerManager.State.Ready<Player>
 
-    private val _subtitles = MutableStateFlow<List<String?>>(emptyList())
-    override val subtitles: Flow<List<String?>> = _subtitles.asStateFlow()
+    private val _subtitles = MutableStateFlow<List<SubtitleCue>>(emptyList())
+    override val subtitles: Flow<List<SubtitleCue>> = _subtitles.asStateFlow()
 
     private val _progress = MutableStateFlow(0L)
     override val progress: Flow<Long> = _progress.asStateFlow()
@@ -355,7 +357,7 @@ class AndroidPlayerManager(
     }
 
     override fun onCues(cueGroup: CueGroup) {
-        _subtitles.update { cueGroup.cues.map { it.text?.toString() } }
+        _subtitles.update { cueGroup.cues.map { it.toSubtitleCue() } }
     }
 
     override fun onPlayerError(error: PlaybackException) {

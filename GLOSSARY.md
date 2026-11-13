@@ -173,8 +173,12 @@ Episode that follows, in the same Show, the one being played (by season then num
 _Avoid_: Prochain épisode, Up next
 
 **Settings sheet**:
-Player settings sheet, either general or dedicated to choosing an audio track, a subtitle track or a Chapter.
+Player settings sheet, either general or dedicated to choosing an audio track, a subtitle track, a Chapter or a Playback speed.
 _Avoid_: Bottom sheet, menu
+
+**Playback speed**:
+Rate at which a Media plays, from 0.25x to 2x by steps of 0.25, chosen in the Settings sheet. Resets to 1x for each new Media.
+_Avoid_: Rate, tempo
 
 **Track**:
 Selectable audio or subtitle track of a Media.

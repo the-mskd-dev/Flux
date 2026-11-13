@@ -250,6 +250,15 @@
     <string name="spoiler_reveal">Révéler</string>
     <string name="chapters">Chapitres</string>
     <string name="playback_speed">Vitesse de lecture</string>
+    <string name="media_info">Informations mÃ©dia</string>
+    <string name="container">Conteneur</string>
+    <string name="video_codec">Codec vidÃ©o</string>
+    <string name="resolution">RÃ©solution</string>
+    <string name="frame_rate">FrÃ©quence d\'images</string>
+    <string name="bitrate">DÃ©bit</string>
+    <string name="audio_codec">Codec audio</string>
+    <string name="channels">Canaux</string>
+    <string name="sampling_rate">FrÃ©quence d\'Ã©chantillonnage</string>
     <string name="chapter_number">Chapitre %1$d</string>
     <string name="gallery_image_download">Télécharger l'image</string>
     <string name="gallery_use_as_poster">Utiliser comme affiche</string>

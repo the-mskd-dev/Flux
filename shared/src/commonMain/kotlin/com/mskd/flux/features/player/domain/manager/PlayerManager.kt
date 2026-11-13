@@ -2,6 +2,7 @@ package com.mskd.flux.features.player.domain.manager
 
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.player.PlayerTrack
+import com.mskd.flux.features.player.domain.model.MediaInfo
 import kotlinx.coroutines.flow.Flow
 
 interface PlayerManager<out T> {
@@ -17,6 +18,8 @@ interface PlayerManager<out T> {
             val selectedSubtitles: PlayerTrack? = null,
             val duration: Long = 0L,
             val playbackSpeed: Float = 1f,
+            /** Null until the Media's tracks are known, and again on a new Media. */
+            val mediaInfo: MediaInfo? = null,
         ) : State<T>()
         data class Error(val code: Int? = null, val name: String? = null) : State<Nothing>()
     }

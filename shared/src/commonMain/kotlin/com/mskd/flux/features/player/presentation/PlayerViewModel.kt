@@ -159,6 +159,7 @@ class PlayerViewModel<out T>(
                     selectedSubtitles = playerState.selectedSubtitles,
                     chapters = chapters,
                     playbackSpeed = playerState.playbackSpeed,
+                    mediaInfo = playerState.mediaInfo,
                 )
             )
         }

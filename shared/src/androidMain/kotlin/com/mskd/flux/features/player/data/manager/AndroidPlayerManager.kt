@@ -28,6 +28,7 @@ import com.mskd.flux.core.model.player.PlayerTrack
 import com.mskd.flux.features.player.data.manager.AndroidPlayerManager.Companion.MAX_DECODER_RECOVERY_ATTEMPTS
 import com.mskd.flux.features.player.domain.manager.PlayerManager
 import com.mskd.flux.features.player.domain.manager.SeekPrecision
+import com.mskd.flux.features.player.domain.model.MediaInfo
 import com.mskd.flux.features.player.domain.usecase.SaveTrackLanguageUseCase
 import com.mskd.flux.report.Trace
 import com.mskd.flux.services.PlayerService
@@ -254,6 +255,8 @@ class AndroidPlayerManager(
             resetDecoderModes()
 
             currentMediaId = media.mediaId
+            // Media info belongs to the previous Media until its Tracks are known again
+            _state.update { state -> (state as? PlayerManager.State.Ready)?.copy(mediaInfo = null) ?: state }
             player.setMediaItem(mediaItem, media.currentTime)
 
             // Apply saved track languages before preparing so the
@@ -459,6 +462,7 @@ class AndroidPlayerManager(
     override fun onTracksChanged(tracks: Tracks) {
         if (_state.value !is PlayerManager.State.Ready) return
 
+        val mediaInfo = buildMediaInfo(tracks)
         val defaultLabel = defaultTrackLabel ?: ""
 
         var selectedAudio: PlayerTrack? = null
@@ -495,10 +499,77 @@ class AndroidPlayerManager(
             ready.copy(
                 tracks = tracks,
                 selectedAudio = selectedAudio ?: ready.selectedAudio,
-                selectedSubtitles = selectedSubtitles ?: ready.selectedSubtitles
+                selectedSubtitles = selectedSubtitles ?: ready.selectedSubtitles,
+                mediaInfo = mediaInfo,
             )
         }
 
+    }
+
+    /** Media info of the selected Tracks. Values Media3 does not report stay null. */
+    private fun buildMediaInfo(tracks: Tracks): MediaInfo {
+        val video = selectedFormat(tracks, C.TRACK_TYPE_VIDEO)
+        val audio = selectedFormat(tracks, C.TRACK_TYPE_AUDIO)
+
+        return MediaInfo(
+            container = (video?.containerMimeType ?: audio?.containerMimeType)?.let(::containerLabel),
+            videoCodec = video?.sampleMimeType?.let(::videoCodecLabel),
+            width = video?.width.positiveOrNull(),
+            height = video?.height.positiveOrNull(),
+            frameRate = video?.frameRate?.takeIf { it > 0f },
+            bitrate = (video?.averageBitrate.positiveOrNull() ?: video?.bitrate.positiveOrNull()),
+            audioCodec = audio?.sampleMimeType?.let(::audioCodecLabel),
+            channels = audio?.channelCount.positiveOrNull(),
+            sampleRate = audio?.sampleRate.positiveOrNull(),
+        )
+    }
+
+    private fun selectedFormat(tracks: Tracks, type: Int): Format? {
+        return tracks.groups
+            .filter { it.type == type }
+            .flatMap { group ->
+                (0 until group.length)
+                    .filter { group.isTrackSelected(it) }
+                    .map { group.getTrackFormat(it) }
+            }
+            .firstOrNull()
+    }
+
+    private fun Int?.positiveOrNull(): Int? = this?.takeIf { it > 0 }
+
+    private fun containerLabel(mimeType: String): String? = when (mimeType) {
+        MimeTypes.VIDEO_MATROSKA -> "MKV"
+        MimeTypes.VIDEO_MP4 -> "MP4"
+        MimeTypes.VIDEO_WEBM -> "WebM"
+        MimeTypes.VIDEO_AVI -> "AVI"
+        MimeTypes.VIDEO_QUICK_TIME -> "MOV"
+        MimeTypes.VIDEO_MP2T -> "MPEG-TS"
+        else -> null
+    }
+
+    private fun videoCodecLabel(mimeType: String): String? = when (mimeType) {
+        MimeTypes.VIDEO_H264 -> "H.264"
+        MimeTypes.VIDEO_H265 -> "HEVC"
+        MimeTypes.VIDEO_AV1 -> "AV1"
+        MimeTypes.VIDEO_VP9 -> "VP9"
+        MimeTypes.VIDEO_VP8 -> "VP8"
+        MimeTypes.VIDEO_MP4V -> "MPEG-4"
+        MimeTypes.VIDEO_MPEG2 -> "MPEG-2"
+        else -> null
+    }
+
+    private fun audioCodecLabel(mimeType: String): String? = when (mimeType) {
+        MimeTypes.AUDIO_AAC -> "AAC"
+        MimeTypes.AUDIO_AC3 -> "AC-3"
+        MimeTypes.AUDIO_E_AC3 -> "E-AC-3"
+        MimeTypes.AUDIO_TRUEHD -> "TrueHD"
+        MimeTypes.AUDIO_DTS -> "DTS"
+        MimeTypes.AUDIO_DTS_HD -> "DTS-HD"
+        MimeTypes.AUDIO_OPUS -> "Opus"
+        MimeTypes.AUDIO_FLAC -> "FLAC"
+        MimeTypes.AUDIO_MPEG -> "MP3"
+        MimeTypes.AUDIO_VORBIS -> "Vorbis"
+        else -> null
     }
 
     private fun TrackSelectionParameters.Builder.applyAudioTrack(track: PlayerTrack, currentTracks: Tracks) : PlayerTrack? {

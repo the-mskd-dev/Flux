@@ -267,6 +267,15 @@
     <string name="spoiler_reveal">Reveal</string>
     <string name="chapters">Chapters</string>
     <string name="playback_speed">Playback speed</string>
+    <string name="media_info">Media info</string>
+    <string name="container">Container</string>
+    <string name="video_codec">Video codec</string>
+    <string name="resolution">Resolution</string>
+    <string name="frame_rate">Frame rate</string>
+    <string name="bitrate">Bitrate</string>
+    <string name="audio_codec">Audio codec</string>
+    <string name="channels">Channels</string>
+    <string name="sampling_rate">Sampling rate</string>
     <string name="chapter_number">Chapter %1$d</string>
     <string name="gallery_image_download">Download image</string>
     <string name="gallery_use_as_poster">Use as poster</string>

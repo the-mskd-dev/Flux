@@ -8,6 +8,7 @@ import com.mskd.flux.features.player.presentation.PlayerOverlays
 import com.mskd.flux.features.player.presentation.PlayerSession
 import com.mskd.flux.features.player.presentation.SettingsSheet
 import com.mskd.flux.screens.player.composables.collectSelectedAsState
+import com.mskd.flux.ui.player.PlayerMediaInfoSheet
 import kotlinx.coroutines.flow.StateFlow
 
 @Composable
@@ -52,6 +53,12 @@ fun PlayerSettings(
             PlayerPlaybackSpeedSheet(
                 selectedSpeed = session.playbackSpeed,
                 sendIntent = sendIntent
+            )
+        }
+        SettingsSheet.MediaInfo -> {
+            PlayerMediaInfoSheet(
+                mediaInfo = session.mediaInfo,
+                onBack = { sendIntent(PlayerIntent.ShowSettings(sheet = SettingsSheet.Settings)) }
             )
         }
         null -> {}

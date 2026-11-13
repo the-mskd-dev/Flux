@@ -5,6 +5,7 @@ import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.player.PlayerTrack
 import com.mskd.flux.features.player.domain.manager.SeekPrecision
+import com.mskd.flux.features.player.domain.model.MediaInfo
 import com.mskd.flux.features.player.domain.model.VideoChapter
 
 
@@ -21,6 +22,7 @@ data class PlayerSession<out T>(
     val selectedSubtitles: PlayerTrack? = null,
     val chapters: List<VideoChapter> = emptyList(),
     val playbackSpeed: Float = 1f,
+    val mediaInfo: MediaInfo? = null,
 ) {
     /** A single Chapter is the whole file: the Chapters row is only worth showing from 2. */
     val showChapters: Boolean get() = chapters.size >= 2
@@ -65,6 +67,7 @@ sealed class SettingsSheet {
     data class Tracks(val type: PlayerTrack.Type) : SettingsSheet()
     data object Chapters : SettingsSheet()
     data object PlaybackSpeed : SettingsSheet()
+    data object MediaInfo : SettingsSheet()
 }
 
 sealed interface ChapterButton {

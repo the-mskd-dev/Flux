@@ -33,6 +33,7 @@ import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.by_default
 import flux.shared.generated.resources.chapters
+import flux.shared.generated.resources.media_info
 import flux.shared.generated.resources.playback_speed
 import flux.shared.generated.resources.subtitles_disabled
 import org.jetbrains.compose.resources.stringResource
@@ -90,6 +91,14 @@ fun PlayerSettingsSheet(
                     label = stringResource(Res.string.playback_speed),
                     value = playbackSpeed.formatSpeed(),
                     onClick = { sendIntent(PlayerIntent.ShowSettings(sheet = SettingsSheet.PlaybackSpeed)) }
+                )
+
+                HorizontalDivider(modifier = Modifier.padding(horizontal = FluxUI.Space.medium))
+
+                PlayerSettingsItem(
+                    label = stringResource(Res.string.media_info),
+                    value = "",
+                    onClick = { sendIntent(PlayerIntent.ShowSettings(sheet = SettingsSheet.MediaInfo)) }
                 )
 
                 // Only offered when the Media has at least 2 Chapters

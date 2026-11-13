@@ -14,6 +14,7 @@ import com.mskd.flux.features.files.domain.usecase.GetSubtitlesUseCase
 import com.mskd.flux.features.player.data.PipIsEnabledUseCase
 import com.mskd.flux.features.player.domain.manager.PlayerManager
 import com.mskd.flux.features.player.domain.manager.SeekPrecision
+import com.mskd.flux.features.player.domain.model.MediaInfo
 import com.mskd.flux.features.player.domain.model.PlayerParams
 import com.mskd.flux.features.player.domain.model.VideoChapter
 import com.mskd.flux.features.player.domain.model.VideoChapterType
@@ -166,6 +167,10 @@ class PlayerViewModelTest : FunSpec({
             PlayerTestCases.ShowSettings(
                 description = "Show subtitles sheet",
                 sheet = SettingsSheet.Settings,
+            ),
+            PlayerTestCases.ShowSettings(
+                description = "Show media info sheet",
+                sheet = SettingsSheet.MediaInfo,
             )
         ) { testCase ->
 
@@ -1090,6 +1095,53 @@ class PlayerViewModelTest : FunSpec({
             coVerify(timeout = 1000) {
                 playerManager.setPlaybackSpeed(speed = 1f)
                 playerManager.playMedia(any(), any())
+            }
+
+        }
+
+    }
+
+    context("media info") {
+
+        val mediaInfo = MediaInfo(videoCodec = "H.264", width = 1920, height = 1080, audioCodec = "AAC")
+
+        test("session exposes the Media info once the player is ready") {
+
+            // Given
+            val flow = MutableStateFlow<PlayerManager.State<Player>>(PlayerManager.State.Ready(player = player, mediaInfo = mediaInfo))
+            every { playerManager.flow } returns flow
+            updateVm()
+
+            // Then
+            viewModel.session.test {
+                var item = awaitItem()
+                while (item !is State.Content) item = awaitItem()
+                item.content.mediaInfo shouldBe mediaInfo
+                cancelAndConsumeRemainingEvents()
+            }
+
+        }
+
+        test("Media info is cleared when the player reports a new Media") {
+
+            // Given
+            val flow = MutableStateFlow<PlayerManager.State<Player>>(PlayerManager.State.Ready(player = player, mediaInfo = mediaInfo))
+            every { playerManager.flow } returns flow
+            updateVm()
+
+            viewModel.session.test {
+                var item = awaitItem()
+                while (item !is State.Content) item = awaitItem()
+                item.content.mediaInfo shouldBe mediaInfo
+
+                // When the manager loads the next Media, it publishes the state without Media info
+                flow.value = PlayerManager.State.Ready(player = player)
+
+                // Then
+                var next = awaitItem()
+                while (next !is State.Content || next.content.mediaInfo != null) next = awaitItem()
+                next.content.mediaInfo shouldBe null
+                cancelAndConsumeRemainingEvents()
             }
 
         }

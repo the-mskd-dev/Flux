@@ -251,6 +251,8 @@
     <string name="chapters">Chapitres</string>
     <string name="playback_speed">Vitesse de lecture</string>
     <string name="subtitle_delay">Décalage des sous-titres</string>
+    <string name="subtitle_delay_decrease">Réduire le décalage des sous-titres</string>
+    <string name="subtitle_delay_increase">Augmenter le décalage des sous-titres</string>
     <string name="media_info">Informations média</string>
     <string name="container">Conteneur</string>
     <string name="video_codec">Codec vidéo</string>

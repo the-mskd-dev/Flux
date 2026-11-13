@@ -1,4 +1,4 @@
-package com.mskd.flux.features.player.ui.composables
+package com.mskd.flux.features.player.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

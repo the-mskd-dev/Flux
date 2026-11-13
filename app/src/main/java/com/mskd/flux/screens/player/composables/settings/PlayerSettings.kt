@@ -8,7 +8,7 @@ import com.mskd.flux.features.player.presentation.PlayerOverlays
 import com.mskd.flux.features.player.presentation.PlayerSession
 import com.mskd.flux.features.player.presentation.SettingsSheet
 import com.mskd.flux.screens.player.composables.collectSelectedAsState
-import com.mskd.flux.ui.player.PlayerMediaInfoSheet
+import com.mskd.flux.features.player.ui.PlayerMediaInfoSheet
 import kotlinx.coroutines.flow.StateFlow
 
 @Composable

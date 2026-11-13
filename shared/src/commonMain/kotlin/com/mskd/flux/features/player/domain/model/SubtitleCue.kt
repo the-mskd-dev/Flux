@@ -9,14 +9,20 @@ class SubtitleBitmap(
     val widthFraction: Float,
     val heightFraction: Float,
 ) {
+    // Computed once: equality is checked on every recomposition of the overlay
+    private val contentHash = pngBytes.contentHashCode()
+
     override fun equals(other: Any?): Boolean =
-        other is SubtitleBitmap &&
-            pngBytes.contentEquals(other.pngBytes) &&
-            widthFraction == other.widthFraction &&
-            heightFraction == other.heightFraction
+        this === other || (
+            other is SubtitleBitmap &&
+                contentHash == other.contentHash &&
+                widthFraction == other.widthFraction &&
+                heightFraction == other.heightFraction &&
+                pngBytes.contentEquals(other.pngBytes)
+            )
 
     override fun hashCode(): Int =
-        (pngBytes.contentHashCode() * 31 + widthFraction.hashCode()) * 31 + heightFraction.hashCode()
+        (contentHash * 31 + widthFraction.hashCode()) * 31 + heightFraction.hashCode()
 }
 
 /**

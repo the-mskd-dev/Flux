@@ -7,11 +7,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
@@ -23,6 +26,8 @@ import com.mskd.flux.features.player.domain.model.SubtitleCue
 import com.mskd.flux.ui.image.decodeImageBitmap
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxUI
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlin.math.roundToInt
 
 /** Vertical position of a styled cue that the file did not place: near the bottom of the frame. */
@@ -41,10 +46,11 @@ fun PlayerSubtitles(
     modifier: Modifier = Modifier
 ) {
     val current = cues()
+    val (styled, plain) = remember(current) { current.partition { it.isStyled } }
 
     Box(modifier = modifier.fillMaxSize()) {
 
-        current.filter { it.isStyled }.forEach { StyledCue(cue = it, smallText = smallText) }
+        styled.forEach { StyledCue(cue = it, smallText = smallText) }
 
         Box(
             contentAlignment = Alignment.BottomCenter,
@@ -53,7 +59,7 @@ fun PlayerSubtitles(
                 .padding(horizontal = FluxUI.Space.large)
                 .padding(bottom = FluxUI.Space.large)
         ) {
-            current.filterNot { it.isStyled }.forEach { cue ->
+            plain.forEach { cue ->
                 DefaultCue(text = cue.text, smallText = smallText)
             }
         }
@@ -72,12 +78,16 @@ private fun DefaultCue(text: String?, smallText: Boolean) {
 @Composable
 private fun StyledCue(cue: SubtitleCue, smallText: Boolean) {
     val bitmap = cue.bitmap
-    val image = remember(bitmap) { bitmap?.let { decodeImageBitmap(it.pngBytes) } }
+    // Decoded off the main thread; the cue is drawn once the image is ready
+    val image by produceState<ImageBitmap?>(initialValue = null, bitmap) {
+        value = bitmap?.let { withContext(Dispatchers.Default) { decodeImageBitmap(it.pngBytes) } }
+    }
 
+    val decoded = image
     Layout(
         content = {
-            if (image != null) {
-                Image(bitmap = image, contentDescription = null)
+            if (decoded != null) {
+                Image(bitmap = decoded, contentDescription = null)
             } else if (bitmap == null) {
                 StyledText(cue = cue, smallText = smallText)
             }

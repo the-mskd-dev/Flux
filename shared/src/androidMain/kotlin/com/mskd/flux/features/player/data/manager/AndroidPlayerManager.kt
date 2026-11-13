@@ -166,6 +166,8 @@ class AndroidPlayerManager(
         controllerFuture?.let { MediaController.releaseFuture(it) }
         controllerFuture = null
         currentMediaId = -1L
+        // The last cue of the previous Media would otherwise stay on screen until the next cue
+        _subtitles.value = emptyList()
         _state.value = PlayerManager.State.Idle
 
     }
@@ -252,6 +254,8 @@ class AndroidPlayerManager(
 
             player.stop()
             player.clearMediaItems()
+            // Cues belong to the previous Media: none may show before the new file emits its own
+            _subtitles.value = emptyList()
 
             // Fresh start for every media: hardware decoder first, recovery ladder disarmed
             resetDecoderRecovery()

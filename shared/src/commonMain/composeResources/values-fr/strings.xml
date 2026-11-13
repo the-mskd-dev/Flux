@@ -254,11 +254,11 @@
     <string name="container">Conteneur</string>
     <string name="video_codec">Codec vidéo</string>
     <string name="resolution">Résolution</string>
-    <string name="frame_rate">Fréquence d\'images</string>
+    <string name="frame_rate">Fréquence d'images</string>
     <string name="bitrate">Débit</string>
     <string name="audio_codec">Codec audio</string>
     <string name="channels">Canaux</string>
-    <string name="sampling_rate">Fréquence d\'échantillonnage</string>
+    <string name="sampling_rate">Fréquence d'échantillonnage</string>
     <string name="chapter_number">Chapitre %1$d</string>
     <string name="gallery_image_download">Télécharger l'image</string>
     <string name="gallery_use_as_poster">Utiliser comme affiche</string>

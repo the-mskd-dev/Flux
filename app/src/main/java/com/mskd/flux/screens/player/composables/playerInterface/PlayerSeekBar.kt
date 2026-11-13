@@ -23,6 +23,7 @@ import com.mskd.flux.features.player.ui.ChapterSlider
 import com.mskd.flux.features.player.presentation.PlayerIntent
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.theme.LocalUiPlayer
 import com.mskd.flux.utils.extensions.formatMinSec
 import kotlinx.coroutines.delay
 import kotlin.math.abs
@@ -103,7 +104,7 @@ fun PlayerSeekBar(
             isScrubbing = isScrubbing,
             enabled = enabled,
             showWave = showWave,
-            waveAnimated = FluxUI.player.waveProgress,
+            waveAnimated = LocalUiPlayer.current.waveProgress,
         )
 
         PlayerSeekBarTime(

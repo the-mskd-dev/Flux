@@ -81,6 +81,7 @@ class AndroidPlayerManager(
 
     private val _state = MutableStateFlow<PlayerManager.State<Player>>(PlayerManager.State.Idle)
     override val flow: Flow<PlayerManager.State<Player>> = _state.asStateFlow()
+    private val readyState get() = _state.value as? PlayerManager.State.Ready<Player>
 
     private val _subtitles = MutableStateFlow<List<String?>>(emptyList())
     override val subtitles: Flow<List<String?>> = _subtitles.asStateFlow()
@@ -168,21 +169,21 @@ class AndroidPlayerManager(
     }
 
     override fun togglePlay() {
-        (_state.value as? PlayerManager.State.Ready)?.let {
+        readyState?.let {
             if (it.isPlaying) it.player.pause() else it.player.play()
         }
     }
 
     override fun play() {
-        (_state.value as? PlayerManager.State.Ready)?.player?.play()
+        readyState?.player?.play()
     }
 
     override fun pause() {
-        (_state.value as? PlayerManager.State.Ready)?.player?.pause()
+        readyState?.player?.pause()
     }
 
     override fun seekTo(progress: Long, precision: SeekPrecision) {
-        val controller = (_state.value as? PlayerManager.State.Ready)?.player as? MediaController ?: return
+        val controller = readyState?.player as? MediaController ?: return
         applySeekPrecision(controller, precision)
         controller.seekTo(progress)
     }
@@ -196,7 +197,7 @@ class AndroidPlayerManager(
     }
 
     override fun seekRewind(value: Long) {
-        (_state.value as? PlayerManager.State.Ready)?.player?.let {
+        readyState?.player?.let {
             val targetPosition = (it.currentPosition - value).coerceAtLeast(0L)
             (it as? MediaController)?.let { c -> applySeekPrecision(c, SeekPrecision.EXACT) }
             it.seekTo(targetPosition)
@@ -204,7 +205,7 @@ class AndroidPlayerManager(
     }
 
     override fun seekForward(value: Long) {
-        (_state.value as? PlayerManager.State.Ready)?.player?.let {
+        readyState?.player?.let {
             val targetPosition = (it.currentPosition + value).coerceAtMost(it.duration)
             (it as? MediaController)?.let { c -> applySeekPrecision(c, SeekPrecision.EXACT) }
             it.seekTo(targetPosition)
@@ -212,14 +213,14 @@ class AndroidPlayerManager(
     }
 
     override fun changeVolume(delta: Float): Int {
-        val player = (_state.value as? PlayerManager.State.Ready)?.player ?: return 0
+        val player = readyState?.player ?: return 0
         val newVolume = (player.volume + delta).coerceIn(0f, 1f)
         player.volume = newVolume
         return (newVolume * 100).roundToInt()
     }
 
     override suspend fun playMedia(media: Media, subtitlesPath: String?) {
-        val player = (_state.value as? PlayerManager.State.Ready)?.player ?: return
+        val player = readyState?.player ?: return
 
         if (defaultTrackLabel == null) defaultTrackLabel = getString(Res.string.track)
 
@@ -276,7 +277,7 @@ class AndroidPlayerManager(
     }
 
     override fun selectTrack(track: PlayerTrack) {
-        val player = (_state.value as? PlayerManager.State.Ready)?.player ?: return
+        val player = readyState?.player ?: return
         val currentTracks = player.currentTracks
         var selectedTrack: PlayerTrack? = null
 
@@ -302,7 +303,7 @@ class AndroidPlayerManager(
     }
 
     override fun setPlaybackSpeed(speed: Float) {
-        val player = (_state.value as? PlayerManager.State.Ready)?.player ?: return
+        val player = readyState?.player ?: return
         player.setPlaybackSpeed(speed)
         _state.update { state ->
             (state as? PlayerManager.State.Ready)?.copy(playbackSpeed = speed) ?: state
@@ -389,7 +390,7 @@ class AndroidPlayerManager(
         if (error.errorCode !in DECODER_ERROR_CODES) return false
         if (decoderRecoveryAttempts >= MAX_DECODER_RECOVERY_ATTEMPTS) return false
 
-        val player = (_state.value as? PlayerManager.State.Ready)?.player ?: return false
+        val player = readyState?.player ?: return false
         // The manager belongs to the running PlayerService: without it there is no decoder
         // to switch, so the error is surfaced as usual.
         val decoderManager = decoderManagerHolder.decoderManager ?: return false
@@ -573,7 +574,7 @@ class AndroidPlayerManager(
     }
 
     private fun TrackSelectionParameters.Builder.applyAudioTrack(track: PlayerTrack, currentTracks: Tracks) : PlayerTrack? {
-        val current = _state.value as? PlayerManager.State.Ready ?: return null
+        val current = readyState ?: return null
         clearOverridesOfType(C.TRACK_TYPE_AUDIO)
 
         track.id?.let { trackId ->
@@ -592,7 +593,7 @@ class AndroidPlayerManager(
     }
 
     private fun TrackSelectionParameters.Builder.applySubtitlesTrack(track: PlayerTrack, currentTracks: Tracks) : PlayerTrack? {
-        val current = _state.value as? PlayerManager.State.Ready ?: return null
+        val current = readyState ?: return null
         clearOverridesOfType(C.TRACK_TYPE_TEXT)
 
         if (track == PlayerTrack.NO_SUBTITLES) { // If no subtitle
@@ -659,7 +660,7 @@ class AndroidPlayerManager(
         progressJob = scope.launch {
             while (isActive) {
 
-                (_state.value as? PlayerManager.State.Ready)?.let { ready ->
+                readyState?.let { ready ->
 
                     val player = ready.player
 

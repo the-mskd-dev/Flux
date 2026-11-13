@@ -37,8 +37,7 @@ class AndroidPlayerManagerTest : FunSpec({
     fun setReady(player: Player = mockk(relaxed = true)) {
         val stateField = AndroidPlayerManager::class.java.getDeclaredField("_state").apply { isAccessible = true }
         @Suppress("UNCHECKED_CAST")
-        (stateField.get(manager) as MutableStateFlow<PlayerManager.State<Player>>).value =
-            PlayerManager.State.Ready(player = player)
+        (stateField.get(manager) as MutableStateFlow<PlayerManager.State<Player>>).value = PlayerManager.State.Ready(player = player)
     }
 
     fun trackGroup(format: Format, selected: Boolean = true) = Tracks.Group(

@@ -42,7 +42,6 @@ data class PlayerOverlays(
     val seekOverlay: SeekOverlay? = null,
     val chapterButton: ChapterButton? = null,
     val currentChapter: VideoChapter? = null,
-    /** The Boost speed is active: the "2x" pill shows. */
     val isBoosting: Boolean = false,
 )
 

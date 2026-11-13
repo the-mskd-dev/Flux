@@ -18,8 +18,7 @@ interface PlayerManager<out T> {
             val selectedSubtitles: PlayerTrack? = null,
             val duration: Long = 0L,
             val playbackSpeed: Float = 1f,
-            /** Null until the Media's tracks are known, and again on a new Media. */
-            val mediaInfo: MediaInfo? = null,
+            val mediaInfo: MediaInfo? = null, // Null until the Media's tracks are known, and again on a new Media
         ) : State<T>()
         data class Error(val code: Int? = null, val name: String? = null) : State<Nothing>()
     }

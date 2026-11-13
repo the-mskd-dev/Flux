@@ -7,9 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.LinearWavyProgressIndicator
-import androidx.compose.material3.Slider
-import androidx.compose.material3.SliderDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -20,9 +17,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.DpSize
-import androidx.compose.ui.unit.dp
 import com.mskd.flux.features.player.domain.manager.SeekPrecision
+import com.mskd.flux.features.player.domain.model.VideoChapter
+import com.mskd.flux.features.player.ui.ChapterSlider
 import com.mskd.flux.features.player.presentation.PlayerIntent
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxUI
@@ -42,6 +39,7 @@ fun PlayerSeekBar(
     duration: Long,
     enabled: Boolean,
     showWave: Boolean,
+    chapters: List<VideoChapter>,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
@@ -53,7 +51,6 @@ fun PlayerSeekBar(
     var scrubPosition by remember { mutableStateOf<Float?>(null) }
     var isScrubbing by remember { mutableStateOf(false) }
     var lastFastSeekAt by remember { mutableLongStateOf(0L) }
-    val valueRange = remember(duration) { 0f..duration.toFloat() }
     val displayedPosition = scrubPosition ?: currentProgress.toFloat()
 
     LaunchedEffect(currentProgress, isScrubbing, scrubPosition) {
@@ -83,7 +80,7 @@ fun PlayerSeekBar(
             time = { displayedPosition.toLong() }
         )
 
-        PlayerSlider(
+        ChapterSlider(
             modifier = Modifier.weight(1f),
             value = { displayedPosition },
             onValueChange = {
@@ -95,7 +92,6 @@ fun PlayerSeekBar(
                     sendIntent(PlayerIntent.SeekTo(it.toLong(), SeekPrecision.FAST))
                 }
             },
-            valueRange = valueRange,
             onValueChangeFinished = {
                 isScrubbing = false
                 scrubPosition?.let { sendIntent(PlayerIntent.SeekTo(it.toLong(), SeekPrecision.EXACT)) }
@@ -103,8 +99,11 @@ fun PlayerSeekBar(
             interactionSource = interactionSource,
             isPlaying = isPlaying,
             duration = duration,
+            chapters = chapters,
+            isScrubbing = isScrubbing,
             enabled = enabled,
             showWave = showWave,
+            waveAnimated = FluxUI.player.waveProgress,
         )
 
         PlayerSeekBarTime(
@@ -112,54 +111,6 @@ fun PlayerSeekBar(
         )
 
     }
-
-}
-
-@Composable
-fun PlayerSlider(
-    modifier: Modifier = Modifier,
-    value: () -> Float,
-    onValueChange: (Float) -> Unit,
-    onValueChangeFinished: (() -> Unit),
-    valueRange: ClosedFloatingPointRange<Float>,
-    interactionSource : MutableInteractionSource,
-    isPlaying: Boolean,
-    duration: Long,
-    enabled: Boolean = true,
-    showWave: Boolean = true,
-) {
-
-    val waveProgress = FluxUI.player.waveProgress
-
-    Slider(
-        modifier = modifier,
-        value = value(),
-        enabled = enabled,
-        onValueChange = onValueChange,
-        valueRange = valueRange,
-        onValueChangeFinished = onValueChangeFinished,
-        interactionSource = interactionSource,
-        track = { sliderState ->
-
-            if (showWave) {
-                LinearWavyProgressIndicator(
-                    modifier = Modifier.fillMaxWidth(),
-                    amplitude = { if (isPlaying && waveProgress) 1f else 0f },
-                    progress = { if (duration > 0) sliderState.value / duration else 0f },
-                    stopSize = 10.dp,
-                    waveSpeed = 20.dp
-                )
-            }
-
-        },
-        thumb = {
-
-            SliderDefaults.Thumb(
-                interactionSource = interactionSource,
-                thumbSize = DpSize(4.dp, 22.dp)
-            )
-        },
-    )
 
 }
 

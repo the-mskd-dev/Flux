@@ -41,4 +41,36 @@ class VideoChapterTest : FunSpec({
 
     }
 
+    context("progress bar boundaries") {
+
+        val intro = VideoChapter(index = 0, start = 0L, end = 2_000L, type = VideoChapterType.CHAPTER)
+        val middle = VideoChapter(index = 1, start = 2_000L, end = 5_000L, type = VideoChapterType.CHAPTER)
+        val last = VideoChapter(index = 2, start = 5_000L, end = 10_000L, type = VideoChapterType.CHAPTER)
+
+        test("one boundary at each chapter start but the first, proportional to the duration") {
+            listOf(intro, middle, last).boundaryFractions(10_000L) shouldBe listOf(0.2f, 0.5f)
+        }
+
+        test("a first chapter that does not start at zero adds no boundary") {
+            listOf(opening, part).boundaryFractions(5_000L) shouldBe listOf(0.4f)
+        }
+
+        test("a single chapter keeps the bar continuous") {
+            listOf(intro).boundaryFractions(10_000L) shouldBe emptyList()
+        }
+
+        test("no chapter keeps the bar continuous") {
+            emptyList<VideoChapter>().boundaryFractions(10_000L) shouldBe emptyList()
+        }
+
+        test("a chapter starting at or after the duration adds no boundary") {
+            listOf(intro, middle, last).boundaryFractions(5_000L) shouldBe listOf(0.4f)
+        }
+
+        test("an unknown duration keeps the bar continuous") {
+            listOf(intro, middle).boundaryFractions(0L) shouldBe emptyList()
+        }
+
+    }
+
 })

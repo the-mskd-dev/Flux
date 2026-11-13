@@ -30,6 +30,9 @@ object Constants {
 
     object PLAYER {
         const val PROGRESS_THRESHOLD = 0.92
+
+        /** Selectable Playback speeds: 0.25x to 2x by steps of 0.25. */
+        val PLAYBACK_SPEEDS = listOf(0.25f, 0.5f, 0.75f, 1f, 1.25f, 1.5f, 1.75f, 2f)
     }
 
 }

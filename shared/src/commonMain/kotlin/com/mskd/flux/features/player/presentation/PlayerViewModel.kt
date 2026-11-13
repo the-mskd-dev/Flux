@@ -153,6 +153,7 @@ class PlayerViewModel<out T>(
                     selectedAudio = playerState.selectedAudio,
                     selectedSubtitles = playerState.selectedSubtitles,
                     chapters = chapters,
+                    playbackSpeed = playerState.playbackSpeed,
                 )
             )
         }
@@ -253,6 +254,7 @@ class PlayerViewModel<out T>(
             is PlayerIntent.SeekTo -> seekTo(progress = intent.progress, precision = intent.precision)
             is PlayerIntent.SelectTrack -> selectTrack(track = intent.track)
             is PlayerIntent.SelectChapter -> selectChapter(chapter = intent.chapter)
+            is PlayerIntent.SetPlaybackSpeed -> playerManager.setPlaybackSpeed(speed = intent.speed)
             is PlayerIntent.OnVolumeChange -> onVolumeChange(delta = intent.delta)
             is PlayerIntent.OnChapterButtonTap -> onChapterButtonTap(button = intent.button)
             PlayerIntent.GoToBackground -> onBackground()
@@ -265,6 +267,8 @@ class PlayerViewModel<out T>(
     private suspend fun playMedia(media: Media) {
         val subtitlesPath = getSubtitlesUseCase(file = media.file)
         chapters.value = getChaptersUseCase(media = media)
+        // Every Media starts at 1x
+        playerManager.setPlaybackSpeed(speed = 1f)
         playerManager.playMedia(
             media = media,
             subtitlesPath = subtitlesPath

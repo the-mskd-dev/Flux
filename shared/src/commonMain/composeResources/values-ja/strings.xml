@@ -247,6 +247,7 @@
     <string name="spoiler_hidden">ネタバレは非表示</string>
     <string name="spoiler_reveal">表示</string>
     <string name="chapters">チャプター</string>
+    <string name="playback_speed">再生速度</string>
     <string name="chapter_number">チャプター %1$d</string>
     <string name="gallery_image_download">画像をダウンロード</string>
     <string name="gallery_use_as_poster">ポスターとして使用</string>

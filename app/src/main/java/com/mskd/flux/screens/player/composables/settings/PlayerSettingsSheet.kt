@@ -33,6 +33,7 @@ import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.by_default
 import flux.shared.generated.resources.chapters
+import flux.shared.generated.resources.playback_speed
 import flux.shared.generated.resources.subtitles_disabled
 import org.jetbrains.compose.resources.stringResource
 
@@ -42,6 +43,7 @@ fun PlayerSettingsSheet(
     selectedSubtitles: PlayerTrack?,
     chapters: List<VideoChapter>?,
     currentChapter: VideoChapter?,
+    playbackSpeed: Float,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
@@ -80,6 +82,14 @@ fun PlayerSettingsSheet(
                     onClick = {
                         val intent = SettingsSheet.Tracks(type = PlayerTrack.Type.SUBTITLES)
                         sendIntent(PlayerIntent.ShowSettings(sheet = intent)) }
+                )
+
+                HorizontalDivider(modifier = Modifier.padding(horizontal = FluxUI.Space.medium))
+
+                PlayerSettingsItem(
+                    label = stringResource(Res.string.playback_speed),
+                    value = playbackSpeed.formatSpeed(),
+                    onClick = { sendIntent(PlayerIntent.ShowSettings(sheet = SettingsSheet.PlaybackSpeed)) }
                 )
 
                 // Only offered when the Media has at least 2 Chapters
@@ -149,6 +159,7 @@ fun PlayerSettingsSheet_Preview() {
             selectedSubtitles = PlayerMockups.Subtitles.french,
             chapters = PlayerMockups.chapters,
             currentChapter = PlayerMockups.chapters[1],
+            playbackSpeed = 1f,
             sendIntent = {}
         )
     }

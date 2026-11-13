@@ -298,6 +298,14 @@ class AndroidPlayerManager(
         }
     }
 
+    override fun setPlaybackSpeed(speed: Float) {
+        val player = (_state.value as? PlayerManager.State.Ready)?.player ?: return
+        player.setPlaybackSpeed(speed)
+        _state.update { state ->
+            (state as? PlayerManager.State.Ready)?.copy(playbackSpeed = speed) ?: state
+        }
+    }
+
     //endregion
 
     //region Player events

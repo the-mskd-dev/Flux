@@ -1043,6 +1043,59 @@ class PlayerViewModelTest : FunSpec({
         }
     }
 
+
+    context("playback speed") {
+
+        test("choosing a speed hands it to the player manager") {
+
+            // When
+            viewModel.handleIntent(PlayerIntent.SetPlaybackSpeed(speed = 1.5f))
+
+            // Then
+            coVerify(timeout = 1000) { playerManager.setPlaybackSpeed(speed = 1.5f) }
+
+        }
+
+        test("session exposes the active speed") {
+
+            // Given
+            val flow = MutableStateFlow<PlayerManager.State<Player>>(PlayerManager.State.Ready(player = player, playbackSpeed = 0.5f))
+            every { playerManager.flow } returns flow
+            updateVm()
+
+            // Then
+            viewModel.session.test {
+                var item = awaitItem()
+                while (item !is State.Content) item = awaitItem()
+                item.content.playbackSpeed shouldBe 0.5f
+                cancelAndConsumeRemainingEvents()
+            }
+
+        }
+
+        test("loading a Media resets the speed to 1x") {
+
+            // Given
+            val flow = MutableStateFlow<PlayerManager.State<Player>>(PlayerManager.State.Ready(player = player, playbackSpeed = 2f))
+            every { playerManager.flow } returns flow
+            updateVm()
+
+            // When
+            viewModel.session.test {
+                awaitItem()
+                cancelAndConsumeRemainingEvents()
+            }
+
+            // Then
+            coVerify(timeout = 1000) {
+                playerManager.setPlaybackSpeed(speed = 1f)
+                playerManager.playMedia(any(), any())
+            }
+
+        }
+
+    }
+
 })
 
 private val PlayerViewModel<Player>.sessionContent: PlayerSession<Player>

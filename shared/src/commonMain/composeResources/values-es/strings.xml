@@ -248,6 +248,7 @@
     <string name="spoiler_hidden">Spoiler oculto</string>
     <string name="spoiler_reveal">Mostrar</string>
     <string name="chapters">Capítulos</string>
+    <string name="playback_speed">Velocidad de reproducción</string>
     <string name="chapter_number">Capítulo %1$d</string>
     <string name="gallery_image_download">Descargar imagen</string>
     <string name="gallery_use_as_poster">Usar como póster</string>

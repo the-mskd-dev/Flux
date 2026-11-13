@@ -20,6 +20,7 @@ data class PlayerSession<out T>(
     val selectedAudio: PlayerTrack? = null,
     val selectedSubtitles: PlayerTrack? = null,
     val chapters: List<VideoChapter> = emptyList(),
+    val playbackSpeed: Float = 1f,
 ) {
     /** A single Chapter is the whole file: the Chapters row is only worth showing from 2. */
     val showChapters: Boolean get() = chapters.size >= 2
@@ -61,6 +62,7 @@ sealed class SettingsSheet {
     data object Settings : SettingsSheet()
     data class Tracks(val type: PlayerTrack.Type) : SettingsSheet()
     data object Chapters : SettingsSheet()
+    data object PlaybackSpeed : SettingsSheet()
 }
 
 sealed interface ChapterButton {
@@ -80,6 +82,7 @@ sealed class PlayerIntent {
     data class ShowSettings(val sheet: SettingsSheet?) : PlayerIntent()
     data class SelectTrack(val track: PlayerTrack) : PlayerIntent()
     data class SelectChapter(val chapter: VideoChapter) : PlayerIntent()
+    data class SetPlaybackSpeed(val speed: Float) : PlayerIntent()
 
     data class OnChapterButtonTap(val button: ChapterButton?) : PlayerIntent()
     data class OnVolumeChange(val delta: Float) : PlayerIntent()

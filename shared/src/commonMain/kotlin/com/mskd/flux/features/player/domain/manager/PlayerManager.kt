@@ -16,6 +16,7 @@ interface PlayerManager<out T> {
             val selectedAudio: PlayerTrack? = null,
             val selectedSubtitles: PlayerTrack? = null,
             val duration: Long = 0L,
+            val playbackSpeed: Float = 1f,
         ) : State<T>()
         data class Error(val code: Int? = null, val name: String? = null) : State<Nothing>()
     }
@@ -47,6 +48,9 @@ interface PlayerManager<out T> {
     suspend fun playMedia(media: Media, subtitlesPath: String?)
 
     fun selectTrack(track: PlayerTrack)
+
+    /** Plays at [speed] times the normal rate, audio included, without restarting playback. */
+    fun setPlaybackSpeed(speed: Float)
 
 }
 /** FAST snaps to the closest keyframe (cheap, for scrubbing); EXACT lands on the requested position. */

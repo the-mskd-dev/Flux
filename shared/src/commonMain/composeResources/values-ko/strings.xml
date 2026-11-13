@@ -247,6 +247,7 @@
     <string name="spoiler_hidden">스포일러 숨김</string>
     <string name="spoiler_reveal">보기</string>
     <string name="chapters">챕터</string>
+    <string name="playback_speed">재생 속도</string>
     <string name="chapter_number">챕터 %1$d</string>
     <string name="gallery_image_download">이미지 다운로드</string>
     <string name="gallery_use_as_poster">포스터로 사용</string>

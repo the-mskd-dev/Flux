@@ -5,6 +5,9 @@ import com.mskd.flux.configs.fluxExtensions
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.mockk
+import io.mockk.verify
+import com.mskd.flux.features.player.domain.manager.PlayerManager
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 
 class AndroidPlayerManagerTest : FunSpec({
@@ -45,5 +48,18 @@ class AndroidPlayerManagerTest : FunSpec({
         )
 
         manager.progress.first() shouldBe 0L
+    }
+
+    test("chosen speed reaches the player and is exposed in state") {
+        val player = mockk<Player>(relaxed = true)
+        val stateField = AndroidPlayerManager::class.java.getDeclaredField("_state").apply { isAccessible = true }
+        @Suppress("UNCHECKED_CAST")
+        (stateField.get(manager) as MutableStateFlow<PlayerManager.State<Player>>).value =
+            PlayerManager.State.Ready(player = player)
+
+        manager.setPlaybackSpeed(1.75f)
+
+        verify { player.setPlaybackSpeed(1.75f) }
+        (manager.flow.first() as PlayerManager.State.Ready).playbackSpeed shouldBe 1.75f
     }
 })

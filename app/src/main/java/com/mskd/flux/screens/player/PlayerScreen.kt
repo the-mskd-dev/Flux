@@ -478,9 +478,8 @@ fun playerConstraintSet(videoSize: VideoSize) = remember( videoSize) {
         }
 
         constrain(subtitles) {
-            start.linkTo(parent.start)
-            end.linkTo(parent.end)
             bottom.linkTo(player.bottom)
+            centerHorizontallyTo(parent)
         }
 
         constrain(playerInterface) {
@@ -516,8 +515,7 @@ fun playerConstraintSet(videoSize: VideoSize) = remember( videoSize) {
 
         constrain(boostPill) {
             top.linkTo(parent.top)
-            start.linkTo(parent.start)
-            end.linkTo(parent.end)
+            centerHorizontallyTo(parent)
         }
 
     }

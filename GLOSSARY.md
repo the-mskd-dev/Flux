@@ -184,6 +184,10 @@ _Avoid_: Rate, tempo
 Temporary 2x speed while the viewer presses and holds the video; a "2x" pill shows at the top, and the previous Playback speed is restored on release. Not available in Picture-in-Picture.
 _Avoid_: Fast play, turbo
 
+**Media info**:
+Read-only technical description of a Media (container, video and audio codecs, resolution, frame rate, bitrate, channels, sampling rate), shown in the Settings sheet. A value that cannot be read shows as a placeholder.
+_Avoid_: File info, Technical details, Codec info
+
 **Track**:
 Selectable audio or subtitle track of a Media.
 _Avoid_: Stream, language

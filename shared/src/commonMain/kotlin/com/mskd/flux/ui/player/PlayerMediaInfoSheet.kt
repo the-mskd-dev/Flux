@@ -103,7 +103,11 @@ fun PlayerMediaInfoSheet(
                 )
                 MediaInfoRow(
                     label = stringResource(Res.string.bitrate),
-                    value = mediaInfo?.bitrate?.let { "${(it / 1_000_000.0).trimmed(decimals = 1)} Mb/s" }
+                    value = mediaInfo?.bitrate?.let {
+                        // Below 1 Mb/s, kb/s keeps the value from rounding down to 0
+                        if (it >= 1_000_000) "${(it / 1_000_000.0).trimmed(decimals = 1)} Mb/s"
+                        else "${(it / 1_000.0).trimmed(decimals = 1)} kb/s"
+                    }
                 )
                 MediaInfoRow(
                     label = stringResource(Res.string.audio_codec),

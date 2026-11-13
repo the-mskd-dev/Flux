@@ -248,15 +248,15 @@
     <string name="spoiler_reveal">보기</string>
     <string name="chapters">챕터</string>
     <string name="playback_speed">재생 속도</string>
-    <string name="media_info">ë¯¸ëì´ ì ë³´</string>
-    <string name="container">ì»¨íì´ë</string>
-    <string name="video_codec">ë¹ëì¤ ì½ë±</string>
-    <string name="resolution">í´ìë</string>
-    <string name="frame_rate">íë ì ë ì´í¸</string>
-    <string name="bitrate">ë¹í¸ë ì´í¸</string>
-    <string name="audio_codec">ì¤ëì¤ ì½ë±</string>
-    <string name="channels">ì±ë</string>
-    <string name="sampling_rate">ìíë§ ë ì´í¸</string>
+    <string name="media_info">미디어 정보</string>
+    <string name="container">컨테이너</string>
+    <string name="video_codec">비디오 코덱</string>
+    <string name="resolution">해상도</string>
+    <string name="frame_rate">프레임 레이트</string>
+    <string name="bitrate">비트레이트</string>
+    <string name="audio_codec">오디오 코덱</string>
+    <string name="channels">채널</string>
+    <string name="sampling_rate">샘플링 레이트</string>
     <string name="chapter_number">챕터 %1$d</string>
     <string name="gallery_image_download">이미지 다운로드</string>
     <string name="gallery_use_as_poster">포스터로 사용</string>

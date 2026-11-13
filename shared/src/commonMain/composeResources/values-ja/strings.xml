@@ -248,15 +248,15 @@
     <string name="spoiler_reveal">表示</string>
     <string name="chapters">チャプター</string>
     <string name="playback_speed">再生速度</string>
-    <string name="media_info">ã¡ãã£ã¢æå ±</string>
-    <string name="container">ã³ã³ãã</string>
-    <string name="video_codec">ãããªã³ã¼ããã¯</string>
-    <string name="resolution">è§£ååº¦</string>
-    <string name="frame_rate">ãã¬ã¼ã ã¬ã¼ã</string>
-    <string name="bitrate">ãããã¬ã¼ã</string>
-    <string name="audio_codec">ãªã¼ãã£ãªã³ã¼ããã¯</string>
-    <string name="channels">ãã£ã³ãã«</string>
-    <string name="sampling_rate">ãµã³ããªã³ã°ã¬ã¼ã</string>
+    <string name="media_info">メディア情報</string>
+    <string name="container">コンテナ</string>
+    <string name="video_codec">ビデオコーデック</string>
+    <string name="resolution">解像度</string>
+    <string name="frame_rate">フレームレート</string>
+    <string name="bitrate">ビットレート</string>
+    <string name="audio_codec">オーディオコーデック</string>
+    <string name="channels">チャンネル</string>
+    <string name="sampling_rate">サンプリングレート</string>
     <string name="chapter_number">チャプター %1$d</string>
     <string name="gallery_image_download">画像をダウンロード</string>
     <string name="gallery_use_as_poster">ポスターとして使用</string>

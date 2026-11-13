@@ -249,13 +249,13 @@
     <string name="spoiler_reveal">Mostrar</string>
     <string name="chapters">Capítulos</string>
     <string name="playback_speed">Velocidad de reproducción</string>
-    <string name="media_info">InformaciÃ³n del medio</string>
+    <string name="media_info">Información del medio</string>
     <string name="container">Contenedor</string>
-    <string name="video_codec">CÃ³dec de vÃ­deo</string>
-    <string name="resolution">ResoluciÃ³n</string>
+    <string name="video_codec">Códec de vídeo</string>
+    <string name="resolution">Resolución</string>
     <string name="frame_rate">Velocidad de fotogramas</string>
     <string name="bitrate">Tasa de bits</string>
-    <string name="audio_codec">CÃ³dec de audio</string>
+    <string name="audio_codec">Códec de audio</string>
     <string name="channels">Canales</string>
     <string name="sampling_rate">Frecuencia de muestreo</string>
     <string name="chapter_number">Capítulo %1$d</string>

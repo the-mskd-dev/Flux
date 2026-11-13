@@ -252,11 +252,11 @@
     <string name="media_info">Medieninfo</string>
     <string name="container">Container</string>
     <string name="video_codec">Videocodec</string>
-    <string name="resolution">AuflÃ¶sung</string>
+    <string name="resolution">Auflösung</string>
     <string name="frame_rate">Bildrate</string>
     <string name="bitrate">Bitrate</string>
     <string name="audio_codec">Audiocodec</string>
-    <string name="channels">KanÃ¤le</string>
+    <string name="channels">Kanäle</string>
     <string name="sampling_rate">Abtastrate</string>
     <string name="chapter_number">Kapitel %1$d</string>
     <string name="gallery_image_download">Bild herunterladen</string>

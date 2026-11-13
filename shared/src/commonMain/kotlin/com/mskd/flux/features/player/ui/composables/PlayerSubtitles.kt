@@ -78,7 +78,7 @@ private fun StyledCue(cue: SubtitleCue, smallText: Boolean) {
         content = {
             if (image != null) {
                 Image(bitmap = image, contentDescription = null)
-            } else {
+            } else if (bitmap == null) {
                 StyledText(cue = cue, smallText = smallText)
             }
         }
@@ -86,7 +86,10 @@ private fun StyledCue(cue: SubtitleCue, smallText: Boolean) {
         val frameWidth = constraints.maxWidth
         val frameHeight = constraints.maxHeight
 
-        val placeable = measurables.first().measure(
+        // An image that could not be decoded has nothing to place
+        val child = measurables.firstOrNull() ?: return@Layout layout(frameWidth, frameHeight) {}
+
+        val placeable = child.measure(
             if (bitmap != null) {
                 Constraints.fixed(
                     (bitmap.widthFraction * frameWidth).roundToInt(),
@@ -97,8 +100,8 @@ private fun StyledCue(cue: SubtitleCue, smallText: Boolean) {
             }
         )
 
-        val x = (cue.position ?: 0.5f) * frameWidth - cue.positionAnchor.factor() * placeable.width
-        val y = (cue.line ?: DEFAULT_LINE) * frameHeight - cue.lineAnchor.factor() * placeable.height
+        val x = (cue.position ?: 0.5f) * frameWidth - cue.positionAnchor.anchorShare() * placeable.width
+        val y = (cue.line ?: DEFAULT_LINE) * frameHeight - cue.lineAnchor.anchorShare() * placeable.height
 
         layout(frameWidth, frameHeight) {
             placeable.place(x.roundToInt(), y.roundToInt())
@@ -131,7 +134,7 @@ private fun CuePill(text: String?, color: Color, style: TextStyle) {
 }
 
 /** Share of the child that sits before the given position: START 0, CENTER half, END the whole child. */
-private fun CueAnchor.factor(): Float = when (this) {
+private fun CueAnchor.anchorShare(): Float = when (this) {
     CueAnchor.START -> 0f
     CueAnchor.CENTER -> 0.5f
     CueAnchor.END -> 1f

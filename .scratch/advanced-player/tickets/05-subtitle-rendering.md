@@ -16,13 +16,13 @@ Spec: `../specs.md`, `docs/adr/0002-subtitles-rendered-in-compose-from-media3-cu
   - `size` and `bitmapHeight` are `NO_VALUE`. Italic and colored signs in the sample file were not reached.
   - **Not verified:** PGS/VobSub. The MKV files on the device carry only ASS or UTF-8 (`The Punisher 2026.mkv`); no test file with image subtitles was found.
   - **Sidecar subtitles:** the debug build cannot read a `.ass` placed next to a video in `Movies` (`MediaProvider: Permission ... denied`). That is a separate bug, not in this ticket's scope.
-- [ ] A pure Kotlin `SubtitleCue` exists in common code (text, color, bold, italic, position, optional bitmap) with no `androidx` or `android` import
-- [ ] The player manager exposes cues as this model instead of a list of strings, and the Android mapping from Media3 cues is the only place that knows Media3 cue types
+- [x] A pure Kotlin `SubtitleCue` exists in common code (text, color, bold, italic, position, optional bitmap) with no `androidx` or `android` import
+- [x] The player manager exposes cues as this model instead of a list of strings, and the Android mapping from Media3 cues is the only place that knows Media3 cue types
 - [ ] An ASS/SSA Track shows color, bold/italic and position from the file; a translated sign appears where the file puts it
 - [ ] A Track without style (SRT, WebVTT) looks exactly as before (black pill, centered, bottom)
 - [ ] An image Track displays its bitmap at the position it asks for
 - [ ] Animations, karaoke and embedded fonts are not attempted
-- [ ] The rendering composable is written in Compose Multiplatform in the shared module
-- [ ] Player manager tests: mapping of a styled cue, an unstyled cue and a bitmap cue
+- [x] The rendering composable is written in Compose Multiplatform in the shared module
+- [x] Player manager tests: mapping of a styled cue, an unstyled cue and a bitmap cue
 - [ ] Manual check on a device with an ASS file, an SRT file and a PGS/VobSub file
-- [ ] `./gradlew :app:testFossDebugUnitTest` passes
+- [x] `./gradlew :app:testFossDebugUnitTest` passes (804 tests, 0 failures)

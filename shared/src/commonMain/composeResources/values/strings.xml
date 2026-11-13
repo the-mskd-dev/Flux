@@ -267,6 +267,7 @@
     <string name="spoiler_reveal">Reveal</string>
     <string name="chapters">Chapters</string>
     <string name="playback_speed">Playback speed</string>
+    <string name="subtitle_delay">Subtitle delay</string>
     <string name="media_info">Media info</string>
     <string name="container">Container</string>
     <string name="video_codec">Video codec</string>

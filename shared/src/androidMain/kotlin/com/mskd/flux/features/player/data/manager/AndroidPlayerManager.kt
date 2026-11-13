@@ -312,6 +312,15 @@ class AndroidPlayerManager(
         }
     }
 
+    // The renderers live in the service's ExoPlayer, so the delay goes through a session command
+    override fun setSubtitleDelay(delayMs: Long) {
+        val controller = readyState?.player as? MediaController ?: return
+        controller.sendCustomCommand(PlayerService.setSubtitleDelayCommand(delayMs), Bundle.EMPTY)
+        _state.update { state ->
+            (state as? PlayerManager.State.Ready)?.copy(subtitleDelayMs = delayMs) ?: state
+        }
+    }
+
     //endregion
 
     //region Player events

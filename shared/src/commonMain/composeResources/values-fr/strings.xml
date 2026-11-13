@@ -250,6 +250,7 @@
     <string name="spoiler_reveal">Révéler</string>
     <string name="chapters">Chapitres</string>
     <string name="playback_speed">Vitesse de lecture</string>
+    <string name="subtitle_delay">Décalage des sous-titres</string>
     <string name="media_info">Informations média</string>
     <string name="container">Conteneur</string>
     <string name="video_codec">Codec vidéo</string>

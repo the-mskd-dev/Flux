@@ -1101,6 +1101,105 @@ class PlayerViewModelTest : FunSpec({
 
     }
 
+    context("subtitle delay") {
+
+        fun readyFlow(delayMs: Long): MutableStateFlow<PlayerManager.State<Player>> {
+            val flow = MutableStateFlow<PlayerManager.State<Player>>(PlayerManager.State.Ready(player = player, subtitleDelayMs = delayMs))
+            every { playerManager.flow } returns flow
+            // The manager reflects the delay it is given, as the real one does
+            every { playerManager.setSubtitleDelay(any()) } answers {
+                flow.value = PlayerManager.State.Ready(player = player, subtitleDelayMs = firstArg())
+            }
+            return flow
+        }
+
+        // The Media load resets the delay to 0: wait for it, then show the delay under test
+        fun loadedVm(delayMs: Long): MutableStateFlow<PlayerManager.State<Player>> {
+            val flow = readyFlow(delayMs = delayMs)
+            updateVm()
+            coVerify(timeout = 2000) { playerManager.playMedia(any(), any()) }
+            flow.value = PlayerManager.State.Ready(player = player, subtitleDelayMs = delayMs)
+            return flow
+        }
+
+        test("a step moves the delay from its current value") {
+
+            // Given
+            loadedVm(delayMs = 200L)
+
+            // When
+            viewModel.handleIntent(PlayerIntent.ChangeSubtitleDelay(deltaMs = 100L))
+
+            // Then
+            coVerify(timeout = 1000) { playerManager.setSubtitleDelay(delayMs = 300L) }
+
+        }
+
+        test("a negative step advances the subtitles") {
+
+            // Given
+            readyFlow(delayMs = 0L)
+            updateVm()
+
+            // When
+            viewModel.handleIntent(PlayerIntent.ChangeSubtitleDelay(deltaMs = -100L))
+
+            // Then
+            coVerify(timeout = 1000) { playerManager.setSubtitleDelay(delayMs = -100L) }
+
+        }
+
+        test("reset returns the delay to 0") {
+
+            // Given
+            readyFlow(delayMs = -700L)
+            updateVm()
+
+            // When
+            viewModel.handleIntent(PlayerIntent.ResetSubtitleDelay)
+
+            // Then
+            coVerify(timeout = 1000) { playerManager.setSubtitleDelay(delayMs = 0L) }
+
+        }
+
+        test("session exposes the active delay") {
+
+            // Given
+            loadedVm(delayMs = 1500L)
+
+            // Then
+            viewModel.session.test {
+                var item = awaitItem()
+                while (item !is State.Content) item = awaitItem()
+                item.content.subtitleDelayMs shouldBe 1500L
+                cancelAndConsumeRemainingEvents()
+            }
+
+        }
+
+        test("loading a Media resets the delay to 0") {
+
+            // Given
+            readyFlow(delayMs = 900L)
+            updateVm()
+
+            // When
+            viewModel.session.test {
+                awaitItem()
+                cancelAndConsumeRemainingEvents()
+            }
+
+            // Then
+            coVerify(timeout = 1000) {
+                playerManager.setSubtitleDelay(delayMs = 0L)
+                playerManager.playMedia(any(), any())
+            }
+
+        }
+
+    }
+
     context("media info") {
 
         val mediaInfo = MediaInfo(videoCodec = "H.264", width = 1920, height = 1080, audioCodec = "AAC")

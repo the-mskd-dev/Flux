@@ -30,6 +30,7 @@ fun PlayerSettings(
                 chapters = session.chapters.takeIf { session.showChapters },
                 currentChapter = currentChapter,
                 playbackSpeed = session.playbackSpeed,
+                subtitleDelayMs = session.subtitleDelayMs,
                 sendIntent = sendIntent
             )
         }
@@ -52,6 +53,12 @@ fun PlayerSettings(
         SettingsSheet.PlaybackSpeed -> {
             PlayerPlaybackSpeedSheet(
                 selectedSpeed = session.playbackSpeed,
+                sendIntent = sendIntent
+            )
+        }
+        SettingsSheet.SubtitleDelay -> {
+            PlayerSubtitleDelaySheet(
+                delayMs = session.subtitleDelayMs,
                 sendIntent = sendIntent
             )
         }

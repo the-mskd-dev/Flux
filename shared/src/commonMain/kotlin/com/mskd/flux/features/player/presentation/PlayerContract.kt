@@ -23,6 +23,7 @@ data class PlayerSession<out T>(
     val chapters: List<VideoChapter> = emptyList(),
     val playbackSpeed: Float = 1f,
     val mediaInfo: MediaInfo? = null,
+    val subtitleDelayMs: Long = 0L,
 ) {
     /** A single Chapter is the whole file: the Chapters row is only worth showing from 2. */
     val showChapters: Boolean get() = chapters.size >= 2
@@ -66,6 +67,7 @@ sealed class SettingsSheet {
     data class Tracks(val type: PlayerTrack.Type) : SettingsSheet()
     data object Chapters : SettingsSheet()
     data object PlaybackSpeed : SettingsSheet()
+    data object SubtitleDelay : SettingsSheet()
     data object MediaInfo : SettingsSheet()
 }
 
@@ -89,6 +91,8 @@ sealed class PlayerIntent {
     data class SetPlaybackSpeed(val speed: Float) : PlayerIntent()
     data object StartBoostSpeed : PlayerIntent()
     data object EndBoostSpeed : PlayerIntent()
+    data class ChangeSubtitleDelay(val deltaMs: Long) : PlayerIntent()
+    data object ResetSubtitleDelay : PlayerIntent()
 
     data class OnChapterButtonTap(val button: ChapterButton?) : PlayerIntent()
     data class OnVolumeChange(val delta: Float) : PlayerIntent()

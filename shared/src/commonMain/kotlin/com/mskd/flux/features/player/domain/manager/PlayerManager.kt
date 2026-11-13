@@ -20,6 +20,8 @@ interface PlayerManager<out T> {
             val duration: Long = 0L,
             val playbackSpeed: Float = 1f,
             val mediaInfo: MediaInfo? = null, // Null until the Media's tracks are known, and again on a new Media
+            /** Shift of the subtitles in milliseconds: positive holds them back, negative shows them early. */
+            val subtitleDelayMs: Long = 0L,
         ) : State<T>()
         data class Error(val code: Int? = null, val name: String? = null) : State<Nothing>()
     }
@@ -55,6 +57,9 @@ interface PlayerManager<out T> {
 
     /** Plays at [speed] times the normal rate, audio included, without restarting playback. */
     fun setPlaybackSpeed(speed: Float)
+
+    /** Shifts the subtitles of the current Media by [delayMs]: positive holds them back, negative shows them early. */
+    fun setSubtitleDelay(delayMs: Long)
 
 }
 /** FAST snaps to the closest keyframe (cheap, for scrubbing); EXACT lands on the requested position. */

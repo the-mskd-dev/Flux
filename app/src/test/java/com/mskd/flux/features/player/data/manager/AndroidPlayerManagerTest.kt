@@ -8,6 +8,7 @@ import androidx.media3.common.TrackGroup
 import androidx.media3.common.Tracks
 import androidx.media3.common.text.Cue
 import androidx.media3.common.text.CueGroup
+import androidx.media3.session.MediaController
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.features.player.domain.model.CueAnchor
 import com.mskd.flux.features.player.domain.model.MediaInfo
@@ -90,6 +91,16 @@ class AndroidPlayerManagerTest : FunSpec({
         manager.subtitles.first() shouldBe listOf(
             SubtitleCue(text = "Translated sign", line = 0.05f, lineAnchor = CueAnchor.START)
         )
+    }
+
+    test("subtitle delay is sent to the service and exposed in state") {
+        val controller = mockk<MediaController>(relaxed = true)
+        setReady(controller)
+
+        manager.setSubtitleDelay(delayMs = -300L)
+
+        verify { controller.sendCustomCommand(any(), any()) }
+        (manager.flow.first() as PlayerManager.State.Ready).subtitleDelayMs shouldBe -300L
     }
 
     test("chosen speed reaches the player and is exposed in state") {

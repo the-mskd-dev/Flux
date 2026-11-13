@@ -161,6 +161,7 @@ class PlayerViewModel<out T>(
                     chapters = chapters,
                     playbackSpeed = playerState.playbackSpeed,
                     mediaInfo = playerState.mediaInfo,
+                    subtitleDelayMs = playerState.subtitleDelayMs,
                 )
             )
         }
@@ -266,6 +267,8 @@ class PlayerViewModel<out T>(
             is PlayerIntent.OnChapterButtonTap -> onChapterButtonTap(button = intent.button)
             PlayerIntent.StartBoostSpeed -> startBoostSpeed()
             PlayerIntent.EndBoostSpeed -> endBoostSpeed()
+            is PlayerIntent.ChangeSubtitleDelay -> changeSubtitleDelay(deltaMs = intent.deltaMs)
+            PlayerIntent.ResetSubtitleDelay -> playerManager.setSubtitleDelay(delayMs = 0L)
             PlayerIntent.GoToBackground -> onBackground()
             PlayerIntent.GoToForeground -> onForeground()
             is PlayerIntent.OnPipChange -> onPipChange(isInPip = intent.isInPip)
@@ -280,10 +283,17 @@ class PlayerViewModel<out T>(
         speedBeforeBoost = null
         _overlays.update { it.copy(isBoosting = false) }
         playerManager.setPlaybackSpeed(speed = 1f)
+        // Every Media starts with its subtitles in sync as the file has them, and the delay is never kept
+        playerManager.setSubtitleDelay(delayMs = 0L)
         playerManager.playMedia(
             media = media,
             subtitlesPath = subtitlesPath
         )
+    }
+
+    private suspend fun changeSubtitleDelay(deltaMs: Long) {
+        val current = (playerManager.flow.first() as? PlayerManager.State.Ready)?.subtitleDelayMs ?: 0L
+        playerManager.setSubtitleDelay(delayMs = current + deltaMs)
     }
 
     private suspend fun startBoostSpeed() {

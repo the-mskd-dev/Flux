@@ -35,6 +35,7 @@ import flux.shared.generated.resources.by_default
 import flux.shared.generated.resources.chapters
 import flux.shared.generated.resources.media_info
 import flux.shared.generated.resources.playback_speed
+import flux.shared.generated.resources.subtitle_delay
 import flux.shared.generated.resources.subtitles_disabled
 import org.jetbrains.compose.resources.stringResource
 
@@ -45,6 +46,7 @@ fun PlayerSettingsSheet(
     chapters: List<VideoChapter>?,
     currentChapter: VideoChapter?,
     playbackSpeed: Float,
+    subtitleDelayMs: Long,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
@@ -91,6 +93,14 @@ fun PlayerSettingsSheet(
                     label = stringResource(Res.string.playback_speed),
                     value = playbackSpeed.formatSpeed(),
                     onClick = { sendIntent(PlayerIntent.ShowSettings(sheet = SettingsSheet.PlaybackSpeed)) }
+                )
+
+                HorizontalDivider(modifier = Modifier.padding(horizontal = FluxUI.Space.medium))
+
+                PlayerSettingsItem(
+                    label = stringResource(Res.string.subtitle_delay),
+                    value = subtitleDelayMs.formatDelay(),
+                    onClick = { sendIntent(PlayerIntent.ShowSettings(sheet = SettingsSheet.SubtitleDelay)) }
                 )
 
                 HorizontalDivider(modifier = Modifier.padding(horizontal = FluxUI.Space.medium))
@@ -169,6 +179,7 @@ fun PlayerSettingsSheet_Preview() {
             chapters = PlayerMockups.chapters,
             currentChapter = PlayerMockups.chapters[1],
             playbackSpeed = 1f,
+            subtitleDelayMs = 0L,
             sendIntent = {}
         )
     }

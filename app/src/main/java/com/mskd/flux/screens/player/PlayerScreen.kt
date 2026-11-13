@@ -66,6 +66,7 @@ import com.mskd.flux.features.player.presentation.rememberWindowStateHolder
 import com.mskd.flux.screens.player.composables.PlayerSideEffects
 import com.mskd.flux.screens.player.composables.collectSelectedAsState
 import com.mskd.flux.screens.player.composables.playerInterface.PlayerAmbientOverlay
+import com.mskd.flux.screens.player.composables.playerInterface.PlayerBoostPill
 import com.mskd.flux.screens.player.composables.playerInterface.PlayerInterface
 import com.mskd.flux.screens.player.composables.playerInterface.PlayerSeekOverlay
 import com.mskd.flux.screens.player.composables.playerInterface.PlayerSubtitles
@@ -239,6 +240,7 @@ fun PlayerContent(
     val currentWindowStateHolder by rememberUpdatedState(windowStateHolder)
     val isInPip by interfaceState.collectSelectedAsState { it.isInPip }
     val seekOverlay by overlays.collectSelectedAsState { it.seekOverlay }
+    val isBoosting by overlays.collectSelectedAsState { it.isBoosting }
 
     // The Ambient overlay is local to the screen: brightness is applied here, volume comes back from the VM
     var ambientOverlay by remember { mutableStateOf<AmbientOverlay?>(null) }
@@ -260,6 +262,13 @@ fun PlayerContent(
     }
 
     val currentShowAmbient by rememberUpdatedState(showAmbient)
+
+    // A pinch zoom that starts during a boost ends it
+    LaunchedEffect(stateTransform) {
+        snapshotFlow { stateTransform.isTransformInProgress }.collect {
+            if (it) currentSendIntent(PlayerIntent.EndBoostSpeed)
+        }
+    }
 
     LaunchedEffect(volume) {
         volume.collect { showAmbient(AmbientOverlay.Type.VOLUME, it) }
@@ -305,6 +314,18 @@ fun PlayerContent(
             }
             .pointerInput(Unit) {
                 detectTapGestures(
+                    onPress = {
+                        // The release (or a cancelled gesture) always ends the boost
+                        try {
+                            tryAwaitRelease()
+                        } finally {
+                            currentSendIntent(PlayerIntent.EndBoostSpeed)
+                        }
+                    },
+                    onLongPress = {
+                        // Not on top of a pinch zoom
+                        if (!stateTransform.isTransformInProgress) currentSendIntent(PlayerIntent.StartBoostSpeed)
+                    },
                     onTap = { offset ->
                         val edgeMargin = 32.dp.toPx()
                         if (offset.x > edgeMargin && offset.x < (size.width - edgeMargin)) {
@@ -405,6 +426,11 @@ fun PlayerContent(
                 ambientOverlay = { ambientOverlay }
             )
 
+            PlayerBoostPill(
+                modifier = Modifier.layoutId("boostPill"),
+                isBoosting = { isBoosting }
+            )
+
         }
 
     }
@@ -429,13 +455,14 @@ fun playerConstraintSet(videoSize: VideoSize) = remember( videoSize) {
             "16:9"
         }
 
-        val (player, subtitles, playerInterface, leftSeekOverlay, rightSeekOverlay, ambientOverlay) = createRefsFor(
+        val (player, subtitles, playerInterface, leftSeekOverlay, rightSeekOverlay, ambientOverlay, boostPill) = createRefsFor(
             "player",
             "subtitles",
             "playerInterface",
             "leftSeekOverlay",
             "rightSeekOverlay",
-            "ambientOverlay"
+            "ambientOverlay",
+            "boostPill"
         )
 
         val leftGuideline = createGuidelineFromStart(.33f)
@@ -485,6 +512,12 @@ fun playerConstraintSet(videoSize: VideoSize) = remember( videoSize) {
 
         constrain(ambientOverlay) {
             centerTo(parent)
+        }
+
+        constrain(boostPill) {
+            top.linkTo(parent.top)
+            start.linkTo(parent.start)
+            end.linkTo(parent.end)
         }
 
     }

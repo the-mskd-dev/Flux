@@ -24,6 +24,7 @@ import com.mskd.flux.features.player.domain.usecase.SaveTrackLanguageUseCase
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.ui.text.TextProvider
+import com.mskd.flux.utils.Constants
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
@@ -40,6 +41,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
@@ -69,6 +71,9 @@ class PlayerViewModel<out T>(
     private var seekResetJob: Job? = null
 
     private var wasPlayingBeforeBackground = false
+
+    // Playback speed to restore when the Boost speed ends; null when no boost is active
+    private var speedBeforeBoost: Float? = null
 
     private val currentSession get() = (session.value as? State.Content<PlayerSession<T>>)?.content
 
@@ -257,6 +262,8 @@ class PlayerViewModel<out T>(
             is PlayerIntent.SetPlaybackSpeed -> playerManager.setPlaybackSpeed(speed = intent.speed)
             is PlayerIntent.OnVolumeChange -> onVolumeChange(delta = intent.delta)
             is PlayerIntent.OnChapterButtonTap -> onChapterButtonTap(button = intent.button)
+            PlayerIntent.StartBoostSpeed -> startBoostSpeed()
+            PlayerIntent.EndBoostSpeed -> endBoostSpeed()
             PlayerIntent.GoToBackground -> onBackground()
             PlayerIntent.GoToForeground -> onForeground()
             is PlayerIntent.OnPipChange -> onPipChange(isInPip = intent.isInPip)
@@ -267,12 +274,31 @@ class PlayerViewModel<out T>(
     private suspend fun playMedia(media: Media) {
         val subtitlesPath = getSubtitlesUseCase(file = media.file)
         chapters.value = getChaptersUseCase(media = media)
-        // Every Media starts at 1x
+        // Every Media starts at 1x, and never inside a leftover boost
+        speedBeforeBoost = null
+        _overlays.update { it.copy(isBoosting = false) }
         playerManager.setPlaybackSpeed(speed = 1f)
         playerManager.playMedia(
             media = media,
             subtitlesPath = subtitlesPath
         )
+    }
+
+    private suspend fun startBoostSpeed() {
+        // No Boost speed in Picture-in-Picture, nor on top of a running boost
+        if (_interface.value.isInPip || speedBeforeBoost != null) return
+        val ready = playerManager.flow.first() as? PlayerManager.State.Ready ?: return
+
+        speedBeforeBoost = ready.playbackSpeed
+        playerManager.setPlaybackSpeed(speed = Constants.PLAYER.BOOST_SPEED)
+        _overlays.update { it.copy(isBoosting = true) }
+    }
+
+    private fun endBoostSpeed() {
+        val previousSpeed = speedBeforeBoost ?: return
+        speedBeforeBoost = null
+        playerManager.setPlaybackSpeed(speed = previousSpeed)
+        _overlays.update { it.copy(isBoosting = false) }
     }
 
     private fun togglePlayButton() {
@@ -468,6 +494,8 @@ class PlayerViewModel<out T>(
 
     private suspend fun onBackground() {
 
+        endBoostSpeed()
+
         if (pipIsEnabledUseCase()) return
 
         if (currentSession == null) return
@@ -486,6 +514,7 @@ class PlayerViewModel<out T>(
     }
 
     private fun onPipChange(isInPip: Boolean) {
+        if (isInPip) endBoostSpeed()
         _interface.update { it.copy(isInPip = isInPip) }
     }
 

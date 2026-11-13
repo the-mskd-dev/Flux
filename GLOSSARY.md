@@ -180,6 +180,10 @@ _Avoid_: Bottom sheet, menu
 Rate at which a Media plays, from 0.25x to 2x by steps of 0.25, chosen in the Settings sheet. Resets to 1x for each new Media.
 _Avoid_: Rate, tempo
 
+**Boost speed**:
+Temporary 2x speed while the viewer presses and holds the video; a "2x" pill shows at the top, and the previous Playback speed is restored on release. Not available in Picture-in-Picture.
+_Avoid_: Fast play, turbo
+
 **Track**:
 Selectable audio or subtitle track of a Media.
 _Avoid_: Stream, language

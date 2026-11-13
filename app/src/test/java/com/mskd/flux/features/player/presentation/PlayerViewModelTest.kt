@@ -1096,7 +1096,121 @@ class PlayerViewModelTest : FunSpec({
 
     }
 
+    context("boost speed") {
+
+        fun readyFlow(speed: Float): MutableStateFlow<PlayerManager.State<Player>> {
+            val flow = MutableStateFlow<PlayerManager.State<Player>>(PlayerManager.State.Ready(player = player, playbackSpeed = speed))
+            every { playerManager.flow } returns flow
+            // The manager reflects the speed it is given, as the real one does
+            every { playerManager.setPlaybackSpeed(any()) } answers {
+                flow.value = PlayerManager.State.Ready(player = player, playbackSpeed = firstArg())
+            }
+            return flow
+        }
+
+        // The Media load resets the speed to 1x: wait for it before driving the boost
+        fun loadedVm(speed: Float): MutableStateFlow<PlayerManager.State<Player>> {
+            val flow = readyFlow(speed = speed)
+            updateVm()
+            coVerify(timeout = 2000) { playerManager.playMedia(any(), any()) }
+            flow.value = PlayerManager.State.Ready(player = player, playbackSpeed = speed)
+            return flow
+        }
+
+        test("starting plays at 2x and shows the pill") {
+
+            loadedVm(speed = 1f)
+
+            viewModel.handleIntent(PlayerIntent.StartBoostSpeed)
+
+            coVerify(timeout = 1000) { playerManager.setPlaybackSpeed(speed = Constants.PLAYER.BOOST_SPEED) }
+            viewModel.overlays.firstWithin { it.isBoosting }.isBoosting shouldBe true
+
+        }
+
+        test("release restores the previous speed, whatever it was") {
+
+            val flow = loadedVm(speed = 0.75f)
+
+            viewModel.handleIntent(PlayerIntent.StartBoostSpeed)
+            viewModel.overlays.firstWithin { it.isBoosting }
+            viewModel.handleIntent(PlayerIntent.EndBoostSpeed)
+
+            viewModel.overlays.firstWithin { !it.isBoosting }
+            (flow.value as PlayerManager.State.Ready).playbackSpeed shouldBe 0.75f
+
+        }
+
+        test("a second start does not overwrite the speed to restore") {
+
+            val flow = loadedVm(speed = 1.5f)
+
+            viewModel.handleIntent(PlayerIntent.StartBoostSpeed)
+            viewModel.handleIntent(PlayerIntent.StartBoostSpeed)
+            viewModel.handleIntent(PlayerIntent.EndBoostSpeed)
+
+            viewModel.overlays.firstWithin { !it.isBoosting && (flow.value as PlayerManager.State.Ready).playbackSpeed == 1.5f }
+
+        }
+
+        test("refused in Picture-in-Picture") {
+
+            loadedVm(speed = 1f)
+
+            viewModel.handleIntent(PlayerIntent.OnPipChange(isInPip = true))
+            viewModel.interfaceState.firstWithin { it.isInPip }
+            viewModel.handleIntent(PlayerIntent.StartBoostSpeed)
+            // Sync point: the intent channel is ordered
+            viewModel.handleIntent(PlayerIntent.OnPipChange(isInPip = true))
+
+            viewModel.overlays.value.isBoosting shouldBe false
+            coVerify(exactly = 0) { playerManager.setPlaybackSpeed(speed = Constants.PLAYER.BOOST_SPEED) }
+
+        }
+
+        test("entering Picture-in-Picture cancels an active boost") {
+
+            val flow = loadedVm(speed = 1.25f)
+
+            viewModel.handleIntent(PlayerIntent.StartBoostSpeed)
+            viewModel.overlays.firstWithin { it.isBoosting }
+            viewModel.handleIntent(PlayerIntent.OnPipChange(isInPip = true))
+
+            viewModel.overlays.firstWithin { !it.isBoosting }
+            (flow.value as PlayerManager.State.Ready).playbackSpeed shouldBe 1.25f
+
+        }
+
+        test("going to the background cancels an active boost") {
+
+            val flow = loadedVm(speed = 1f)
+
+            viewModel.handleIntent(PlayerIntent.StartBoostSpeed)
+            viewModel.overlays.firstWithin { it.isBoosting }
+            viewModel.handleIntent(PlayerIntent.GoToBackground)
+
+            viewModel.overlays.firstWithin { !it.isBoosting }
+            (flow.value as PlayerManager.State.Ready).playbackSpeed shouldBe 1f
+
+        }
+
+        test("release without a start does nothing") {
+
+            loadedVm(speed = 1.5f)
+
+            viewModel.handleIntent(PlayerIntent.EndBoostSpeed)
+            viewModel.handleIntent(PlayerIntent.OnPipChange(isInPip = false))
+            viewModel.interfaceState.firstWithin { true }
+
+            coVerify(exactly = 0) { playerManager.setPlaybackSpeed(speed = 1.5f) }
+
+        }
+
+    }
+
 })
+
+private suspend fun <T> Flow<T>.firstWithin(predicate: (T) -> Boolean): T = kotlinx.coroutines.withTimeout(3000) { first(predicate) }
 
 private val PlayerViewModel<Player>.sessionContent: PlayerSession<Player>
     get() = (session.value as State.Content).content

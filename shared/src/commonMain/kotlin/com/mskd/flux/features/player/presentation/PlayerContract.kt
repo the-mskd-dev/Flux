@@ -40,6 +40,8 @@ data class PlayerOverlays(
     val seekOverlay: SeekOverlay? = null,
     val chapterButton: ChapterButton? = null,
     val currentChapter: VideoChapter? = null,
+    /** The Boost speed is active: the "2x" pill shows. */
+    val isBoosting: Boolean = false,
 )
 
 @Immutable
@@ -83,6 +85,8 @@ sealed class PlayerIntent {
     data class SelectTrack(val track: PlayerTrack) : PlayerIntent()
     data class SelectChapter(val chapter: VideoChapter) : PlayerIntent()
     data class SetPlaybackSpeed(val speed: Float) : PlayerIntent()
+    data object StartBoostSpeed : PlayerIntent()
+    data object EndBoostSpeed : PlayerIntent()
 
     data class OnChapterButtonTap(val button: ChapterButton?) : PlayerIntent()
     data class OnVolumeChange(val delta: Float) : PlayerIntent()

@@ -682,4 +682,98 @@ class GalleryViewModelTest : FunSpec({
 
     //endregion
 
+    //region Type filter
+
+    fun content() = (viewModel.uiState.value.state as State.Content).content
+
+    test("selecting a type narrows the images, selecting it again widens them") {
+
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.handleIntent(GalleryIntent.OnFilterTypeTap(GalleryImageType.BACKDROP))
+        contentImages() shouldBe listOf(midBackdrop, lowBackdrop)
+
+        viewModel.handleIntent(GalleryIntent.OnFilterTypeTap(GalleryImageType.POSTER))
+        contentImages() shouldBe listOf(highPoster, midBackdrop, lowBackdrop)
+
+        viewModel.handleIntent(GalleryIntent.OnFilterTypeTap(GalleryImageType.BACKDROP))
+        contentImages() shouldBe listOf(highPoster)
+
+    }
+
+    test("clear restores every image") {
+
+        testDispatcher.scheduler.advanceUntilIdle()
+        viewModel.handleIntent(GalleryIntent.OnFilterTypeTap(GalleryImageType.POSTER))
+
+        viewModel.handleIntent(GalleryIntent.OnFilterClearTap)
+
+        content().selectedTypes shouldBe emptySet()
+        contentImages() shouldBe listOf(highPoster, midBackdrop, lowBackdrop)
+
+    }
+
+    test("the viewer index and swipe bounds follow the filtered images") {
+
+        testDispatcher.scheduler.advanceUntilIdle()
+        viewModel.handleIntent(GalleryIntent.OnFilterTypeTap(GalleryImageType.BACKDROP))
+
+        viewModel.handleIntent(GalleryIntent.OnImageTap(1))
+        contentViewerIndex() shouldBe 1
+
+        // The third image of the full list is not in the filtered list
+        viewModel.handleIntent(GalleryIntent.OnViewerPageChange(2))
+        contentViewerIndex() shouldBe 1
+
+    }
+
+    test("the filter is locked while the viewer is open") {
+
+        testDispatcher.scheduler.advanceUntilIdle()
+        viewModel.handleIntent(GalleryIntent.OnImageTap(0))
+
+        viewModel.handleIntent(GalleryIntent.OnFilterTap)
+        viewModel.handleIntent(GalleryIntent.OnFilterTypeTap(GalleryImageType.LOGO))
+
+        content().filterSheetVisible shouldBe false
+        content().selectedTypes shouldBe emptySet()
+
+    }
+
+    test("a filter without match gives no image and keeps the selection") {
+
+        testDispatcher.scheduler.advanceUntilIdle()
+        viewModel.handleIntent(GalleryIntent.OnFilterTypeTap(GalleryImageType.LOGO))
+
+        contentImages() shouldBe emptyList()
+        content().selectedTypes shouldBe setOf(GalleryImageType.LOGO)
+
+    }
+
+    test("the sheet opens and dismisses") {
+
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.handleIntent(GalleryIntent.OnFilterTap)
+        content().filterSheetVisible shouldBe true
+
+        viewModel.handleIntent(GalleryIntent.OnFilterDismiss)
+        content().filterSheetVisible shouldBe false
+
+    }
+
+    test("a retry keeps the selected types") {
+
+        testDispatcher.scheduler.advanceUntilIdle()
+        viewModel.handleIntent(GalleryIntent.OnFilterTypeTap(GalleryImageType.POSTER))
+
+        viewModel.handleIntent(GalleryIntent.OnRetryTap)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        contentImages() shouldBe listOf(highPoster)
+
+    }
+
+    //endregion
+
 })

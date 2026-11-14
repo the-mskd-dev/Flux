@@ -261,6 +261,11 @@
     <string name="retry">Retry</string>
     <string name="unavailable_check_connection">Unavailable, check your connection</string>
     <string name="gallery_empty">No images available</string>
+    <string name="gallery_filter">Filter</string>
+    <string name="gallery_filter_type">Type</string>
+    <string name="gallery_type_backdrops">Backdrops</string>
+    <string name="gallery_type_posters">Posters</string>
+    <string name="gallery_type_logos">Logos</string>
     <string name="blur_spoilers">Hide spoilers</string>
     <string name="blur_spoilers_desc">Blur the description and image of episodes you haven't watched yet</string>
     <string name="spoiler_hidden">Hidden spoiler</string>

@@ -93,12 +93,25 @@ class GalleryViewModel(
             GalleryIntent.OnImageDownloadTap -> downloadViewedImage()
             GalleryIntent.OnShowDownloadedImageTap -> filesLauncher.openDownloadedImages()
             GalleryIntent.OnUseImageTap -> useViewedImage()
+            GalleryIntent.OnFilterTap -> updateFilter { it.copy(filterSheetVisible = true) }
+            GalleryIntent.OnFilterDismiss -> updateFilter { it.copy(filterSheetVisible = false) }
+            is GalleryIntent.OnFilterTypeTap -> updateFilter {
+                it.copy(selectedTypes = if (intent.type in it.selectedTypes) it.selectedTypes - intent.type else it.selectedTypes + intent.type)
+            }
+            GalleryIntent.OnFilterClearTap -> updateFilter { it.copy(selectedTypes = emptySet()) }
         }
     }
 
     //endregion
 
     //region Private Methods
+
+    // The filter is locked while the viewer is open, so the viewer index never needs to follow a change of the filtered list
+    private fun updateFilter(transform: (GalleryContent) -> GalleryContent) = _uiState.update { ui ->
+        val content = (ui.state as? State.Content)?.content ?: return@update ui
+        if (content.viewerIndex != null) return@update ui
+        ui.copy(state = State.Content(transform(content)))
+    }
 
     private fun viewerIndex(): Int? = (_uiState.value.state as? State.Content)?.content?.viewerIndex
 
@@ -208,11 +221,18 @@ class GalleryViewModel(
             // Keep the viewer open on the same image when a retry reloads the list, close it if the image is gone
             val previous = (it.state as? State.Content)?.content
             val viewed = previous?.viewerIndex?.let { index -> previous.images.getOrNull(index) }
-            val viewerIndex = viewed?.let { image -> images.indexOfFirst { it.type == image.type && it.path == image.path } }
-                ?.takeIf { index -> index >= 0 }
             val running = previous?.imageDownloadRunning ?: false
+            val content = GalleryContent(
+                allImages = images,
+                selectedTypes = previous?.selectedTypes.orEmpty(),
+                filterSheetVisible = previous?.filterSheetVisible ?: false,
+                imageDownloadRunning = running,
+            )
+            // Index in the filtered list
+            val viewerIndex = viewed?.let { image -> content.images.indexOfFirst { it.type == image.type && it.path == image.path } }
+                ?.takeIf { index -> index >= 0 }
             it.copy(
-                state = State.Content(GalleryContent(images = images, viewerIndex = viewerIndex, imageDownloadRunning = running)),
+                state = State.Content(content.copy(viewerIndex = viewerIndex)),
                 failure = null
             )
         }

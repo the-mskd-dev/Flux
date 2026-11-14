@@ -244,6 +244,11 @@
     <string name="retry">Riprova</string>
     <string name="unavailable_check_connection">Non disponibile, controlla la connessione</string>
     <string name="gallery_empty">Nessuna immagine disponibile</string>
+    <string name="gallery_filter">Filtra</string>
+    <string name="gallery_filter_type">Tipo</string>
+    <string name="gallery_type_backdrops">Sfondi</string>
+    <string name="gallery_type_posters">Locandine</string>
+    <string name="gallery_type_logos">Loghi</string>
     <string name="blur_spoilers">Nascondi spoiler</string>
     <string name="blur_spoilers_desc">Sfoca la descrizione e l'immagine degli episodi non ancora visti</string>
     <string name="spoiler_hidden">Spoiler nascosto</string>

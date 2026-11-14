@@ -242,6 +242,11 @@
     <string name="retry">再試行</string>
     <string name="unavailable_check_connection">利用できません。接続を確認してください</string>
     <string name="gallery_empty">利用できる画像がありません</string>
+    <string name="gallery_filter">フィルター</string>
+    <string name="gallery_filter_type">タイプ</string>
+    <string name="gallery_type_backdrops">背景</string>
+    <string name="gallery_type_posters">ポスター</string>
+    <string name="gallery_type_logos">ロゴ</string>
     <string name="blur_spoilers">ネタバレを隠す</string>
     <string name="blur_spoilers_desc">まだ見ていないエピソードの説明と画像をぼかします</string>
     <string name="spoiler_hidden">ネタバレは非表示</string>

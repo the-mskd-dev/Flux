@@ -21,6 +21,8 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.itemsIndexed
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -62,9 +64,12 @@ import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.gallery_empty
+import flux.shared.generated.resources.gallery_filter
+import flux.shared.generated.resources.ic_sort
 import flux.shared.generated.resources.oups_an_error_occured
 import flux.shared.generated.resources.retry
 import flux.shared.generated.resources.unavailable_check_connection
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -75,6 +80,8 @@ fun GalleryScreenContent(
     viewerIndex: Int? = null,
     imageDownloadRunning: Boolean = false,
     artworkImageButton: ArtworkImageButton = ArtworkImageButton.HIDDEN,
+    selectedTypes: Set<GalleryImageType> = emptySet(),
+    filterSheetVisible: Boolean = false,
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     sendIntent: (GalleryIntent) -> Unit,
 ) {
@@ -103,7 +110,19 @@ fun GalleryScreenContent(
 
         FluxScaffold(
             title = title,
-            onBackTap = { sendIntent(GalleryIntent.OnBackTap) }
+            onBackTap = { sendIntent(GalleryIntent.OnBackTap) },
+            actions = {
+                // Locked while the viewer is open
+                if (viewerIndex == null) {
+                    IconButton(onClick = { sendIntent(GalleryIntent.OnFilterTap) }) {
+                        Icon(
+                            painter = painterResource(Res.drawable.ic_sort),
+                            tint = if (selectedTypes.isEmpty()) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.primary,
+                            contentDescription = stringResource(Res.string.gallery_filter)
+                        )
+                    }
+                }
+            }
         ) { innerPadding ->
 
             if (images.isEmpty() && failure == null) {
@@ -224,6 +243,12 @@ fun GalleryScreenContent(
                 )
             }
         }
+
+        GalleryFilterSheet(
+            isVisible = filterSheetVisible && viewerIndex == null,
+            selectedTypes = selectedTypes,
+            sendIntent = sendIntent
+        )
 
         // Last child of the Box so that it is drawn above the viewer overlay
         SnackbarHost(

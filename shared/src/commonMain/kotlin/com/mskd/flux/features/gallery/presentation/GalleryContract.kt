@@ -3,6 +3,7 @@ package com.mskd.flux.features.gallery.presentation
 import androidx.compose.runtime.Immutable
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.gallery.domain.model.GalleryImage
+import com.mskd.flux.features.gallery.domain.model.GalleryImageType
 
 @Immutable
 data class GalleryUiState(
@@ -15,11 +16,17 @@ enum class GalleryFailure { OFFLINE, ERROR }
 
 @Immutable
 data class GalleryContent(
-    val images: List<GalleryImage>,
+    val allImages: List<GalleryImage>,
+    val selectedTypes: Set<GalleryImageType> = emptySet(),
+    val filterSheetVisible: Boolean = false,
     val viewerIndex: Int? = null,
     val imageDownloadRunning: Boolean = false,
     val artworkImageButton: ArtworkImageButton = ArtworkImageButton.HIDDEN,
-)
+) {
+    /** The images shown by the grid and the viewer: nothing selected means every image. */
+    val images: List<GalleryImage> =
+        if (selectedTypes.isEmpty()) allImages else allImages.filter { it.type in selectedTypes }
+}
 
 /** The "Use as poster" / "Use as backdrop" button of the viewer, for the image shown. */
 enum class ArtworkImageButton {
@@ -40,6 +47,10 @@ sealed interface GalleryIntent {
     data object OnImageDownloadTap : GalleryIntent
     data object OnShowDownloadedImageTap : GalleryIntent
     data object OnUseImageTap : GalleryIntent
+    data object OnFilterTap : GalleryIntent
+    data object OnFilterDismiss : GalleryIntent
+    data class OnFilterTypeTap(val type: GalleryImageType) : GalleryIntent
+    data object OnFilterClearTap : GalleryIntent
 }
 
 sealed interface GalleryEvent {

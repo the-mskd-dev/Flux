@@ -43,7 +43,7 @@ sealed class ShowIntent {
     data object ShowIdentificationDialog : ShowIntent()
 
     // Manual identification
-    data class OnIdentified(val artworkId: Long) : ShowIntent()
+    data class OnIdentified(val artworkId: Long, val type: ContentType) : ShowIntent()
 
     // Other
     data object OpenShowInfo: ShowIntent()
@@ -55,6 +55,9 @@ sealed class ShowEvent {
     data class NavigateToSeason(val artworkId: Long, val season: Int, val rgb: Int?) : ShowEvent()
     data class NavigateToPerson(val person: Person) : ShowEvent()
     data class NavigateToGallery(val artworkId: Long, val contentType: ContentType) : ShowEvent()
-    /** Replaces the page by the one of [artworkId]: back must not lead to the previous Show, which may no longer exist. */
-    data class ReplaceShow(val artworkId: Long) : ShowEvent()
+    /**
+     * The Media now belong to [artworkId], of the given [type]: the navigation replaces the page by the one matching [type].
+     * Back must not lead to the previous Show, which may no longer exist.
+     */
+    data class Identified(val artworkId: Long, val type: ContentType) : ShowEvent()
 }

@@ -279,9 +279,13 @@ class ShowViewModelTest : FunSpec({
 
     context("Manual identification") {
 
-        fun showWith(artwork: Artwork = MediaMockups.showArtwork, fileName: String? = null) {
+        fun showWith(artwork: Artwork = MediaMockups.showArtwork, fileName: String? = null, folder: String? = null) {
             val episodes = MediaMockups.episodes.mapIndexed { index, episode ->
-                if (index == 0 && fileName != null) episode.copy(file = episode.file.copy(name = fileName)) else episode
+                if (index != 0) return@mapIndexed episode
+                var file = episode.file
+                if (fileName != null) file = file.copy(name = fileName)
+                if (folder != null) file = file.copy(realPath = "$folder/${file.name}")
+                episode.copy(file = file)
             }
             observeArtworkUseCase = mockk {
                 every { this@mockk(any()) } returns flowOf(
@@ -304,9 +308,14 @@ class ShowViewModelTest : FunSpec({
             identification() shouldBe IdentificationAvailability.HIDDEN
         }
 
-        test("hidden when the name of one of the files carries a TMDB ID") {
+        test("offered when the name of one of the files carries a TMDB ID") {
             showWith(fileName = "Dark S01E01 {tmdb-70523}.mkv")
-            identification() shouldBe IdentificationAvailability.HIDDEN
+            identification() shouldBe IdentificationAvailability.ENABLED
+        }
+
+        test("offered when the folder of one of the files carries a TMDB ID") {
+            showWith(folder = "Dark {tmdb-70523}")
+            identification() shouldBe IdentificationAvailability.ENABLED
         }
 
         test("hidden on the Unknown Artwork") {
@@ -339,14 +348,14 @@ class ShowViewModelTest : FunSpec({
             }
         }
 
-        test("once identified, the dialog closes and the page is replaced by the new Show") {
+        test("once identified, the dialog closes and the new Artwork is sent with its type") {
             viewModel.uiState.test {
                 awaitItem()
                 viewModel.handleIntent(ShowIntent.ShowIdentificationDialog)
                 awaitItem()
                 viewModel.event.test {
-                    viewModel.handleIntent(ShowIntent.OnIdentified(artworkId = 42L))
-                    awaitItem() shouldBe ShowEvent.ReplaceShow(artworkId = 42L)
+                    viewModel.handleIntent(ShowIntent.OnIdentified(artworkId = 42L, type = ContentType.SHOW))
+                    awaitItem() shouldBe ShowEvent.Identified(artworkId = 42L, type = ContentType.SHOW)
                 }
                 (awaitItem().state as State.Content).content.dialog shouldBe null
             }

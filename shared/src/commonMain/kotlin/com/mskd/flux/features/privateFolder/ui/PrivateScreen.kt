@@ -13,11 +13,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.features.privateFolder.presentation.PrivateFolderEvent
 import com.mskd.flux.features.privateFolder.presentation.PrivateFolderIntent
 import com.mskd.flux.features.privateFolder.presentation.PrivateFolderUiState
 import com.mskd.flux.features.privateFolder.presentation.PrivateFolderViewModel
 import com.mskd.flux.navigation.domain.Route
+import com.mskd.flux.navigation.domain.artworkPage
 import com.mskd.flux.ui.components.FluxScaffold
 import com.mskd.flux.ui.text.Text
 import flux.shared.generated.resources.Res
@@ -39,8 +41,8 @@ fun PrivateScreen(
         viewModel.event.collect { event ->
             when (event) {
                 PrivateFolderEvent.BackToPreviousScreen -> onBack()
-                is PrivateFolderEvent.NavigateToMovie -> navigate(Route.Artwork(artworkId = event.artworkId, season = null, rgb = event.rgb))
-                is PrivateFolderEvent.NavigateToShow -> navigate(Route.Show(artworkId = event.artworkId, rgb = event.rgb))
+                is PrivateFolderEvent.NavigateToMovie -> navigate(artworkPage(artworkId = event.artworkId, type = ContentType.MOVIE, rgb = event.rgb))
+                is PrivateFolderEvent.NavigateToShow -> navigate(artworkPage(artworkId = event.artworkId, type = ContentType.SHOW, rgb = event.rgb))
             }
         }
     }

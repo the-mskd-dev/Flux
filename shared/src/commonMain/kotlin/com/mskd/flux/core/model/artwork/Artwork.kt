@@ -14,6 +14,7 @@ import kotlinx.collections.immutable.persistentListOf
  * @property logoPath Path to the Logo of the artwork: null when never searched, empty when TMDB has none.
  * @property isManuallyIdentified True when the user chose this Artwork for its Media (Manual identification).
  * @property customBackdropPath Backdrop chosen by the user in the Gallery (Custom image), null when none.
+ * @property customLogoPath Logo chosen by the user in the Gallery (Custom image), stored apart from [logoPath], null when none.
  * @property customPosterPath Poster chosen by the user in the Gallery (Custom image), null when none.
  */
 data class Artwork(
@@ -30,6 +31,7 @@ data class Artwork(
     val isManuallyIdentified: Boolean = false,
     val customBackdropPath: String? = null,
     val customPosterPath: String? = null,
+    val customLogoPath: String? = null,
 
     val lastModification: Long? = null,
 ) {

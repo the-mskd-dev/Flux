@@ -2,6 +2,8 @@ package com.mskd.flux.features.player.domain.manager
 
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.player.PlayerTrack
+import com.mskd.flux.features.player.domain.model.MediaInfo
+import com.mskd.flux.features.player.domain.model.SubtitleCue
 import kotlinx.coroutines.flow.Flow
 
 interface PlayerManager<out T> {
@@ -16,13 +18,18 @@ interface PlayerManager<out T> {
             val selectedAudio: PlayerTrack? = null,
             val selectedSubtitles: PlayerTrack? = null,
             val duration: Long = 0L,
+            val playbackSpeed: Float = 1f,
+            val mediaInfo: MediaInfo? = null, // Null until the Media's tracks are known, and again on a new Media
+            /** Shift of the subtitles in milliseconds: positive holds them back, negative shows them early. */
+            val subtitleDelayMs: Long = 0L,
         ) : State<T>()
         data class Error(val code: Int? = null, val name: String? = null) : State<Nothing>()
     }
 
     val flow: Flow<State<T>>
 
-    val subtitles: Flow<List<String?>>
+    /** Cues currently on screen, in the platform-independent model. */
+    val subtitles: Flow<List<SubtitleCue>>
 
     val progress: Flow<Long>
 
@@ -47,6 +54,12 @@ interface PlayerManager<out T> {
     suspend fun playMedia(media: Media, subtitlesPath: String?)
 
     fun selectTrack(track: PlayerTrack)
+
+    /** Plays at [speed] times the normal rate, audio included, without restarting playback. */
+    fun setPlaybackSpeed(speed: Float)
+
+    /** Shifts the subtitles of the current Media by [delayMs]: positive holds them back, negative shows them early. */
+    fun setSubtitleDelay(delayMs: Long)
 
 }
 /** FAST snaps to the closest keyframe (cheap, for scrubbing); EXACT lands on the requested position. */

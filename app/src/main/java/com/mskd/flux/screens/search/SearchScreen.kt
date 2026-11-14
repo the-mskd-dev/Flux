@@ -35,6 +35,7 @@ import com.mskd.flux.features.search.presentation.SearchViewModel
 import com.mskd.flux.mockups.DetailsMockup
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.navigation.domain.Route
+import com.mskd.flux.navigation.domain.artworkPage
 import com.mskd.flux.screens.search.components.SearchContentGrid
 import com.mskd.flux.screens.search.components.SearchFilters
 import com.mskd.flux.screens.search.components.SearchGenresSheet
@@ -67,8 +68,8 @@ fun SearchScreen(
         viewModel.event.collect { event ->
             when (event) {
                 SearchEvent.BackToPreviousScreen -> onBack()
-                is SearchEvent.NavigateToMovie -> navigate(Route.Artwork(artworkId = event.artworkId, rgb = event.rgb))
-                is SearchEvent.NavigateToShow -> navigate(Route.Show(artworkId = event.artworkId, rgb = event.rgb))
+                is SearchEvent.NavigateToMovie -> navigate(artworkPage(artworkId = event.artworkId, type = ContentType.MOVIE, rgb = event.rgb))
+                is SearchEvent.NavigateToShow -> navigate(artworkPage(artworkId = event.artworkId, type = ContentType.SHOW, rgb = event.rgb))
             }
         }
     }

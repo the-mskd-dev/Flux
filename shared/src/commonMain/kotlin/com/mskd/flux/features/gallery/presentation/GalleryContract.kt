@@ -3,6 +3,7 @@ package com.mskd.flux.features.gallery.presentation
 import androidx.compose.runtime.Immutable
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.gallery.domain.model.GalleryImage
+import com.mskd.flux.features.gallery.domain.model.GalleryImageType
 
 @Immutable
 data class GalleryUiState(
@@ -15,11 +16,24 @@ enum class GalleryFailure { OFFLINE, ERROR }
 
 @Immutable
 data class GalleryContent(
-    val images: List<GalleryImage>,
+    val allImages: List<GalleryImage>,
+    val selectedTypes: Set<GalleryImageType> = emptySet(),
+    /** ISO 639-1 codes, null standing for the images without language ("Global"). */
+    val selectedLanguages: Set<String?> = emptySet(),
+    val filterSheetVisible: Boolean = false,
     val viewerIndex: Int? = null,
     val imageDownloadRunning: Boolean = false,
     val artworkImageButton: ArtworkImageButton = ArtworkImageButton.HIDDEN,
-)
+) {
+    /** The images shown by the grid and the viewer: nothing selected in a section means no restriction for it. */
+    val images: List<GalleryImage> = allImages.filter {
+        (selectedTypes.isEmpty() || it.type in selectedTypes) &&
+            (selectedLanguages.isEmpty() || it.languageCode in selectedLanguages)
+    }
+
+    /** The languages present in the images (all types), null standing for the images without language. */
+    val languages: List<String?> = allImages.map { it.languageCode }.distinct()
+}
 
 /** The "Use as poster" / "Use as backdrop" button of the viewer, for the image shown. */
 enum class ArtworkImageButton {
@@ -40,6 +54,11 @@ sealed interface GalleryIntent {
     data object OnImageDownloadTap : GalleryIntent
     data object OnShowDownloadedImageTap : GalleryIntent
     data object OnUseImageTap : GalleryIntent
+    data object OnFilterTap : GalleryIntent
+    data object OnFilterDismiss : GalleryIntent
+    data class OnFilterTypeTap(val type: GalleryImageType) : GalleryIntent
+    data class OnFilterLanguageTap(val languageCode: String?) : GalleryIntent
+    data object OnFilterClearTap : GalleryIntent
 }
 
 sealed interface GalleryEvent {

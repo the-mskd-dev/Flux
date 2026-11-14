@@ -23,7 +23,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Status
-import com.mskd.flux.features.artwork.presentation.ArtworkIntent
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.components.FluxTextButton
@@ -51,7 +50,8 @@ import org.jetbrains.compose.resources.stringResource
 fun ArtworkButtons(
     modifier: Modifier = Modifier,
     media: Media,
-    sendIntent: (ArtworkIntent) -> Unit
+    onPlay: (Media) -> Unit,
+    onChangeWatchStatus: (Media) -> Unit,
 ) {
 
     val buttonHeight = ButtonDefaults.MediumContainerHeight
@@ -79,7 +79,7 @@ fun ArtworkButtons(
                 .fillMaxWidth(),
             checked = media.status == Status.WATCHED,
             enabled = media.isAvailable,
-            onCheckedChange = { sendIntent(ArtworkIntent.PlayMedia(media)) },
+            onCheckedChange = { onPlay(media) },
             colors = ToggleButtonDefaults.colors(
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
@@ -117,7 +117,7 @@ fun ArtworkButtons(
         FluxTextButton(
             text = stringResource(if (media.status == Status.WATCHED) Res.string.mark_as_not_watched else Res.string.mark_as_watched),
             height = buttonHeight,
-            onClick = { sendIntent(ArtworkIntent.ChangeWatchStatus(media = media)) }
+            onClick = { onChangeWatchStatus(media) }
         )
 
     }
@@ -166,7 +166,8 @@ fun ArtworkButtons_Preview() {
     FluxTheme {
         ArtworkButtons(
             media = MediaMockups.episode1,
-            sendIntent = {}
+            onPlay = {},
+            onChangeWatchStatus = {},
         )
     }
 }
@@ -180,7 +181,8 @@ fun ArtworkButtonsWatching_Preview() {
                 currentTime = (MediaMockups.episode1.duration.minToMs / 2f).toLong(),
                 status = Status.IS_WATCHING
             ),
-            sendIntent = {}
+            onPlay = {},
+            onChangeWatchStatus = {},
         )
     }
 }
@@ -191,7 +193,8 @@ fun ArtworkButtonsWatched_Preview() {
     FluxTheme {
         ArtworkButtons(
             media = MediaMockups.episode1.copy(status = Status.WATCHED),
-            sendIntent = {}
+            onPlay = {},
+            onChangeWatchStatus = {},
         )
     }
 }
@@ -202,7 +205,8 @@ fun ArtworkButtonsUnavailable_Preview() {
     FluxTheme {
         ArtworkButtons(
             media = MediaMockups.episode1.copy(isAvailable = false),
-            sendIntent = {}
+            onPlay = {},
+            onChangeWatchStatus = {},
         )
     }
 }

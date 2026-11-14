@@ -11,8 +11,8 @@ import com.mskd.flux.report.Trace
 import kotlinx.coroutines.CancellationException
 
 /**
- * Identification of the Artwork of a folder: the TMDB ID has priority, then the Manual identification, then the TMDB
- * search by name. See docs/adr/0001-manual-identification-by-file-name-title.md.
+ * Identification of the Artwork of a folder: the Manual identification has priority, then the TMDB ID in the name, then
+ * the TMDB search by name. See docs/adr/0001-manual-identification-by-file-name-title.md.
  */
 class IdentificationEnrichment(
     private val api: ApiRepository,
@@ -28,8 +28,8 @@ class IdentificationEnrichment(
         val folder = draft.folder
         val file = folder.files.first()
 
-        val artwork = getArtworkById(folder = folder, file = file)
-            ?: getManuallyIdentifiedArtwork(folder = folder, file = file)
+        val artwork = getManuallyIdentifiedArtwork(folder = folder, file = file)
+            ?: getArtworkById(folder = folder, file = file)
             ?: api.getArtwork(file = file)
 
         draft.artwork = artwork
@@ -39,12 +39,19 @@ class IdentificationEnrichment(
 
     }
 
-    /** The manually identified Artwork of a known Media of the same type with the same (title, year) in its file name. */
+    /**
+     * The manually identified Artwork of a known Media of the same type with the same (title, year) in its file name.
+     * Every file of the folder must have that (title, year): a folder grouped by TMDB ID can mix file-name titles, and
+     * then follows its TMDB ID.
+     */
     private suspend fun getManuallyIdentifiedArtwork(folder: CatalogFolder, file: UserFile): Artwork? {
+
+        val titleYear = folder.files.map { it.nameProperties.let { properties -> properties.title to properties.year } }.distinct().singleOrNull()
+            ?: return null
 
         val media = database.getManuallyIdentifiedMedias().firstOrNull { media ->
             val properties = media.file.nameProperties
-            media.file.isEpisode == file.isEpisode && properties.title == folder.title && properties.year == folder.year
+            media.file.isEpisode == file.isEpisode && (properties.title to properties.year) == titleYear
         } ?: return null
 
         return database.getArtwork(artworkId = media.artworkId)

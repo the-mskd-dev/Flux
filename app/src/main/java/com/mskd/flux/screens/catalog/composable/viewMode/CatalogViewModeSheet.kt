@@ -8,8 +8,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.mskd.flux.features.catalog.domain.model.CatalogViewMode
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.ui.FluxThemePreview
+import com.mskd.flux.ui.modal.bottomSheet.BottomSheetRadioItem
 import com.mskd.flux.ui.modal.bottomSheet.FluxBottomSheet
-import com.mskd.flux.ui.modal.bottomSheet.FluxBottomSheetItem
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.view
 import org.jetbrains.compose.resources.stringResource
@@ -28,7 +28,7 @@ fun CatalogViewModeSheet(
         content = {
 
             CatalogViewMode.entries.forEach { option ->
-                FluxBottomSheetItem(
+                BottomSheetRadioItem(
                     isSelected = option == selectedMode,
                     text = option.description.resolve(),
                     onClick = { sendIntent(CatalogIntent.SelectViewMode(option)) }

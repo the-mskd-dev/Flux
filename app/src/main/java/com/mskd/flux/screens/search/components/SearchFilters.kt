@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.features.search.presentation.SearchIntent
+import com.mskd.flux.ui.components.FluxFilterChip
 import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.genres
@@ -56,20 +57,20 @@ fun SearchFilters(
         horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
     ) {
 
-        SearchFilterChip(
+        FluxFilterChip(
             text = stringResource(Res.string.movies),
             selected = selectedType == ContentType.MOVIE,
             onClick = { prepareIntent(SearchIntent.FilterOnType(ContentType.MOVIE)) },
         )
 
-        SearchFilterChip(
+        FluxFilterChip(
             text = stringResource(Res.string.shows),
             selected = selectedType == ContentType.SHOW,
             onClick = { prepareIntent(SearchIntent.FilterOnType(ContentType.SHOW)) },
         )
 
         if (showGenresFilter) {
-            SearchFilterChip(
+            FluxFilterChip(
                 text = stringResource(Res.string.genres) + if (selectedGenresCount > 0) " ($selectedGenresCount)" else "",
                 selected = selectedGenresCount > 0,
                 onClick = { prepareIntent(SearchIntent.ShowGenresSelection(show = true)) },

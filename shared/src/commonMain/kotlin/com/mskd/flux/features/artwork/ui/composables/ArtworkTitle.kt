@@ -3,6 +3,7 @@ package com.mskd.flux.features.artwork.ui.composables
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -14,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.dp
 import coil3.ColorImage
 import coil3.annotation.ExperimentalCoilApi
 import coil3.compose.AsyncImagePainter
@@ -24,6 +26,7 @@ import coil3.compose.rememberAsyncImagePainter
 import coil3.request.ErrorResult
 import coil3.request.ImageRequest
 import com.mskd.flux.core.model.artwork.Artwork
+import com.mskd.flux.core.model.artwork.shownLogoPath
 import com.mskd.flux.features.images.domain.LOGO_REQUEST_SIZE
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.ui.FluxThemePreview
@@ -42,7 +45,7 @@ fun ArtworkTitle(
     modifier: Modifier = Modifier,
 ) {
 
-    val logoPath = artwork.logoPath
+    val logoPath = artwork.shownLogoPath
 
     if (logoPath.isNullOrEmpty()) {
         ArtworkTitleText(modifier = modifier, title = artwork.title)
@@ -64,7 +67,9 @@ fun ArtworkTitle(
         ArtworkTitleText(modifier = modifier, title = artwork.title)
     } else {
         Image(
-            modifier = modifier.fillMaxWidth(),
+            modifier = modifier
+                .heightIn(max = 140.dp)
+                .fillMaxWidth(),
             painter = painter,
             contentDescription = artwork.title,
             contentScale = ContentScale.Fit

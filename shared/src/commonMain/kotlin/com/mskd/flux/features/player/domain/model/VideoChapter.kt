@@ -16,6 +16,19 @@ data class VideoChapter(
 fun List<VideoChapter>.currentAt(position: Long): VideoChapter? =
     firstOrNull { position >= it.start && position < it.end }
 
+/**
+ * Positions (as a fraction of [duration], strictly between 0 and 1) where the progress bar is cut:
+ * the start of each Chapter but the first. Empty with fewer than 2 Chapters, so the bar stays continuous.
+ */
+fun List<VideoChapter>.boundaryFractions(duration: Long): List<Float> {
+    if (size < 2 || duration <= 0L) return emptyList()
+    return drop(1)
+        .map { it.start.toFloat() / duration }
+        .filter { it > 0f && it < 1f }
+        .distinct()
+        .sorted()
+}
+
 enum class VideoChapterType {
     OPENING, ENDING, CHAPTER;
 

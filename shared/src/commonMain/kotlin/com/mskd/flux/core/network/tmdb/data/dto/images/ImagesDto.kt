@@ -23,7 +23,7 @@ data class ImagesDto(
  * @property filePath Path of the image, to append to the TMDB image base url.
  * @property aspectRatio Width divided by height.
  * @property voteAverage Rating of the image.
- * @property language ISO 639-1 language of the image, null when the image has no text.
+ * @property languageCode ISO 639-1 language of the image, null when the image has no text.
  */
 @Serializable
 data class ImageDto(
@@ -34,5 +34,5 @@ data class ImageDto(
     @SerialName("vote_average")
     val voteAverage: Double = 0.0,
     @SerialName("iso_639_1")
-    val language: String? = null,
+    val languageCode: String? = null,
 )

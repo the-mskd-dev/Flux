@@ -76,14 +76,10 @@ class TMDBServiceImpl(private val client: HttpClient) : TMDBService {
         }.body()
 
     override suspend fun getMovieImages(
-        artworkId: Long,
-        language: String
+        artworkId: Long
     ): Result<ImagesDto> = try {
         Result.success(
-            client.get("movie/$artworkId/images") {
-                parameter("language", language)
-                parameter("include_image_language", imageLanguages(language))
-            }.body<ImagesDto>()
+            client.get("movie/$artworkId/images").body<ImagesDto>()
         )
     } catch (e: CancellationException) {
         throw e
@@ -135,14 +131,10 @@ class TMDBServiceImpl(private val client: HttpClient) : TMDBService {
         }.body()
 
     override suspend fun getShowImages(
-        artworkId: Long,
-        language: String
+        artworkId: Long
     ): Result<ImagesDto> = try {
         Result.success(
-            client.get("tv/$artworkId/images") {
-                parameter("language", language)
-                parameter("include_image_language", imageLanguages(language))
-            }.body<ImagesDto>()
+            client.get("tv/$artworkId/images").body<ImagesDto>()
         )
     } catch (e: CancellationException) {
         throw e

@@ -6,4 +6,5 @@ data class ArtworkImagesProjection(
     val logoPath: String? = null,
     val customBackdropPath: String? = null,
     val customPosterPath: String? = null,
+    val customLogoPath: String? = null,
 )

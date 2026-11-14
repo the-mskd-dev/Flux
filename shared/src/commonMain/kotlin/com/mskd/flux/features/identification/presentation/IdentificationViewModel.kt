@@ -107,7 +107,7 @@ class IdentificationViewModel(
 
         viewModelScope.launch {
             identifyManually(artworkId = artworkId, target = candidate.artwork)
-                .onSuccess { _event.emit(IdentificationEvent.Identified(artworkId = it)) }
+                .onSuccess { _event.emit(IdentificationEvent.Identified(artworkId = it, type = candidate.artwork.type)) }
                 .onFailure { _uiState.update { it.copy(isIdentifying = false, identificationFailed = true) } }
         }
 

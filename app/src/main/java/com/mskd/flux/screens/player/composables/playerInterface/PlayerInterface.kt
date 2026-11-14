@@ -127,6 +127,7 @@ fun PlayerInterface(
                 duration = session.duration,
                 enabled = isActive,
                 showWave = isActive,
+                chapters = session.chapters,
                 sendIntent = sendIntent,
             )
 

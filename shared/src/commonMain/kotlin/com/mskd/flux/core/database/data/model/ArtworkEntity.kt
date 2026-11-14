@@ -27,4 +27,5 @@ data class ArtworkEntity(
     val manuallyIdentified: Boolean = false,
     val customBackdropPath: String? = null,
     val customPosterPath: String? = null,
+    val customLogoPath: String? = null,
 )

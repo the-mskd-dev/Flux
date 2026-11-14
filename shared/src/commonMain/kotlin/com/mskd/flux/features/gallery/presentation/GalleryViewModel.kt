@@ -9,6 +9,7 @@ import com.mskd.flux.core.model.artwork.shownBackdropPath
 import com.mskd.flux.core.model.artwork.shownLogoPath
 import com.mskd.flux.core.model.artwork.shownPosterPath
 import com.mskd.flux.core.model.core.State
+import com.mskd.flux.core.model.language.languageCode
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.connectivity.domain.ConnectivityRepository
@@ -16,6 +17,7 @@ import com.mskd.flux.features.gallery.domain.model.GalleryImage
 import com.mskd.flux.features.gallery.domain.model.GalleryImageType
 import com.mskd.flux.features.gallery.domain.usecase.GetGalleryImagesUseCase
 import com.mskd.flux.features.gallery.domain.usecase.ImageDownloadUseCase
+import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.report.Trace
 import com.mskd.flux.system.FilesLauncher
 import kotlinx.coroutines.CancellationException
@@ -40,6 +42,7 @@ class GalleryViewModel(
     private val connectivityRepository: ConnectivityRepository,
     private val imageDownload: ImageDownloadUseCase,
     private val filesLauncher: FilesLauncher,
+    private val settingsDataStore: SettingsDataStore,
     catalogSyncCoordinator: CatalogSyncCoordinator,
 ) : ViewModel() {
 
@@ -227,13 +230,25 @@ class GalleryViewModel(
             return
         }
 
+        // User language first, then Global, then the others; best rated first within each group
+        val userLanguageCode = settingsDataStore.getDataLanguage().languageCode()
+        val sortedImages = images.sortedWith(
+            compareBy<GalleryImage> {
+                when (it.languageCode) {
+                    userLanguageCode -> 0
+                    null -> 1
+                    else -> 2
+                }
+            }.thenByDescending { it.rating }
+        )
+
         _uiState.update { state ->
             // Keep the viewer open on the same image when a retry reloads the list, close it if the image is gone
             val previous = (state.state as? State.Content)?.content
             val viewed = previous?.viewerIndex?.let { index -> previous.images.getOrNull(index) }
             val running = previous?.imageDownloadRunning ?: false
             val content = GalleryContent(
-                allImages = images,
+                allImages = sortedImages,
                 selectedTypes = previous?.selectedTypes.orEmpty(),
                 selectedLanguages = previous?.selectedLanguages.orEmpty(),
                 filterSheetVisible = previous?.filterSheetVisible ?: false,

@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.AlertDialogDefaults
@@ -33,6 +35,9 @@ import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.by_default
 import flux.shared.generated.resources.chapters
+import flux.shared.generated.resources.media_info
+import flux.shared.generated.resources.playback_speed
+import flux.shared.generated.resources.subtitle_delay
 import flux.shared.generated.resources.subtitles_disabled
 import org.jetbrains.compose.resources.stringResource
 
@@ -42,6 +47,8 @@ fun PlayerSettingsSheet(
     selectedSubtitles: PlayerTrack?,
     chapters: List<VideoChapter>?,
     currentChapter: VideoChapter?,
+    playbackSpeed: Float,
+    subtitleDelayMs: Long,
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
@@ -59,7 +66,11 @@ fun PlayerSettingsSheet(
             tonalElevation = AlertDialogDefaults.TonalElevation
         ) {
 
-            Column(modifier = Modifier.fillMaxWidth()) {
+            Column(
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .fillMaxWidth()
+            ) {
 
                 PlayerSettingsItem(
                     label = "Audio",
@@ -80,6 +91,30 @@ fun PlayerSettingsSheet(
                     onClick = {
                         val intent = SettingsSheet.Tracks(type = PlayerTrack.Type.SUBTITLES)
                         sendIntent(PlayerIntent.ShowSettings(sheet = intent)) }
+                )
+
+                HorizontalDivider(modifier = Modifier.padding(horizontal = FluxUI.Space.medium))
+
+                PlayerSettingsItem(
+                    label = stringResource(Res.string.playback_speed),
+                    value = playbackSpeed.formatSpeed(),
+                    onClick = { sendIntent(PlayerIntent.ShowSettings(sheet = SettingsSheet.PlaybackSpeed)) }
+                )
+
+                HorizontalDivider(modifier = Modifier.padding(horizontal = FluxUI.Space.medium))
+
+                PlayerSettingsItem(
+                    label = stringResource(Res.string.subtitle_delay),
+                    value = subtitleDelayMs.formatDelay(),
+                    onClick = { sendIntent(PlayerIntent.ShowSettings(sheet = SettingsSheet.SubtitleDelay)) }
+                )
+
+                HorizontalDivider(modifier = Modifier.padding(horizontal = FluxUI.Space.medium))
+
+                PlayerSettingsItem(
+                    label = stringResource(Res.string.media_info),
+                    value = "",
+                    onClick = { sendIntent(PlayerIntent.ShowSettings(sheet = SettingsSheet.MediaInfo)) }
                 )
 
                 // Only offered when the Media has at least 2 Chapters
@@ -129,6 +164,7 @@ fun PlayerSettingsItem(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             text = value,
+            allowEmpty = true
         )
 
         Icon(
@@ -149,6 +185,8 @@ fun PlayerSettingsSheet_Preview() {
             selectedSubtitles = PlayerMockups.Subtitles.french,
             chapters = PlayerMockups.chapters,
             currentChapter = PlayerMockups.chapters[1],
+            playbackSpeed = 1f,
+            subtitleDelayMs = 0L,
             sendIntent = {}
         )
     }

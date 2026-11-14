@@ -177,8 +177,20 @@ Episode that follows, in the same Show, the one being played (by season then num
 _Avoid_: Prochain épisode, Up next
 
 **Settings sheet**:
-Player settings sheet, either general or dedicated to choosing an audio track, a subtitle track or a Chapter.
+Player settings sheet, either general or dedicated to choosing an audio track, a subtitle track, a Chapter or a Playback speed.
 _Avoid_: Bottom sheet, menu
+
+**Playback speed**:
+Rate at which a Media plays, from 0.25x to 2x by steps of 0.25, chosen in the Settings sheet. Resets to 1x for each new Media.
+_Avoid_: Rate, tempo
+
+**Boost speed**:
+Temporary 2x speed while the viewer presses and holds the video; a "2x" pill shows at the top, and the previous Playback speed is restored on release. Not available in Picture-in-Picture.
+_Avoid_: Fast play, turbo
+
+**Media info**:
+Read-only technical description of a Media (container, video and audio codecs, resolution, frame rate, bitrate, channels, sampling rate), shown in the Settings sheet. A value that cannot be read shows as a placeholder.
+_Avoid_: File info, Technical details, Codec info
 
 **Track**:
 Selectable audio or subtitle track of a Media.

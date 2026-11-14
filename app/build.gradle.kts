@@ -47,6 +47,11 @@ configure<ApplicationExtension> {
         buildConfigField("String", "TMDB_TOKEN", "\"$tmdbToken\"")
     }
 
+    testOptions {
+        // Media3 builds Tracks on the JVM and calls Android stubs (TextUtils) that would throw
+        unitTests.isReturnDefaultValues = true
+    }
+
     signingConfigs {
         if (keystorePropertiesFile.exists()) {
             create("config") {

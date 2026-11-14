@@ -8,6 +8,7 @@ import com.mskd.flux.features.player.presentation.PlayerOverlays
 import com.mskd.flux.features.player.presentation.PlayerSession
 import com.mskd.flux.features.player.presentation.SettingsSheet
 import com.mskd.flux.screens.player.composables.collectSelectedAsState
+import com.mskd.flux.features.player.ui.PlayerMediaInfoSheet
 import kotlinx.coroutines.flow.StateFlow
 
 @Composable
@@ -28,6 +29,8 @@ fun PlayerSettings(
                 selectedSubtitles = session.selectedSubtitles,
                 chapters = session.chapters.takeIf { session.showChapters },
                 currentChapter = currentChapter,
+                playbackSpeed = session.playbackSpeed,
+                subtitleDelayMs = session.subtitleDelayMs,
                 sendIntent = sendIntent
             )
         }
@@ -45,6 +48,24 @@ fun PlayerSettings(
                 chapters = session.chapters,
                 currentChapter = currentChapter,
                 sendIntent = sendIntent
+            )
+        }
+        SettingsSheet.PlaybackSpeed -> {
+            PlayerPlaybackSpeedSheet(
+                selectedSpeed = session.playbackSpeed,
+                sendIntent = sendIntent
+            )
+        }
+        SettingsSheet.SubtitleDelay -> {
+            PlayerSubtitleDelaySheet(
+                delayMs = session.subtitleDelayMs,
+                sendIntent = sendIntent
+            )
+        }
+        SettingsSheet.MediaInfo -> {
+            PlayerMediaInfoSheet(
+                mediaInfo = session.mediaInfo,
+                onBack = { sendIntent(PlayerIntent.ShowSettings(sheet = SettingsSheet.Settings)) }
             )
         }
         null -> {}

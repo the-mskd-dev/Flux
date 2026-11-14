@@ -27,7 +27,10 @@ import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.player.PlayerTrack
 import com.mskd.flux.features.player.data.manager.AndroidPlayerManager.Companion.MAX_DECODER_RECOVERY_ATTEMPTS
 import com.mskd.flux.features.player.domain.manager.PlayerManager
+import com.mskd.flux.features.player.data.mapper.toSubtitleCue
 import com.mskd.flux.features.player.domain.manager.SeekPrecision
+import com.mskd.flux.features.player.domain.model.MediaInfo
+import com.mskd.flux.features.player.domain.model.SubtitleCue
 import com.mskd.flux.features.player.domain.usecase.SaveTrackLanguageUseCase
 import com.mskd.flux.report.Trace
 import com.mskd.flux.services.PlayerService
@@ -80,9 +83,10 @@ class AndroidPlayerManager(
 
     private val _state = MutableStateFlow<PlayerManager.State<Player>>(PlayerManager.State.Idle)
     override val flow: Flow<PlayerManager.State<Player>> = _state.asStateFlow()
+    private val readyState get() = _state.value as? PlayerManager.State.Ready<Player>
 
-    private val _subtitles = MutableStateFlow<List<String?>>(emptyList())
-    override val subtitles: Flow<List<String?>> = _subtitles.asStateFlow()
+    private val _subtitles = MutableStateFlow<List<SubtitleCue>>(emptyList())
+    override val subtitles: Flow<List<SubtitleCue>> = _subtitles.asStateFlow()
 
     private val _progress = MutableStateFlow(0L)
     override val progress: Flow<Long> = _progress.asStateFlow()
@@ -162,26 +166,28 @@ class AndroidPlayerManager(
         controllerFuture?.let { MediaController.releaseFuture(it) }
         controllerFuture = null
         currentMediaId = -1L
+        // The last cue of the previous Media would otherwise stay on screen until the next cue
+        _subtitles.value = emptyList()
         _state.value = PlayerManager.State.Idle
 
     }
 
     override fun togglePlay() {
-        (_state.value as? PlayerManager.State.Ready)?.let {
+        readyState?.let {
             if (it.isPlaying) it.player.pause() else it.player.play()
         }
     }
 
     override fun play() {
-        (_state.value as? PlayerManager.State.Ready)?.player?.play()
+        readyState?.player?.play()
     }
 
     override fun pause() {
-        (_state.value as? PlayerManager.State.Ready)?.player?.pause()
+        readyState?.player?.pause()
     }
 
     override fun seekTo(progress: Long, precision: SeekPrecision) {
-        val controller = (_state.value as? PlayerManager.State.Ready)?.player as? MediaController ?: return
+        val controller = readyState?.player as? MediaController ?: return
         applySeekPrecision(controller, precision)
         controller.seekTo(progress)
     }
@@ -195,7 +201,7 @@ class AndroidPlayerManager(
     }
 
     override fun seekRewind(value: Long) {
-        (_state.value as? PlayerManager.State.Ready)?.player?.let {
+        readyState?.player?.let {
             val targetPosition = (it.currentPosition - value).coerceAtLeast(0L)
             (it as? MediaController)?.let { c -> applySeekPrecision(c, SeekPrecision.EXACT) }
             it.seekTo(targetPosition)
@@ -203,7 +209,7 @@ class AndroidPlayerManager(
     }
 
     override fun seekForward(value: Long) {
-        (_state.value as? PlayerManager.State.Ready)?.player?.let {
+        readyState?.player?.let {
             val targetPosition = (it.currentPosition + value).coerceAtMost(it.duration)
             (it as? MediaController)?.let { c -> applySeekPrecision(c, SeekPrecision.EXACT) }
             it.seekTo(targetPosition)
@@ -211,14 +217,14 @@ class AndroidPlayerManager(
     }
 
     override fun changeVolume(delta: Float): Int {
-        val player = (_state.value as? PlayerManager.State.Ready)?.player ?: return 0
+        val player = readyState?.player ?: return 0
         val newVolume = (player.volume + delta).coerceIn(0f, 1f)
         player.volume = newVolume
         return (newVolume * 100).roundToInt()
     }
 
     override suspend fun playMedia(media: Media, subtitlesPath: String?) {
-        val player = (_state.value as? PlayerManager.State.Ready)?.player ?: return
+        val player = readyState?.player ?: return
 
         if (defaultTrackLabel == null) defaultTrackLabel = getString(Res.string.track)
 
@@ -248,12 +254,16 @@ class AndroidPlayerManager(
 
             player.stop()
             player.clearMediaItems()
+            // Cues belong to the previous Media: none may show before the new file emits its own
+            _subtitles.value = emptyList()
 
             // Fresh start for every media: hardware decoder first, recovery ladder disarmed
             resetDecoderRecovery()
             resetDecoderModes()
 
             currentMediaId = media.mediaId
+            // Media info belongs to the previous Media until its Tracks are known again
+            _state.update { state -> (state as? PlayerManager.State.Ready)?.copy(mediaInfo = null) ?: state }
             player.setMediaItem(mediaItem, media.currentTime)
 
             // Apply saved track languages before preparing so the
@@ -273,7 +283,7 @@ class AndroidPlayerManager(
     }
 
     override fun selectTrack(track: PlayerTrack) {
-        val player = (_state.value as? PlayerManager.State.Ready)?.player ?: return
+        val player = readyState?.player ?: return
         val currentTracks = player.currentTracks
         var selectedTrack: PlayerTrack? = null
 
@@ -295,6 +305,23 @@ class AndroidPlayerManager(
                     PlayerTrack.Type.SUBTITLES -> ready.copy(selectedSubtitles = t)
                 }
             }
+        }
+    }
+
+    override fun setPlaybackSpeed(speed: Float) {
+        val player = readyState?.player ?: return
+        player.setPlaybackSpeed(speed)
+        _state.update { state ->
+            (state as? PlayerManager.State.Ready)?.copy(playbackSpeed = speed) ?: state
+        }
+    }
+
+    // The renderers live in the service's ExoPlayer, so the delay goes through a session command
+    override fun setSubtitleDelay(delayMs: Long) {
+        val controller = readyState?.player as? MediaController ?: return
+        controller.sendCustomCommand(PlayerService.setSubtitleDelayCommand(delayMs), Bundle.EMPTY)
+        _state.update { state ->
+            (state as? PlayerManager.State.Ready)?.copy(subtitleDelayMs = delayMs) ?: state
         }
     }
 
@@ -343,7 +370,7 @@ class AndroidPlayerManager(
     }
 
     override fun onCues(cueGroup: CueGroup) {
-        _subtitles.update { cueGroup.cues.map { it.text?.toString() } }
+        _subtitles.update { cueGroup.cues.map { it.toSubtitleCue() } }
     }
 
     override fun onPlayerError(error: PlaybackException) {
@@ -378,7 +405,7 @@ class AndroidPlayerManager(
         if (error.errorCode !in DECODER_ERROR_CODES) return false
         if (decoderRecoveryAttempts >= MAX_DECODER_RECOVERY_ATTEMPTS) return false
 
-        val player = (_state.value as? PlayerManager.State.Ready)?.player ?: return false
+        val player = readyState?.player ?: return false
         // The manager belongs to the running PlayerService: without it there is no decoder
         // to switch, so the error is surfaced as usual.
         val decoderManager = decoderManagerHolder.decoderManager ?: return false
@@ -451,6 +478,7 @@ class AndroidPlayerManager(
     override fun onTracksChanged(tracks: Tracks) {
         if (_state.value !is PlayerManager.State.Ready) return
 
+        val mediaInfo = buildMediaInfo(tracks)
         val defaultLabel = defaultTrackLabel ?: ""
 
         var selectedAudio: PlayerTrack? = null
@@ -487,14 +515,81 @@ class AndroidPlayerManager(
             ready.copy(
                 tracks = tracks,
                 selectedAudio = selectedAudio ?: ready.selectedAudio,
-                selectedSubtitles = selectedSubtitles ?: ready.selectedSubtitles
+                selectedSubtitles = selectedSubtitles ?: ready.selectedSubtitles,
+                mediaInfo = mediaInfo,
             )
         }
 
     }
 
+    /** Media info of the selected Tracks. Values Media3 does not report stay null. */
+    private fun buildMediaInfo(tracks: Tracks): MediaInfo {
+        val video = selectedFormat(tracks, C.TRACK_TYPE_VIDEO)
+        val audio = selectedFormat(tracks, C.TRACK_TYPE_AUDIO)
+
+        return MediaInfo(
+            container = (video?.containerMimeType ?: audio?.containerMimeType)?.let(::containerLabel),
+            videoCodec = video?.sampleMimeType?.let(::videoCodecLabel),
+            width = video?.width.positiveOrNull(),
+            height = video?.height.positiveOrNull(),
+            frameRate = video?.frameRate?.takeIf { it > 0f },
+            bitrate = (video?.averageBitrate.positiveOrNull() ?: video?.bitrate.positiveOrNull()),
+            audioCodec = audio?.sampleMimeType?.let(::audioCodecLabel),
+            channels = audio?.channelCount.positiveOrNull(),
+            sampleRate = audio?.sampleRate.positiveOrNull(),
+        )
+    }
+
+    private fun selectedFormat(tracks: Tracks, type: Int): Format? {
+        return tracks.groups
+            .filter { it.type == type }
+            .flatMap { group ->
+                (0 until group.length)
+                    .filter { group.isTrackSelected(it) }
+                    .map { group.getTrackFormat(it) }
+            }
+            .firstOrNull()
+    }
+
+    private fun Int?.positiveOrNull(): Int? = this?.takeIf { it > 0 }
+
+    private fun containerLabel(mimeType: String): String? = when (mimeType) {
+        MimeTypes.VIDEO_MATROSKA -> "MKV"
+        MimeTypes.VIDEO_MP4 -> "MP4"
+        MimeTypes.VIDEO_WEBM -> "WebM"
+        MimeTypes.VIDEO_AVI -> "AVI"
+        MimeTypes.VIDEO_QUICK_TIME -> "MOV"
+        MimeTypes.VIDEO_MP2T -> "MPEG-TS"
+        else -> null
+    }
+
+    private fun videoCodecLabel(mimeType: String): String? = when (mimeType) {
+        MimeTypes.VIDEO_H264 -> "H.264"
+        MimeTypes.VIDEO_H265 -> "HEVC"
+        MimeTypes.VIDEO_AV1 -> "AV1"
+        MimeTypes.VIDEO_VP9 -> "VP9"
+        MimeTypes.VIDEO_VP8 -> "VP8"
+        MimeTypes.VIDEO_MP4V -> "MPEG-4"
+        MimeTypes.VIDEO_MPEG2 -> "MPEG-2"
+        else -> null
+    }
+
+    private fun audioCodecLabel(mimeType: String): String? = when (mimeType) {
+        MimeTypes.AUDIO_AAC -> "AAC"
+        MimeTypes.AUDIO_AC3 -> "AC-3"
+        MimeTypes.AUDIO_E_AC3 -> "E-AC-3"
+        MimeTypes.AUDIO_TRUEHD -> "TrueHD"
+        MimeTypes.AUDIO_DTS -> "DTS"
+        MimeTypes.AUDIO_DTS_HD -> "DTS-HD"
+        MimeTypes.AUDIO_OPUS -> "Opus"
+        MimeTypes.AUDIO_FLAC -> "FLAC"
+        MimeTypes.AUDIO_MPEG -> "MP3"
+        MimeTypes.AUDIO_VORBIS -> "Vorbis"
+        else -> null
+    }
+
     private fun TrackSelectionParameters.Builder.applyAudioTrack(track: PlayerTrack, currentTracks: Tracks) : PlayerTrack? {
-        val current = _state.value as? PlayerManager.State.Ready ?: return null
+        val current = readyState ?: return null
         clearOverridesOfType(C.TRACK_TYPE_AUDIO)
 
         track.id?.let { trackId ->
@@ -513,7 +608,7 @@ class AndroidPlayerManager(
     }
 
     private fun TrackSelectionParameters.Builder.applySubtitlesTrack(track: PlayerTrack, currentTracks: Tracks) : PlayerTrack? {
-        val current = _state.value as? PlayerManager.State.Ready ?: return null
+        val current = readyState ?: return null
         clearOverridesOfType(C.TRACK_TYPE_TEXT)
 
         if (track == PlayerTrack.NO_SUBTITLES) { // If no subtitle
@@ -580,7 +675,7 @@ class AndroidPlayerManager(
         progressJob = scope.launch {
             while (isActive) {
 
-                (_state.value as? PlayerManager.State.Ready)?.let { ready ->
+                readyState?.let { ready ->
 
                     val player = ready.player
 

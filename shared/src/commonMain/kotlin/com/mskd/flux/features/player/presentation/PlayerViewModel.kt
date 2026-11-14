@@ -15,6 +15,7 @@ import com.mskd.flux.features.player.domain.manager.PlayerManager
 import com.mskd.flux.features.player.domain.manager.SeekPrecision
 import com.mskd.flux.features.player.domain.mapper.toPlayerTrack
 import com.mskd.flux.features.player.domain.model.PlayerParams
+import com.mskd.flux.features.player.domain.model.SubtitleCue
 import com.mskd.flux.features.player.domain.model.VideoChapter
 import com.mskd.flux.features.player.domain.model.VideoChapterType
 import com.mskd.flux.features.player.domain.model.currentAt
@@ -24,6 +25,7 @@ import com.mskd.flux.features.player.domain.usecase.SaveTrackLanguageUseCase
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.ui.text.TextProvider
+import com.mskd.flux.utils.Constants
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
@@ -40,6 +42,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
@@ -70,6 +73,9 @@ class PlayerViewModel<out T>(
 
     private var wasPlayingBeforeBackground = false
 
+    // Playback speed to restore when the Boost speed ends; null when no boost is active
+    private var speedBeforeBoost: Float? = null
+
     private val currentSession get() = (session.value as? State.Content<PlayerSession<T>>)?.content
 
     private var nextEpisodeCache: Pair<Long, Episode?>? = null
@@ -95,8 +101,8 @@ class PlayerViewModel<out T>(
     private val _overlays = MutableStateFlow(PlayerOverlays())
     val overlays: StateFlow<PlayerOverlays> = _overlays.asStateFlow()
 
-    private val _subtitles = MutableStateFlow<List<String?>>(emptyList())
-    val subtitles: StateFlow<List<String?>> = _subtitles.asStateFlow()
+    private val _subtitles = MutableStateFlow<List<SubtitleCue>>(emptyList())
+    val subtitles: StateFlow<List<SubtitleCue>> = _subtitles.asStateFlow()
 
     // Chapters of the loaded Media, read once when it loads
     private val chapters = MutableStateFlow<List<VideoChapter>>(emptyList())
@@ -153,6 +159,9 @@ class PlayerViewModel<out T>(
                     selectedAudio = playerState.selectedAudio,
                     selectedSubtitles = playerState.selectedSubtitles,
                     chapters = chapters,
+                    playbackSpeed = playerState.playbackSpeed,
+                    mediaInfo = playerState.mediaInfo,
+                    subtitleDelayMs = playerState.subtitleDelayMs,
                 )
             )
         }
@@ -253,8 +262,13 @@ class PlayerViewModel<out T>(
             is PlayerIntent.SeekTo -> seekTo(progress = intent.progress, precision = intent.precision)
             is PlayerIntent.SelectTrack -> selectTrack(track = intent.track)
             is PlayerIntent.SelectChapter -> selectChapter(chapter = intent.chapter)
+            is PlayerIntent.SetPlaybackSpeed -> playerManager.setPlaybackSpeed(speed = intent.speed)
             is PlayerIntent.OnVolumeChange -> onVolumeChange(delta = intent.delta)
             is PlayerIntent.OnChapterButtonTap -> onChapterButtonTap(button = intent.button)
+            PlayerIntent.StartBoostSpeed -> startBoostSpeed()
+            PlayerIntent.EndBoostSpeed -> endBoostSpeed()
+            is PlayerIntent.ChangeSubtitleDelay -> changeSubtitleDelay(deltaMs = intent.deltaMs)
+            PlayerIntent.ResetSubtitleDelay -> playerManager.setSubtitleDelay(delayMs = 0L)
             PlayerIntent.GoToBackground -> onBackground()
             PlayerIntent.GoToForeground -> onForeground()
             is PlayerIntent.OnPipChange -> onPipChange(isInPip = intent.isInPip)
@@ -265,10 +279,38 @@ class PlayerViewModel<out T>(
     private suspend fun playMedia(media: Media) {
         val subtitlesPath = getSubtitlesUseCase(file = media.file)
         chapters.value = getChaptersUseCase(media = media)
+        // Every Media starts at 1x, and never inside a leftover boost
+        speedBeforeBoost = null
+        _overlays.update { it.copy(isBoosting = false) }
+        playerManager.setPlaybackSpeed(speed = 1f)
+        // Every Media starts with its subtitles in sync as the file has them, and the delay is never kept
+        playerManager.setSubtitleDelay(delayMs = 0L)
         playerManager.playMedia(
             media = media,
             subtitlesPath = subtitlesPath
         )
+    }
+
+    private suspend fun changeSubtitleDelay(deltaMs: Long) {
+        val current = (playerManager.flow.first() as? PlayerManager.State.Ready)?.subtitleDelayMs ?: 0L
+        playerManager.setSubtitleDelay(delayMs = current + deltaMs)
+    }
+
+    private suspend fun startBoostSpeed() {
+        // No Boost speed in Picture-in-Picture, nor on top of a running boost
+        if (_interface.value.isInPip || speedBeforeBoost != null) return
+        val ready = playerManager.flow.first() as? PlayerManager.State.Ready ?: return
+
+        speedBeforeBoost = ready.playbackSpeed
+        playerManager.setPlaybackSpeed(speed = Constants.PLAYER.BOOST_SPEED)
+        _overlays.update { it.copy(isBoosting = true) }
+    }
+
+    private fun endBoostSpeed() {
+        val previousSpeed = speedBeforeBoost ?: return
+        speedBeforeBoost = null
+        playerManager.setPlaybackSpeed(speed = previousSpeed)
+        _overlays.update { it.copy(isBoosting = false) }
     }
 
     private fun togglePlayButton() {
@@ -464,6 +506,8 @@ class PlayerViewModel<out T>(
 
     private suspend fun onBackground() {
 
+        endBoostSpeed()
+
         if (pipIsEnabledUseCase()) return
 
         if (currentSession == null) return
@@ -482,6 +526,7 @@ class PlayerViewModel<out T>(
     }
 
     private fun onPipChange(isInPip: Boolean) {
+        if (isInPip) endBoostSpeed()
         _interface.update { it.copy(isInPip = isInPip) }
     }
 

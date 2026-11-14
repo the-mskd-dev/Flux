@@ -14,6 +14,7 @@ import com.mskd.flux.features.files.domain.usecase.GetSubtitlesUseCase
 import com.mskd.flux.features.player.data.PipIsEnabledUseCase
 import com.mskd.flux.features.player.domain.manager.PlayerManager
 import com.mskd.flux.features.player.domain.manager.SeekPrecision
+import com.mskd.flux.features.player.domain.model.MediaInfo
 import com.mskd.flux.features.player.domain.model.PlayerParams
 import com.mskd.flux.features.player.domain.model.VideoChapter
 import com.mskd.flux.features.player.domain.model.VideoChapterType
@@ -166,6 +167,10 @@ class PlayerViewModelTest : FunSpec({
             PlayerTestCases.ShowSettings(
                 description = "Show subtitles sheet",
                 sheet = SettingsSheet.Settings,
+            ),
+            PlayerTestCases.ShowSettings(
+                description = "Show media info sheet",
+                sheet = SettingsSheet.MediaInfo,
             )
         ) { testCase ->
 
@@ -1043,7 +1048,320 @@ class PlayerViewModelTest : FunSpec({
         }
     }
 
+
+    context("playback speed") {
+
+        test("choosing a speed hands it to the player manager") {
+
+            // When
+            viewModel.handleIntent(PlayerIntent.SetPlaybackSpeed(speed = 1.5f))
+
+            // Then
+            coVerify(timeout = 1000) { playerManager.setPlaybackSpeed(speed = 1.5f) }
+
+        }
+
+        test("session exposes the active speed") {
+
+            // Given
+            val flow = MutableStateFlow<PlayerManager.State<Player>>(PlayerManager.State.Ready(player = player, playbackSpeed = 0.5f))
+            every { playerManager.flow } returns flow
+            updateVm()
+
+            // Then
+            viewModel.session.test {
+                var item = awaitItem()
+                while (item !is State.Content) item = awaitItem()
+                item.content.playbackSpeed shouldBe 0.5f
+                cancelAndConsumeRemainingEvents()
+            }
+
+        }
+
+        test("loading a Media resets the speed to 1x") {
+
+            // Given
+            val flow = MutableStateFlow<PlayerManager.State<Player>>(PlayerManager.State.Ready(player = player, playbackSpeed = 2f))
+            every { playerManager.flow } returns flow
+            updateVm()
+
+            // When
+            viewModel.session.test {
+                awaitItem()
+                cancelAndConsumeRemainingEvents()
+            }
+
+            // Then
+            coVerify(timeout = 1000) {
+                playerManager.setPlaybackSpeed(speed = 1f)
+                playerManager.playMedia(any(), any())
+            }
+
+        }
+
+    }
+
+    context("subtitle delay") {
+
+        fun readyFlow(delayMs: Long): MutableStateFlow<PlayerManager.State<Player>> {
+            val flow = MutableStateFlow<PlayerManager.State<Player>>(PlayerManager.State.Ready(player = player, subtitleDelayMs = delayMs))
+            every { playerManager.flow } returns flow
+            // The manager reflects the delay it is given, as the real one does
+            every { playerManager.setSubtitleDelay(any()) } answers {
+                flow.value = PlayerManager.State.Ready(player = player, subtitleDelayMs = firstArg())
+            }
+            return flow
+        }
+
+        // The Media load resets the delay to 0: wait for it, then show the delay under test
+        fun loadedVm(delayMs: Long): MutableStateFlow<PlayerManager.State<Player>> {
+            val flow = readyFlow(delayMs = delayMs)
+            updateVm()
+            coVerify(timeout = 2000) { playerManager.playMedia(any(), any()) }
+            flow.value = PlayerManager.State.Ready(player = player, subtitleDelayMs = delayMs)
+            return flow
+        }
+
+        test("a step moves the delay from its current value") {
+
+            // Given
+            loadedVm(delayMs = 200L)
+
+            // When
+            viewModel.handleIntent(PlayerIntent.ChangeSubtitleDelay(deltaMs = 100L))
+
+            // Then
+            coVerify(timeout = 1000) { playerManager.setSubtitleDelay(delayMs = 300L) }
+
+        }
+
+        test("a negative step advances the subtitles") {
+
+            // Given
+            readyFlow(delayMs = 0L)
+            updateVm()
+
+            // When
+            viewModel.handleIntent(PlayerIntent.ChangeSubtitleDelay(deltaMs = -100L))
+
+            // Then
+            coVerify(timeout = 1000) { playerManager.setSubtitleDelay(delayMs = -100L) }
+
+        }
+
+        test("reset returns the delay to 0") {
+
+            // Given
+            readyFlow(delayMs = -700L)
+            updateVm()
+
+            // When
+            viewModel.handleIntent(PlayerIntent.ResetSubtitleDelay)
+
+            // Then
+            coVerify(timeout = 1000) { playerManager.setSubtitleDelay(delayMs = 0L) }
+
+        }
+
+        test("session exposes the active delay") {
+
+            // Given
+            loadedVm(delayMs = 1500L)
+
+            // Then
+            viewModel.session.test {
+                var item = awaitItem()
+                while (item !is State.Content) item = awaitItem()
+                item.content.subtitleDelayMs shouldBe 1500L
+                cancelAndConsumeRemainingEvents()
+            }
+
+        }
+
+        test("loading a Media resets the delay to 0") {
+
+            // Given
+            readyFlow(delayMs = 900L)
+            updateVm()
+
+            // When
+            viewModel.session.test {
+                awaitItem()
+                cancelAndConsumeRemainingEvents()
+            }
+
+            // Then
+            coVerify(timeout = 1000) {
+                playerManager.setSubtitleDelay(delayMs = 0L)
+                playerManager.playMedia(any(), any())
+            }
+
+        }
+
+    }
+
+    context("media info") {
+
+        val mediaInfo = MediaInfo(videoCodec = "H.264", width = 1920, height = 1080, audioCodec = "AAC")
+
+        test("session exposes the Media info once the player is ready") {
+
+            // Given
+            val flow = MutableStateFlow<PlayerManager.State<Player>>(PlayerManager.State.Ready(player = player, mediaInfo = mediaInfo))
+            every { playerManager.flow } returns flow
+            updateVm()
+
+            // Then
+            viewModel.session.test {
+                var item = awaitItem()
+                while (item !is State.Content) item = awaitItem()
+                item.content.mediaInfo shouldBe mediaInfo
+                cancelAndConsumeRemainingEvents()
+            }
+
+        }
+
+        test("Media info is cleared when the player reports a new Media") {
+
+            // Given
+            val flow = MutableStateFlow<PlayerManager.State<Player>>(PlayerManager.State.Ready(player = player, mediaInfo = mediaInfo))
+            every { playerManager.flow } returns flow
+            updateVm()
+
+            viewModel.session.test {
+                var item = awaitItem()
+                while (item !is State.Content) item = awaitItem()
+                item.content.mediaInfo shouldBe mediaInfo
+
+                // When the manager loads the next Media, it publishes the state without Media info
+                flow.value = PlayerManager.State.Ready(player = player)
+
+                // Then
+                var next = awaitItem()
+                while (next !is State.Content || next.content.mediaInfo != null) next = awaitItem()
+                next.content.mediaInfo shouldBe null
+                cancelAndConsumeRemainingEvents()
+            }
+
+        }
+
+    }
+
+    context("boost speed") {
+
+        fun readyFlow(speed: Float): MutableStateFlow<PlayerManager.State<Player>> {
+            val flow = MutableStateFlow<PlayerManager.State<Player>>(PlayerManager.State.Ready(player = player, playbackSpeed = speed))
+            every { playerManager.flow } returns flow
+            // The manager reflects the speed it is given, as the real one does
+            every { playerManager.setPlaybackSpeed(any()) } answers {
+                flow.value = PlayerManager.State.Ready(player = player, playbackSpeed = firstArg())
+            }
+            return flow
+        }
+
+        // The Media load resets the speed to 1x: wait for it before driving the boost
+        fun loadedVm(speed: Float): MutableStateFlow<PlayerManager.State<Player>> {
+            val flow = readyFlow(speed = speed)
+            updateVm()
+            coVerify(timeout = 2000) { playerManager.playMedia(any(), any()) }
+            flow.value = PlayerManager.State.Ready(player = player, playbackSpeed = speed)
+            return flow
+        }
+
+        test("starting plays at 2x and shows the pill") {
+
+            loadedVm(speed = 1f)
+
+            viewModel.handleIntent(PlayerIntent.StartBoostSpeed)
+
+            coVerify(timeout = 1000) { playerManager.setPlaybackSpeed(speed = Constants.PLAYER.BOOST_SPEED) }
+            viewModel.overlays.firstWithin { it.isBoosting }.isBoosting shouldBe true
+
+        }
+
+        test("release restores the previous speed, whatever it was") {
+
+            val flow = loadedVm(speed = 0.75f)
+
+            viewModel.handleIntent(PlayerIntent.StartBoostSpeed)
+            viewModel.overlays.firstWithin { it.isBoosting }
+            viewModel.handleIntent(PlayerIntent.EndBoostSpeed)
+
+            viewModel.overlays.firstWithin { !it.isBoosting }
+            (flow.value as PlayerManager.State.Ready).playbackSpeed shouldBe 0.75f
+
+        }
+
+        test("a second start does not overwrite the speed to restore") {
+
+            val flow = loadedVm(speed = 1.5f)
+
+            viewModel.handleIntent(PlayerIntent.StartBoostSpeed)
+            viewModel.handleIntent(PlayerIntent.StartBoostSpeed)
+            viewModel.handleIntent(PlayerIntent.EndBoostSpeed)
+
+            viewModel.overlays.firstWithin { !it.isBoosting && (flow.value as PlayerManager.State.Ready).playbackSpeed == 1.5f }
+
+        }
+
+        test("refused in Picture-in-Picture") {
+
+            loadedVm(speed = 1f)
+
+            viewModel.handleIntent(PlayerIntent.OnPipChange(isInPip = true))
+            viewModel.interfaceState.firstWithin { it.isInPip }
+            viewModel.handleIntent(PlayerIntent.StartBoostSpeed)
+            // Sync point: the intent channel is ordered
+            viewModel.handleIntent(PlayerIntent.OnPipChange(isInPip = true))
+
+            viewModel.overlays.value.isBoosting shouldBe false
+            coVerify(exactly = 0) { playerManager.setPlaybackSpeed(speed = Constants.PLAYER.BOOST_SPEED) }
+
+        }
+
+        test("entering Picture-in-Picture cancels an active boost") {
+
+            val flow = loadedVm(speed = 1.25f)
+
+            viewModel.handleIntent(PlayerIntent.StartBoostSpeed)
+            viewModel.overlays.firstWithin { it.isBoosting }
+            viewModel.handleIntent(PlayerIntent.OnPipChange(isInPip = true))
+
+            viewModel.overlays.firstWithin { !it.isBoosting }
+            (flow.value as PlayerManager.State.Ready).playbackSpeed shouldBe 1.25f
+
+        }
+
+        test("going to the background cancels an active boost") {
+
+            val flow = loadedVm(speed = 1f)
+
+            viewModel.handleIntent(PlayerIntent.StartBoostSpeed)
+            viewModel.overlays.firstWithin { it.isBoosting }
+            viewModel.handleIntent(PlayerIntent.GoToBackground)
+
+            viewModel.overlays.firstWithin { !it.isBoosting }
+            (flow.value as PlayerManager.State.Ready).playbackSpeed shouldBe 1f
+
+        }
+
+        test("release without a start does nothing") {
+
+            loadedVm(speed = 1.5f)
+
+            viewModel.handleIntent(PlayerIntent.EndBoostSpeed)
+            viewModel.handleIntent(PlayerIntent.OnPipChange(isInPip = false))
+            viewModel.interfaceState.firstWithin { true }
+
+            coVerify(exactly = 0) { playerManager.setPlaybackSpeed(speed = 1.5f) }
+
+        }
+
+    }
+
 })
+
+private suspend fun <T> Flow<T>.firstWithin(predicate: (T) -> Boolean): T = kotlinx.coroutines.withTimeout(3000) { first(predicate) }
 
 private val PlayerViewModel<Player>.sessionContent: PlayerSession<Player>
     get() = (session.value as State.Content).content

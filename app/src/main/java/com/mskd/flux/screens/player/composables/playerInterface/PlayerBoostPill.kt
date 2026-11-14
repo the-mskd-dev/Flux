@@ -7,10 +7,14 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.displayCutoutPadding
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -44,7 +48,8 @@ fun PlayerBoostPill(
 
         Box(
             modifier = Modifier
-                .displayCutoutPadding()
+                // Top only: the status bar is hidden in the player, and side cutout insets (landscape) would off-center the pill.
+                .windowInsetsPadding(WindowInsets.displayCutout.only(WindowInsetsSides.Top))
                 .padding(top = FluxUI.Space.medium)
                 .size(size = 48.dp)
                 .clip(shape = CircleShape)

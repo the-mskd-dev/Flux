@@ -237,6 +237,7 @@ class GalleryViewModel(
                 when (it.languageCode) {
                     userLanguageCode -> 0
                     null -> 1
+                    "en" -> 1
                     else -> 2
                 }
             }.thenByDescending { it.rating }

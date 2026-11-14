@@ -272,6 +272,8 @@
     <string name="gallery_use_as_backdrop">Use as backdrop</string>
     <string name="gallery_current_poster">Current poster</string>
     <string name="gallery_current_backdrop">Current backdrop</string>
+    <string name="gallery_use_as_logo">Use as logo</string>
+    <string name="gallery_current_logo">Current logo</string>
     <string name="gallery_image_download_succeeded">Image saved</string>
     <string name="gallery_image_download_failed">Couldn't download the image</string>
     <string name="gallery_image_download_show">Show</string>

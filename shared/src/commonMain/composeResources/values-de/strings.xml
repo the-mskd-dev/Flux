@@ -254,6 +254,8 @@
     <string name="gallery_use_as_backdrop">Als Hintergrund verwenden</string>
     <string name="gallery_current_poster">Aktuelles Poster</string>
     <string name="gallery_current_backdrop">Aktueller Hintergrund</string>
+    <string name="gallery_use_as_logo">Als Logo verwenden</string>
+    <string name="gallery_current_logo">Aktuelles Logo</string>
     <string name="gallery_image_download_succeeded">Bild gespeichert</string>
     <string name="gallery_image_download_failed">Das Bild konnte nicht heruntergeladen werden</string>
     <string name="gallery_image_download_show">Anzeigen</string>

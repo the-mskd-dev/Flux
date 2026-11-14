@@ -27,9 +27,11 @@ import com.mskd.flux.features.gallery.domain.model.GalleryImageType
 import com.mskd.flux.features.gallery.presentation.ArtworkImageButton
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.gallery_current_backdrop
+import flux.shared.generated.resources.gallery_current_logo
 import flux.shared.generated.resources.gallery_current_poster
 import flux.shared.generated.resources.gallery_image_download
 import flux.shared.generated.resources.gallery_use_as_backdrop
+import flux.shared.generated.resources.gallery_use_as_logo
 import flux.shared.generated.resources.gallery_use_as_poster
 import flux.shared.generated.resources.ic_download
 import org.jetbrains.compose.resources.StringResource
@@ -41,7 +43,7 @@ private val DISABLED_CONTENT_COLOR = Color.White.copy(alpha = .6f)
 
 /**
  * The viewer controls, centred at the bottom of the screen above the navigation bar, fading in and out with
- * [visible]: Use as Poster/Backdrop and Image Download in a split button, or Image Download alone when Use as
+ * [visible]: Use as Poster/Backdrop/Logo and Image Download in a split button, or Image Download alone when Use as
  * Poster/Backdrop is hidden.
  */
 @Composable
@@ -124,12 +126,11 @@ private fun useImageLabel(type: GalleryImageType, state: ArtworkImageButton): St
     return when (type) {
         GalleryImageType.POSTER -> if (current) Res.string.gallery_current_poster else Res.string.gallery_use_as_poster
         GalleryImageType.BACKDROP -> if (current) Res.string.gallery_current_backdrop else Res.string.gallery_use_as_backdrop
-        // The button stays hidden for a Logo until it can become the custom Logo
-        GalleryImageType.LOGO -> if (current) Res.string.gallery_current_backdrop else Res.string.gallery_use_as_backdrop
+        GalleryImageType.LOGO -> if (current) Res.string.gallery_current_logo else Res.string.gallery_use_as_logo
     }
 }
 
-/** Standalone Image Download button, shown in place of the split button when Use as Poster/Backdrop is hidden. */
+/** Standalone Image Download button, shown in place of the split button when Use as Poster/Backdrop/Logo is hidden. */
 @Composable
 private fun ImageDownloadButton(imageDownloadRunning: Boolean, onClick: () -> Unit) {
     val downloadDescription = stringResource(Res.string.gallery_image_download)

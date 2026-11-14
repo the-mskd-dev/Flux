@@ -67,7 +67,7 @@ Page of one Season of a Show, reached from the Show page, listing its Episode. I
 _Avoid_: Episodes page, Page saison
 
 **Logo**:
-TMDB image of an Artwork showing its stylised title, on a transparent background. It replaces the title text on the Artwork page when it is available. An Artwork has at most one Logo.
+TMDB image of an Artwork showing its stylised title, on a transparent background. It replaces the title text on the Artwork page when it is available. An Artwork has at most one shown Logo: the custom Logo if there is one, otherwise the one TMDB gives automatically.
 _Avoid_: Title image, Wordmark, Titre graphique
 
 **Artwork image**:
@@ -75,11 +75,11 @@ Image shown at the top of an Artwork page: its Backdrop, or its Poster when the 
 _Avoid_: Header image, banner, bannière
 
 **Custom image**:
-Backdrop or Poster chosen by the user in the Gallery to replace the TMDB one. The custom Backdrop replaces the Backdrop of the Artwork image; the custom Poster replaces the Poster of the Artwork image (blurred header) and the Artwork thumbnail in the Catalog, the search and the Private Folder. An Artwork, Movie or Show, has at most one custom Backdrop and one custom Poster. It is kept by the Light sync and cleared by the Full sync and the Identification reset. A Manual identification does not carry over the one of the source Artwork; the target Artwork keeps its own if it was already in the Catalog.
+Backdrop, Poster or Logo chosen by the user in the Gallery to replace the TMDB one. The custom Backdrop replaces the Backdrop of the Artwork image; the custom Poster replaces the Poster of the Artwork image (blurred header) and the Artwork thumbnail in the Catalog, the search and the Private Folder; the custom Logo replaces the Logo of the Artwork page. An Artwork, Movie or Show, has at most one custom Backdrop, one custom Poster and one custom Logo. It is kept by the Light sync and cleared by the Full sync and the Identification reset. A Manual identification does not carry over the one of the source Artwork; the target Artwork keeps its own if it was already in the Catalog.
 _Avoid_: Image personnalisée, Affiche personnalisée, override
 
 **Gallery**:
-Page listing all the TMDB images of an Artwork (Backdrop and Poster, all languages) in a single grid sorted by descending rating, with a zoomable full-screen viewer. For a Show, only the images of the Show itself, not those of its Season or Episode. Nothing is stored locally.
+Page listing the TMDB images of an Artwork (Backdrop, Poster and Logo, in the data language, English and without language) in a single grid sorted by descending rating, with a zoomable full-screen viewer. For a Show, only the images of the Show itself, not those of its Season or Episode. Nothing is stored locally.
 _Avoid_: Galerie d'images, Images, Photos
 
 **Image Download**:

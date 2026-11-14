@@ -157,8 +157,7 @@ class TmdbDataSourceImpl(
 
     override suspend fun getMovieImages(artworkId: Long): ImagesDto {
         return tmdbService.getMovieImages(
-            artworkId = artworkId,
-            language = tmdbLanguage().toTmdbFormat()
+            artworkId = artworkId
         ).getOrThrow()
     }
 
@@ -219,8 +218,7 @@ class TmdbDataSourceImpl(
 
     override suspend fun getShowImages(artworkId: Long): ImagesDto {
         return tmdbService.getShowImages(
-            artworkId = artworkId,
-            language = tmdbLanguage().toTmdbFormat()
+            artworkId = artworkId
         ).getOrThrow()
     }
 

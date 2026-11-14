@@ -22,7 +22,7 @@ private fun List<ImageDto>.pngOnly() = filter { it.filePath.endsWith(".png", ign
 fun ImagesDto.logoPath(language: String): String {
     val candidates = logos.pngOnly()
     return listOf(language.languageCode(), Language.ENGLISH.code, null)
-        .firstNotNullOfOrNull { code -> candidates.filter { it.language == code }.maxByOrNull { it.voteAverage } }
+        .firstNotNullOfOrNull { code -> candidates.filter { it.languageCode == code }.maxByOrNull { it.voteAverage } }
         ?.filePath
         .orEmpty()
 }
@@ -32,4 +32,5 @@ private fun ImageDto.toDomain(type: GalleryImageType) = GalleryImage(
     type = type,
     ratio = aspectRatio.toFloat(),
     rating = voteAverage,
+    languageCode = languageCode,
 )

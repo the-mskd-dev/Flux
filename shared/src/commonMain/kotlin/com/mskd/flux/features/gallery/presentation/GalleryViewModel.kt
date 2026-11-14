@@ -6,6 +6,7 @@ import com.mskd.flux.core.database.domain.repository.DatabaseRepository
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.shownBackdropPath
+import com.mskd.flux.core.model.artwork.shownLogoPath
 import com.mskd.flux.core.model.artwork.shownPosterPath
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
@@ -140,7 +141,7 @@ class GalleryViewModel(
 
     private fun GalleryContent.viewedImage(): GalleryImage? = viewerIndex?.let { images.getOrNull(it) }
 
-    // Same rule as the page header and the Catalog, so that "Current poster" / "Current backdrop" is always the image they show
+    // Same rule as the page header and the Catalog, so that "Current poster" / "Current backdrop" / "Current logo" is always the image they show
     private fun artworkImageButton(image: GalleryImage?, artwork: Artwork?, syncing: Boolean): ArtworkImageButton = when {
         image == null || artwork == null || syncing -> ArtworkImageButton.HIDDEN
         image.path == artwork.shownPathOf(image.type) -> ArtworkImageButton.CURRENT
@@ -150,6 +151,7 @@ class GalleryViewModel(
     private fun Artwork.shownPathOf(type: GalleryImageType): String = when (type) {
         GalleryImageType.BACKDROP -> shownBackdropPath
         GalleryImageType.POSTER -> shownPosterPath
+        GalleryImageType.LOGO -> shownLogoPath.orEmpty()
     }
 
     // The Artwork is observed: the button becomes "Current poster" / "Current backdrop" by itself once saved
@@ -164,6 +166,7 @@ class GalleryViewModel(
                 when (image.type) {
                     GalleryImageType.BACKDROP -> databaseRepository.setArtworkCustomBackdrop(artworkId = artworkId, path = image.path)
                     GalleryImageType.POSTER -> databaseRepository.setArtworkCustomPoster(artworkId = artworkId, path = image.path)
+                    GalleryImageType.LOGO -> databaseRepository.setArtworkCustomLogo(artworkId = artworkId, path = image.path)
                 }
             } catch (e: CancellationException) {
                 throw e

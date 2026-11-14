@@ -24,6 +24,9 @@ val Artwork.shownBackdropPath: String get() = customBackdropPath ?: bannerPath
 /** Poster shown for the Artwork, on its page and in the Catalog: the custom Poster when there is one, otherwise the TMDB Poster. */
 val Artwork.shownPosterPath: String get() = customPosterPath ?: imagePath
 
+/** Logo shown for the Artwork: the custom Logo when there is one, otherwise the automatic one (null: never searched, empty: none). */
+val Artwork.shownLogoPath: String? get() = customLogoPath ?: logoPath
+
 /** Path of the Artwork image shown by the header in [mode]: the Custom image when there is one, otherwise the TMDB image. */
 fun Artwork.artworkImagePath(mode: ArtworkHeaderMode): String = when (mode) {
     ArtworkHeaderMode.NORMAL -> shownBackdropPath

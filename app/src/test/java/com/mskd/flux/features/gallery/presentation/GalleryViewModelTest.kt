@@ -72,6 +72,7 @@ class GalleryViewModelTest : FunSpec({
             coEvery { getArtwork(any()) } answers { storedArtwork.value }
             coEvery { setArtworkCustomBackdrop(any(), any()) } answers { storedArtwork.update { it?.copy(customBackdropPath = secondArg()) } }
             coEvery { setArtworkCustomPoster(any(), any()) } answers { storedArtwork.update { it?.copy(customPosterPath = secondArg()) } }
+            coEvery { setArtworkCustomLogo(any(), any()) } answers { storedArtwork.update { it?.copy(customLogoPath = secondArg()) } }
         }
         apiRepository = mockk()
         connectivityRepository = mockk()
@@ -434,6 +435,93 @@ class GalleryViewModelTest : FunSpec({
         coVerify(exactly = 0) { apiRepository.getMovieImages(any()) }
 
     }
+
+    //region Logo
+
+    val topLogo = GalleryImage(path = "/logo.png", type = GalleryImageType.LOGO, ratio = 2.5f, rating = 9.0)
+
+    test("logos are mixed with backdrops and posters, sorted by rating") {
+
+        coEvery { apiRepository.getMovieImages(artwork.id) } returns listOf(lowBackdrop, topLogo, highPoster)
+        updateVm()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        contentImages() shouldBe listOf(topLogo, highPoster, lowBackdrop)
+
+    }
+
+    test("the viewer opens on a logo that can be used") {
+
+        coEvery { apiRepository.getMovieImages(artwork.id) } returns listOf(lowBackdrop, topLogo)
+        updateVm()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.handleIntent(GalleryIntent.OnImageTap(index = 0))
+
+        contentViewerIndex() shouldBe 0
+        (viewModel.uiState.value.state as State.Content).content.artworkImageButton shouldBe ArtworkImageButton.AVAILABLE
+
+    }
+
+    test("using a logo saves it as custom Logo and it becomes the current Logo") {
+
+        coEvery { apiRepository.getMovieImages(artwork.id) } returns listOf(lowBackdrop, topLogo)
+        updateVm()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val images = contentImages()
+        viewModel.handleIntent(GalleryIntent.OnImageTap(index = images.indexOf(topLogo)))
+        viewModel.handleIntent(GalleryIntent.OnUseImageTap)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        storedArtwork.value?.customLogoPath shouldBe topLogo.path
+        (viewModel.uiState.value.state as State.Content).content.artworkImageButton shouldBe ArtworkImageButton.CURRENT
+
+    }
+
+    test("the automatic Logo is the current Logo") {
+
+        storedArtwork.value = artwork.copy(logoPath = topLogo.path)
+        coEvery { apiRepository.getMovieImages(artwork.id) } returns listOf(topLogo)
+        updateVm()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.handleIntent(GalleryIntent.OnImageTap(index = 0))
+
+        (viewModel.uiState.value.state as State.Content).content.artworkImageButton shouldBe ArtworkImageButton.CURRENT
+
+    }
+
+    test("with a custom Logo, the automatic Logo is available again") {
+
+        val autoLogo = GalleryImage(path = "/auto.png", type = GalleryImageType.LOGO, ratio = 2f, rating = 3.0)
+        storedArtwork.value = artwork.copy(logoPath = autoLogo.path, customLogoPath = topLogo.path)
+        coEvery { apiRepository.getMovieImages(artwork.id) } returns listOf(topLogo, autoLogo)
+        updateVm()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val images = contentImages()
+        viewModel.handleIntent(GalleryIntent.OnImageTap(index = images.indexOf(topLogo)))
+        (viewModel.uiState.value.state as State.Content).content.artworkImageButton shouldBe ArtworkImageButton.CURRENT
+        viewModel.handleIntent(GalleryIntent.OnImageTap(index = images.indexOf(autoLogo)))
+        (viewModel.uiState.value.state as State.Content).content.artworkImageButton shouldBe ArtworkImageButton.AVAILABLE
+
+    }
+
+    test("the logo button is hidden while a Sync runs") {
+
+        coEvery { apiRepository.getMovieImages(artwork.id) } returns listOf(topLogo)
+        updateVm()
+        testDispatcher.scheduler.advanceUntilIdle()
+        syncState.value = SyncState.Syncing(full = false)
+
+        viewModel.handleIntent(GalleryIntent.OnImageTap(index = 0))
+
+        (viewModel.uiState.value.state as State.Content).content.artworkImageButton shouldBe ArtworkImageButton.HIDDEN
+
+    }
+
+    //endregion
 
     //region Custom image
 

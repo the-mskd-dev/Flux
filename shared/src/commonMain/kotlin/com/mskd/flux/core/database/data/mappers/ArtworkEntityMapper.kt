@@ -20,7 +20,8 @@ fun ArtworkEntity.toDomain() : Artwork {
         logoPath = this.logoPath,
         isManuallyIdentified = this.manuallyIdentified,
         customBackdropPath = this.customBackdropPath,
-        customPosterPath = this.customPosterPath
+        customPosterPath = this.customPosterPath,
+        customLogoPath = this.customLogoPath,
     )
 }
 
@@ -39,6 +40,7 @@ fun Artwork.toEntity(overrideLastModification: Boolean = true) : ArtworkEntity {
         logoPath = this.logoPath,
         manuallyIdentified = this.isManuallyIdentified,
         customBackdropPath = this.customBackdropPath,
-        customPosterPath = this.customPosterPath
+        customPosterPath = this.customPosterPath,
+        customLogoPath = this.customLogoPath,
     )
 }

@@ -253,6 +253,8 @@
     <string name="gallery_use_as_backdrop">배경으로 사용</string>
     <string name="gallery_current_poster">현재 포스터</string>
     <string name="gallery_current_backdrop">현재 배경</string>
+    <string name="gallery_use_as_logo">로고로 사용</string>
+    <string name="gallery_current_logo">현재 로고</string>
     <string name="gallery_image_download_succeeded">이미지를 저장했습니다</string>
     <string name="gallery_image_download_failed">이미지를 다운로드하지 못했습니다</string>
     <string name="gallery_image_download_show">보기</string>

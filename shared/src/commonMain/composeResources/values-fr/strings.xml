@@ -255,6 +255,8 @@
     <string name="gallery_use_as_backdrop">Utiliser comme bannière</string>
     <string name="gallery_current_poster">Affiche actuelle</string>
     <string name="gallery_current_backdrop">Bannière actuelle</string>
+    <string name="gallery_use_as_logo">Utiliser comme logo</string>
+    <string name="gallery_current_logo">Logo actuel</string>
     <string name="gallery_image_download_succeeded">Image enregistrée</string>
     <string name="gallery_image_download_failed">Impossible de télécharger l'image</string>
     <string name="gallery_image_download_show">Afficher</string>

@@ -24,6 +24,7 @@ import coil3.compose.rememberAsyncImagePainter
 import coil3.request.ErrorResult
 import coil3.request.ImageRequest
 import com.mskd.flux.core.model.artwork.Artwork
+import com.mskd.flux.core.model.artwork.shownLogoPath
 import com.mskd.flux.features.images.domain.LOGO_REQUEST_SIZE
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.ui.FluxThemePreview
@@ -42,7 +43,7 @@ fun ArtworkTitle(
     modifier: Modifier = Modifier,
 ) {
 
-    val logoPath = artwork.logoPath
+    val logoPath = artwork.shownLogoPath
 
     if (logoPath.isNullOrEmpty()) {
         ArtworkTitleText(modifier = modifier, title = artwork.title)

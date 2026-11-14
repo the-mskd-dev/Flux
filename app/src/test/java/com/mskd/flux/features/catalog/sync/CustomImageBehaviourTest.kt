@@ -48,6 +48,7 @@ class CustomImageBehaviourTest : FunSpec({
         val inception = artworkOf("Inception")
         harness.catalog.setArtworkCustomBackdrop(artworkId = inception.id, path = "/chosen-backdrop.jpg")
         harness.catalog.setArtworkCustomPoster(artworkId = inception.id, path = "/chosen-poster.jpg")
+        harness.catalog.setArtworkCustomLogo(artworkId = inception.id, path = "/chosen-logo.png")
 
         // When
         harness.deviceStorage.availableFiles += harness.deviceFile("Breaking Bad S01E01.mkv")
@@ -57,6 +58,8 @@ class CustomImageBehaviourTest : FunSpec({
         val after = artworkOf("Inception")
         after.customBackdropPath shouldBe "/chosen-backdrop.jpg"
         after.customPosterPath shouldBe "/chosen-poster.jpg"
+        after.customLogoPath shouldBe "/chosen-logo.png"
+        after.logoPath shouldBe inception.logoPath
 
     }
 
@@ -94,6 +97,7 @@ class CustomImageBehaviourTest : FunSpec({
         harness.catalog.setArtworkCustomBackdrop(artworkId = inception.id, path = "/inception-backdrop.jpg")
         harness.catalog.setArtworkCustomPoster(artworkId = inception.id, path = "/inception-poster.jpg")
         harness.catalog.setArtworkCustomBackdrop(artworkId = show.id, path = "/show-backdrop.jpg")
+        harness.catalog.setArtworkCustomLogo(artworkId = show.id, path = "/show-logo.png")
 
         // When
         harness.fullSync()
@@ -102,6 +106,7 @@ class CustomImageBehaviourTest : FunSpec({
         harness.catalog.getArtworks(includePrivates = true).forEach { artwork ->
             artwork.customBackdropPath shouldBe null
             artwork.customPosterPath shouldBe null
+            artwork.customLogoPath shouldBe null
         }
         artworkOf("Inception").imagePath shouldBe inception.imagePath
 
@@ -114,6 +119,7 @@ class CustomImageBehaviourTest : FunSpec({
         harness.lightSync()
         harness.catalog.setArtworkCustomBackdrop(artworkId = inceptionId, path = "/inception-backdrop.jpg")
         harness.catalog.setArtworkCustomPoster(artworkId = inceptionId, path = "/inception-poster.jpg")
+        harness.catalog.setArtworkCustomLogo(artworkId = inceptionId, path = "/inception-logo.png")
 
         // When
         harness.identifyManually(artworkId = inceptionId, target = forgottenTale)
@@ -122,6 +128,7 @@ class CustomImageBehaviourTest : FunSpec({
         val artwork = harness.catalog.getArtwork(artworkId = forgottenTale.id)!!
         artwork.customBackdropPath shouldBe null
         artwork.customPosterPath shouldBe null
+        artwork.customLogoPath shouldBe null
 
     }
 
@@ -153,13 +160,16 @@ class CustomImageBehaviourTest : FunSpec({
         harness.lightSync()
         harness.catalog.setArtworkCustomBackdrop(artworkId = inceptionId, path = "/chosen-backdrop.jpg")
         harness.catalog.setArtworkCustomPoster(artworkId = inceptionId, path = "/chosen-poster.jpg")
+        harness.catalog.setArtworkCustomLogo(artworkId = inceptionId, path = "/chosen-logo.png")
 
         // When
-        val images = harness.catalog.getAllImagesPaths().images
+        val paths = harness.catalog.getAllImagesPaths()
+        val images = paths.images
 
         // Then
         images.count { it == "/chosen-backdrop.jpg" } shouldBe 1
         images.count { it == "/chosen-poster.jpg" } shouldBe 1
+        paths.logos.count { it == "/chosen-logo.png" } shouldBe 1
 
     }
 

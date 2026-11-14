@@ -166,7 +166,7 @@ class GalleryViewModel(
                 when (image.type) {
                     GalleryImageType.BACKDROP -> databaseRepository.setArtworkCustomBackdrop(artworkId = artworkId, path = image.path)
                     GalleryImageType.POSTER -> databaseRepository.setArtworkCustomPoster(artworkId = artworkId, path = image.path)
-                    GalleryImageType.LOGO -> Unit
+                    GalleryImageType.LOGO -> databaseRepository.setArtworkCustomLogo(artworkId = artworkId, path = image.path)
                 }
             } catch (e: CancellationException) {
                 throw e

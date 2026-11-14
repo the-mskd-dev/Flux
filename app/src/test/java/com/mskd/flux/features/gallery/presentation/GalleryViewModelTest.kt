@@ -12,8 +12,8 @@ import com.mskd.flux.features.connectivity.domain.ConnectivityRepository
 import com.mskd.flux.features.gallery.domain.model.GalleryImage
 import com.mskd.flux.features.gallery.domain.model.GalleryImageType
 import com.mskd.flux.features.gallery.domain.usecase.GetGalleryImagesUseCase
-import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.gallery.domain.usecase.ImageDownloadUseCase
+import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.system.FilesLauncher
 import io.kotest.core.spec.style.FunSpec

@@ -5,8 +5,8 @@ import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import com.mskd.flux.core.model.artwork.FullArtwork
-import com.mskd.flux.features.movie.presentation.MovieIntent
 import com.mskd.flux.features.identification.presentation.IdentificationAvailability
+import com.mskd.flux.features.movie.presentation.MovieIntent
 import com.mskd.flux.ui.modal.menu.FluxPopUpMenu
 import com.mskd.flux.ui.modal.menu.FluxPopUpMenuItem
 import flux.shared.generated.resources.Res

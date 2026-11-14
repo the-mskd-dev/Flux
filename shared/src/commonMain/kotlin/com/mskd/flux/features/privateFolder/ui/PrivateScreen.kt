@@ -1,6 +1,5 @@
 package com.mskd.flux.features.privateFolder.ui
 
-import com.mskd.flux.core.model.artwork.ContentType
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.features.privateFolder.presentation.PrivateFolderEvent
 import com.mskd.flux.features.privateFolder.presentation.PrivateFolderIntent
 import com.mskd.flux.features.privateFolder.presentation.PrivateFolderUiState

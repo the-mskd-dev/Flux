@@ -13,8 +13,8 @@ import androidx.compose.ui.Modifier
 import com.mskd.flux.core.model.artwork.ArtworkPageType
 import com.mskd.flux.features.artwork.presentation.ArtworkOverviewContent
 import com.mskd.flux.features.artwork.ui.composables.ArtworkButtons
-import com.mskd.flux.features.artwork.ui.composables.ArtworkOverview
 import com.mskd.flux.features.artwork.ui.composables.ArtworkHeader
+import com.mskd.flux.features.artwork.ui.composables.ArtworkOverview
 import com.mskd.flux.features.movie.presentation.MovieContent
 import com.mskd.flux.features.movie.presentation.MovieIntent
 import com.mskd.flux.features.people.ui.components.people.PeopleList

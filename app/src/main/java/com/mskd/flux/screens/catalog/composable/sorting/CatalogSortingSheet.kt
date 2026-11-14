@@ -8,8 +8,8 @@ import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.FluxThemePreview
-import com.mskd.flux.ui.modal.bottomSheet.FluxBottomSheet
 import com.mskd.flux.ui.modal.bottomSheet.BottomSheetRadioItem
+import com.mskd.flux.ui.modal.bottomSheet.FluxBottomSheet
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.sort_by
 import org.jetbrains.compose.resources.stringResource

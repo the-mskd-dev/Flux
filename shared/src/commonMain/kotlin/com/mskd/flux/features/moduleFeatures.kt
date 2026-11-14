@@ -9,12 +9,12 @@ import com.mskd.flux.features.history.moduleHistory
 import com.mskd.flux.features.identification.moduleIdentification
 import com.mskd.flux.features.images.moduleImages
 import com.mskd.flux.features.message.moduleMessage
+import com.mskd.flux.features.movie.moduleMovie
 import com.mskd.flux.features.people.modulePeople
 import com.mskd.flux.features.player.modulePlayer
 import com.mskd.flux.features.privateFolder.modulePrivateFolder
 import com.mskd.flux.features.progress.moduleProgress
 import com.mskd.flux.features.search.moduleSearch
-import com.mskd.flux.features.movie.moduleMovie
 import com.mskd.flux.features.season.moduleSeason
 import com.mskd.flux.features.settings.moduleSettings
 import com.mskd.flux.features.setup.moduleSetup

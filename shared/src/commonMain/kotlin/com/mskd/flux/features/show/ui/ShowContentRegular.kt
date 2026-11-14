@@ -20,8 +20,8 @@ import com.mskd.flux.core.model.artwork.ArtworkPageType
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.features.artwork.presentation.ArtworkOverviewContent
-import com.mskd.flux.features.artwork.ui.composables.ArtworkOverview
 import com.mskd.flux.features.artwork.ui.composables.ArtworkHeader
+import com.mskd.flux.features.artwork.ui.composables.ArtworkOverview
 import com.mskd.flux.features.people.ui.components.people.PeopleList
 import com.mskd.flux.features.show.presentation.ShowIntent
 import com.mskd.flux.features.show.ui.composables.SeasonItem

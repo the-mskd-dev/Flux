@@ -13,8 +13,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.mskd.flux.features.season.presentation.SeasonContent
-import com.mskd.flux.features.season.presentation.SeasonPageDialog
 import com.mskd.flux.features.season.presentation.SeasonIntent
+import com.mskd.flux.features.season.presentation.SeasonPageDialog
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.components.FluxScaffold
 import com.mskd.flux.ui.components.ResetProgressDialog

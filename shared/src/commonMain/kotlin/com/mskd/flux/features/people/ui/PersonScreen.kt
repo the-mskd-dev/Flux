@@ -1,6 +1,5 @@
 package com.mskd.flux.features.people.ui
 
-import com.mskd.flux.core.model.artwork.ContentType
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -9,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.people.presentation.PeopleEvent

@@ -10,6 +10,7 @@ import androidx.media3.common.text.Cue
 import androidx.media3.common.text.CueGroup
 import androidx.media3.session.MediaController
 import com.mskd.flux.configs.fluxExtensions
+import com.mskd.flux.features.player.domain.manager.PlayerManager
 import com.mskd.flux.features.player.domain.model.CueAnchor
 import com.mskd.flux.features.player.domain.model.MediaInfo
 import com.mskd.flux.features.player.domain.model.SubtitleCue
@@ -17,7 +18,6 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.mockk
 import io.mockk.verify
-import com.mskd.flux.features.player.domain.manager.PlayerManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 

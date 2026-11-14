@@ -1,6 +1,5 @@
 package com.mskd.flux.features.show.presentation
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.FullArtwork
@@ -9,21 +8,17 @@ import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.features.artwork.presentation.ArtworkViewModel
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
-import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.identification.presentation.IdentificationAvailability
 import com.mskd.flux.features.people.domain.usecase.GetPeopleUseCase
 import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.system.UrlLauncher
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 
 class ShowViewModel(
     artworkId: Long,

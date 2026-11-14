@@ -18,7 +18,6 @@ import com.mskd.flux.mockups.DetailsMockup
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.modal.bottomSheet.BottomSheetCheckBoxItem
 import com.mskd.flux.ui.modal.bottomSheet.FluxBottomSheet
-import com.mskd.flux.ui.modal.bottomSheet.BottomSheetRadioItem
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res

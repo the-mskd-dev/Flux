@@ -8,8 +8,8 @@ import android.text.style.StyleSpan
 import androidx.media3.common.text.Cue
 import com.mskd.flux.features.player.domain.model.CueAnchor
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.shouldBe
 import io.kotest.matchers.nulls.shouldNotBeNull
+import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 

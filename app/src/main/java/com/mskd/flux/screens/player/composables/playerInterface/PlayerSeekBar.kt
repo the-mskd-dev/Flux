@@ -19,8 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.mskd.flux.features.player.domain.manager.SeekPrecision
 import com.mskd.flux.features.player.domain.model.VideoChapter
-import com.mskd.flux.features.player.ui.ChapterSlider
 import com.mskd.flux.features.player.presentation.PlayerIntent
+import com.mskd.flux.features.player.ui.ChapterSlider
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.ui.theme.LocalUiPlayer

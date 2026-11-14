@@ -19,8 +19,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.ContentType
+import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.ui.composables.ArtworkDialogs

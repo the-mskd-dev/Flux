@@ -219,7 +219,7 @@ A file whose TMDB fetch failed (network, API, missing token); nothing is saved a
 _Avoid_: Fichier en échec, unknown file, UNKNOWN
 
 **Manual identification**:
-Choice, by the user, of the TMDB Artwork that all the Media of an Artwork are attached to. It prevails over the TMDB ID in the name of a file (file name or folder path) and over the name search, including for the new files of a Light sync. It is cleared by an Identification reset or a Full sync, after which the TMDB ID in the name applies again.
+Choice, by the user, of the TMDB Artwork that all the Media of an Artwork are attached to. It prevails over the TMDB ID in the name of a file (file name or folder path) and over the name search, including for the new files of a Light sync. It is cleared by an Identification reset or a Full sync, after which the TMDB ID in the name applies again. An Episode that TMDB does not list in a Season of the chosen Show stays in that Show, including the Unrecognized files of the same file-name title that the automatic identification left behind; the Episode of a Season the chosen Show does not have become Unrecognized files.
 _Avoid_: Identification manuelle, Data selection, rematch, correction
 
 **Identification reset**:

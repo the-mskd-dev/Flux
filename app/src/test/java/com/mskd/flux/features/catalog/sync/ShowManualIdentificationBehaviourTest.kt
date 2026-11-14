@@ -55,6 +55,55 @@ class ShowManualIdentificationBehaviourTest : FunSpec({
 
     }
 
+    test("an episode that the chosen Show does not list in a Season it has is still attached to the chosen Show") {
+
+        // Given
+        harness.deviceStorage.availableFiles = listOf(
+            harness.deviceFile("Breaking Bad S01E01.mkv"),
+            harness.deviceFile("Breaking Bad S01E02.mkv"),
+            harness.deviceFile("Breaking Bad S01E03.mkv"),
+        )
+        harness.lightSync()
+
+        // When
+        val result = harness.identifyManually(artworkId = breakingBad, target = lostPages)
+
+        // Then
+        result.getOrNull() shouldBe lostPages.id
+        harness.catalog.getEpisodes(artworkId = lostPages.id).map { it.file.name } shouldContainExactlyInAnyOrder listOf(
+            "Breaking Bad S01E01.mkv",
+            "Breaking Bad S01E02.mkv",
+            "Breaking Bad S01E03.mkv",
+        )
+        harness.catalog.getUnknownMedias() shouldBe emptyList()
+
+    }
+
+    test("the episodes that the automatic identification left Unrecognized in a Season of the Show are attached to the chosen Show") {
+
+        // Given: Breaking Bad lists only S01E01..E03, so S01E08 and S01E09 are saved as Unrecognized files
+        harness.deviceStorage.availableFiles = listOf(
+            harness.deviceFile("Breaking Bad S01E01.mkv"),
+            harness.deviceFile("Breaking Bad S01E08.mkv"),
+            harness.deviceFile("Breaking Bad S01E09.mkv"),
+        )
+        harness.lightSync()
+        harness.catalog.getUnknownMedias().map { it.file.name } shouldContainExactlyInAnyOrder listOf("Breaking Bad S01E08.mkv", "Breaking Bad S01E09.mkv")
+
+        // When
+        val result = harness.identifyManually(artworkId = breakingBad, target = lostPages)
+
+        // Then
+        result.getOrNull() shouldBe lostPages.id
+        harness.catalog.getEpisodes(artworkId = lostPages.id).map { it.file.name } shouldContainExactlyInAnyOrder listOf(
+            "Breaking Bad S01E01.mkv",
+            "Breaking Bad S01E08.mkv",
+            "Breaking Bad S01E09.mkv",
+        )
+        harness.catalog.getUnknownMedias() shouldBe emptyList()
+
+    }
+
     test("an episode of a Season that the chosen Show does not have goes to the Unknown Artwork") {
 
         // Given

@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
@@ -52,6 +53,7 @@ fun GalleryScreen(
                     val result = snackbarHostState.showSnackbar(
                         message = getString(Res.string.gallery_image_download_succeeded),
                         actionLabel = getString(Res.string.gallery_image_download_show),
+                        duration = SnackbarDuration.Short
                     )
                     if (result == SnackbarResult.ActionPerformed) viewModel.handleIntent(GalleryIntent.OnShowDownloadedImageTap)
                 }

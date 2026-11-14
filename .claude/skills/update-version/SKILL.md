@@ -22,5 +22,5 @@ arguments: version
 
 ## Fastlane changelog
 
-1. Create a new file `<versionCode>.txt` in `fastlane/medatada` for `android` and `playstore`, inside their `en-US` folders
+1. Create a new file `<versionCode>.txt` in `fastlane/metadata` for `android` and `playstore`, inside their `en-US` folders
 2. Add the content of `CHANGELOG.md` inside, except the first line with the `versionName`

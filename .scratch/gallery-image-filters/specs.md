@@ -34,7 +34,7 @@ The Gallery lists the images of every Image language. A filter button opens a bo
 - The Gallery UI state holds the selected types and the selected language codes (not persisted). The grid and the viewer index both work on the filtered list. Types and languages combine with AND between the two sections, OR within one section.
 - The languages offered are those present in the loaded images (all types, not narrowed by the selected type). Order: data language, English, Global, then others by descending number of images. A selected language with no image for the current type simply yields the empty state; the selection is not auto-cleared.
 - Label of a language: project `Language` name when known, else the device language name, else the uppercase code. `null` is labelled "Global".
-- The filter UI follows `SearchGenresSheet` (`FluxBottomSheet` + `FluxBottomSheetItem`, title row + "Clear" button). The filter button sits in the top bar and is hidden while the viewer is open.
+- The filter UI follows `SearchGenresSheet` (`FluxBottomSheet` + `BottomSheetRadioItem`, title row + "Clear" button). The filter button sits in the top bar and is hidden while the viewer is open.
 - New strings are added to the 7 locales of composeResources.
 - PNG-only rule for Logos is unchanged.
 

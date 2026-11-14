@@ -68,7 +68,7 @@
     <string name="how_to_suggest">Comment me contacter ou suggérer des améliorations ?</string>
     <string name="how_to_suggest_desc">Si c'est un avis positif, vous pouvez me contacter par %1$s! Sinon, faites la même chose ou directement sur %2$s, mais avec autant de gentillesse que si c'était positif.</string>
     <string name="contact_me">Me contacter</string>
-    <string name="contact_me_desc">Si vous souhaitez me dire quelque chose, c\'est par ici</string>
+    <string name="contact_me_desc">Si vous souhaitez me dire quelque chose, c'est par ici</string>
     
     <string name="what_is_next">Et la suite ?</string>
     <string name="what_is_next_desc">L'objectif est d'améliorer toujours plus l'application. Que ce soit au niveau de l'UI, de l'UX ou des performances. Je prévois de récupérer plus d'informations (genre, casting, etc), mais je prévois également d'ajouter de nouvelles sources de données et non seulement les fichiers sur l'appareil.</string>
@@ -203,7 +203,7 @@
     <string name="private_folder_desc">Protéger des œuvres derrière un code PIN</string>
     <string name="private_folder_include_nsfw">Inclure les œuvres NSFW</string>
     <string name="private_folder_include_nsfw_desc">Ajouter automatiquement les œuvres NSFW au dossier privé</string>
-    <string name="private_folder_empty">Votre dossier privé est vide.\nFaites un appui long sur une œuvre dans le catalogue pour l\'ajouter</string>
+    <string name="private_folder_empty">Votre dossier privé est vide.\nFaites un appui long sur une œuvre dans le catalogue pour l'ajouter</string>
     <string name="add_to_private_folder">Ajouter au dossier privé</string>
     <string name="removed_from_private_folder">Retiré du dossier privé</string>
     <string name="remove_from_private_folder">Retirer du dossier privé</string>
@@ -239,7 +239,7 @@
     <string name="age">%1$d ans</string>
     <string name="place_of_birth">Lieu de naissance : %1$s</string>
     <string name="known_for_department">Connu(e) pour : %1$s</string>
-    <string name="original_name">Nom d\'origine : %1$s</string>
+    <string name="original_name">Nom d'origine : %1$s</string>
     <string name="also_in">Également dans</string>
     <string name="retry">Réessayer</string>
     <string name="unavailable_check_connection">Indisponible, vérifiez votre connexion</string>

@@ -16,8 +16,9 @@ import com.mskd.flux.core.model.artwork.Genre
 import com.mskd.flux.features.search.presentation.SearchIntent
 import com.mskd.flux.mockups.DetailsMockup
 import com.mskd.flux.ui.FluxThemePreview
+import com.mskd.flux.ui.modal.bottomSheet.BottomSheetCheckBoxItem
 import com.mskd.flux.ui.modal.bottomSheet.FluxBottomSheet
-import com.mskd.flux.ui.modal.bottomSheet.FluxBottomSheetItem
+import com.mskd.flux.ui.modal.bottomSheet.BottomSheetRadioItem
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
@@ -62,7 +63,7 @@ fun SearchGenresSheet(
         }
 
         genres.forEach { genre ->
-            FluxBottomSheetItem(
+            BottomSheetCheckBoxItem(
                 isSelected = selectedGenreIds.contains(genre.id),
                 text = genre.name,
                 onClick = { sendIntent(SearchIntent.SelectGenre(genre = genre)) }

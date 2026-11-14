@@ -16,8 +16,9 @@ import com.mskd.flux.features.gallery.presentation.GalleryIntent
 import com.mskd.flux.system.languageDisplayName
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.FluxThemePreview
+import com.mskd.flux.ui.modal.bottomSheet.BottomSheetCheckBoxItem
 import com.mskd.flux.ui.modal.bottomSheet.FluxBottomSheet
-import com.mskd.flux.ui.modal.bottomSheet.FluxBottomSheetItem
+import com.mskd.flux.ui.modal.bottomSheet.BottomSheetRadioItem
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
@@ -67,7 +68,7 @@ fun GalleryFilterSheet(
         }
 
         GalleryImageType.entries.forEach { type ->
-            FluxBottomSheetItem(
+            BottomSheetCheckBoxItem(
                 isSelected = type in selectedTypes,
                 text = stringResource(type.label()),
                 onClick = { sendIntent(GalleryIntent.OnFilterTypeTap(type)) }
@@ -82,7 +83,7 @@ fun GalleryFilterSheet(
             )
 
             languages.forEach { code ->
-                FluxBottomSheetItem(
+                BottomSheetCheckBoxItem(
                     isSelected = code in selectedLanguages,
                     text = code.languageLabel(),
                     onClick = { sendIntent(GalleryIntent.OnFilterLanguageTap(code)) }

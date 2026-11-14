@@ -50,11 +50,10 @@ class GalleryViewModel(
 
     private val _event = MutableSharedFlow<GalleryEvent>()
     val event: SharedFlow<GalleryEvent> = _event.asSharedFlow()
+    private val syncing = catalogSyncCoordinator.state.map { it is SyncState.Syncing }
 
     // The state driven by the user and the images source; the observed Artwork completes it in [uiState]
     private val _uiState = MutableStateFlow(GalleryUiState())
-
-    private val syncing = catalogSyncCoordinator.state.map { it is SyncState.Syncing }
 
     val uiState: StateFlow<GalleryUiState> = combine(
         _uiState,
@@ -230,8 +229,8 @@ class GalleryViewModel(
             fail(if (connectivityRepository.currentlyOnline()) GalleryFailure.ERROR else GalleryFailure.OFFLINE)
             return
         }
-        val dataLanguageCode = settingsDataStore.getDataLanguage().languageCode()
 
+        val dataLanguageCode = settingsDataStore.getDataLanguage().languageCode()
 
         _uiState.update {
             // Keep the viewer open on the same image when a retry reloads the list, close it if the image is gone
@@ -240,9 +239,9 @@ class GalleryViewModel(
             val running = previous?.imageDownloadRunning ?: false
             val content = GalleryContent(
                 allImages = images,
+                selectedTypes = previous?.selectedTypes.orEmpty(),
                 selectedLanguages = previous?.selectedLanguages.orEmpty(),
                 dataLanguageCode = dataLanguageCode,
-                selectedTypes = previous?.selectedTypes.orEmpty(),
                 filterSheetVisible = previous?.filterSheetVisible ?: false,
                 imageDownloadRunning = running,
             )

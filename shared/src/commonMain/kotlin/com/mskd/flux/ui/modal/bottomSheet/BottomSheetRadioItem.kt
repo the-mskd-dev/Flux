@@ -12,7 +12,7 @@ import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxUI
 
 @Composable
-fun FluxBottomSheetItem(
+fun BottomSheetRadioItem(
     isSelected: Boolean,
     text: String,
     onClick: () -> Unit

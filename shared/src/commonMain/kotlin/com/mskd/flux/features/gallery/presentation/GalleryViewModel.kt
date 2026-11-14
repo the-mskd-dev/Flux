@@ -93,12 +93,10 @@ class GalleryViewModel(
             GalleryIntent.OnImageDownloadTap -> downloadViewedImage()
             GalleryIntent.OnShowDownloadedImageTap -> filesLauncher.openDownloadedImages()
             GalleryIntent.OnUseImageTap -> useViewedImage()
-            GalleryIntent.OnFilterTap -> updateFilter { it.copy(filterSheetVisible = true) }
-            GalleryIntent.OnFilterDismiss -> updateFilter { it.copy(filterSheetVisible = false) }
-            is GalleryIntent.OnFilterTypeTap -> updateFilter {
-                it.copy(selectedTypes = if (intent.type in it.selectedTypes) it.selectedTypes - intent.type else it.selectedTypes + intent.type)
-            }
-            GalleryIntent.OnFilterClearTap -> updateFilter { it.copy(selectedTypes = emptySet()) }
+            GalleryIntent.OnFilterTap -> setFilterSheetVisible(true)
+            GalleryIntent.OnFilterDismiss -> setFilterSheetVisible(false)
+            is GalleryIntent.OnFilterTypeTap -> toggleFilterType(intent.type)
+            GalleryIntent.OnFilterClearTap -> clearFilterTypes()
         }
     }
 
@@ -112,6 +110,14 @@ class GalleryViewModel(
         if (content.viewerIndex != null) return@update ui
         ui.copy(state = State.Content(transform(content)))
     }
+
+    private fun setFilterSheetVisible(visible: Boolean) = updateFilter { it.copy(filterSheetVisible = visible) }
+
+    private fun toggleFilterType(type: GalleryImageType) = updateFilter {
+        it.copy(selectedTypes = if (type in it.selectedTypes) it.selectedTypes - type else it.selectedTypes + type)
+    }
+
+    private fun clearFilterTypes() = updateFilter { it.copy(selectedTypes = emptySet()) }
 
     private fun viewerIndex(): Int? = (_uiState.value.state as? State.Content)?.content?.viewerIndex
 

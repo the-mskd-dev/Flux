@@ -21,8 +21,6 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.itemsIndexed
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -64,12 +62,9 @@ import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.gallery_empty
-import flux.shared.generated.resources.gallery_filter
-import flux.shared.generated.resources.ic_sort
 import flux.shared.generated.resources.oups_an_error_occured
 import flux.shared.generated.resources.retry
 import flux.shared.generated.resources.unavailable_check_connection
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -100,7 +95,7 @@ fun GalleryScreenContent(
     var viewerReturnedToThumbnail by remember { mutableStateOf(false) }
 
     // Keeps the thumbnail of the viewed image on screen, so the viewer image always has a place to go back to
-    val imagesOffset = if (failure != null) 1 else 0
+    val imagesOffset = if (failure != null) 2 else 1
     LaunchedEffect(viewerIndex) {
         val itemIndex = (viewerIndex ?: return@LaunchedEffect) + imagesOffset
         if (gridState.layoutInfo.visibleItemsInfo.none { it.index == itemIndex }) gridState.scrollToItem(itemIndex)
@@ -110,19 +105,7 @@ fun GalleryScreenContent(
 
         FluxScaffold(
             title = title,
-            onBackTap = { sendIntent(GalleryIntent.OnBackTap) },
-            actions = {
-                // Locked while the viewer is open
-                if (viewerIndex == null) {
-                    IconButton(onClick = { sendIntent(GalleryIntent.OnFilterTap) }) {
-                        Icon(
-                            painter = painterResource(Res.drawable.ic_sort),
-                            tint = if (selectedTypes.isEmpty()) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.primary,
-                            contentDescription = stringResource(Res.string.gallery_filter)
-                        )
-                    }
-                }
-            }
+            onBackTap = { sendIntent(GalleryIntent.OnBackTap) }
         ) { innerPadding ->
 
             if (images.isEmpty() && failure == null) {
@@ -130,6 +113,11 @@ fun GalleryScreenContent(
                     modifier = Modifier.fillMaxSize().padding(innerPadding),
                     contentAlignment = Alignment.Center
                 ) {
+                    GalleryFilters(
+                        modifier = Modifier.align(Alignment.TopStart).padding(horizontal = FluxUI.Space.medium, vertical = FluxUI.Space.small),
+                        selectedTypesCount = selectedTypes.size,
+                        sendIntent = sendIntent
+                    )
                     Text.Content.Title(
                         text = stringResource(Res.string.gallery_empty),
                         textAlign = TextAlign.Center,
@@ -152,6 +140,10 @@ fun GalleryScreenContent(
                 horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
                 verticalItemSpacing = FluxUI.Space.small,
             ) {
+
+                item(span = StaggeredGridItemSpan.FullLine) {
+                    GalleryFilters(selectedTypesCount = selectedTypes.size, sendIntent = sendIntent)
+                }
 
                 if (failure != null) {
                     item(span = StaggeredGridItemSpan.FullLine) {

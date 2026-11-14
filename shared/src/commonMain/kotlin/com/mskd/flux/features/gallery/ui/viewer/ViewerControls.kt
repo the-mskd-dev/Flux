@@ -124,6 +124,8 @@ private fun useImageLabel(type: GalleryImageType, state: ArtworkImageButton): St
     return when (type) {
         GalleryImageType.POSTER -> if (current) Res.string.gallery_current_poster else Res.string.gallery_use_as_poster
         GalleryImageType.BACKDROP -> if (current) Res.string.gallery_current_backdrop else Res.string.gallery_use_as_backdrop
+        // The button stays hidden for a Logo until it can become the custom Logo
+        GalleryImageType.LOGO -> if (current) Res.string.gallery_current_backdrop else Res.string.gallery_use_as_backdrop
     }
 }
 

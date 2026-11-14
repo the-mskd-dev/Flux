@@ -5,6 +5,7 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -165,6 +166,11 @@ fun GalleryScreenContent(
                             .onGloballyPositioned { thumbnailBounds[key] = Rect(it.positionInRoot(), it.size.toSize()) }
                             .alpha(if (key == viewedKey) 0f else 1f)
                             .clip(FluxUI.shapes.corners)
+                            // Transparent Logos stay visible on a neutral background
+                            .then(
+                                if (image.type == GalleryImageType.LOGO) Modifier.background(MaterialTheme.colorScheme.surfaceVariant)
+                                else Modifier
+                            )
                             .clickable {
                                 viewerReturnedToThumbnail = false
                                 sendIntent(GalleryIntent.OnImageTap(index))

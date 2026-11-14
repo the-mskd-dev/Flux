@@ -143,6 +143,7 @@ class GalleryViewModel(
     // Same rule as the page header and the Catalog, so that "Current poster" / "Current backdrop" is always the image they show
     private fun artworkImageButton(image: GalleryImage?, artwork: Artwork?, syncing: Boolean): ArtworkImageButton = when {
         image == null || artwork == null || syncing -> ArtworkImageButton.HIDDEN
+        image.type == GalleryImageType.LOGO -> ArtworkImageButton.HIDDEN // Use as logo comes with the custom Logo
         image.path == artwork.shownPathOf(image.type) -> ArtworkImageButton.CURRENT
         else -> ArtworkImageButton.AVAILABLE
     }
@@ -150,6 +151,7 @@ class GalleryViewModel(
     private fun Artwork.shownPathOf(type: GalleryImageType): String = when (type) {
         GalleryImageType.BACKDROP -> shownBackdropPath
         GalleryImageType.POSTER -> shownPosterPath
+        GalleryImageType.LOGO -> ""
     }
 
     // The Artwork is observed: the button becomes "Current poster" / "Current backdrop" by itself once saved
@@ -164,6 +166,7 @@ class GalleryViewModel(
                 when (image.type) {
                     GalleryImageType.BACKDROP -> databaseRepository.setArtworkCustomBackdrop(artworkId = artworkId, path = image.path)
                     GalleryImageType.POSTER -> databaseRepository.setArtworkCustomPoster(artworkId = artworkId, path = image.path)
+                    GalleryImageType.LOGO -> Unit
                 }
             } catch (e: CancellationException) {
                 throw e

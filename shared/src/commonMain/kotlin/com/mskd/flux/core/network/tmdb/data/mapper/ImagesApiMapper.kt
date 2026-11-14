@@ -8,14 +8,19 @@ import com.mskd.flux.features.gallery.domain.model.GalleryImage
 import com.mskd.flux.features.gallery.domain.model.GalleryImageType
 
 fun ImagesDto.toDomain(): List<GalleryImage> =
-    backdrops.map { it.toDomain(GalleryImageType.BACKDROP) } + posters.map { it.toDomain(GalleryImageType.POSTER) }
+    backdrops.map { it.toDomain(GalleryImageType.BACKDROP) } +
+        posters.map { it.toDomain(GalleryImageType.POSTER) } +
+        logos.pngOnly().map { it.toDomain(GalleryImageType.LOGO) }
+
+// PNG only: TMDB does not resize SVG and the image loader does not decode it
+private fun List<ImageDto>.pngOnly() = filter { it.filePath.endsWith(".png", ignoreCase = true) }
 
 /**
  * Path of the Logo in [language], then in English, then without language; the best rated within a language.
  * PNG only: TMDB does not resize SVG and the image loader does not decode it. Empty when there is none.
  */
 fun ImagesDto.logoPath(language: String): String {
-    val candidates = logos.filter { it.filePath.endsWith(".png", ignoreCase = true) }
+    val candidates = logos.pngOnly()
     return listOf(language.languageCode(), Language.ENGLISH.code, null)
         .firstNotNullOfOrNull { code -> candidates.filter { it.language == code }.maxByOrNull { it.voteAverage } }
         ?.filePath

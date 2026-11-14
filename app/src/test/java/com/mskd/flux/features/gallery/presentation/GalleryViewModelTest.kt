@@ -435,6 +435,35 @@ class GalleryViewModelTest : FunSpec({
 
     }
 
+    //region Logo
+
+    val topLogo = GalleryImage(path = "/logo.png", type = GalleryImageType.LOGO, ratio = 2.5f, rating = 9.0)
+
+    test("logos are mixed with backdrops and posters, sorted by rating") {
+
+        coEvery { apiRepository.getMovieImages(artwork.id) } returns listOf(lowBackdrop, topLogo, highPoster)
+        updateVm()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        contentImages() shouldBe listOf(topLogo, highPoster, lowBackdrop)
+
+    }
+
+    test("the viewer opens on a logo without an action button") {
+
+        coEvery { apiRepository.getMovieImages(artwork.id) } returns listOf(lowBackdrop, topLogo)
+        updateVm()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.handleIntent(GalleryIntent.OnImageTap(index = 0))
+
+        contentViewerIndex() shouldBe 0
+        (viewModel.uiState.value.state as State.Content).content.artworkImageButton shouldBe ArtworkImageButton.HIDDEN
+
+    }
+
+    //endregion
+
     //region Custom image
 
     fun buttonOf(path: String): ArtworkImageButton {

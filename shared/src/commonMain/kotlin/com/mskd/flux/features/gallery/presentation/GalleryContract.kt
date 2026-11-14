@@ -18,14 +18,27 @@ enum class GalleryFailure { OFFLINE, ERROR }
 data class GalleryContent(
     val allImages: List<GalleryImage>,
     val selectedTypes: Set<GalleryImageType> = emptySet(),
+    /** ISO 639-1 codes, null standing for the images without language ("Global"). */
+    val selectedLanguages: Set<String?> = emptySet(),
+    /** ISO 639-1 code of the data language, offered first in the language filter. */
+    val dataLanguageCode: String? = null,
     val filterSheetVisible: Boolean = false,
     val viewerIndex: Int? = null,
     val imageDownloadRunning: Boolean = false,
     val artworkImageButton: ArtworkImageButton = ArtworkImageButton.HIDDEN,
 ) {
-    /** The images shown by the grid and the viewer: nothing selected means every image. */
-    val images: List<GalleryImage> =
-        if (selectedTypes.isEmpty()) allImages else allImages.filter { it.type in selectedTypes }
+    /** The images shown by the grid and the viewer: nothing selected in a section means no restriction for it. */
+    val images: List<GalleryImage> = allImages.filter {
+        (selectedTypes.isEmpty() || it.type in selectedTypes) &&
+            (selectedLanguages.isEmpty() || it.languageCode in selectedLanguages)
+    }
+
+    /** The languages present in the images (all types): data language, English, Global, then the most frequent first. */
+    val languages: List<String?> = run {
+        val counts = allImages.groupingBy { it.languageCode }.eachCount()
+        val first = listOf(dataLanguageCode, "en", null).distinct().filter { it in counts }
+        first + counts.keys.filter { it !in first }.sortedByDescending { counts.getValue(it) }
+    }
 }
 
 /** The "Use as poster" / "Use as backdrop" button of the viewer, for the image shown. */
@@ -50,6 +63,7 @@ sealed interface GalleryIntent {
     data object OnFilterTap : GalleryIntent
     data object OnFilterDismiss : GalleryIntent
     data class OnFilterTypeTap(val type: GalleryImageType) : GalleryIntent
+    data class OnFilterLanguageTap(val languageCode: String?) : GalleryIntent
     data object OnFilterClearTap : GalleryIntent
 }
 

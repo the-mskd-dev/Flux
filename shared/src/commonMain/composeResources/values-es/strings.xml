@@ -244,6 +244,8 @@
     <string name="unavailable_check_connection">No disponible, comprueba tu conexión</string>
     <string name="gallery_empty">No hay imágenes disponibles</string>
     <string name="gallery_filter_type">Tipo</string>
+    <string name="gallery_filter_language">Idioma</string>
+    <string name="gallery_language_global">Global</string>
     <string name="gallery_type_backdrops">Fondos</string>
     <string name="gallery_type_posters">Pósters</string>
     <string name="gallery_type_logos">Logos</string>

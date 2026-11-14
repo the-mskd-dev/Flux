@@ -13,6 +13,7 @@ import com.mskd.flux.features.gallery.domain.model.GalleryImage
 import com.mskd.flux.features.gallery.domain.model.GalleryImageType
 import com.mskd.flux.features.gallery.domain.usecase.GetGalleryImagesUseCase
 import com.mskd.flux.features.gallery.domain.usecase.ImageDownloadUseCase
+import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.system.FilesLauncher
 import io.kotest.core.spec.style.FunSpec
@@ -38,6 +39,7 @@ class GalleryViewModelTest : FunSpec({
     lateinit var connectivityRepository: ConnectivityRepository
     lateinit var imageDownload: ImageDownloadUseCase
     lateinit var filesLauncher: FilesLauncher
+    lateinit var settingsDataStore: SettingsDataStore
     lateinit var databaseRepository: DatabaseRepository
     lateinit var storedArtwork: MutableStateFlow<Artwork?>
     lateinit var syncState: MutableStateFlow<SyncState>
@@ -57,6 +59,7 @@ class GalleryViewModelTest : FunSpec({
             connectivityRepository = connectivityRepository,
             imageDownload = imageDownload,
             filesLauncher = filesLauncher,
+            settingsDataStore = settingsDataStore,
             catalogSyncCoordinator = mockk { every { state } returns syncState },
         )
     }
@@ -78,6 +81,7 @@ class GalleryViewModelTest : FunSpec({
         connectivityRepository = mockk()
         imageDownload = mockk()
         filesLauncher = mockk(relaxed = true)
+        settingsDataStore = mockk { coEvery { getDataLanguage() } returns "fr-FR" }
         coEvery { imageDownload(any(), any()) } returns Unit
         every { connectivityRepository.currentlyOnline() } returns true
         coEvery { apiRepository.getMovieImages(artwork.id) } returns listOf(lowBackdrop, highPoster, midBackdrop)
@@ -771,6 +775,123 @@ class GalleryViewModelTest : FunSpec({
         testDispatcher.scheduler.advanceUntilIdle()
 
         contentImages() shouldBe listOf(highPoster)
+
+    }
+
+    //endregion
+
+    //region Language filter
+
+    fun image(path: String, language: String?, rating: Double, type: GalleryImageType = GalleryImageType.POSTER) =
+        GalleryImage(path = path, type = type, ratio = .67f, rating = rating, languageCode = language)
+
+    val frPoster = image("/fr.jpg", "fr", 9.0)
+    val enPoster = image("/en1.jpg", "en", 8.0)
+    val enPoster2 = image("/en2.jpg", "en", 7.5)
+    val jaPoster = image("/ja.jpg", "ja", 6.0)
+    val jaPoster2 = image("/ja2.jpg", "ja", 5.5)
+    val koPoster = image("/ko.jpg", "ko", 5.0)
+    val globalBackdrop = image("/global.jpg", null, 4.0, GalleryImageType.BACKDROP)
+    val jaLogo = image("/jalogo.png", "ja", 3.0, GalleryImageType.LOGO)
+
+    fun loadLanguageImages() {
+        coEvery { apiRepository.getMovieImages(artwork.id) } returns
+            listOf(koPoster, jaPoster, jaPoster2, enPoster, enPoster2, frPoster, globalBackdrop, jaLogo)
+        updateVm()
+        testDispatcher.scheduler.advanceUntilIdle()
+    }
+
+    test("languages are the loaded ones: data language, English, Global, then by descending count") {
+
+        loadLanguageImages()
+
+        content().languages shouldBe listOf("fr", "en", null, "ja", "ko")
+
+    }
+
+    test("English is not duplicated nor invented when absent, the data language is skipped when absent") {
+
+        coEvery { apiRepository.getMovieImages(artwork.id) } returns listOf(jaPoster, globalBackdrop)
+        updateVm()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        content().languages shouldBe listOf(null, "ja")
+
+    }
+
+    test("selecting languages is a union, selecting again removes it") {
+
+        loadLanguageImages()
+
+        viewModel.handleIntent(GalleryIntent.OnFilterLanguageTap("ko"))
+        contentImages() shouldBe listOf(koPoster)
+
+        viewModel.handleIntent(GalleryIntent.OnFilterLanguageTap(null))
+        contentImages() shouldBe listOf(koPoster, globalBackdrop)
+
+        viewModel.handleIntent(GalleryIntent.OnFilterLanguageTap("ko"))
+        contentImages() shouldBe listOf(globalBackdrop)
+
+    }
+
+    test("types and languages combine with AND between sections and OR within") {
+
+        loadLanguageImages()
+
+        viewModel.handleIntent(GalleryIntent.OnFilterLanguageTap("ja"))
+        viewModel.handleIntent(GalleryIntent.OnFilterLanguageTap("ko"))
+        viewModel.handleIntent(GalleryIntent.OnFilterTypeTap(GalleryImageType.POSTER))
+
+        contentImages() shouldBe listOf(jaPoster, jaPoster2, koPoster)
+
+    }
+
+    test("the languages offered are not narrowed by the selected type") {
+
+        loadLanguageImages()
+        viewModel.handleIntent(GalleryIntent.OnFilterTypeTap(GalleryImageType.BACKDROP))
+
+        content().languages shouldBe listOf("fr", "en", null, "ja", "ko")
+
+    }
+
+    test("a language without image for the type gives the empty state and keeps the selection") {
+
+        loadLanguageImages()
+        viewModel.handleIntent(GalleryIntent.OnFilterTypeTap(GalleryImageType.BACKDROP))
+        viewModel.handleIntent(GalleryIntent.OnFilterLanguageTap("ko"))
+
+        contentImages() shouldBe emptyList()
+        content().selectedLanguages shouldBe setOf("ko")
+
+    }
+
+    test("clear resets types and languages") {
+
+        loadLanguageImages()
+        viewModel.handleIntent(GalleryIntent.OnFilterTypeTap(GalleryImageType.LOGO))
+        viewModel.handleIntent(GalleryIntent.OnFilterLanguageTap("ja"))
+
+        viewModel.handleIntent(GalleryIntent.OnFilterClearTap)
+
+        content().selectedTypes shouldBe emptySet()
+        content().selectedLanguages shouldBe emptySet<String?>()
+        contentImages().size shouldBe 8
+
+    }
+
+    test("the language filter is locked while the viewer is open and survives a retry") {
+
+        loadLanguageImages()
+        viewModel.handleIntent(GalleryIntent.OnFilterLanguageTap("ja"))
+
+        viewModel.handleIntent(GalleryIntent.OnRetryTap)
+        testDispatcher.scheduler.advanceUntilIdle()
+        content().selectedLanguages shouldBe setOf("ja")
+
+        viewModel.handleIntent(GalleryIntent.OnImageTap(0))
+        viewModel.handleIntent(GalleryIntent.OnFilterLanguageTap("ko"))
+        content().selectedLanguages shouldBe setOf("ja")
 
     }
 

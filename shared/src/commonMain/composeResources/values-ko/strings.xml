@@ -243,6 +243,8 @@
     <string name="unavailable_check_connection">사용할 수 없습니다. 연결을 확인하세요</string>
     <string name="gallery_empty">사용 가능한 이미지가 없습니다</string>
     <string name="gallery_filter_type">유형</string>
+    <string name="gallery_filter_language">언어</string>
+    <string name="gallery_language_global">전체</string>
     <string name="gallery_type_backdrops">배경</string>
     <string name="gallery_type_posters">포스터</string>
     <string name="gallery_type_logos">로고</string>

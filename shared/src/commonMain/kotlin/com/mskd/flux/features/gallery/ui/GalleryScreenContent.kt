@@ -76,6 +76,8 @@ fun GalleryScreenContent(
     imageDownloadRunning: Boolean = false,
     artworkImageButton: ArtworkImageButton = ArtworkImageButton.HIDDEN,
     selectedTypes: Set<GalleryImageType> = emptySet(),
+    languages: List<String?> = emptyList(),
+    selectedLanguages: Set<String?> = emptySet(),
     filterSheetVisible: Boolean = false,
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     sendIntent: (GalleryIntent) -> Unit,
@@ -116,6 +118,7 @@ fun GalleryScreenContent(
                     GalleryFilters(
                         modifier = Modifier.align(Alignment.TopStart).padding(horizontal = FluxUI.Space.medium, vertical = FluxUI.Space.small),
                         selectedTypesCount = selectedTypes.size,
+                        selectedLanguagesCount = selectedLanguages.size,
                         sendIntent = sendIntent
                     )
                     Text.Content.Title(
@@ -142,7 +145,8 @@ fun GalleryScreenContent(
             ) {
 
                 item(span = StaggeredGridItemSpan.FullLine) {
-                    GalleryFilters(selectedTypesCount = selectedTypes.size, sendIntent = sendIntent)
+                    GalleryFilters(selectedTypesCount = selectedTypes.size,
+                        selectedLanguagesCount = selectedLanguages.size, sendIntent = sendIntent)
                 }
 
                 if (failure != null) {
@@ -239,6 +243,8 @@ fun GalleryScreenContent(
         GalleryFilterSheet(
             isVisible = filterSheetVisible && viewerIndex == null,
             selectedTypes = selectedTypes,
+            languages = languages,
+            selectedLanguages = selectedLanguages,
             sendIntent = sendIntent
         )
 

@@ -9,6 +9,7 @@ import com.mskd.flux.features.gallery.presentation.GalleryIntent
 import com.mskd.flux.ui.components.FluxFilterChip
 import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
+import flux.shared.generated.resources.gallery_filter_language
 import flux.shared.generated.resources.gallery_filter_type
 import org.jetbrains.compose.resources.stringResource
 
@@ -16,6 +17,7 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun GalleryFilters(
     selectedTypesCount: Int,
+    selectedLanguagesCount: Int,
     sendIntent: (GalleryIntent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -29,6 +31,12 @@ fun GalleryFilters(
         FluxFilterChip(
             text = stringResource(Res.string.gallery_filter_type) + if (selectedTypesCount > 0) " ($selectedTypesCount)" else "",
             selected = selectedTypesCount > 0,
+            onClick = { sendIntent(GalleryIntent.OnFilterTap) },
+        )
+
+        FluxFilterChip(
+            text = stringResource(Res.string.gallery_filter_language) + if (selectedLanguagesCount > 0) " ($selectedLanguagesCount)" else "",
+            selected = selectedLanguagesCount > 0,
             onClick = { sendIntent(GalleryIntent.OnFilterTap) },
         )
 

@@ -245,6 +245,8 @@
     <string name="unavailable_check_connection">Non disponibile, controlla la connessione</string>
     <string name="gallery_empty">Nessuna immagine disponibile</string>
     <string name="gallery_filter_type">Tipo</string>
+    <string name="gallery_filter_language">Lingua</string>
+    <string name="gallery_language_global">Globale</string>
     <string name="gallery_type_backdrops">Sfondi</string>
     <string name="gallery_type_posters">Locandine</string>
     <string name="gallery_type_logos">Loghi</string>

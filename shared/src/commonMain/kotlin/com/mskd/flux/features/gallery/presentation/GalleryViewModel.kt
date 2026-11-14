@@ -16,6 +16,8 @@ import com.mskd.flux.features.gallery.domain.model.GalleryImage
 import com.mskd.flux.features.gallery.domain.model.GalleryImageType
 import com.mskd.flux.features.gallery.domain.usecase.GetGalleryImagesUseCase
 import com.mskd.flux.features.gallery.domain.usecase.ImageDownloadUseCase
+import com.mskd.flux.core.model.language.languageCode
+import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.report.Trace
 import com.mskd.flux.system.FilesLauncher
 import kotlinx.coroutines.CancellationException
@@ -40,6 +42,7 @@ class GalleryViewModel(
     private val connectivityRepository: ConnectivityRepository,
     private val imageDownload: ImageDownloadUseCase,
     private val filesLauncher: FilesLauncher,
+    private val settingsDataStore: SettingsDataStore,
     catalogSyncCoordinator: CatalogSyncCoordinator,
 ) : ViewModel() {
 
@@ -96,7 +99,8 @@ class GalleryViewModel(
             GalleryIntent.OnFilterTap -> setFilterSheetVisible(true)
             GalleryIntent.OnFilterDismiss -> setFilterSheetVisible(false)
             is GalleryIntent.OnFilterTypeTap -> toggleFilterType(intent.type)
-            GalleryIntent.OnFilterClearTap -> clearFilterTypes()
+            is GalleryIntent.OnFilterLanguageTap -> toggleFilterLanguage(intent.languageCode)
+            GalleryIntent.OnFilterClearTap -> clearFilters()
         }
     }
 
@@ -117,7 +121,11 @@ class GalleryViewModel(
         it.copy(selectedTypes = if (type in it.selectedTypes) it.selectedTypes - type else it.selectedTypes + type)
     }
 
-    private fun clearFilterTypes() = updateFilter { it.copy(selectedTypes = emptySet()) }
+    private fun toggleFilterLanguage(code: String?) = updateFilter {
+        it.copy(selectedLanguages = if (code in it.selectedLanguages) it.selectedLanguages - code else it.selectedLanguages + code)
+    }
+
+    private fun clearFilters() = updateFilter { it.copy(selectedTypes = emptySet(), selectedLanguages = emptySet()) }
 
     private fun viewerIndex(): Int? = (_uiState.value.state as? State.Content)?.content?.viewerIndex
 
@@ -222,6 +230,8 @@ class GalleryViewModel(
             fail(if (connectivityRepository.currentlyOnline()) GalleryFailure.ERROR else GalleryFailure.OFFLINE)
             return
         }
+        val dataLanguageCode = settingsDataStore.getDataLanguage().languageCode()
+
 
         _uiState.update {
             // Keep the viewer open on the same image when a retry reloads the list, close it if the image is gone
@@ -230,6 +240,8 @@ class GalleryViewModel(
             val running = previous?.imageDownloadRunning ?: false
             val content = GalleryContent(
                 allImages = images,
+                selectedLanguages = previous?.selectedLanguages.orEmpty(),
+                dataLanguageCode = dataLanguageCode,
                 selectedTypes = previous?.selectedTypes.orEmpty(),
                 filterSheetVisible = previous?.filterSheetVisible ?: false,
                 imageDownloadRunning = running,

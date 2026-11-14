@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import com.mskd.flux.features.gallery.domain.model.GalleryImageType
 import com.mskd.flux.features.gallery.presentation.GalleryIntent
+import com.mskd.flux.system.languageDisplayName
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.modal.bottomSheet.FluxBottomSheet
@@ -21,7 +22,9 @@ import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.clear
+import flux.shared.generated.resources.gallery_filter_language
 import flux.shared.generated.resources.gallery_filter_type
+import flux.shared.generated.resources.gallery_language_global
 import flux.shared.generated.resources.gallery_type_backdrops
 import flux.shared.generated.resources.gallery_type_logos
 import flux.shared.generated.resources.gallery_type_posters
@@ -32,10 +35,12 @@ import org.jetbrains.compose.resources.stringResource
 fun GalleryFilterSheet(
     isVisible: Boolean,
     selectedTypes: Set<GalleryImageType>,
+    languages: List<String?>,
+    selectedLanguages: Set<String?>,
     sendIntent: (GalleryIntent) -> Unit,
 ) {
 
-    val clearButtonAlpha by animateFloatAsState(if (selectedTypes.isEmpty()) 0f else 1f)
+    val clearButtonAlpha by animateFloatAsState(if (selectedTypes.isEmpty() && selectedLanguages.isEmpty()) 0f else 1f)
 
     FluxBottomSheet(
         isVisible = isVisible,
@@ -54,7 +59,7 @@ fun GalleryFilterSheet(
 
             TextButton(
                 modifier = Modifier.alpha(clearButtonAlpha),
-                onClick = { if (selectedTypes.isNotEmpty()) sendIntent(GalleryIntent.OnFilterClearTap) }
+                onClick = { if (selectedTypes.isNotEmpty() || selectedLanguages.isNotEmpty()) sendIntent(GalleryIntent.OnFilterClearTap) }
             ) {
                 Text.Button.Default(text = stringResource(Res.string.clear))
             }
@@ -69,9 +74,32 @@ fun GalleryFilterSheet(
             )
         }
 
+        if (languages.isNotEmpty()) {
+
+            Text.List.Title(
+                modifier = Modifier.padding(horizontal = FluxUI.Space.medium, vertical = FluxUI.Space.small),
+                text = stringResource(Res.string.gallery_filter_language)
+            )
+
+            languages.forEach { code ->
+                FluxBottomSheetItem(
+                    isSelected = code in selectedLanguages,
+                    text = code.languageLabel(),
+                    onClick = { sendIntent(GalleryIntent.OnFilterLanguageTap(code)) }
+                )
+            }
+
+        }
+
     }
 
 }
+
+/** "Global" for the images without language, else the language name, else the uppercase code. */
+@Composable
+private fun String?.languageLabel(): String =
+    if (this == null) stringResource(Res.string.gallery_language_global)
+    else languageDisplayName(this).takeIf { it.isNotBlank() && !it.equals(this, ignoreCase = true) } ?: uppercase()
 
 private fun GalleryImageType.label(): StringResource = when (this) {
     GalleryImageType.BACKDROP -> Res.string.gallery_type_backdrops
@@ -86,6 +114,8 @@ fun GalleryFilterSheet_Preview() {
         GalleryFilterSheet(
             isVisible = true,
             selectedTypes = setOf(GalleryImageType.POSTER),
+            languages = listOf("fr", "en", null),
+            selectedLanguages = setOf(null),
             sendIntent = {}
         )
     }

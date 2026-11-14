@@ -96,6 +96,8 @@ fun GalleryScreen(
                     imageDownloadRunning = state.content.imageDownloadRunning,
                     artworkImageButton = state.content.artworkImageButton,
                     selectedTypes = state.content.selectedTypes,
+                    languages = state.content.languages,
+                    selectedLanguages = state.content.selectedLanguages,
                     filterSheetVisible = state.content.filterSheetVisible,
                     snackbarHostState = snackbarHostState,
                     sendIntent = { viewModel.handleIntent(it) }

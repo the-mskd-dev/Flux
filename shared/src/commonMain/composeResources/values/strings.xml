@@ -262,6 +262,8 @@
     <string name="unavailable_check_connection">Unavailable, check your connection</string>
     <string name="gallery_empty">No images available</string>
     <string name="gallery_filter_type">Type</string>
+    <string name="gallery_filter_language">Language</string>
+    <string name="gallery_language_global">Global</string>
     <string name="gallery_type_backdrops">Backdrops</string>
     <string name="gallery_type_posters">Posters</string>
     <string name="gallery_type_logos">Logos</string>

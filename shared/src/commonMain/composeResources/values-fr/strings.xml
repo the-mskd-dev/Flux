@@ -245,7 +245,9 @@
     <string name="unavailable_check_connection">Indisponible, vérifiez votre connexion</string>
     <string name="gallery_empty">Aucune image disponible</string>
     <string name="gallery_filter_type">Type</string>
-    <string name="gallery_type_backdrops">Fonds d\'écran</string>
+    <string name="gallery_filter_language">Langue</string>
+    <string name="gallery_language_global">Global</string>
+    <string name="gallery_type_backdrops">Fonds d'écran</string>
     <string name="gallery_type_posters">Affiches</string>
     <string name="gallery_type_logos">Logos</string>
     <string name="blur_spoilers">Masquer les spoilers</string>

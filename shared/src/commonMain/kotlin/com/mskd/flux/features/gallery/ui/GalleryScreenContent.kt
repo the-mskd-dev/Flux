@@ -143,7 +143,7 @@ fun GalleryScreenContent(
             ) {
 
                 item(span = StaggeredGridItemSpan.FullLine) {
-                    GalleryFilters(sendIntent = sendIntent)
+                    GalleryFilters(modifier = Modifier.animateItem(), sendIntent = sendIntent)
                 }
 
                 if (failure != null) {
@@ -174,6 +174,7 @@ fun GalleryScreenContent(
                     DisposableEffect(key) { onDispose { thumbnailBounds.remove(key) } }
                     AsyncImage(
                         modifier = Modifier
+                            .animateItem()
                             .fillMaxWidth()
                             .onGloballyPositioned { thumbnailBounds[key] = Rect(it.positionInRoot(), it.size.toSize()) }
                             .alpha(if (key == viewedKey) 0f else 1f)

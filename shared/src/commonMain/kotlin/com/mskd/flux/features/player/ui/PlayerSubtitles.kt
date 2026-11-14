@@ -70,7 +70,7 @@ fun PlayerSubtitles(
 
 @Composable
 private fun DefaultCue(text: String?, smallText: Boolean) {
-    val style = if (smallText) MaterialTheme.typography.labelMedium else MaterialTheme.typography.titleMedium
+    val style = if (smallText) Text.Style.contentLabel() else Text.Style.contentBody()
     CuePill(text = text, color = Color.White, style = style)
 }
 
@@ -121,7 +121,7 @@ private fun StyledCue(cue: SubtitleCue, smallText: Boolean) {
 
 @Composable
 private fun StyledText(cue: SubtitleCue, smallText: Boolean) {
-    val base = if (smallText) MaterialTheme.typography.labelMedium else MaterialTheme.typography.titleMedium
+    val base = if (smallText) Text.Style.contentLabel() else Text.Style.contentBody()
     val style = base.copy(
         fontWeight = if (cue.bold) FontWeight.Bold else base.fontWeight,
         fontStyle = if (cue.italic) FontStyle.Italic else base.fontStyle,
@@ -134,8 +134,8 @@ private fun CuePill(text: String?, color: Color, style: TextStyle) {
     Text.Adaptive(
         modifier = Modifier
             .clip(shape = MaterialTheme.shapes.extraSmall)
-            .background(color = Color.Black.copy(.8f))
-            .padding(horizontal = FluxUI.Space.medium, vertical = FluxUI.Space.small),
+            .background(color = Color.Black.copy(.5f))
+            .padding(horizontal = FluxUI.Space.small, vertical = FluxUI.Space.extraSmall),
         text = text,
         color = color,
         textAlign = TextAlign.Center,

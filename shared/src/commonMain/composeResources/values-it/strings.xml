@@ -244,6 +244,7 @@
     <string name="retry">Riprova</string>
     <string name="unavailable_check_connection">Non disponibile, controlla la connessione</string>
     <string name="gallery_empty">Nessuna immagine disponibile</string>
+    <string name="filters">Filtri</string>
     <string name="gallery_filter_type">Tipo</string>
     <string name="gallery_filter_language">Lingua</string>
     <string name="gallery_language_global">Globale</string>

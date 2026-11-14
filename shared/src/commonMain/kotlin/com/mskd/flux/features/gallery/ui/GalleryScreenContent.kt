@@ -116,9 +116,7 @@ fun GalleryScreenContent(
                     contentAlignment = Alignment.Center
                 ) {
                     GalleryFilters(
-                        modifier = Modifier.align(Alignment.TopStart).padding(horizontal = FluxUI.Space.medium, vertical = FluxUI.Space.small),
-                        selectedTypesCount = selectedTypes.size,
-                        selectedLanguagesCount = selectedLanguages.size,
+                        modifier = Modifier.align(Alignment.TopEnd).fillMaxWidth().padding(horizontal = FluxUI.Space.medium, vertical = FluxUI.Space.small),
                         sendIntent = sendIntent
                     )
                     Text.Content.Title(
@@ -145,8 +143,7 @@ fun GalleryScreenContent(
             ) {
 
                 item(span = StaggeredGridItemSpan.FullLine) {
-                    GalleryFilters(selectedTypesCount = selectedTypes.size,
-                        selectedLanguagesCount = selectedLanguages.size, sendIntent = sendIntent)
+                    GalleryFilters(sendIntent = sendIntent)
                 }
 
                 if (failure != null) {

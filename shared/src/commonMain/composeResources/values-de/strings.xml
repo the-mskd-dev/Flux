@@ -243,6 +243,7 @@
     <string name="retry">Wiederholen</string>
     <string name="unavailable_check_connection">Nicht verfügbar, überprüfe deine Verbindung</string>
     <string name="gallery_empty">Keine Bilder verfügbar</string>
+    <string name="filters">Filter</string>
     <string name="gallery_filter_type">Typ</string>
     <string name="gallery_filter_language">Sprache</string>
     <string name="gallery_language_global">Global</string>

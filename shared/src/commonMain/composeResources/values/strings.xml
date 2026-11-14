@@ -261,6 +261,7 @@
     <string name="retry">Retry</string>
     <string name="unavailable_check_connection">Unavailable, check your connection</string>
     <string name="gallery_empty">No images available</string>
+    <string name="filters">Filters</string>
     <string name="gallery_filter_type">Type</string>
     <string name="gallery_filter_language">Language</string>
     <string name="gallery_language_global">Global</string>

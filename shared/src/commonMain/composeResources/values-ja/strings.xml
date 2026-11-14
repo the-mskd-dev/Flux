@@ -242,6 +242,7 @@
     <string name="retry">再試行</string>
     <string name="unavailable_check_connection">利用できません。接続を確認してください</string>
     <string name="gallery_empty">利用できる画像がありません</string>
+    <string name="filters">フィルター</string>
     <string name="gallery_filter_type">タイプ</string>
     <string name="gallery_filter_language">言語</string>
     <string name="gallery_language_global">グローバル</string>

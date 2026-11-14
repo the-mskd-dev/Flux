@@ -9,11 +9,15 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -38,6 +42,9 @@ import com.mskd.flux.ui.theme.FluxUI
 import dev.chrisbanes.haze.HazeState
 
 
+/** The sheet takes at most this fraction of the available height; its content scrolls beyond. */
+private const val MAX_SHEET_HEIGHT_FRACTION = 0.6f
+
 @Composable
 fun FluxBottomSheetHost(
     host: ModalHostState,
@@ -55,7 +62,9 @@ fun FluxBottomSheetHost(
         BackGesture(enabled = true, onBack = { entry?.onDismiss?.invoke() })
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+
+        val maxSheetHeight = maxHeight * MAX_SHEET_HEIGHT_FRACTION
 
         ScrimBackground(
             isVisible = visible,
@@ -85,18 +94,33 @@ fun FluxBottomSheetHost(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.surfaceContainer)
-                        .navigationBarsPadding()
-                        .padding(vertical = FluxUI.Space.medium),
+                        .heightIn(max = maxSheetHeight)
+                        .background(MaterialTheme.colorScheme.surfaceContainer),
                     verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
                 ) {
 
                     Text.List.Title(
-                        modifier = Modifier.padding(horizontal = FluxUI.Space.medium),
+                        modifier = Modifier
+                            .padding(top = FluxUI.Space.medium)
+                            .padding(horizontal = FluxUI.Space.medium),
                         text = entry?.title,
                     )
 
-                    entry?.content(this)
+                    Column(
+                        modifier = Modifier
+                            .weight(1f, fill = false)
+                            .verticalScroll(rememberScrollState()),
+                        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
+                    ) {
+
+                        entry?.content(this)
+
+                        Spacer(
+                            modifier = Modifier
+                                .navigationBarsPadding()
+                                .padding(vertical = FluxUI.Space.medium)
+                        )
+                    }
 
                 }
 

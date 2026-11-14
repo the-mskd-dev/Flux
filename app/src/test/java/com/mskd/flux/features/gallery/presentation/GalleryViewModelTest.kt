@@ -801,11 +801,11 @@ class GalleryViewModelTest : FunSpec({
         testDispatcher.scheduler.advanceUntilIdle()
     }
 
-    test("images are sorted: user language, then Global, then the others, each by descending rating") {
+    test("images are sorted: user language, then Global and English, then the others, each by descending rating") {
 
         loadLanguageImages()
 
-        contentImages() shouldBe listOf(frPoster, globalBackdrop, enPoster, enPoster2, jaPoster, jaPoster2, koPoster, jaLogo)
+        contentImages() shouldBe listOf(frPoster, enPoster, enPoster2, globalBackdrop, jaPoster, jaPoster2, koPoster, jaLogo)
 
     }
 

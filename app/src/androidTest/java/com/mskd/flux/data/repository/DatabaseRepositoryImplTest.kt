@@ -459,14 +459,17 @@ class DatabaseRepositoryImplTest {
         val result = repository.getAllImagesPaths()
 
         // Then
-        val expectedArtworkImages = MediaMockups.artworks.flatMap { listOf(it.imagePath, it.bannerPath) }.filter { it.isNotBlank() }
+        val expectedArtworkImages = MediaMockups.artworks
+            .flatMap { listOf(it.imagePath, it.bannerPath, it.customBackdropPath, it.customPosterPath) }
+            .filter { !it.isNullOrBlank() }
         val expectedMediasImages = MediaMockups.allMedias.filterIsInstance<Episode>().map { it.imagePath }.filter { it.isNotBlank() }
         val expectedSeasonImages = MediaMockups.seasons.mapNotNull { it.imagePath }.filter { it.isNotBlank() }
         val expectedAll = expectedArtworkImages + expectedMediasImages + expectedSeasonImages
 
         assertEquals(expectedAll.size, result.images.size)
         assertTrue(result.images.containsAll(expectedAll))
-        assertEquals(MediaMockups.artworks.map { it.logoPath }.sortedBy { it.orEmpty() }, result.logos.sortedBy { it.orEmpty() })
+        val expectedLogos = MediaMockups.artworks.flatMap { listOf(it.logoPath, it.customLogoPath) }
+        assertEquals(expectedLogos.sortedBy { it.orEmpty() }, result.logos.sortedBy { it.orEmpty() })
     }
 
     //endregion

@@ -13,7 +13,6 @@ import com.mskd.flux.features.gallery.domain.model.GalleryImage
 import com.mskd.flux.features.gallery.domain.model.GalleryImageType
 import com.mskd.flux.features.gallery.domain.usecase.GetGalleryImagesUseCase
 import com.mskd.flux.features.gallery.domain.usecase.ImageDownloadUseCase
-import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.system.FilesLauncher
 import io.kotest.core.spec.style.FunSpec
@@ -39,7 +38,6 @@ class GalleryViewModelTest : FunSpec({
     lateinit var connectivityRepository: ConnectivityRepository
     lateinit var imageDownload: ImageDownloadUseCase
     lateinit var filesLauncher: FilesLauncher
-    lateinit var settingsDataStore: SettingsDataStore
     lateinit var databaseRepository: DatabaseRepository
     lateinit var storedArtwork: MutableStateFlow<Artwork?>
     lateinit var syncState: MutableStateFlow<SyncState>
@@ -59,7 +57,6 @@ class GalleryViewModelTest : FunSpec({
             connectivityRepository = connectivityRepository,
             imageDownload = imageDownload,
             filesLauncher = filesLauncher,
-            settingsDataStore = settingsDataStore,
             catalogSyncCoordinator = mockk { every { state } returns syncState },
         )
     }
@@ -81,7 +78,6 @@ class GalleryViewModelTest : FunSpec({
         connectivityRepository = mockk()
         imageDownload = mockk()
         filesLauncher = mockk(relaxed = true)
-        settingsDataStore = mockk { coEvery { getDataLanguage() } returns "fr-FR" }
         coEvery { imageDownload(any(), any()) } returns Unit
         every { connectivityRepository.currentlyOnline() } returns true
         coEvery { apiRepository.getMovieImages(artwork.id) } returns listOf(lowBackdrop, highPoster, midBackdrop)
@@ -801,21 +797,21 @@ class GalleryViewModelTest : FunSpec({
         testDispatcher.scheduler.advanceUntilIdle()
     }
 
-    test("languages are the loaded ones: data language, English, Global, then by descending count") {
+    test("languages are the distinct loaded ones, Global included") {
 
         loadLanguageImages()
 
-        content().languages shouldBe listOf("fr", "en", null, "ja", "ko")
+        content().languages.toSet() shouldBe setOf("fr", "en", null, "ja", "ko")
 
     }
 
-    test("English is not duplicated nor invented when absent, the data language is skipped when absent") {
+    test("English is not invented when absent") {
 
         coEvery { apiRepository.getMovieImages(artwork.id) } returns listOf(jaPoster, globalBackdrop)
         updateVm()
         testDispatcher.scheduler.advanceUntilIdle()
 
-        content().languages shouldBe listOf(null, "ja")
+        content().languages.toSet() shouldBe setOf(null, "ja")
 
     }
 
@@ -851,7 +847,7 @@ class GalleryViewModelTest : FunSpec({
         loadLanguageImages()
         viewModel.handleIntent(GalleryIntent.OnFilterTypeTap(GalleryImageType.BACKDROP))
 
-        content().languages shouldBe listOf("fr", "en", null, "ja", "ko")
+        content().languages.toSet() shouldBe setOf("fr", "en", null, "ja", "ko")
 
     }
 

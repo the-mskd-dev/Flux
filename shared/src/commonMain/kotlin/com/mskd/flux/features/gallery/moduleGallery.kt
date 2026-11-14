@@ -29,7 +29,6 @@ val moduleGallery = module {
             connectivityRepository = get(),
             imageDownload = get(),
             filesLauncher = get(),
-            settingsDataStore = get(),
             catalogSyncCoordinator = get(),
         )
     }

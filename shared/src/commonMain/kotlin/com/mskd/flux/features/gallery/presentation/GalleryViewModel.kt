@@ -16,8 +16,6 @@ import com.mskd.flux.features.gallery.domain.model.GalleryImage
 import com.mskd.flux.features.gallery.domain.model.GalleryImageType
 import com.mskd.flux.features.gallery.domain.usecase.GetGalleryImagesUseCase
 import com.mskd.flux.features.gallery.domain.usecase.ImageDownloadUseCase
-import com.mskd.flux.core.model.language.languageCode
-import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.report.Trace
 import com.mskd.flux.system.FilesLauncher
 import kotlinx.coroutines.CancellationException
@@ -42,7 +40,6 @@ class GalleryViewModel(
     private val connectivityRepository: ConnectivityRepository,
     private val imageDownload: ImageDownloadUseCase,
     private val filesLauncher: FilesLauncher,
-    private val settingsDataStore: SettingsDataStore,
     catalogSyncCoordinator: CatalogSyncCoordinator,
 ) : ViewModel() {
 
@@ -230,25 +227,22 @@ class GalleryViewModel(
             return
         }
 
-        val dataLanguageCode = settingsDataStore.getDataLanguage().languageCode()
-
-        _uiState.update {
+        _uiState.update { state ->
             // Keep the viewer open on the same image when a retry reloads the list, close it if the image is gone
-            val previous = (it.state as? State.Content)?.content
+            val previous = (state.state as? State.Content)?.content
             val viewed = previous?.viewerIndex?.let { index -> previous.images.getOrNull(index) }
             val running = previous?.imageDownloadRunning ?: false
             val content = GalleryContent(
                 allImages = images,
                 selectedTypes = previous?.selectedTypes.orEmpty(),
                 selectedLanguages = previous?.selectedLanguages.orEmpty(),
-                dataLanguageCode = dataLanguageCode,
                 filterSheetVisible = previous?.filterSheetVisible ?: false,
                 imageDownloadRunning = running,
             )
             // Index in the filtered list
             val viewerIndex = viewed?.let { image -> content.images.indexOfFirst { it.type == image.type && it.path == image.path } }
                 ?.takeIf { index -> index >= 0 }
-            it.copy(
+            state.copy(
                 state = State.Content(content.copy(viewerIndex = viewerIndex)),
                 failure = null
             )

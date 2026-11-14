@@ -41,6 +41,11 @@ fun GalleryFilterSheet(
     sendIntent: (GalleryIntent) -> Unit,
 ) {
 
+    // "Global" (null) first, then the other languages alphabetically by displayed name.
+    val sortedLanguages = languages
+        .map { it to it.languageLabel() }
+        .sortedWith(compareBy<Pair<String?, String>> { it.first != null }.thenBy(String.CASE_INSENSITIVE_ORDER) { it.second })
+
     val clearButtonAlpha by animateFloatAsState(if (selectedTypes.isEmpty() && selectedLanguages.isEmpty()) 0f else 1f)
 
     FluxBottomSheet(
@@ -82,10 +87,10 @@ fun GalleryFilterSheet(
                 text = stringResource(Res.string.gallery_filter_language)
             )
 
-            languages.forEach { code ->
+            sortedLanguages.forEach { (code, label) ->
                 BottomSheetCheckBoxItem(
                     isSelected = code in selectedLanguages,
-                    text = code.languageLabel(),
+                    text = label,
                     onClick = { sendIntent(GalleryIntent.OnFilterLanguageTap(code)) }
                 )
             }

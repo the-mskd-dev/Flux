@@ -20,8 +20,6 @@ data class GalleryContent(
     val selectedTypes: Set<GalleryImageType> = emptySet(),
     /** ISO 639-1 codes, null standing for the images without language ("Global"). */
     val selectedLanguages: Set<String?> = emptySet(),
-    /** ISO 639-1 code of the data language, offered first in the language filter. */
-    val dataLanguageCode: String? = null,
     val filterSheetVisible: Boolean = false,
     val viewerIndex: Int? = null,
     val imageDownloadRunning: Boolean = false,
@@ -33,12 +31,8 @@ data class GalleryContent(
             (selectedLanguages.isEmpty() || it.languageCode in selectedLanguages)
     }
 
-    /** The languages present in the images (all types): data language, English, Global, then the most frequent first. */
-    val languages: List<String?> = run {
-        val counts = allImages.groupingBy { it.languageCode }.eachCount()
-        val first = listOf(dataLanguageCode, "en", null).distinct().filter { it in counts }
-        first + counts.keys.filter { it !in first }.sortedByDescending { counts.getValue(it) }
-    }
+    /** The languages present in the images (all types), null standing for the images without language. */
+    val languages: List<String?> = allImages.map { it.languageCode }.distinct()
 }
 
 /** The "Use as poster" / "Use as backdrop" button of the viewer, for the image shown. */

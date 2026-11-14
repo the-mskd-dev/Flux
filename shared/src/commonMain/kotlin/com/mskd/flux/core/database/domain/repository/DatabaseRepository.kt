@@ -49,9 +49,10 @@ interface DatabaseRepository {
     /** Sets the custom Poster of the Artwork (Custom image), without rewriting the rest of it. */
     suspend fun setArtworkCustomPoster(artworkId: Long, path: String?)
 
+    /** Sets the custom Logo of the Artwork (Custom image), without rewriting the rest of it or its automatic Logo. */
     suspend fun setArtworkCustomLogo(artworkId: Long, path: String?)
 
-    /** Clears the custom Backdrop and custom Poster of every Artwork: the TMDB images are shown again. */
+    /** Clears the custom Backdrop, Poster and Logo of every Artwork: the TMDB images are shown again. */
     suspend fun clearCustomImages()
 
     /** Writes only the Logo path of the Artwork (see [Artwork.logoPath]): its other data and its user state are kept. */

@@ -9,6 +9,7 @@ import com.mskd.flux.core.model.artwork.shownBackdropPath
 import com.mskd.flux.core.model.artwork.shownLogoPath
 import com.mskd.flux.core.model.artwork.shownPosterPath
 import com.mskd.flux.core.model.core.State
+import com.mskd.flux.core.model.language.languageCode
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.connectivity.domain.ConnectivityRepository
@@ -16,6 +17,7 @@ import com.mskd.flux.features.gallery.domain.model.GalleryImage
 import com.mskd.flux.features.gallery.domain.model.GalleryImageType
 import com.mskd.flux.features.gallery.domain.usecase.GetGalleryImagesUseCase
 import com.mskd.flux.features.gallery.domain.usecase.ImageDownloadUseCase
+import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.report.Trace
 import com.mskd.flux.system.FilesLauncher
 import kotlinx.coroutines.CancellationException
@@ -40,6 +42,7 @@ class GalleryViewModel(
     private val connectivityRepository: ConnectivityRepository,
     private val imageDownload: ImageDownloadUseCase,
     private val filesLauncher: FilesLauncher,
+    private val settingsDataStore: SettingsDataStore,
     catalogSyncCoordinator: CatalogSyncCoordinator,
 ) : ViewModel() {
 
@@ -47,11 +50,10 @@ class GalleryViewModel(
 
     private val _event = MutableSharedFlow<GalleryEvent>()
     val event: SharedFlow<GalleryEvent> = _event.asSharedFlow()
+    private val syncing = catalogSyncCoordinator.state.map { it is SyncState.Syncing }
 
     // The state driven by the user and the images source; the observed Artwork completes it in [uiState]
     private val _uiState = MutableStateFlow(GalleryUiState())
-
-    private val syncing = catalogSyncCoordinator.state.map { it is SyncState.Syncing }
 
     val uiState: StateFlow<GalleryUiState> = combine(
         _uiState,
@@ -93,12 +95,36 @@ class GalleryViewModel(
             GalleryIntent.OnImageDownloadTap -> downloadViewedImage()
             GalleryIntent.OnShowDownloadedImageTap -> filesLauncher.openDownloadedImages()
             GalleryIntent.OnUseImageTap -> useViewedImage()
+            GalleryIntent.OnFilterTap -> setFilterSheetVisible(true)
+            GalleryIntent.OnFilterDismiss -> setFilterSheetVisible(false)
+            is GalleryIntent.OnFilterTypeTap -> toggleFilterType(intent.type)
+            is GalleryIntent.OnFilterLanguageTap -> toggleFilterLanguage(intent.languageCode)
+            GalleryIntent.OnFilterClearTap -> clearFilters()
         }
     }
 
     //endregion
 
     //region Private Methods
+
+    // The filter is locked while the viewer is open, so the viewer index never needs to follow a change of the filtered list
+    private fun updateFilter(transform: (GalleryContent) -> GalleryContent) = _uiState.update { ui ->
+        val content = (ui.state as? State.Content)?.content ?: return@update ui
+        if (content.viewerIndex != null) return@update ui
+        ui.copy(state = State.Content(transform(content)))
+    }
+
+    private fun setFilterSheetVisible(visible: Boolean) = updateFilter { it.copy(filterSheetVisible = visible) }
+
+    private fun toggleFilterType(type: GalleryImageType) = updateFilter {
+        it.copy(selectedTypes = if (type in it.selectedTypes) it.selectedTypes - type else it.selectedTypes + type)
+    }
+
+    private fun toggleFilterLanguage(code: String?) = updateFilter {
+        it.copy(selectedLanguages = if (code in it.selectedLanguages) it.selectedLanguages - code else it.selectedLanguages + code)
+    }
+
+    private fun clearFilters() = updateFilter { it.copy(selectedTypes = emptySet(), selectedLanguages = emptySet()) }
 
     private fun viewerIndex(): Int? = (_uiState.value.state as? State.Content)?.content?.viewerIndex
 
@@ -204,15 +230,36 @@ class GalleryViewModel(
             return
         }
 
-        _uiState.update {
+        // User language first, then Global, then the others; best rated first within each group
+        val userLanguageCode = settingsDataStore.getDataLanguage().languageCode()
+        val sortedImages = images.sortedWith(
+            compareBy<GalleryImage> {
+                when (it.languageCode) {
+                    userLanguageCode -> 0
+                    null -> 1
+                    "en" -> 1
+                    else -> 2
+                }
+            }.thenByDescending { it.rating }
+        )
+
+        _uiState.update { state ->
             // Keep the viewer open on the same image when a retry reloads the list, close it if the image is gone
-            val previous = (it.state as? State.Content)?.content
+            val previous = (state.state as? State.Content)?.content
             val viewed = previous?.viewerIndex?.let { index -> previous.images.getOrNull(index) }
-            val viewerIndex = viewed?.let { image -> images.indexOfFirst { it.type == image.type && it.path == image.path } }
-                ?.takeIf { index -> index >= 0 }
             val running = previous?.imageDownloadRunning ?: false
-            it.copy(
-                state = State.Content(GalleryContent(images = images, viewerIndex = viewerIndex, imageDownloadRunning = running)),
+            val content = GalleryContent(
+                allImages = sortedImages,
+                selectedTypes = previous?.selectedTypes.orEmpty(),
+                selectedLanguages = previous?.selectedLanguages.orEmpty(),
+                filterSheetVisible = previous?.filterSheetVisible ?: false,
+                imageDownloadRunning = running,
+            )
+            // Index in the filtered list
+            val viewerIndex = viewed?.let { image -> content.images.indexOfFirst { it.type == image.type && it.path == image.path } }
+                ?.takeIf { index -> index >= 0 }
+            state.copy(
+                state = State.Content(content.copy(viewerIndex = viewerIndex)),
                 failure = null
             )
         }

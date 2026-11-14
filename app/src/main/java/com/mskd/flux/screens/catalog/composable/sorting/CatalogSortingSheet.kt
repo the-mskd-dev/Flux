@@ -9,7 +9,7 @@ import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.modal.bottomSheet.FluxBottomSheet
-import com.mskd.flux.ui.modal.bottomSheet.FluxBottomSheetItem
+import com.mskd.flux.ui.modal.bottomSheet.BottomSheetRadioItem
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.sort_by
 import org.jetbrains.compose.resources.stringResource
@@ -28,7 +28,7 @@ fun CatalogSortingSheet(
         content = {
 
             CatalogSortingMode.entries.forEach { option ->
-                FluxBottomSheetItem(
+                BottomSheetRadioItem(
                     isSelected = option == selectedMode,
                     text = option.description.resolve(),
                     onClick = { sendIntent(CatalogIntent.SelectSortingMode(option)) }

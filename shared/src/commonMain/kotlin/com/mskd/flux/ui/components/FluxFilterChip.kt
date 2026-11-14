@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.search.components
+package com.mskd.flux.ui.components
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import com.mskd.flux.ui.text.Text
 
 @Composable
-fun SearchFilterChip(
+fun FluxFilterChip(
     selected: Boolean,
     text: String,
     onClick: () -> Unit

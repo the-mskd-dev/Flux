@@ -79,8 +79,12 @@ Backdrop, Poster or Logo chosen by the user in the Gallery to replace the TMDB o
 _Avoid_: Image personnalisée, Affiche personnalisée, override
 
 **Gallery**:
-Page listing the TMDB images of an Artwork (Backdrop, Poster and Logo, in the data language, English and without language) in a single grid sorted by descending rating, with a zoomable full-screen viewer. For a Show, only the images of the Show itself, not those of its Season or Episode. Nothing is stored locally.
+Page listing the TMDB images of an Artwork (Backdrop, Poster and Logo, in every Image language) in a single grid sorted by descending rating, with a zoomable full-screen viewer. The user can narrow the grid by image type and by Image language; the filter is not remembered. For a Show, only the images of the Show itself, not those of its Season or Episode. Nothing is stored locally.
 _Avoid_: Galerie d'images, Images, Photos
+
+**Image language**:
+Language written on a TMDB image (a Poster or a Logo in Japanese, for instance), or Global when the image carries no text. It is independent of the data language chosen in the settings.
+_Avoid_: Locale, Langue des données, No language, Sans langue
 
 **Image Download**:
 Copy, into the device's image storage, of a Gallery image in original resolution. It leaves Flux: the Catalog does not know about it.

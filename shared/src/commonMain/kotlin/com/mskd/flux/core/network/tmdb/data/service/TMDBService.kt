@@ -45,8 +45,7 @@ interface TMDBService {
     ) : PeopleDto
 
     suspend fun getMovieImages(
-        artworkId: Long,
-        language: String
+        artworkId: Long
     ) : Result<ImagesDto>
 
     //endregion
@@ -76,8 +75,7 @@ interface TMDBService {
     ) : PeopleDto
 
     suspend fun getShowImages(
-        artworkId: Long,
-        language: String
+        artworkId: Long
     ) : Result<ImagesDto>
 
     //endregion

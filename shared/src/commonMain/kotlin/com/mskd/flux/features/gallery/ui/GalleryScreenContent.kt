@@ -75,6 +75,10 @@ fun GalleryScreenContent(
     viewerIndex: Int? = null,
     imageDownloadRunning: Boolean = false,
     artworkImageButton: ArtworkImageButton = ArtworkImageButton.HIDDEN,
+    selectedTypes: Set<GalleryImageType> = emptySet(),
+    languages: List<String?> = emptyList(),
+    selectedLanguages: Set<String?> = emptySet(),
+    filterSheetVisible: Boolean = false,
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     sendIntent: (GalleryIntent) -> Unit,
 ) {
@@ -93,7 +97,7 @@ fun GalleryScreenContent(
     var viewerReturnedToThumbnail by remember { mutableStateOf(false) }
 
     // Keeps the thumbnail of the viewed image on screen, so the viewer image always has a place to go back to
-    val imagesOffset = if (failure != null) 1 else 0
+    val imagesOffset = if (failure != null) 2 else 1
     LaunchedEffect(viewerIndex) {
         val itemIndex = (viewerIndex ?: return@LaunchedEffect) + imagesOffset
         if (gridState.layoutInfo.visibleItemsInfo.none { it.index == itemIndex }) gridState.scrollToItem(itemIndex)
@@ -111,6 +115,10 @@ fun GalleryScreenContent(
                     modifier = Modifier.fillMaxSize().padding(innerPadding),
                     contentAlignment = Alignment.Center
                 ) {
+                    GalleryFilters(
+                        modifier = Modifier.align(Alignment.TopEnd).fillMaxWidth().padding(horizontal = FluxUI.Space.medium, vertical = FluxUI.Space.small),
+                        sendIntent = sendIntent
+                    )
                     Text.Content.Title(
                         text = stringResource(Res.string.gallery_empty),
                         textAlign = TextAlign.Center,
@@ -133,6 +141,10 @@ fun GalleryScreenContent(
                 horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
                 verticalItemSpacing = FluxUI.Space.small,
             ) {
+
+                item(span = StaggeredGridItemSpan.FullLine) {
+                    GalleryFilters(modifier = Modifier.animateItem(), sendIntent = sendIntent)
+                }
 
                 if (failure != null) {
                     item(span = StaggeredGridItemSpan.FullLine) {
@@ -162,6 +174,7 @@ fun GalleryScreenContent(
                     DisposableEffect(key) { onDispose { thumbnailBounds.remove(key) } }
                     AsyncImage(
                         modifier = Modifier
+                            .animateItem()
                             .fillMaxWidth()
                             .onGloballyPositioned { thumbnailBounds[key] = Rect(it.positionInRoot(), it.size.toSize()) }
                             .alpha(if (key == viewedKey) 0f else 1f)
@@ -224,6 +237,14 @@ fun GalleryScreenContent(
                 )
             }
         }
+
+        GalleryFilterSheet(
+            isVisible = filterSheetVisible && viewerIndex == null,
+            selectedTypes = selectedTypes,
+            languages = languages,
+            selectedLanguages = selectedLanguages,
+            sendIntent = sendIntent
+        )
 
         // Last child of the Box so that it is drawn above the viewer overlay
         SnackbarHost(

@@ -202,7 +202,7 @@
     <string name="private_folder_desc">Proteggi le opere con un codice PIN</string>
     <string name="private_folder_include_nsfw">Includi opere NSFW</string>
     <string name="private_folder_include_nsfw_desc">Aggiungi automaticamente le opere NSFW alla cartella privata</string>
-    <string name="private_folder_empty">La tua cartella privata è vuota.\nTieni premuta un\'opera del catalogo per aggiungerla</string>
+    <string name="private_folder_empty">La tua cartella privata è vuota.\nTieni premuta un'opera del catalogo per aggiungerla</string>
     <string name="add_to_private_folder">Aggiungi alla cartella privata</string>
     <string name="removed_from_private_folder">Rimosso dalla cartella privata</string>
     <string name="remove_from_private_folder">Rimuovi dalla cartella privata</string>
@@ -244,6 +244,13 @@
     <string name="retry">Riprova</string>
     <string name="unavailable_check_connection">Non disponibile, controlla la connessione</string>
     <string name="gallery_empty">Nessuna immagine disponibile</string>
+    <string name="filters">Filtri</string>
+    <string name="gallery_filter_type">Tipo</string>
+    <string name="gallery_filter_language">Lingua</string>
+    <string name="gallery_language_global">Globale</string>
+    <string name="gallery_type_backdrops">Sfondi</string>
+    <string name="gallery_type_posters">Locandine</string>
+    <string name="gallery_type_logos">Loghi</string>
     <string name="blur_spoilers">Nascondi spoiler</string>
     <string name="blur_spoilers_desc">Sfoca la descrizione e l'immagine degli episodi non ancora visti</string>
     <string name="spoiler_hidden">Spoiler nascosto</string>
@@ -264,5 +271,5 @@
     <string name="identification_current">Attuale</string>
     <string name="identification_no_result">Nessun risultato</string>
     <string name="identification_search_failed">Impossibile cercare su TMDB</string>
-    <string name="identification_failed">Impossibile recuperare i dati di quest\'opera. Riprova.</string>
+    <string name="identification_failed">Impossibile recuperare i dati di quest'opera. Riprova.</string>
 </resources>

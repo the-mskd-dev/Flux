@@ -10,12 +10,14 @@ import com.mskd.flux.utils.extensions.tmdbImageLarge
  * @property type Backdrop, poster or logo.
  * @property ratio Width divided by height.
  * @property rating TMDB rating of the image.
+ * @property languageCode ISO 639-1 Image language, null when the image has no text.
  */
 data class GalleryImage(
     val path: String,
     val type: GalleryImageType,
     val ratio: Float,
     val rating: Double,
+    val languageCode: String? = null,
 )
 
 val GalleryImage.thumbnailUrl: String

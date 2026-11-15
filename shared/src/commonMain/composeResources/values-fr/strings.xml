@@ -287,9 +287,9 @@
     <string name="identification_failed">Impossible de récupérer les données de cette œuvre. Veuillez réessayer.</string>
     <string name="play_store">Play Store</string>
     <string name="play_store_desc">Soutenir le développement</string>
-    <string name="play_store_promo_thanks_intro">Bonjour à toutes et à tous, j\'ai l\'immense plaisir de vous annoncer que Flux est maintenant disponible sur le Play Store !</string>
-    <string name="play_store_promo_thanks">Je souhaite remercier toutes les personnes qui ont participé à la phase de test, votre aide m\'a été extrêmement précieuse, et je remercie également toutes les personnes qui participent à l\'amélioration de l\'application !</string>
-    <string name="play_store_promo_support">Pour celles et ceux qui veulent soutenir le développement de l\'application, voici le lien vers le Play Store :</string>
+    <string name="play_store_promo_thanks_intro">Bonjour à toutes et à tous, j'ai l'immense plaisir de vous annoncer que Flux est maintenant disponible sur le Play Store !</string>
+    <string name="play_store_promo_thanks">Je souhaite remercier toutes les personnes qui ont participé à la phase de test, votre aide m'a été extrêmement précieuse, et je remercie également toutes les personnes qui participent à l'amélioration de l'application !</string>
+    <string name="play_store_promo_support">Pour celles et ceux qui veulent soutenir le développement de l'application, voici le lien vers le Play Store :</string>
     <string name="play_store_promo_outro">Profitez bien de Flux !</string>
     <string name="play_store_promo_title">Flux sur le Play Store</string>
 </resources>

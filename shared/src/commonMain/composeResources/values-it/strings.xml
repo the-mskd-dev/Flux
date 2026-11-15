@@ -285,8 +285,8 @@
     <string name="play_store">Play Store</string>
     <string name="play_store_desc">Sostieni lo sviluppo</string>
     <string name="play_store_promo_thanks_intro">Ciao a tutti! Sono felicissimo di annunciarvi che Flux è ora disponibile sul Play Store!</string>
-    <string name="play_store_promo_thanks">Vorrei ringraziare tutte le persone che hanno partecipato alla fase di test, il vostro aiuto è stato preziosissimo, e anche chi contribuisce a migliorare l\'applicazione!</string>
-    <string name="play_store_promo_support">Per chi vuole sostenere lo sviluppo dell\'app, ecco il link al Play Store:</string>
+    <string name="play_store_promo_thanks">Vorrei ringraziare tutte le persone che hanno partecipato alla fase di test, il vostro aiuto è stato preziosissimo, e anche chi contribuisce a migliorare l'applicazione!</string>
+    <string name="play_store_promo_support">Per chi vuole sostenere lo sviluppo dell'app, ecco il link al Play Store:</string>
     <string name="play_store_promo_outro">Buon divertimento con Flux!</string>
     <string name="play_store_promo_title">Flux sul Play Store</string>
 </resources>

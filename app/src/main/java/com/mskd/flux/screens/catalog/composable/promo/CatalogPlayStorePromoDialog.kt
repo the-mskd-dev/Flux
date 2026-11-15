@@ -80,10 +80,7 @@ fun CatalogPlayStorePromoDialog(
                     }
                 }
 
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.End
-                ) {
+                Column(modifier = Modifier.fillMaxWidth(),) {
                     Text.Content.Body(
                         text = stringResource(Res.string.play_store_promo_outro),
                         textAlign = TextAlign.End

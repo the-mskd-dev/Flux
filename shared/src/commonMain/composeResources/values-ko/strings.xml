@@ -280,4 +280,6 @@
     <string name="identification_no_result">결과 없음</string>
     <string name="identification_search_failed">TMDB를 검색할 수 없습니다</string>
     <string name="identification_failed">이 작품의 데이터를 가져올 수 없습니다. 다시 시도해 주세요.</string>
+    <string name="play_store">Play Store</string>
+    <string name="play_store_desc">개발 후원하기</string>
 </resources>

@@ -282,4 +282,6 @@
     <string name="identification_no_result">Nessun risultato</string>
     <string name="identification_search_failed">Impossibile cercare su TMDB</string>
     <string name="identification_failed">Impossibile recuperare i dati di quest'opera. Riprova.</string>
+    <string name="play_store">Play Store</string>
+    <string name="play_store_desc">Sostieni lo sviluppo</string>
 </resources>

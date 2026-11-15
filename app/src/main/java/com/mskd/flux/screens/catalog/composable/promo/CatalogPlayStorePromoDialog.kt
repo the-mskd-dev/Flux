@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.text.style.TextAlign
@@ -64,6 +65,7 @@ fun CatalogPlayStorePromoDialog(
 
                 Button(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
+                    shape = ButtonDefaults.squareShape,
                     onClick = { sendIntent(CatalogIntent.OnPlayStorePromoClick) }
                 ) {
                     Row(

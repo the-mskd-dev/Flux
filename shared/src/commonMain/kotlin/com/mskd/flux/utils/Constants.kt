@@ -25,6 +25,8 @@ object Constants {
         const val RELEASES = "https://github.com/the-mskd-dev/Flux/releases"
         const val ISSUES = "https://github.com/the-mskd-dev/Flux/issues"
         const val BUY_COFFEE = "https://buymeacoffee.com/the.masked.dev"
+        // TODO: Replace with the real Play Store link once available
+        const val PLAY_STORE = "https://play.google.com/store/apps/details?id=com.mskd.flux.playstore"
         const val SPONSOR = "https://github.com/sponsors/the-mskd-dev/"
     }
 

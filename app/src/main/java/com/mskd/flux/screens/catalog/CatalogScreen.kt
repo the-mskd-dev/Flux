@@ -58,6 +58,7 @@ import com.mskd.flux.screens.catalog.composable.CatalogHeader
 import com.mskd.flux.screens.catalog.composable.CatalogMenu
 import com.mskd.flux.screens.catalog.composable.CatalogViewMenu
 import com.mskd.flux.screens.catalog.composable.history.CatalogHistory
+import com.mskd.flux.screens.catalog.composable.promo.CatalogPlayStorePromoDialog
 import com.mskd.flux.screens.catalog.composable.sorting.CatalogSortingSheet
 import com.mskd.flux.screens.catalog.composable.viewMode.CatalogViewModeSheet
 import com.mskd.flux.screens.catalog.composable.viewMode.catalogViewModeGenre
@@ -326,6 +327,12 @@ fun CatalogContent(
         CatalogViewModeSheet(
             isVisible = state.showViewSheet,
             selectedMode = state.viewMode,
+            sendIntent = sendIntent
+        )
+
+        // TODO: Remove the Play Store announcement by March 2027
+        CatalogPlayStorePromoDialog(
+            isVisible = state.showPlayStorePromo,
             sendIntent = sendIntent
         )
 

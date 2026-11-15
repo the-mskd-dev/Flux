@@ -3,6 +3,7 @@ package com.mskd.flux.features.catalog.data.datastore
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.IOException
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
@@ -18,6 +19,8 @@ class CatalogDataStoreImpl(val catalogDataStore: DataStore<Preferences>) : Catal
     object Keys {
         val SORTING_MODE = intPreferencesKey("sorting_mode")
         val VIEW_MODE = intPreferencesKey("view_mode")
+        // TODO: Remove with the Play Store announcement by March 2027
+        val PLAY_STORE_PROMO_SEEN = booleanPreferencesKey("play_store_promo_seen")
     }
 
     override val flow: Flow<CatalogDataStore.State> = catalogDataStore.data
@@ -30,6 +33,7 @@ class CatalogDataStoreImpl(val catalogDataStore: DataStore<Preferences>) : Catal
             CatalogDataStore.State(
                 sortingMode = sortingOption,
                 viewMode = viewOption,
+                playStorePromoSeen = preferences[Keys.PLAY_STORE_PROMO_SEEN] ?: false,
             )
         }
 
@@ -42,6 +46,13 @@ class CatalogDataStoreImpl(val catalogDataStore: DataStore<Preferences>) : Catal
     override suspend fun setViewMode(mode: CatalogViewMode) {
         catalogDataStore.edit { preferences ->
             preferences[Keys.VIEW_MODE] = mode.ordinal
+        }
+    }
+
+    // TODO: Remove with the Play Store announcement by March 2027
+    override suspend fun setPlayStorePromoSeen() {
+        catalogDataStore.edit { preferences ->
+            preferences[Keys.PLAY_STORE_PROMO_SEEN] = true
         }
     }
 

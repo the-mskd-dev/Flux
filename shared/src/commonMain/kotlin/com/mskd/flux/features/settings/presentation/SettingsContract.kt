@@ -22,7 +22,8 @@ data class SettingsUiState(
     val privateFolderIncludeNsfw: Boolean = true,
     val privateFolderPinDialog: PrivateFolderPinDialog? = null,
     val privateFolderPinError: Boolean = false,
-    val appVersion: String? = null
+    val appVersion: String? = null,
+    val showPlayStore: Boolean = false
 )
 
 enum class PrivateFolderPinDialog {

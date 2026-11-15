@@ -48,8 +48,9 @@ Each feature must consist of 3 distinct files:
      - You MUST write this code in pure Kotlin as if it were already located in the `commonMain` module. If platform-specific Android APIs are absolutely required, define a pure Kotlin interface in the domain layer and implement it in the Android application module, or use the `expect`/`actual` pattern.
 2. **CMP Isolation Rule 🚨**:
    - When implementing UI in the shared:commonMain package, you should use Compose Multiplatform only. Composables with `androidx` packages are forbidden.
-3. **English only 🚨**:
+3. **Languages 🚨**:
    - In the whole code, specs, tickets, GLOSSARY.md, you should use English only. Other languages are authorized only in strings.xml files. 
+   - In `strings.xml` with `shared/src/commonMain/composeResources`, don't escape "'" by a "\". It's not necessary in KMP/CMP. i.e: don't write "doesn\t", but "doesn't" instead.
 
 ### Context & File scanning
 

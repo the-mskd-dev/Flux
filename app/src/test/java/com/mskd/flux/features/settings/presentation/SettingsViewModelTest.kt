@@ -3,6 +3,7 @@ package com.mskd.flux.features.settings.presentation
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.model.core.AppInfo
+import com.mskd.flux.core.model.core.Flavor
 import com.mskd.flux.core.model.core.FluxOptionsDialogState
 import com.mskd.flux.core.model.language.Language
 import com.mskd.flux.features.catalog.domain.model.SyncState
@@ -101,6 +102,33 @@ class SettingsViewModelTest : FunSpec({
             urlLauncher = urlLauncher
         )
 
+    }
+
+    context("Play Store item") {
+        test("should be shown on FOSS flavor") {
+            viewModel.uiState.test {
+                awaitItem().showPlayStore shouldBe true
+            }
+        }
+
+        test("should be hidden on Play Store flavor") {
+            val playStoreViewModel = SettingsViewModel(
+                appInfo = appInfo.copy(flavor = Flavor.PLAY_STORE),
+                settingsDataStore = settingsDataStore,
+                privateFolderDataStore = privateFolderDataStore,
+                imagesPrefetchManager = imagesPrefetchManager,
+                syncCatalogUseCase = syncCatalogUseCase,
+                updateLanguageUseCase = updateLanguageUseCase,
+                enablePrivateFolderUseCase = enablePrivateFolderUseCase,
+                disablePrivateFolderUseCase = disablePrivateFolderUseCase,
+                setIncludeNsfwUseCase = setIncludeNsfwUseCase,
+                emailLauncher = emailLauncher,
+                urlLauncher = urlLauncher
+            )
+            playStoreViewModel.uiState.test {
+                awaitItem().showPlayStore shouldBe false
+            }
+        }
     }
 
     context("Initial State") {

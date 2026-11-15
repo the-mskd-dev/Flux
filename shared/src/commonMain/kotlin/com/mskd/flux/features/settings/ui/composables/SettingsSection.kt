@@ -55,7 +55,10 @@ import flux.shared.generated.resources.ic_mail
 import flux.shared.generated.resources.ic_money
 import flux.shared.generated.resources.ic_pip
 import flux.shared.generated.resources.ic_player
+import flux.shared.generated.resources.ic_playstore
 import flux.shared.generated.resources.ic_social_media
+import flux.shared.generated.resources.play_store
+import flux.shared.generated.resources.play_store_desc
 import flux.shared.generated.resources.ic_sources
 import flux.shared.generated.resources.ic_sync
 import flux.shared.generated.resources.ic_version
@@ -366,6 +369,7 @@ fun SettingsSyncSection(
 @Composable
 fun SettingsAppInfoSection(
     appVersion: String?,
+    showPlayStore: Boolean,
     sendIntent: (SettingsIntent) -> Unit
 ) {
 
@@ -373,6 +377,17 @@ fun SettingsAppInfoSection(
         iconColor = MaterialTheme.colorScheme.onTertiaryContainer,
         iconBackgroundColor = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = .6f)
     ) { iconColor, bgColor ->
+
+        if (showPlayStore) {
+            SettingsItem(
+                text = stringResource(Res.string.play_store),
+                subText = stringResource(Res.string.play_store_desc),
+                painter = painterResource(Res.drawable.ic_playstore),
+                iconColor = Color.Unspecified,
+                iconBackgroundColor = Color.White,
+                onClick = { sendIntent(SettingsIntent.OpenUrl(url = Constants.CONTACT.PLAY_STORE)) }
+            )
+        }
 
         SettingsItem(
             text = stringResource(Res.string.x),

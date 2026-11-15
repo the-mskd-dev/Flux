@@ -3,6 +3,7 @@ package com.mskd.flux.features.settings.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.core.model.core.AppInfo
+import com.mskd.flux.core.model.core.Flavor
 import com.mskd.flux.core.model.core.FluxOptionsDialogItem
 import com.mskd.flux.core.model.core.FluxOptionsDialogState
 import com.mskd.flux.core.model.language.Language
@@ -107,7 +108,8 @@ class SettingsViewModel(
             privateFolderIncludeNsfw = privateFolder.includeNsfw,
             privateFolderPinDialog = privateFolder.pinDialog,
             privateFolderPinError = privateFolder.pinError,
-            appVersion = appInfo.versionName
+            appVersion = appInfo.versionName,
+            showPlayStore = appInfo.flavor == Flavor.FOSS
         )
     }.stateIn(
         scope = viewModelScope,

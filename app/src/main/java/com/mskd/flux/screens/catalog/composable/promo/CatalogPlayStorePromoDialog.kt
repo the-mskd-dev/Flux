@@ -4,7 +4,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import flux.shared.generated.resources.ic_playstore
+import org.jetbrains.compose.resources.painterResource
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,7 +47,9 @@ fun CatalogPlayStorePromoDialog(
         content = {
 
             Column(
-                modifier = Modifier.verticalScroll(rememberScrollState()),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
             ) {
 
@@ -51,7 +61,18 @@ fun CatalogPlayStorePromoDialog(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     onClick = { sendIntent(CatalogIntent.OnPlayStorePromoClick) }
                 ) {
-                    Text.Button.Default(text = stringResource(Res.string.play_store))
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
+                    ) {
+                        Icon(
+                            modifier = Modifier.size(20.dp),
+                            painter = painterResource(Res.drawable.ic_playstore),
+                            tint = Color.Unspecified,
+                            contentDescription = null
+                        )
+                        Text.Button.Default(text = stringResource(Res.string.play_store))
+                    }
                 }
 
                 Text.Content.Body(text = stringResource(Res.string.play_store_promo_outro))

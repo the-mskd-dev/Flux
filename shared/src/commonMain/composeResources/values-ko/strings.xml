@@ -286,4 +286,5 @@
     <string name="play_store_promo_thanks">테스트 단계에 참여해 주신 모든 분들께 감사드립니다. 여러분의 도움이 정말 큰 힘이 되었습니다. 앱 개선에 함께해 주시는 모든 분들께도 감사드립니다!</string>
     <string name="play_store_promo_support">앱 개발을 응원하고 싶으신 분들을 위해 Play 스토어 링크를 알려드립니다:</string>
     <string name="play_store_promo_outro">Flux를 즐겨 주세요!</string>
+    <string name="play_store_promo_title">Flux, Play 스토어 출시</string>
 </resources>

@@ -9,6 +9,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.text.style.TextAlign
+import flux.shared.generated.resources.play_store_promo_title
+import flux.shared.generated.resources.play_store_promo_signature
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import flux.shared.generated.resources.ic_playstore
@@ -43,6 +47,7 @@ fun CatalogPlayStorePromoDialog(
     FluxDialog(
         isVisible = isVisible,
         onDismiss = { sendIntent(CatalogIntent.OnPlayStorePromoDismiss) },
+        title = stringResource(Res.string.play_store_promo_title),
         onDismissLabel = stringResource(Res.string.close),
         content = {
 
@@ -75,7 +80,20 @@ fun CatalogPlayStorePromoDialog(
                     }
                 }
 
-                Text.Content.Body(text = stringResource(Res.string.play_store_promo_outro))
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.End
+                ) {
+                    Text.Content.Body(
+                        text = stringResource(Res.string.play_store_promo_outro),
+                        textAlign = TextAlign.End
+                    )
+                    Text.Content.Body(
+                        text = stringResource(Res.string.play_store_promo_signature),
+                        textAlign = TextAlign.End,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
 
             }
 

@@ -287,4 +287,5 @@
     <string name="play_store_promo_thanks">Ich möchte mich bei allen bedanken, die an der Testphase teilgenommen haben – eure Hilfe war unglaublich wertvoll – und auch bei allen, die zur Verbesserung der App beitragen!</string>
     <string name="play_store_promo_support">Für alle, die die Entwicklung der App unterstützen möchten, hier ist der Link zum Play Store:</string>
     <string name="play_store_promo_outro">Viel Spaß mit Flux!</string>
+    <string name="play_store_promo_title">Flux im Play Store</string>
 </resources>

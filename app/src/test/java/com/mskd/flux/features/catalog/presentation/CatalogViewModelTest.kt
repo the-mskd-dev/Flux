@@ -8,7 +8,12 @@ import com.mskd.flux.core.database.domain.repository.DetailsRepository
 import com.mskd.flux.core.datastore.domain.UserDataStore
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
+import com.mskd.flux.core.datastore.InMemoryPreferencesDataStore
 import com.mskd.flux.core.model.core.AppInfo
+import com.mskd.flux.core.model.core.Flavor
+import com.mskd.flux.features.catalog.data.datastore.CatalogDataStoreImpl
+import com.mskd.flux.system.UrlLauncher
+import com.mskd.flux.utils.Constants
 import com.mskd.flux.features.catalog.domain.datastore.CatalogDataStore
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.domain.model.CatalogViewMode
@@ -68,8 +73,11 @@ class CatalogViewModelTest : FunSpec({
     lateinit var resolvePlaybackAction: ResolvePlaybackActionUseCase
     lateinit var recordPlaybackResult: SaveProgressUseCase
     lateinit var setArtworkPrivacy: SetArtworkPrivacyUseCase
+    lateinit var urlLauncher: UrlLauncher
 
     beforeTest {
+
+        urlLauncher = mockk(relaxed = true)
 
         tokenDataStore = mockk(relaxed = true) {
             coEvery { flow } returns MutableStateFlow("token")
@@ -111,6 +119,7 @@ class CatalogViewModelTest : FunSpec({
         catalogDataStore: CatalogDataStore = mockk(relaxed = true) {
             every { flow } returns MutableStateFlow(CatalogDataStore.State())
         },
+        info: AppInfo = appInfo,
     ): CatalogViewModel {
         return CatalogViewModel(
             artworkDb = artworkDb,
@@ -120,13 +129,103 @@ class CatalogViewModelTest : FunSpec({
             tokenDataStore = tokenDataStore,
             catalogDataStore = catalogDataStore,
             privateFolderDataStore = privateFolderDataStore,
-            appInfo = appInfo,
+            appInfo = info,
+            urlLauncher = urlLauncher,
             syncCatalogUseCase = syncUseCase,
             getHistoryUseCase = getHistoryUseCase,
             resolvePlaybackAction = resolvePlaybackAction,
             recordPlaybackResult = recordPlaybackResult,
             setArtworkPrivacy = setArtworkPrivacy
         )
+    }
+
+    // TODO: Remove with the Play Store announcement by March 2027
+    context("Play Store announcement") {
+
+        fun promoVisible(state: CatalogUiState) =
+            (state.state as? CatalogState.Content)?.showPlayStorePromo
+
+        fun foss(debug: Boolean = false) = appInfo.copy(flavor = Flavor.FOSS, isDebug = debug)
+
+        test("should be shown on FOSS in Content when not seen yet") {
+            val store = CatalogDataStoreImpl(InMemoryPreferencesDataStore())
+            viewModel = createViewModel(catalogDataStore = store, info = foss())
+            viewModel.uiState.test {
+                promoVisible(expectMostRecentItem()) shouldBe true
+                cancelAndConsumeRemainingEvents()
+            }
+        }
+
+        test("should not be shown on Play Store flavor") {
+            val store = CatalogDataStoreImpl(InMemoryPreferencesDataStore())
+            viewModel = createViewModel(catalogDataStore = store, info = appInfo.copy(flavor = Flavor.PLAY_STORE))
+            viewModel.uiState.test {
+                promoVisible(expectMostRecentItem()) shouldBe false
+                cancelAndConsumeRemainingEvents()
+            }
+        }
+
+        test("should not be shown in Loading") {
+            val store = CatalogDataStoreImpl(InMemoryPreferencesDataStore())
+            val syncing = mockk<SyncCatalogUseCase>(relaxed = true) {
+                every { state } returns MutableStateFlow(SyncState.Syncing(full = true))
+            }
+            viewModel = createViewModel(syncUseCase = syncing, catalogDataStore = store, info = foss())
+            viewModel.uiState.test {
+                expectMostRecentItem().state.shouldBeInstanceOf<CatalogState.Loading>()
+                cancelAndConsumeRemainingEvents()
+            }
+            // The flag is not consumed while the dialog could not be shown
+            store.flow.firstOrNull()?.playStorePromoSeen shouldBe false
+        }
+
+        test("should not be shown again once seen, even with a new view model") {
+            val store = CatalogDataStoreImpl(InMemoryPreferencesDataStore())
+            viewModel = createViewModel(catalogDataStore = store, info = foss())
+            viewModel.uiState.test {
+                promoVisible(expectMostRecentItem()) shouldBe true
+                cancelAndConsumeRemainingEvents()
+            }
+
+            val second = createViewModel(catalogDataStore = store, info = foss())
+            second.uiState.test {
+                promoVisible(expectMostRecentItem()) shouldBe false
+                cancelAndConsumeRemainingEvents()
+            }
+        }
+
+        test("should be hidden after dismiss") {
+            val store = CatalogDataStoreImpl(InMemoryPreferencesDataStore())
+            viewModel = createViewModel(catalogDataStore = store, info = foss())
+            viewModel.uiState.test {
+                promoVisible(expectMostRecentItem()) shouldBe true
+                viewModel.handleIntent(CatalogIntent.OnPlayStorePromoDismiss)
+                promoVisible(expectMostRecentItem()) shouldBe false
+                cancelAndConsumeRemainingEvents()
+            }
+        }
+
+        test("Play Store click should open the URL and hide it") {
+            val store = CatalogDataStoreImpl(InMemoryPreferencesDataStore())
+            viewModel = createViewModel(catalogDataStore = store, info = foss())
+            viewModel.uiState.test {
+                promoVisible(expectMostRecentItem()) shouldBe true
+                viewModel.handleIntent(CatalogIntent.OnPlayStorePromoClick)
+                promoVisible(expectMostRecentItem()) shouldBe false
+                cancelAndConsumeRemainingEvents()
+            }
+            verify(exactly = 1) { urlLauncher.open(Constants.CONTACT.PLAY_STORE) }
+        }
+
+        test("debug build should always show it, ignoring the flag") {
+            val store = CatalogDataStoreImpl(InMemoryPreferencesDataStore())
+            store.setPlayStorePromoSeen()
+            viewModel = createViewModel(catalogDataStore = store, info = foss(debug = true))
+            viewModel.uiState.test {
+                promoVisible(expectMostRecentItem()) shouldBe true
+                cancelAndConsumeRemainingEvents()
+            }
+        }
     }
 
     test("Initial state") {

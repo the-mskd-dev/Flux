@@ -43,6 +43,9 @@ sealed class CatalogState {
         val viewMode: CatalogViewMode = CatalogViewMode.BY_TYPE,
         val showViewSheet: Boolean = false,
 
+        // TODO: Remove with the Play Store announcement by March 2027
+        val showPlayStorePromo: Boolean = false,
+
     ): CatalogState()
 
 }
@@ -75,6 +78,10 @@ sealed interface CatalogIntent {
     // History
     data class DeleteHistoryEntry(val entry: HistoryEntry): CatalogIntent
     data class ShowDetails(val media: Media): CatalogIntent
+
+    // Play Store announcement (TODO: remove by March 2027)
+    data object OnPlayStorePromoDismiss: CatalogIntent
+    data object OnPlayStorePromoClick: CatalogIntent
 
     // Player
     data class PlayMedia(val media: Media, val forceInternal: Boolean = false): CatalogIntent

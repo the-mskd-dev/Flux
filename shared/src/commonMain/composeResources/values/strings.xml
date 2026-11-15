@@ -304,4 +304,8 @@
     <string name="identification_failed">Couldn't retrieve the data of this artwork. Please try again.</string>
     <string name="play_store">Play Store</string>
     <string name="play_store_desc">Support the development</string>
+    <string name="play_store_promo_thanks_intro">Hello everyone! I\'m thrilled to announce that Flux is now available on the Play Store!</string>
+    <string name="play_store_promo_thanks">I\'d like to thank everyone who took part in the testing phase, your help has been invaluable, and also everyone who contributes to improving the app!</string>
+    <string name="play_store_promo_support">For those who want to support the development of the app, here is the link to the Play Store:</string>
+    <string name="play_store_promo_outro">Enjoy Flux!</string>
 </resources>

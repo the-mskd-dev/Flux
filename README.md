@@ -25,6 +25,9 @@
 ## Download
 
 <p align="center">
+  <a href="https://play.google.com/store/apps/details?id=com.mskd.flux.playstore">
+    <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" height="80">
+  </a>
   <a href="https://f-droid.org/packages/com.mskd.flux/">
     <img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="80">
   </a>

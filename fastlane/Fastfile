@@ -142,7 +142,7 @@ platform :android do
 
     # Publish on the Play Store
     upload_to_play_store(
-      track: 'internal',
+      track: 'beta',
       skip_upload_apk: true,
       metadata_path: "fastlane/metadata/playstore",
       skip_upload_images: false,

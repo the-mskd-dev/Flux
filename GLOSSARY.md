@@ -144,6 +144,17 @@ _Avoid_: Vault, hidden folder
 
 ## Player
 
+**Internal player**:
+Flux's own player, with Playback speed, Chapter buttons and Track selection.
+_Avoid_: Built-in player
+
+**External player**:
+Video app chosen by the viewer in the settings that plays the Media in place of the Internal player, and reports the playback position back when closed.
+_Avoid_: Third-party player
+
+**Playback launch**:
+Journey from "the viewer asked to play a Media" to "the Progress reported by an External player is remembered": choosing the player, falling back to the Internal player if the External player cannot start, and recording the reported Progress.
+
 **Interface**:
 Layer of player controls (top bar, playback buttons, progress bar) shown on tap and hidden automatically.
 _Avoid_: Controls, UI, overlay

@@ -19,8 +19,7 @@ val moduleSeason = module {
             changeMediaStatus = get(),
             markPreviousAsWatched = get(),
             resetProgress = get(),
-            resolvePlaybackAction = get(),
-            recordPlaybackResult = get(),
+            playbackLaunch = get(),
         )
     }
 

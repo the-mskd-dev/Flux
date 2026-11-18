@@ -5,6 +5,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.lifecycleScope
+import com.mskd.flux.external.AndroidExternalPlayerAdapter
+import com.mskd.flux.features.player.domain.playback.PlaybackLaunch
+import kotlinx.coroutines.launch
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -30,6 +35,8 @@ class MainActivity : ComponentActivity() {
 
     val viewModel: AppViewModel by inject()
     val connectivityRepository: ConnectivityRepository by inject()
+    private val externalPlayerAdapter: AndroidExternalPlayerAdapter by inject()
+    private val playbackLaunch: PlaybackLaunch by inject()
 
     private var onUserLeaveHintCallback: (() -> Unit)? = null
 
@@ -38,6 +45,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         enableEdgeToEdge()
+
+        // Registered once for the whole app: the result is recorded even when the user left the page.
+        val externalPlayerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            val position = externalPlayerAdapter.onResult(result.data)
+            lifecycleScope.launch { playbackLaunch.onExternalResult(position) }
+        }
+        externalPlayerAdapter.attach(externalPlayerLauncher)
 
         setContent {
 
@@ -129,6 +143,11 @@ class MainActivity : ComponentActivity() {
 
         }
 
+    }
+
+    override fun onDestroy() {
+        externalPlayerAdapter.detach()
+        super.onDestroy()
     }
 
     override fun onUserLeaveHint() {

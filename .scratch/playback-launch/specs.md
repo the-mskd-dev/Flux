@@ -19,7 +19,7 @@ For the user nothing changes visually: the same Media plays in the same player, 
 5. As a viewer who enabled the external player, I want Media to open in that external player, so that I use the player I prefer.
 6. As a viewer who did not enable the external player, I want Media to open in the internal player, so that Playback speed, Chapter buttons and Track selection are available.
 7. As a viewer, I want a Media that is Unavailable not to start any player, so that I do not land on an error screen.
-8. As a viewer, I want to be told clearly that a Media is Unavailable when I try to play it, so that I understand why nothing happens.
+8. _(Dropped: a visible Unavailable message is a follow-up; today Unavailable does nothing and this refactor keeps it.)_
 9. As a viewer whose external player is not installed, I want Flux to fall back to the internal player, so that playback still starts.
 10. As a viewer whose external player refuses the file (permission denied), I want Flux to fall back to the internal player, so that I am not blocked.
 11. As a viewer whose external player fails for another reason, I want the same fallback, so that no failure leaves me with nothing.
@@ -39,7 +39,7 @@ For the user nothing changes visually: the same Media plays in the same player, 
 25. As a viewer, I want the external player's various position formats (long or int, different keys) to be understood, so that the common external players work.
 26. As a viewer, I want the Android foreground service that keeps Flux alive during external playback to start before the launch and stop after the result or failure, so that the system does not kill Flux while I watch.
 27. As a viewer, I want that service stopped even when the launch fails, so that no notification stays stuck.
-28. As a viewer, I want a launch to start only once per tap, so that I do not get two players.
+28. As a viewer, I want a launch to start only once per tap, so that I do not get two players. (Taps are not deduplicated and a pending launch never blocks a new one; a new launch replaces the pending one.)
 29. As a viewer, I want the Season page to keep the selected Episode while the external player is open, so that I come back to the same place.
 30. As a viewer, I want the Season page's Spoiler masking to be unaffected by launching playback, so that revealing state is not lost.
 31. As a Private Folder user, I want playback from a Private Artwork to follow the same rules, so that privacy does not change how play works.
@@ -56,24 +56,25 @@ For the user nothing changes visually: the same Media plays in the same player, 
 ## Implementation Decisions
 
 - Introduce a **Playback launch** module in the shared module (commonMain). It is a deep module: its interface is "play this Media" plus "an external player reported a position", and it hides the availability check, the external-vs-internal decision, the fallback and the recording of the result Progress.
-- The interface returns an outcome that pages render: open the internal player with a Media, Media is Unavailable, or the launch was handed to the external player. It never exposes Intents or Android types.
+- The interface is a single suspending `play(media, forceInternal)` returning a sealed `PlaybackOutcome`: `OpenInternalPlayer(media)`, `HandedToExternalPlayer` or `Unavailable`. It never exposes Intents or Android types. Pages emit one Event, `OpenInternalPlayer(media)`, only for that outcome; the two others emit nothing (Unavailable stays silent, a visible message is a follow-up). `Unavailable` stays a distinct case so that message needs no interface change.
 - The external-vs-internal decision keeps today's rule: an Unavailable Media never plays; otherwise the external player is used when enabled in the settings and the caller did not ask for the internal player. The availability check exists once (today it is checked twice for Movie).
-- The fallback is part of the module: when the external adapter reports a failure (no player, permission denied, other), the module produces the internal-player outcome for the same Media, without retrying the external player.
+- The fallback is part of the module: `play()` calls the adapter itself; when it reports a failure the module returns `OpenInternalPlayer` for the same Media, without retrying the external player. The adapter result is `Launched | NoPlayerInstalled | PermissionDenied | Failed(cause)`, free of `android.*` types; every failure is treated the same and logged with its kind through `Trace` by the module.
 - The result Progress is recorded by the module on the Media that was launched (not on whatever the page currently shows), using the existing progress-saving behaviour so Status, History and Next Episode rules are identical to the internal player. A null position records nothing.
+- The module is a Koin singleton holding an in-memory pending launch (the launched Media): set on handoff to the external player, replaced by a newer launch, consumed by `onExternalResult(position)`. A result with no pending launch records nothing, so each result is recorded at most once. The pending launch is lost on process death (same as today).
 - A **seam** is placed between the module and an **external player adapter** with two adapters: the Android adapter (production) and a fake (tests). One real second adapter makes the seam real.
-- The Android adapter takes over today's external-player utility: building the view request (type, read permission, title and start-position extras), starting and stopping the external-playback foreground service around the launch, launching through the activity result, and parsing the returned position (long or int, several keys). It reports failure kinds to the module.
-- Pages (Movie, Season, Unknown Artwork, Catalog) stop declaring their own play Event with an external flag and their own external-result Intent. They call the module and render its outcome. The screens keep only the platform wiring that must live in a composable (the activity result launcher), wired once, shared by the four pages.
-- ArtworkViewModel's nullable external-result hook and its per-page copies are removed in favour of the module.
+- The Android adapter lives in the app module next to `ExternalPlayerService` and the manifest, and is bound in Koin there; the module and the adapter interface stay in shared commonMain. It holds the activity result launcher (`attach`/`detach`) and takes over today's external-player utility: building the view request (type, read permission, title and start-position extras), starting and stopping the external-playback foreground service around the launch, launching through the activity result, and parsing the returned position (long or int, several keys). It reports failure kinds to the module.
+- Pages (Movie, Season, Unknown Artwork, Catalog) stop declaring their own play Event with an external flag and their own external-result Intent. They call the module and render its outcome. The activity result launcher is registered once in `MainActivity.onCreate`, attached to the adapter; its callback parses the position and calls `onExternalResult` on `lifecycleScope`, so the four screens drop `rememberExternalPlayerAction` and the result is recorded even if the user left the page. The start-position vs from-start rule (`media.currentTime > 0`) stays in the adapter; the module only hands over the Media.
+- ArtworkViewModel's nullable external-result hook (`recordPlaybackResult`, `onExternalPlayerResult`) and its per-page copies, including the `SaveProgressUseCase` injection and Koin arguments in the four pages, are removed in favour of the module. `PlayerViewModel` is untouched.
 - `ResolvePlaybackActionUseCase` and the `PlaybackAction` result type are absorbed by the module (the deletion test: it was a shallow module whose behaviour reappears in four callers).
-- Koin: the module is registered in commonMain; the adapter in androidMain.
+- Koin: the module is registered in commonMain (`modulePlayer`); the adapter in the app module.
 - No change to Media, Progress, Status or Artwork page behaviour beyond removing duplication. No ADR is affected (ADR-0001 concerns Manual identification).
-- Vocabulary: use Media, Progress, Status, Unavailable, Unknown Artwork, Catalog as defined in GLOSSARY.md. "External player" and "Playback launch" are new terms to add to GLOSSARY.md when the module is named.
+- Vocabulary: use Media, Progress, Status, Unavailable, Unknown Artwork, Catalog as defined in GLOSSARY.md. "External player", "Internal player" and "Playback launch" are now defined in GLOSSARY.md.
 
 ## Testing Decisions
 
 - A good test crosses the Playback launch interface and asserts observable outcomes (which outcome is returned, what Progress and Status are saved, what the adapter was asked to launch), not which internal steps were called.
 - Tested module: Playback launch, through its interface only, with the fake external player adapter and the existing fakes for settings and progress (the Progress/Status/History rules stay covered by their own existing tests).
-- Cases: Unavailable Media; internal player when the external player is disabled; external player when enabled; forced internal; each failure kind falls back to internal for the same Media; fallback does not retry external; result Progress recorded on the launched Media; null position records nothing; Status transitions from the reported position; launch twice does not double-record.
+- Cases: result recorded on the launched Media while the page shows another one; a result with no pending launch records nothing; a second launch replaces the pending one; Unavailable Media; internal player when the external player is disabled; external player when enabled; forced internal; each failure kind falls back to internal for the same Media; fallback does not retry external; result Progress recorded on the launched Media; null position records nothing; Status transitions from the reported position; launch twice does not double-record.
 - Android adapter: tested separately as a JVM test of Intent extras (start position vs from-start, title keys, read permission flag) and position parsing (long, int, missing, several keys). Only that adapter-specific logic, not the module's behaviour.
 - View model tests for Movie, Season, Unknown and Catalog shrink: they assert that playing delegates to the module and renders its outcome; the decision logic is no longer re-tested per page.
 - Prior art: `ResolvePlaybackActionUseCaseTest` (decision cases move to the module test), `SaveProgressUseCaseTest` and `ChangeMediaStatusUseCaseTest` (fake-based behaviour tests), and the Sync behaviour tests with a shared harness and fake adapter (`SyncHarness` with `FakeTmdb`) as the model for the harness style.
@@ -92,4 +93,4 @@ For the user nothing changes visually: the same Media plays in the same player, 
 
 - Evidence from the architecture review: the same play function and screen wiring appear in Movie, Season, Unknown and Catalog; the Android utility has no tests.
 - Natural follow-ups from the same review: Status/History invariants as one home, and finishing the app → shared migration of the Artwork pages (which this change unblocks).
-- Terms to add to GLOSSARY.md when implemented: **Playback launch**, **External player**.
+- Terms added to GLOSSARY.md: **Playback launch**, **External player**, **Internal player**. No ADR: the choices are cheap to reverse.

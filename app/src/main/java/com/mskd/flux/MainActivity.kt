@@ -5,6 +5,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import android.content.Intent
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
 import com.mskd.flux.external.AndroidExternalPlayerAdapter
@@ -38,6 +40,7 @@ class MainActivity : ComponentActivity() {
     private val externalPlayerAdapter: AndroidExternalPlayerAdapter by inject()
     private val playbackLaunch: PlaybackLaunch by inject()
 
+    private var externalPlayerLauncher: ActivityResultLauncher<Intent>? = null
     private var onUserLeaveHintCallback: (() -> Unit)? = null
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -47,11 +50,11 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         // Registered once for the whole app: the result is recorded even when the user left the page.
-        val externalPlayerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        externalPlayerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             val position = externalPlayerAdapter.onResult(result.data)
             lifecycleScope.launch { playbackLaunch.onExternalResult(position) }
         }
-        externalPlayerAdapter.attach(externalPlayerLauncher)
+        externalPlayerAdapter.attach(externalPlayerLauncher!!)
 
         setContent {
 
@@ -146,7 +149,7 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun onDestroy() {
-        externalPlayerAdapter.detach()
+        externalPlayerLauncher?.let { externalPlayerAdapter.detach(it) }
         super.onDestroy()
     }
 

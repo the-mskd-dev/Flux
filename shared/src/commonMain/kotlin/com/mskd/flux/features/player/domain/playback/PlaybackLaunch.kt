@@ -29,22 +29,17 @@ class PlaybackLaunch(
         if (!media.isAvailable) return PlaybackOutcome.Unavailable
         if (forceInternal || !settings.externalPlayerIsEnabled()) return PlaybackOutcome.OpenInternalPlayer(media)
 
-        return when (val result = externalPlayer.launch(media)) {
+        val failure = when (val result = externalPlayer.launch(media)) {
             ExternalLaunchResult.Launched -> {
                 pending.value = media
-                PlaybackOutcome.HandedToExternalPlayer
+                return PlaybackOutcome.HandedToExternalPlayer
             }
-            else -> {
-                val (kind, cause) = when (result) {
-                    ExternalLaunchResult.NoPlayerInstalled -> "No player found" to null
-                    ExternalLaunchResult.PermissionDenied -> "Permission denied" to null
-                    is ExternalLaunchResult.Failed -> "Fail to launch external player" to result.cause
-                    ExternalLaunchResult.Launched -> error("unreachable")
-                }
-                Trace.error(TAG, kind, cause)
-                PlaybackOutcome.OpenInternalPlayer(media)
-            }
+            ExternalLaunchResult.NoPlayerInstalled -> "No player found" to null
+            ExternalLaunchResult.PermissionDenied -> "Permission denied" to null
+            is ExternalLaunchResult.Failed -> "Fail to launch external player" to result.cause
         }
+        Trace.error(TAG, failure.first, failure.second)
+        return PlaybackOutcome.OpenInternalPlayer(media)
     }
 
     /** The External player reported [position] (null when it reported none). Recorded at most once per launch. */

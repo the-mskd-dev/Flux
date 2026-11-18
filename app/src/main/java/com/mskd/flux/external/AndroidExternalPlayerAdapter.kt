@@ -56,8 +56,9 @@ class AndroidExternalPlayerAdapter(private val context: Context) : ExternalPlaye
         this.launcher = launcher
     }
 
-    fun detach() {
-        launcher = null
+    /** Only detaches [launcher] itself: a newer Activity may already have attached its own. */
+    fun detach(launcher: ActivityResultLauncher<Intent>) {
+        if (this.launcher === launcher) this.launcher = null
     }
 
     override fun launch(media: Media): ExternalLaunchResult {

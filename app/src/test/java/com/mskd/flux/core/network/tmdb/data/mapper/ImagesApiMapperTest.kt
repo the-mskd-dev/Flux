@@ -29,6 +29,26 @@ class ImagesApiMapperTest : FunSpec({
 
     }
 
+    test("an image TMDB lists twice reaches the Gallery once, its path and type being its identity") {
+
+        // Seen on TMDB (show 88046): the same poster twice in a row. A Gallery image is keyed by type + path
+        val duplicated = ImageDto(filePath = "/dup.jpg", aspectRatio = 0.67, voteAverage = 0.166, languageCode = "en")
+        val dto = ImagesDto(
+            backdrops = listOf(ImageDto(filePath = "/dup.jpg", aspectRatio = 1.78)),
+            posters = listOf(ImageDto(filePath = "/p.jpg", aspectRatio = 0.67), duplicated, duplicated),
+        )
+
+        val images = dto.toDomain()
+
+        // Same path under another type is another image
+        images.map { it.type to it.path } shouldBe listOf(
+            GalleryImageType.BACKDROP to "/dup.jpg",
+            GalleryImageType.POSTER to "/p.jpg",
+            GalleryImageType.POSTER to "/dup.jpg",
+        )
+
+    }
+
     test("the Image language is kept on each Gallery image") {
 
         val dto = ImagesDto(

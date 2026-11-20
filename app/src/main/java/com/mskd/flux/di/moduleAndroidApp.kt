@@ -21,8 +21,7 @@ val moduleAndroidApp = module {
         )
     }
 
-    single<ExternalPlayerAdapter> {
-        AndroidExternalPlayerAdapter(context = androidContext())
-    }
+    // MainActivity needs the concrete type to attach its launcher; PlaybackLaunch only sees the interface.
+    single { AndroidExternalPlayerAdapter(context = androidContext()) } bind ExternalPlayerAdapter::class
 
 }

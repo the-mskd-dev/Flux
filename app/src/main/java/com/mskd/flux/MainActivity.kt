@@ -55,7 +55,7 @@ class MainActivity : ComponentActivity() {
         externalPlayerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             when (val outcome = externalPlayerAdapter.onResult(result.resultCode, result.data)) {
                 is ExternalPlayerResult.Finished -> lifecycleScope.launch { playbackLaunch.onExternalResult(outcome.position) }
-                is ExternalPlayerResult.Failed -> playbackLaunch.onExternalFailure(outcome.cause)
+                is ExternalPlayerResult.Failed -> lifecycleScope.launch { playbackLaunch.onExternalFailure(outcome.cause) }
             }
         }.also { externalPlayerAdapter.attach(it) }
 

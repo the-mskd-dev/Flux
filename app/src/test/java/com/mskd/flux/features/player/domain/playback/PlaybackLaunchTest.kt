@@ -1,6 +1,9 @@
 package com.mskd.flux.features.player.domain.playback
 
 import com.mskd.flux.configs.fluxExtensions
+import com.mskd.flux.core.database.domain.repository.DatabaseRepository
+import com.mskd.flux.core.datastore.InMemoryPreferencesDataStore
+import com.mskd.flux.features.player.data.PendingLaunchStoreImpl
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.features.player.domain.playback.ExternalLaunchResult.Failed
 import com.mskd.flux.features.player.domain.playback.ExternalLaunchResult.Launched
@@ -36,7 +39,17 @@ class PlaybackLaunchTest : FunSpec({
     lateinit var settings: SettingsDataStore
     lateinit var adapter: FakeExternalPlayerAdapter
     lateinit var saveProgress: SaveProgressUseCase
+    lateinit var database: DatabaseRepository
+    lateinit var store: PendingLaunchStore
     lateinit var playback: PlaybackLaunch
+
+    fun newModule() = PlaybackLaunch(
+        settings = settings,
+        externalPlayer = adapter,
+        saveProgress = saveProgress,
+        pendingLaunchStore = store,
+        database = database,
+    )
 
     val movie = MediaMockups.movie
     val episode = MediaMockups.episode1
@@ -46,7 +59,13 @@ class PlaybackLaunchTest : FunSpec({
         coEvery { settings.externalPlayerIsEnabled() } returns true
         adapter = FakeExternalPlayerAdapter()
         saveProgress = mockk(relaxed = true)
-        playback = PlaybackLaunch(settings = settings, externalPlayer = adapter, saveProgress = saveProgress)
+        store = PendingLaunchStoreImpl(InMemoryPreferencesDataStore())
+        database = mockk()
+        coEvery { database.getMovie(any()) } returns null
+        coEvery { database.getEpisodes(any()) } returns emptyList()
+        coEvery { database.getMovie(movie.artworkId) } returns movie
+        coEvery { database.getEpisodes(episode.artworkId) } returns listOf(episode)
+        playback = newModule()
     }
 
     context("decision") {
@@ -135,6 +154,65 @@ class PlaybackLaunchTest : FunSpec({
             playback.onExternalResult(5000L)
             playback.onExternalResult(6000L)
             coVerify(exactly = 1) { saveProgress(any(), any(), any()) }
+        }
+
+    }
+
+    context("process death") {
+
+        test("a result after a restart is recorded on the persisted Media") {
+            playback.play(movie, forceInternal = false)
+            val restarted = newModule() // Flux was killed while the External player was open
+            restarted.onExternalResult(5000L)
+            coVerify(exactly = 1) { saveProgress(media = movie, progress = 5000L) }
+        }
+
+        test("an Episode launched before a restart is found again") {
+            playback.play(episode, forceInternal = false)
+            newModule().onExternalResult(5000L)
+            coVerify(exactly = 1) { saveProgress(media = episode, progress = 5000L) }
+        }
+
+        test("a result after a restart with no pending launch records nothing") {
+            newModule().onExternalResult(5000L)
+            coVerify(exactly = 0) { saveProgress(any(), any(), any()) }
+        }
+
+        test("a result after a restart is recorded at most once") {
+            playback.play(movie, forceInternal = false)
+            val restarted = newModule()
+            restarted.onExternalResult(5000L)
+            restarted.onExternalResult(6000L)
+            newModule().onExternalResult(7000L)
+            coVerify(exactly = 1) { saveProgress(any(), any(), any()) }
+        }
+
+        test("a persisted Media that no longer exists records nothing and clears the entry") {
+            playback.play(movie, forceInternal = false)
+            coEvery { database.getMovie(movie.artworkId) } returns null
+            newModule().onExternalResult(5000L)
+            coVerify(exactly = 0) { saveProgress(any(), any(), any()) }
+            store.take() shouldBe null
+        }
+
+        test("a play after a restart clears the persisted launch of the previous run") {
+            playback.play(movie, forceInternal = false)
+            val restarted = newModule()
+            restarted.play(episode, forceInternal = true)
+            restarted.onExternalResult(5000L)
+            coVerify(exactly = 0) { saveProgress(any(), any(), any()) }
+        }
+
+        test("a failed launch clears the persisted launch") {
+            adapter.result = NoPlayerInstalled
+            playback.play(movie, forceInternal = false)
+            store.take() shouldBe null
+        }
+
+        test("the persisted launch is cleared once consumed") {
+            playback.play(movie, forceInternal = false)
+            playback.onExternalResult(5000L)
+            store.take() shouldBe null
         }
 
     }

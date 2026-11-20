@@ -48,7 +48,12 @@ object ExternalPlayerRequest {
     }
 }
 
-class AndroidExternalPlayerAdapter(private val context: Context) : ExternalPlayerAdapter {
+class AndroidExternalPlayerAdapter(context: Context) : ExternalPlayerAdapter {
+
+    // Replaced in tests: the foreground service and Intent building need a device.
+    internal var startService: () -> Unit = { ExternalPlayerService.start(context) }
+    internal var stopService: () -> Unit = { ExternalPlayerService.stop(context) }
+    internal var createIntent: (Media) -> Intent = ::viewIntent
 
     private var launcher: ActivityResultLauncher<Intent>? = null
 
@@ -64,38 +69,39 @@ class AndroidExternalPlayerAdapter(private val context: Context) : ExternalPlaye
     override fun launch(media: Media): ExternalLaunchResult {
         val launcher = launcher ?: return ExternalLaunchResult.Failed(IllegalStateException("No activity result launcher attached"))
         return try {
-            ExternalPlayerService.start(context)
+            startService()
             launcher.launch(createIntent(media))
             ExternalLaunchResult.Launched
         } catch (e: ActivityNotFoundException) {
-            ExternalPlayerService.stop(context)
+            stopService()
             ExternalLaunchResult.NoPlayerInstalled
         } catch (e: SecurityException) {
-            ExternalPlayerService.stop(context)
+            stopService()
             ExternalLaunchResult.PermissionDenied
         } catch (e: Exception) {
-            ExternalPlayerService.stop(context)
+            stopService()
             ExternalLaunchResult.Failed(e)
         }
     }
 
     /** Stops the foreground service and returns the reported position, if any. */
     fun onResult(data: Intent?): Long? {
-        ExternalPlayerService.stop(context)
+        stopService()
         val extras = data?.extras ?: return null
         @Suppress("DEPRECATION")
         return ExternalPlayerRequest.parsePosition { key -> extras.get(key) }
     }
 
-    private fun createIntent(media: Media): Intent = Intent(Intent.ACTION_VIEW).apply {
-        setDataAndType(media.file.path.toUri(), "video/*")
-        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        ExternalPlayerRequest.extras(title = media.title, currentTime = media.currentTime).forEach { (key, value) ->
-            when (value) {
-                is Boolean -> putExtra(key, value)
-                is Long -> putExtra(key, value)
-                is String -> putExtra(key, value)
-            }
+}
+
+private fun viewIntent(media: Media): Intent = Intent(Intent.ACTION_VIEW).apply {
+    setDataAndType(media.file.path.toUri(), "video/*")
+    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    ExternalPlayerRequest.extras(title = media.title, currentTime = media.currentTime).forEach { (key, value) ->
+        when (value) {
+            is Boolean -> putExtra(key, value)
+            is Long -> putExtra(key, value)
+            is String -> putExtra(key, value)
         }
     }
 }

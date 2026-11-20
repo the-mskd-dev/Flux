@@ -26,18 +26,19 @@ class PlaybackLaunch(
     private val pending = MutableStateFlow<Media?>(null)
 
     suspend fun play(media: Media, forceInternal: Boolean): PlaybackOutcome {
+        pending.value = null // a stale launch must never capture a later result
         if (!media.isAvailable) return PlaybackOutcome.Unavailable
         if (forceInternal || !settings.externalPlayerIsEnabled()) return PlaybackOutcome.OpenInternalPlayer(media)
 
+        // Set before the adapter is called: a result delivered immediately must not be dropped.
+        pending.value = media
         val failure = when (val result = externalPlayer.launch(media)) {
-            ExternalLaunchResult.Launched -> {
-                pending.value = media
-                return PlaybackOutcome.HandedToExternalPlayer
-            }
+            ExternalLaunchResult.Launched -> return PlaybackOutcome.HandedToExternalPlayer
             ExternalLaunchResult.NoPlayerInstalled -> "No player found" to null
             ExternalLaunchResult.PermissionDenied -> "Permission denied" to null
             is ExternalLaunchResult.Failed -> "Fail to launch external player" to result.cause
         }
+        pending.value = null
         Trace.error(TAG, failure.first, failure.second)
         return PlaybackOutcome.OpenInternalPlayer(media)
     }

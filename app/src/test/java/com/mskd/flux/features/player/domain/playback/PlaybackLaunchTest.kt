@@ -15,11 +15,14 @@ import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import kotlinx.coroutines.runBlocking
 
 private class FakeExternalPlayerAdapter(var result: ExternalLaunchResult = Launched) : ExternalPlayerAdapter {
     val launched = mutableListOf<Media>()
+    var onLaunch: (Media) -> Unit = {}
     override fun launch(media: Media): ExternalLaunchResult {
         launched += media
+        onLaunch(media)
         return result
     }
 }
@@ -121,6 +124,45 @@ class PlaybackLaunchTest : FunSpec({
             playback.onExternalResult(5000L)
             playback.onExternalResult(6000L)
             coVerify(exactly = 1) { saveProgress(any(), any(), any()) }
+        }
+
+    }
+
+    context("pending launch lifecycle") {
+
+        suspend fun lostResultThen(next: suspend () -> Unit) {
+            playback.play(movie, forceInternal = false) // handed off, result never comes back
+            next()
+            playback.onExternalResult(9000L) // late result
+            coVerify(exactly = 0) { saveProgress(any(), any(), any()) }
+        }
+
+        test("a stale launch is cleared by a later fallback") {
+            lostResultThen {
+                adapter.result = NoPlayerInstalled
+                playback.play(episode, forceInternal = false)
+            }
+        }
+
+        test("a stale launch is cleared by a later forced-internal play") {
+            lostResultThen { playback.play(episode, forceInternal = true) }
+        }
+
+        test("a stale launch is cleared by a later Unavailable play") {
+            lostResultThen { playback.play(episode.copy(isAvailable = false), forceInternal = false) }
+        }
+
+        test("a stale launch is cleared by a later internal play") {
+            lostResultThen {
+                coEvery { settings.externalPlayerIsEnabled() } returns false
+                playback.play(episode, forceInternal = false)
+            }
+        }
+
+        test("a result delivered from inside launch is recorded on the launched Media") {
+            adapter.onLaunch = { runBlocking { playback.onExternalResult(7000L) } }
+            playback.play(movie, forceInternal = false)
+            coVerify(exactly = 1) { saveProgress(media = movie, progress = 7000L) }
         }
 
     }

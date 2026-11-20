@@ -85,7 +85,6 @@ sealed interface CatalogIntent {
 
     // Player
     data class PlayMedia(val media: Media, val forceInternal: Boolean = false): CatalogIntent
-    data class OnExternalPlayerResult(val progress: Long) : CatalogIntent
 
 }
 
@@ -103,5 +102,5 @@ sealed interface CatalogEvent {
     data object NavigateToPrivateFolder: CatalogEvent
 
     // Player
-    data class PlayMedia(val media: Media, val externalPlayer: Boolean) : CatalogEvent
+    data class OpenInternalPlayer(val media: Media) : CatalogEvent
 }

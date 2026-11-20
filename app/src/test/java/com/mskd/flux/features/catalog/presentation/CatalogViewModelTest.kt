@@ -22,11 +22,10 @@ import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseC
 import com.mskd.flux.features.history.domain.model.HistoryEntry
 import com.mskd.flux.features.history.domain.repository.HistoryRepository
 import com.mskd.flux.features.history.domain.usecase.GetHistoryUseCase
-import com.mskd.flux.features.player.domain.model.PlaybackAction
-import com.mskd.flux.features.player.domain.usecase.ResolvePlaybackActionUseCase
+import com.mskd.flux.features.player.domain.playback.PlaybackLaunch
+import com.mskd.flux.features.player.domain.playback.PlaybackOutcome
 import com.mskd.flux.features.privateFolder.domain.datastore.PrivateFolderDataStore
 import com.mskd.flux.features.privateFolder.domain.usecase.setArtworkPrivacy.SetArtworkPrivacyUseCase
-import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.mockups.DetailsMockup
 import com.mskd.flux.mockups.MediaMockups
@@ -70,8 +69,7 @@ class CatalogViewModelTest : FunSpec({
     lateinit var privateFolderDataStore: PrivateFolderDataStore
     lateinit var appInfo: AppInfo
     lateinit var getHistoryUseCase: GetHistoryUseCase
-    lateinit var resolvePlaybackAction: ResolvePlaybackActionUseCase
-    lateinit var recordPlaybackResult: SaveProgressUseCase
+    lateinit var playbackLaunch: PlaybackLaunch
     lateinit var setArtworkPrivacy: SetArtworkPrivacyUseCase
     lateinit var urlLauncher: UrlLauncher
 
@@ -103,8 +101,7 @@ class CatalogViewModelTest : FunSpec({
         getHistoryUseCase = mockk<GetHistoryUseCase>(relaxed = true)
         every { getHistoryUseCase() } returns MutableStateFlow(persistentListOf())
 
-        resolvePlaybackAction = mockk(relaxed = true)
-        recordPlaybackResult = mockk(relaxed = true)
+        playbackLaunch = mockk(relaxed = true)
         setArtworkPrivacy = mockk(relaxed = true)
 
         appInfo = AppInfo(
@@ -133,8 +130,7 @@ class CatalogViewModelTest : FunSpec({
             urlLauncher = urlLauncher,
             syncCatalogUseCase = syncUseCase,
             getHistoryUseCase = getHistoryUseCase,
-            resolvePlaybackAction = resolvePlaybackAction,
-            recordPlaybackResult = recordPlaybackResult,
+            playbackLaunch = playbackLaunch,
             setArtworkPrivacy = setArtworkPrivacy
         )
     }
@@ -612,58 +608,44 @@ class CatalogViewModelTest : FunSpec({
 
     }
 
-    test("PlayMedia - should call resolvePlaybackAction and then launch player event") {
+    test("PlayMedia - the Internal player outcome opens the Internal player") {
 
-        checkAll(
-            iterations = 20,
-            Arb.element(MediaMockups.allMedias),
-            Exhaustive.boolean(),
-            Exhaustive.boolean(),
-        ) { media, forceInternal, externalPlayerRequested ->
+        // Given
+        val media = MediaMockups.allMedias.first()
+        coEvery { playbackLaunch.play(media = media, forceInternal = true) } returns PlaybackOutcome.OpenInternalPlayer(media)
+        viewModel = createViewModel()
 
-            // Given
-            val externalPlayer = !forceInternal && externalPlayerRequested
-            resolvePlaybackAction = mockk(relaxed = true) {
-                coEvery { invoke(media = media, forceInternal = forceInternal) } returns PlaybackAction.OpenPlayer(media = media, externalPlayer = externalPlayer)
-            }
-            viewModel = createViewModel()
-            viewModel.event.test {
+        viewModel.event.test {
 
-                // When
-                viewModel.handleIntent(intent = CatalogIntent.PlayMedia(media = media, forceInternal = forceInternal))
+            // When
+            viewModel.handleIntent(intent = CatalogIntent.PlayMedia(media = media, forceInternal = true))
 
-                // Then
-                val event = awaitItem()
-                event.shouldBeInstanceOf<CatalogEvent.PlayMedia>()
-                event.media shouldBe media
-                event.externalPlayer shouldBe externalPlayer
-
-                cancelAndConsumeRemainingEvents()
-
-            }
-
+            // Then
+            awaitItem() shouldBe CatalogEvent.OpenInternalPlayer(media = media)
 
         }
 
     }
 
-    test("OnExternalPlayerResult - should call recordPlaybackResult") {
+    test("PlayMedia - a Media handed to the External player or Unavailable emits nothing") {
 
-        checkAll(
-            iterations = 20,
-            Arb.element(MediaMockups.allMedias),
-            Arb.long()
-        ) { media, progress ->
+        val media = MediaMockups.allMedias.first()
+
+        listOf(PlaybackOutcome.HandedToExternalPlayer, PlaybackOutcome.Unavailable).forEach { outcome ->
 
             // Given
+            coEvery { playbackLaunch.play(media = media, forceInternal = false) } returns outcome
             viewModel = createViewModel()
-            viewModel.handleIntent(intent = CatalogIntent.PlayMedia(media = media, forceInternal = true))
 
-            // When
-            viewModel.handleIntent(intent = CatalogIntent.OnExternalPlayerResult(progress = progress))
+            viewModel.event.test {
 
-            // Then
-            coEvery { recordPlaybackResult(media = media, progress = progress) }
+                // When
+                viewModel.handleIntent(intent = CatalogIntent.PlayMedia(media = media))
+
+                // Then
+                expectNoEvents()
+
+            }
 
         }
 

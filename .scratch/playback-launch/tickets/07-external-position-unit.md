@@ -4,7 +4,7 @@
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-agent
+**Status:** done
 
 - [ ] First confirm the unit of `Media.currentTime` / Progress, and the unit each supported player reports under each key (`position`, `extra_position`, `playback_position`, `end_by`); record both in `specs.md` (Implementation Decisions)
 - [ ] The spec states the conversion applied to the reported position for each key and for Long versus Int

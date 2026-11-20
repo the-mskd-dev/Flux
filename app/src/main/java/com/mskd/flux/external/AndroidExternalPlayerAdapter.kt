@@ -20,7 +20,14 @@ object ExternalPlayerRequest {
         "video_position", "resume_from", "start_position", "playback_start",
     )
 
-    private val resultPositionKeys = listOf("position", "extra_position", "playback_position", "end_by")
+    /**
+     * Result keys and the factor converting each to Progress milliseconds (`Media.currentTime`).
+     * MX Player and mpv report `position` in ms (Int), VLC `extra_position` in ms (Long); the other keys
+     * follow the same convention. Change a factor here if a player is found to report another unit.
+     */
+    private val resultPositionMsFactor = linkedMapOf(
+        "position" to 1L, "extra_position" to 1L, "playback_position" to 1L, "end_by" to 1L,
+    )
 
     /** Extras of the request: start at the saved Progress, or from the start when there is none. */
     fun extras(title: String, currentTime: Long): Map<String, Any> = buildMap {
@@ -34,15 +41,15 @@ object ExternalPlayerRequest {
         }
     }
 
-    /** Position reported by the External player: Long or Int under one of several keys, null when absent. */
+    /** Position reported by the External player, converted to Progress milliseconds; null when absent. */
     fun parsePosition(read: (String) -> Any?): Long? {
-        for (key in resultPositionKeys) {
-            val position = when (val value = read(key)) {
+        for ((key, factor) in resultPositionMsFactor) {
+            val reported = when (val value = read(key)) {
                 is Long -> value
                 is Int -> value.toLong()
                 else -> continue
             }
-            if (position != -1L) return position
+            if (reported >= 0L) return reported * factor
         }
         return null
     }

@@ -68,6 +68,7 @@ For the user nothing changes visually: the same Media plays in the same player, 
 - `ResolvePlaybackActionUseCase` and the `PlaybackAction` result type are absorbed by the module (the deletion test: it was a shallow module whose behaviour reappears in four callers).
 - Koin: the module is registered in commonMain (`modulePlayer`); the adapter in the app module.
 - No change to Media, Progress, Status or Artwork page behaviour beyond removing duplication. No ADR is affected (ADR-0001 concerns Manual identification).
+- Position unit: `Media.currentTime` / Progress is in **milliseconds** (the internal player saves ExoPlayer `currentPosition`). External players report ms: MX Player and mpv under `position` (Int), VLC under `extra_position` (Long); `playback_position` and `end_by` are handled with the same convention. Conversion applied by `parsePosition`: factor 1 for every key, for both Long and Int (Int widened to Long); the factors live in one table in the adapter, so a player found to report seconds is a one-line change. Negative values (the `-1` sentinel) record nothing. Not verified on a device per player.
 - Vocabulary: use Media, Progress, Status, Unavailable, Unknown Artwork, Catalog as defined in GLOSSARY.md. "External player", "Internal player" and "Playback launch" are now defined in GLOSSARY.md.
 
 ## Testing Decisions

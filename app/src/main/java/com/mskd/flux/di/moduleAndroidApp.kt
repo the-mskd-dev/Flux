@@ -21,6 +21,8 @@ val moduleAndroidApp = module {
         )
     }
 
-    single { AndroidExternalPlayerAdapter(androidContext()) } bind ExternalPlayerAdapter::class
+    single<ExternalPlayerAdapter> {
+        AndroidExternalPlayerAdapter(context = androidContext())
+    }
 
 }

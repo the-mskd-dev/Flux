@@ -30,6 +30,17 @@ class ExternalPlayerRequestTest : FunSpec({
         test("long") { ExternalPlayerRequest.parsePosition { if (it == "position") 5000L else null } shouldBe 5000L }
         test("int") { ExternalPlayerRequest.parsePosition { if (it == "end_by") 3000 else null } shouldBe 3000L }
         test("other keys") { ExternalPlayerRequest.parsePosition { if (it == "playback_position") 7L else null } shouldBe 7L }
+        listOf("position", "extra_position", "playback_position", "end_by").forEach { key ->
+            test("$key as Long is in Progress milliseconds") {
+                ExternalPlayerRequest.parsePosition { if (it == key) 90_000L else null } shouldBe 90_000L
+            }
+            test("$key as Int is in Progress milliseconds") {
+                ExternalPlayerRequest.parsePosition { if (it == key) 90_000 else null } shouldBe 90_000L
+            }
+            test("$key -1 records nothing") {
+                ExternalPlayerRequest.parsePosition { if (it == key) -1 else null } shouldBe null
+            }
+        }
         test("missing") { ExternalPlayerRequest.parsePosition { null } shouldBe null }
         test("-1 is not a position") { ExternalPlayerRequest.parsePosition { if (it == "position") -1L else null } shouldBe null }
     }

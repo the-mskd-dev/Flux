@@ -4,7 +4,7 @@
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-agent
+**Status:** done
 
 - [ ] `specs.md` says which failures are synchronous in `launch` (no player, permission denied, other exception) and which arrive asynchronously through the activity result, and how each is cleaned up
 - [ ] An asynchronous failure result (cancelled with an error) opens the Internal player for the launched Media without retrying the External player; a plain user cancel does not

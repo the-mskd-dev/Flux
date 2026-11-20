@@ -1,5 +1,6 @@
 package com.mskd.flux.external
 
+import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -28,6 +29,13 @@ object ExternalPlayerRequest {
     private val resultPositionMsFactor = linkedMapOf(
         "position" to 1L, "extra_position" to 1L, "playback_position" to 1L, "end_by" to 1L,
     )
+
+    /** Result extras an External player sets, with a cancelled result, to report that it failed. */
+    private val errorKeys = listOf("error", "error_message", "extra_error")
+
+    /** A cancelled result carrying one of the error extras is a failure; a plain cancel is the user closing the player. */
+    fun isFailure(resultCode: Int, read: (String) -> Any?): Boolean =
+        resultCode == Activity.RESULT_CANCELED && errorKeys.any { read(it) != null }
 
     /** Extras of the request: start at the saved Progress, or from the start when there is none. */
     fun extras(title: String, currentTime: Long): Map<String, Any> = buildMap {
@@ -91,14 +99,26 @@ class AndroidExternalPlayerAdapter(context: Context) : ExternalPlayerAdapter {
         }
     }
 
-    /** Stops the foreground service and returns the reported position, if any. */
-    fun onResult(data: Intent?): Long? {
+    /** Stops the foreground service and describes what the External player reported. */
+    fun onResult(resultCode: Int, data: Intent?): ExternalPlayerResult {
         stopService()
-        val extras = data?.extras ?: return null
+        val extras = data?.extras ?: return ExternalPlayerResult.Finished(null)
         @Suppress("DEPRECATION")
-        return ExternalPlayerRequest.parsePosition { key -> extras.get(key) }
+        val read = { key: String -> extras.get(key) }
+        if (ExternalPlayerRequest.isFailure(resultCode, read)) {
+            return ExternalPlayerResult.Failed(IllegalStateException("External player reported an error: ${read("error")}"))
+        }
+        return ExternalPlayerResult.Finished(ExternalPlayerRequest.parsePosition(read))
     }
 
+}
+
+/** What an External player reported through the activity result. */
+sealed interface ExternalPlayerResult {
+    /** It closed; [position] is the Progress it reported, null when none. */
+    data class Finished(val position: Long?) : ExternalPlayerResult
+    /** It failed after it started. */
+    data class Failed(val cause: Throwable) : ExternalPlayerResult
 }
 
 private fun viewIntent(media: Media): Intent = Intent(Intent.ACTION_VIEW).apply {

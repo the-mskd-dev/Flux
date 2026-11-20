@@ -1,5 +1,6 @@
 package com.mskd.flux.external
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.result.ActivityResultLauncher
@@ -66,24 +67,40 @@ class AndroidExternalPlayerAdapterTest : FunSpec({
         stops shouldBe 3
     }
 
-    test("a result stops the service and returns the position") {
+    fun resultData(vararg extras: Pair<String, Any>): Intent {
         val bundle = mockk<Bundle>()
-        every { bundle.get(any<String>()) } answers { if (firstArg<String>() == "position") 4000L else null }
-        val data = mockk<Intent>()
-        every { data.extras } returns bundle
-        adapter.onResult(data) shouldBe 4000L
+        every { bundle.get(any<String>()) } answers { extras.toMap()[firstArg<String>()] }
+        return mockk<Intent>().also { every { it.extras } returns bundle }
+    }
+
+    test("a result stops the service and returns the position") {
+        adapter.onResult(Activity.RESULT_OK, resultData("position" to 4000L)) shouldBe ExternalPlayerResult.Finished(4000L)
         stops shouldBe 1
     }
 
     test("a cancelled result (no data) stops the service") {
-        adapter.onResult(null) shouldBe null
+        adapter.onResult(Activity.RESULT_CANCELED, null) shouldBe ExternalPlayerResult.Finished(null)
         stops shouldBe 1
     }
 
     test("a result without position stops the service") {
         val data = mockk<Intent>()
         every { data.extras } returns Bundle()
-        adapter.onResult(data) shouldBe null
+        adapter.onResult(Activity.RESULT_OK, data) shouldBe ExternalPlayerResult.Finished(null)
         stops shouldBe 1
+    }
+
+    test("a cancelled result carrying an error is a failure and stops the service") {
+        adapter.onResult(Activity.RESULT_CANCELED, resultData("error" to "decoder crashed"))
+            .shouldBeInstanceOf<ExternalPlayerResult.Failed>()
+        stops shouldBe 1
+    }
+
+    test("a cancelled result with a position only is not a failure") {
+        adapter.onResult(Activity.RESULT_CANCELED, resultData("position" to 2000L)) shouldBe ExternalPlayerResult.Finished(2000L)
+    }
+
+    test("an error extra on an OK result is not a failure") {
+        adapter.onResult(Activity.RESULT_OK, resultData("error" to "x", "position" to 1000L)) shouldBe ExternalPlayerResult.Finished(1000L)
     }
 })

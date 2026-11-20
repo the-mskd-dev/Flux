@@ -10,6 +10,8 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
 import com.mskd.flux.external.AndroidExternalPlayerAdapter
+import com.mskd.flux.external.ExternalPlayerResult
+import com.mskd.flux.features.player.domain.model.PlayerParams
 import com.mskd.flux.features.player.domain.playback.PlaybackLaunch
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.LaunchedEffect
@@ -51,8 +53,10 @@ class MainActivity : ComponentActivity() {
 
         // Registered once for the whole app: the result is recorded even when the user left the page.
         externalPlayerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            val position = externalPlayerAdapter.onResult(result.data)
-            lifecycleScope.launch { playbackLaunch.onExternalResult(position) }
+            when (val outcome = externalPlayerAdapter.onResult(result.resultCode, result.data)) {
+                is ExternalPlayerResult.Finished -> lifecycleScope.launch { playbackLaunch.onExternalResult(outcome.position) }
+                is ExternalPlayerResult.Failed -> playbackLaunch.onExternalFailure(outcome.cause)
+            }
         }.also { externalPlayerAdapter.attach(it) }
 
         setContent {
@@ -77,6 +81,14 @@ class MainActivity : ComponentActivity() {
             ) {
 
                 FluxNavigation(
+                    effects = { nav ->
+                        // The External player failed after it started: fall back to the Internal player.
+                        LaunchedEffect(Unit) {
+                            playbackLaunch.internalPlayerRequests.collect { media ->
+                                nav.navigate(Route.Player(params = PlayerParams.fromMedia(media)))
+                            }
+                        }
+                    },
                     startingScreen = viewModel.getStartingScreen(),
                     customization = customization,
                     platformEntries = { nav ->

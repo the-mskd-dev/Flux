@@ -15,7 +15,9 @@ import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeoutOrNull
 
 private class FakeExternalPlayerAdapter(var result: ExternalLaunchResult = Launched) : ExternalPlayerAdapter {
     val launched = mutableListOf<Media>()
@@ -163,6 +165,38 @@ class PlaybackLaunchTest : FunSpec({
             adapter.onLaunch = { runBlocking { playback.onExternalResult(7000L) } }
             playback.play(movie, forceInternal = false)
             coVerify(exactly = 1) { saveProgress(media = movie, progress = 7000L) }
+        }
+
+    }
+
+    context("failure after launch") {
+
+        test("falls back to the Internal player on the launched Media, without retrying the External one") {
+            playback.play(movie, forceInternal = false)
+            playback.onExternalFailure(RuntimeException("crash"))
+            playback.internalPlayerRequests.first() shouldBe movie
+            adapter.launched shouldBe listOf(movie)
+        }
+
+        test("clears the pending launch: a later result records nothing and the fallback happens once") {
+            playback.play(movie, forceInternal = false)
+            playback.onExternalFailure()
+            playback.onExternalFailure()
+            playback.onExternalResult(5000L)
+            coVerify(exactly = 0) { saveProgress(any(), any(), any()) }
+            playback.internalPlayerRequests.first() shouldBe movie
+            withTimeoutOrNull(100) { playback.internalPlayerRequests.first() } shouldBe null
+        }
+
+        test("a failure with no pending launch requests nothing") {
+            playback.onExternalFailure()
+            withTimeoutOrNull(100) { playback.internalPlayerRequests.first() } shouldBe null
+        }
+
+        test("a plain result (user cancel, no position) requests no fallback") {
+            playback.play(movie, forceInternal = false)
+            playback.onExternalResult(null)
+            withTimeoutOrNull(100) { playback.internalPlayerRequests.first() } shouldBe null
         }
 
     }

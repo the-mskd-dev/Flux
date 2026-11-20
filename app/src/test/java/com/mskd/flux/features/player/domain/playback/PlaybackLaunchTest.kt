@@ -121,6 +121,15 @@ class PlaybackLaunchTest : FunSpec({
             coVerify(exactly = 0) { saveProgress(media = movie, progress = any()) }
         }
 
+        test("known limit: Media A then Media B launched, one result is recorded on B, once") {
+            playback.play(movie, forceInternal = false)
+            playback.play(episode, forceInternal = false)
+            playback.onExternalResult(5000L)
+            playback.onExternalResult(6000L)
+            coVerify(exactly = 1) { saveProgress(any(), any(), any()) }
+            coVerify(exactly = 1) { saveProgress(media = episode, progress = 5000L) }
+        }
+
         test("a result is recorded at most once") {
             playback.play(movie, forceInternal = false)
             playback.onExternalResult(5000L)

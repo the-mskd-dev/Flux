@@ -6,7 +6,7 @@
 
 **Status:** ready-for-agent
 
-- [ ] Story 20 and the story 28 note in `specs.md` are rewritten to state the limit: with two External players open, the first result is recorded on the newest launch's Media
-- [ ] Decide and record whether to also reduce the risk cheaply (for example ignore a second external `play()` within a short window); implement only if trivial
-- [ ] Module test documents the behaviour: Media A then Media B launched, one result, recorded on B, recorded at most once
-- [ ] `./gradlew :app:testFossDebugUnitTest` passes
+- [x] Story 20 and the story 28 note in `specs.md` are rewritten to state the limit: with two External players open, the first result is recorded on the newest launch's Media
+- [x] Decide and record whether to also reduce the risk cheaply (for example ignore a second external `play()` within a short window); implement only if trivial
+- [x] Module test documents the behaviour: Media A then Media B launched, one result, recorded on B, recorded at most once
+- [x] `./gradlew :app:testFossDebugUnitTest` passes

@@ -31,7 +31,7 @@ For the user nothing changes visually: the same Media plays in the same player, 
 17. As a viewer, I want the Media title passed to the external player, so that it shows the right name.
 18. As a viewer, I want the external player to be allowed to read my UserFile, so that the file opens without me granting anything manually.
 19. As a viewer, I want the position reported by the external player when I close it to be saved as the Progress, so that I can resume later.
-20. As a viewer, I want that position saved on the Media I launched, not on another one, so that my Progress stays correct even if the page changed meanwhile.
+20. As a viewer, I want that position saved on the Media I launched, not on another one, so that my Progress stays correct even if the page changed meanwhile. (Known limit: the External player's result carries no launch id. If two External players are open at once, the first result received is recorded on the newest launch's Media, and the older launch is forgotten. It is recorded at most once.)
 21. As a viewer, I want the Status of the Media (to watch, in progress, watched) updated from the reported position, so that my Catalog stays accurate.
 22. As a viewer, I want the Artwork Status summary to follow, so that a Show shows the right overall state.
 23. As a viewer, I want the Next Episode logic and History to behave as for the internal player when the external player reports a position, so that both paths feel identical.
@@ -39,7 +39,7 @@ For the user nothing changes visually: the same Media plays in the same player, 
 25. As a viewer, I want the external player's various position formats (long or int, different keys) to be understood, so that the common external players work.
 26. As a viewer, I want the Android foreground service that keeps Flux alive during external playback to start before the launch and stop after the result or failure, so that the system does not kill Flux while I watch.
 27. As a viewer, I want that service stopped even when the launch fails, so that no notification stays stuck.
-28. As a viewer, I want a new play request never to be blocked by an earlier one, so that I am not stuck if an external result was lost. (Taps are not deduplicated: a double tap can open two players; the newest launch replaces the pending one.)
+28. As a viewer, I want a new play request never to be blocked by an earlier one, so that I am not stuck if an external result was lost. (Taps are not deduplicated: a double tap on two different Media can open two players; the newest launch replaces the pending one, so see the limit in story 20. A short-window ignore of a second play was considered and rejected: it needs a clock and would block a legitimate new request, contradicting this story.)
 29. As a viewer, I want the Season page to keep the selected Episode while the external player is open, so that I come back to the same place.
 30. As a viewer, I want the Season page's Spoiler masking to be unaffected by launching playback, so that revealing state is not lost.
 31. As a Private Folder user, I want playback from a Private Artwork to follow the same rules, so that privacy does not change how play works.

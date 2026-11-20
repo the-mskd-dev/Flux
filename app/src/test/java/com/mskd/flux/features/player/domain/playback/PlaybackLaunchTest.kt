@@ -209,6 +209,13 @@ class PlaybackLaunchTest : FunSpec({
             store.take() shouldBe null
         }
 
+        test("a failure after a restart falls back to the Internal player on the persisted Media") {
+            playback.play(movie, forceInternal = false)
+            val restarted = newModule()
+            restarted.onExternalFailure()
+            restarted.internalPlayerRequests.first() shouldBe movie
+        }
+
         test("the persisted launch is cleared once consumed") {
             playback.play(movie, forceInternal = false)
             playback.onExternalResult(5000L)

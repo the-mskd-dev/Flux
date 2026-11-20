@@ -4,14 +4,14 @@
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] `play(media, forceInternal)` returns `OpenInternalPlayer(media)`, `HandedToExternalPlayer` or `Unavailable`; the availability check exists once
-- [ ] Any adapter failure (no player, permission denied, other) yields `OpenInternalPlayer` for the same Media without retrying the External player; failure kind is logged
-- [ ] `onExternalResult(position)` records Progress on the launched Media through the existing progress-saving behaviour; null position or no pending launch records nothing; a new launch replaces the pending one; each result is recorded at most once
-- [ ] Module has no `android.*` dependency; registered in Koin commonMain
-- [ ] Android adapter (app module) builds the view request (start position vs from-start, title, read permission), starts/stops the foreground service around the launch (also on failure), parses the returned position (long/int, several keys)
-- [ ] The activity result launcher is registered once in `MainActivity` and feeds `onExternalResult`; the Movie screen no longer has its own launcher
-- [ ] Movie page drops its external flag Event and external-result Intent; emits one `OpenInternalPlayer(media)` Event only for that outcome
-- [ ] Module test with harness and fake adapter covers the cases in the spec, including result recorded while the page shows another Media; Android adapter JVM tests for extras and parsing; Movie ViewModel test reduced to delegation
+- [x] `play(media, forceInternal)` returns `OpenInternalPlayer(media)`, `HandedToExternalPlayer` or `Unavailable`; the availability check exists once
+- [x] Any adapter failure (no player, permission denied, other) yields `OpenInternalPlayer` for the same Media without retrying the External player; failure kind is logged
+- [x] `onExternalResult(position)` records Progress on the launched Media through the existing progress-saving behaviour; null position or no pending launch records nothing; a new launch replaces the pending one; each result is recorded at most once
+- [x] Module has no `android.*` dependency; registered in Koin commonMain
+- [x] Android adapter (app module) builds the view request (start position vs from-start, title, read permission), starts/stops the foreground service around the launch (also on failure), parses the returned position (long/int, several keys)
+- [x] The activity result launcher is registered once in `MainActivity` and feeds `onExternalResult`; the Movie screen no longer has its own launcher
+- [x] Movie page drops its external flag Event and external-result Intent; emits one `OpenInternalPlayer(media)` Event only for that outcome
+- [x] Module test with harness and fake adapter covers the cases in the spec, including result recorded while the page shows another Media; Android adapter JVM tests for extras and parsing; Movie ViewModel test reduced to delegation
 - [ ] Verified on a device with `adb`: internal, external, and fallback with no player installed

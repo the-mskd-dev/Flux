@@ -53,8 +53,7 @@ class MainActivity : ComponentActivity() {
         externalPlayerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             val position = externalPlayerAdapter.onResult(result.data)
             lifecycleScope.launch { playbackLaunch.onExternalResult(position) }
-        }
-        externalPlayerAdapter.attach(externalPlayerLauncher!!)
+        }.also { externalPlayerAdapter.attach(it) }
 
         setContent {
 

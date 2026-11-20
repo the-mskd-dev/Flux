@@ -5,9 +5,11 @@ import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.report.Trace
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.withContext
 
 /**
  * Playback launch: from "play this Media" to "the Progress reported by the External player is remembered".
@@ -54,9 +56,11 @@ class PlaybackLaunch(
     }
 
     /** The External player reported [position] (null when it reported none). Recorded at most once per launch. */
-    suspend fun onExternalResult(position: Long?) {
-        val media = takePending() ?: return
-        if (position == null) return
+    suspend fun onExternalResult(position: Long?) = withContext(NonCancellable) {
+        // Not cancellable: the pending launch is consumed first, so a cancellation (Activity destroyed) before the
+        // save would lose the Progress for good.
+        val media = takePending() ?: return@withContext
+        if (position == null) return@withContext
         saveProgress(media = media, progress = position)
     }
 
@@ -64,10 +68,11 @@ class PlaybackLaunch(
      * The External player failed after it started (cancelled with an error). Falls back to the Internal player on
      * the launched Media, without retrying the External one. A failure with no pending launch does nothing.
      */
-    suspend fun onExternalFailure(cause: Throwable? = null) {
-        val media = takePending() ?: return
+    suspend fun onExternalFailure(cause: Throwable? = null) = withContext(NonCancellable) {
+        val media = takePending() ?: return@withContext
         Trace.error(TAG, "External player failed after launch", cause)
         internalPlayerChannel.trySend(media)
+        Unit
     }
 
     /**

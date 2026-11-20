@@ -18,7 +18,10 @@ import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
 
@@ -214,6 +217,25 @@ class PlaybackLaunchTest : FunSpec({
             val restarted = newModule()
             restarted.onExternalFailure()
             restarted.internalPlayerRequests.first() shouldBe movie
+        }
+
+        test("cancelling the caller while a result is handled still records the Progress") {
+            playback.play(movie, forceInternal = false)
+            val lookupStarted = CompletableDeferred<Unit>()
+            val release = CompletableDeferred<Unit>()
+            coEvery { database.getMovie(movie.artworkId) } coAnswers {
+                lookupStarted.complete(Unit)
+                release.await()
+                movie
+            }
+            val caller = launch(Dispatchers.Default) { playback.onExternalResult(5000L) }
+            lookupStarted.await()
+            caller.cancel() // Activity destroyed after the pending launch was consumed
+            release.complete(Unit)
+            caller.join()
+            coVerify(exactly = 1) { saveProgress(media = movie, progress = 5000L) }
+            playback.onExternalResult(6000L) // and a retry cannot record it twice
+            coVerify(exactly = 1) { saveProgress(any(), any(), any()) }
         }
 
         test("the persisted launch is cleared once consumed") {

@@ -22,7 +22,6 @@ import com.mskd.flux.features.catalog.domain.sync.step.TranslationStep
 import com.mskd.flux.features.catalog.domain.sync.step.UserChoicesResetStep
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.catalog.domain.usecase.syncGenres.SyncGenresUseCase
-import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
 import com.mskd.flux.features.catalog.presentation.CatalogViewModel
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
@@ -75,17 +74,6 @@ val moduleCatalog = module {
 
     singleOf(::SyncCatalogUseCase)
     singleOf(::SyncGenresUseCase)
-
-    single<UpdateLanguageUseCase> {
-        UpdateLanguageUseCase(
-            api = get(),
-            database = get(),
-            settings = get(),
-            coordinator = get(),
-            syncGenresUseCase = get(),
-            imagesPrefetchManager = get(),
-        )
-    }
 
     single<CatalogDataStore> {
         CatalogDataStoreImpl(

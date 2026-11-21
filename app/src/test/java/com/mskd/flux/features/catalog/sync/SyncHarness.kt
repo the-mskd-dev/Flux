@@ -22,7 +22,6 @@ import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.model.SyncType
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
-import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
 import com.mskd.flux.features.catalog.fake.FakeCatalogSyncCoordinator
 import com.mskd.flux.features.catalog.moduleCatalog
 import com.mskd.flux.features.files.domain.datasource.FilesDataSource
@@ -140,8 +139,6 @@ internal class SyncHarness(tmdbToken: String = "test-token", tmdbMaxRequests: In
 
     private val useCase: SyncCatalogUseCase = koin.get()
 
-    private val updateLanguageUseCase: UpdateLanguageUseCase = koin.get()
-
     /** The Catalog, as persisted in the database. */
     val catalog: DatabaseRepository = koin.get()
 
@@ -209,7 +206,7 @@ internal class SyncHarness(tmdbToken: String = "test-token", tmdbMaxRequests: In
     /** Changes the data language like the Settings do, without waiting for the Catalog to be updated. */
     suspend fun requestDataLanguageChange(language: Language) {
         settings.setDataLanguage(language)
-        updateLanguageUseCase()
+        requestLanguageChangeSync()
     }
 
     fun requestLightSync() = useCase(type = SyncType.LIGHT)

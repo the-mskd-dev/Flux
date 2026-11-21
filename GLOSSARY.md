@@ -75,7 +75,7 @@ Image shown at the top of an Artwork page: its Backdrop, or its Poster when the 
 _Avoid_: Header image, banner, bannière
 
 **Custom image**:
-Backdrop, Poster or Logo chosen by the user in the Gallery to replace the TMDB one. The custom Backdrop replaces the Backdrop of the Artwork image; the custom Poster replaces the Poster of the Artwork image (blurred header) and the Artwork thumbnail in the Catalog, the search and the Private Folder; the custom Logo replaces the Logo of the Artwork page. An Artwork, Movie or Show, has at most one custom Backdrop, one custom Poster and one custom Logo. It is kept by the Light sync and cleared by the Full sync and the Identification reset. A Manual identification does not carry over the one of the source Artwork; the target Artwork keeps its own if it was already in the Catalog.
+Backdrop, Poster or Logo chosen by the user in the Gallery to replace the TMDB one. The custom Backdrop replaces the Backdrop of the Artwork image; the custom Poster replaces the Poster of the Artwork image (blurred header) and the Artwork thumbnail in the Catalog, the search and the Private Folder; the custom Logo replaces the Logo of the Artwork page. An Artwork, Movie or Show, has at most one custom Backdrop, one custom Poster and one custom Logo. It is kept by the Light sync and the Language change, and cleared by the Full sync and the Identification reset. A Manual identification does not carry over the one of the source Artwork; the target Artwork keeps its own if it was already in the Catalog.
 _Avoid_: Image personnalisée, Affiche personnalisée, override
 
 **Gallery**:
@@ -131,7 +131,7 @@ Device folder that the user entrusted to Flux to look for UserFile in it.
 _Avoid_: Source, directory
 
 **Sync**:
-Operation that walks the UserFolder and matches each UserFile with a TMDB Artwork to align the Catalog with the files and the TMDB data.
+Operation that aligns the Catalog with the UserFolder and TMDB data. There are three Sync kinds: Light sync, Full sync, and Language change.
 _Avoid_: Synchro, Scan, refresh, import, matching
 
 **Private Artwork**:
@@ -229,13 +229,21 @@ _Avoid_: Synchro légère, incremental sync, onlyNew
 An explicitly requested Sync that fetches the TMDB data of every file again.
 _Avoid_: Synchro complète, resync
 
+**Language change**:
+A Sync requested when the data language changes: it translates the Catalog, refreshes Genres, searches Logos again in the new language, and prefetches Artwork images, without scanning the UserFolder, removing Missing files, or resetting Custom images or Manual identification.
+_Avoid_: Language update, locale sync
+
 **Sync progress**:
 The completion percentage of a Sync, computed from the units of work declared by its Sync steps and Enrichments; it never goes backwards.
 _Avoid_: Progression de synchro
 
 **Sync step**:
-A global processing of the Sync (scan, removal of Missing files, genres, catalog, finalization…) that declares its work, runs it and signals its progress.
+A global processing of the Sync (scan, removal of Missing files, genres, catalog, translation, logos, finalization…) that declares its work, runs it and signals its progress.
 _Avoid_: Étape de synchro, Fetcher, resolver
+
+**Translation**:
+A Sync step that runs during a Language change to update the title and description of every Movie, Show, Season and Episode in the Catalog (including Private Artwork and Unavailable Media, excluding the Unknown Artwork) into the selected data language, keeping previous values for missing or blank fields and recording no Failed file on lookup error.
+_Avoid_: Language update, translation enrichment
 
 **Enrichment**:
 A piece of data fetched for an Artwork during the catalog Sync step (identification, details, seasons, translations, credits, durations); adding a TMDB piece of data almost always means adding an Enrichment.

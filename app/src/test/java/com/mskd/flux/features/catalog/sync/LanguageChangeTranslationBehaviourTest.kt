@@ -173,6 +173,48 @@ class LanguageChangeTranslationBehaviourTest : FunSpec({
 
     }
 
+    test("a missing translated description field keeps the previous description while updating the title") {
+
+        // Given
+        harness.deviceStorage.availableFiles = listOf(harness.deviceFile("Forgotten Tale (2015).mkv"))
+        harness.lightSync()
+
+        // When: German has title "Vergessene Geschichte" and omitted overview
+        harness.settings.setDataLanguage(Language.GERMAN)
+        harness.languageChangeSync()
+
+        // Then
+        val movie = harness.catalog.getMovie(artworkId = 990002L)!!
+        movie.title shouldBe "Vergessene Geschichte"
+        movie.description shouldBe "A tale nobody translated."
+
+        val artwork = harness.catalog.getArtwork(artworkId = 990002L)!!
+        artwork.title shouldBe "Vergessene Geschichte"
+        artwork.description shouldBe "A tale nobody translated."
+
+    }
+
+    test("a missing translated title field keeps the previous title while updating the description") {
+
+        // Given
+        harness.deviceStorage.availableFiles = listOf(harness.deviceFile("Forgotten Tale (2015).mkv"))
+        harness.lightSync()
+
+        // When: Portuguese has omitted title and overview "Um conto esquecido."
+        harness.settings.setDataLanguage(Language.PORTUGUESE)
+        harness.languageChangeSync()
+
+        // Then
+        val movie = harness.catalog.getMovie(artworkId = 990002L)!!
+        movie.title shouldBe "Forgotten Tale"
+        movie.description shouldBe "Um conto esquecido."
+
+        val artwork = harness.catalog.getArtwork(artworkId = 990002L)!!
+        artwork.title shouldBe "Forgotten Tale"
+        artwork.description shouldBe "Um conto esquecido."
+
+    }
+
     test("a failed translation lookup leaves that item untouched without stopping the others or recording a Failed file") {
 
         // Given

@@ -20,6 +20,24 @@
         "title": "",
         "overview": "Una storia dimenticata."
       }
+    },
+    {
+      "iso_639_1": "de",
+      "iso_3166_1": "DE",
+      "name": "Deutsch",
+      "english_name": "German",
+      "data": {
+        "title": "Vergessene Geschichte"
+      }
+    },
+    {
+      "iso_639_1": "pt",
+      "iso_3166_1": "PT",
+      "name": "Português",
+      "english_name": "Portuguese",
+      "data": {
+        "overview": "Um conto esquecido."
+      }
     }
   ]
 }

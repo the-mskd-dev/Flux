@@ -9,7 +9,6 @@ import com.mskd.flux.core.model.language.Language
 import com.mskd.flux.features.catalog.domain.model.SyncType
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
-import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import com.mskd.flux.features.privateFolder.domain.datastore.PrivateFolderDataStore
 import com.mskd.flux.features.privateFolder.domain.usecase.disablePrivateFolder.DisablePrivateFolderUseCase
@@ -31,6 +30,7 @@ import io.kotest.property.exhaustive.boolean
 import io.mockk.clearMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.coVerifyOrder
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -47,7 +47,6 @@ class SettingsViewModelTest : FunSpec({
     lateinit var privateFolderDataStore: PrivateFolderDataStore
     lateinit var imagesPrefetchManager: ImagesPrefetchManager
     lateinit var syncCatalogUseCase: SyncCatalogUseCase
-    lateinit var updateLanguageUseCase: UpdateLanguageUseCase
     lateinit var enablePrivateFolderUseCase: EnablePrivateFolderUseCase
     lateinit var disablePrivateFolderUseCase: DisablePrivateFolderUseCase
     lateinit var setIncludeNsfwUseCase: SetIncludeNsfwUseCase
@@ -81,7 +80,6 @@ class SettingsViewModelTest : FunSpec({
         syncCatalogUseCase = mockk(relaxed = true) {
             every { state } returns syncCatalogFlow
         }
-        updateLanguageUseCase = mockk(relaxed = true)
         enablePrivateFolderUseCase = mockk(relaxed = true)
         disablePrivateFolderUseCase = mockk(relaxed = true)
         setIncludeNsfwUseCase = mockk(relaxed = true)
@@ -95,7 +93,6 @@ class SettingsViewModelTest : FunSpec({
             privateFolderDataStore = privateFolderDataStore,
             imagesPrefetchManager = imagesPrefetchManager,
             syncCatalogUseCase = syncCatalogUseCase,
-            updateLanguageUseCase = updateLanguageUseCase,
             enablePrivateFolderUseCase = enablePrivateFolderUseCase,
             disablePrivateFolderUseCase = disablePrivateFolderUseCase,
             setIncludeNsfwUseCase = setIncludeNsfwUseCase,
@@ -119,7 +116,6 @@ class SettingsViewModelTest : FunSpec({
                 privateFolderDataStore = privateFolderDataStore,
                 imagesPrefetchManager = imagesPrefetchManager,
                 syncCatalogUseCase = syncCatalogUseCase,
-                updateLanguageUseCase = updateLanguageUseCase,
                 enablePrivateFolderUseCase = enablePrivateFolderUseCase,
                 disablePrivateFolderUseCase = disablePrivateFolderUseCase,
                 setIncludeNsfwUseCase = setIncludeNsfwUseCase,
@@ -414,7 +410,7 @@ class SettingsViewModelTest : FunSpec({
 
         }
 
-        test("SetLanguageValue should set value in datastore and then close dialog") {
+        test("SetLanguageValue should save language in datastore, request a Language change Sync, and close dialog") {
 
             // Given
             val language = Language.FRENCH.code
@@ -427,7 +423,10 @@ class SettingsViewModelTest : FunSpec({
 
                 // Then
                 val state = awaitItem()
-                coVerify { settingsDataStore.setDataLanguage(Language.FRENCH) }
+                coVerifyOrder {
+                    settingsDataStore.setDataLanguage(Language.FRENCH)
+                    syncCatalogUseCase(type = SyncType.LANGUAGE_CHANGE)
+                }
                 state.languageValue shouldBe language
                 state.optionsDialog shouldBe null
 
@@ -436,7 +435,7 @@ class SettingsViewModelTest : FunSpec({
             }
         }
 
-        test("SetLanguageValue should set value in datastore and then close dialog") {
+        test("SetLanguageValue with null should reset data language to system, request a Language change Sync, and close dialog") {
 
             // Given
             viewModel.uiState.test {
@@ -448,7 +447,10 @@ class SettingsViewModelTest : FunSpec({
 
                 // Then
                 val state = awaitItem()
-                coVerify { settingsDataStore.setDataLanguage(null) }
+                coVerifyOrder {
+                    settingsDataStore.setDataLanguage(null)
+                    syncCatalogUseCase(type = SyncType.LANGUAGE_CHANGE)
+                }
                 state.languageValue shouldBe null
                 state.optionsDialog shouldBe null
 

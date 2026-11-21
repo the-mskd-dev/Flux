@@ -34,7 +34,7 @@ class LanguageChangeLogoBehaviourTest : FunSpec({
         harness.tmdb.resetCalls()
     }
 
-    test("the Logo of every Artwork is chosen again in the new language, without any Sync") {
+    test("the Logo of every Artwork is chosen again in the new language, without scanning files or fetching Artwork details") {
 
         // Given
         englishCatalog("Inception (2010).mkv", "Breaking Bad S01E01.mkv")

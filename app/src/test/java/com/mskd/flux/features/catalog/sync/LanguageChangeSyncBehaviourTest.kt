@@ -273,4 +273,44 @@ class LanguageChangeSyncBehaviourTest : FunSpec({
 
     }
 
+    test("changing data language updates translations, Genres, and Logos, prefetches images, and is idempotent when repeated") {
+
+        // Given
+        harness.settings.setDataLanguage(Language.ENGLISH)
+        harness.deviceStorage.availableFiles = listOf(
+            harness.deviceFile("Forbidden Film (2020).mkv"),
+            harness.deviceFile("Inception (2010).mkv"),
+            harness.deviceFile("Breaking Bad S01E01.mkv"),
+        )
+        harness.fullSync()
+        val prefetchesBefore = harness.prefetch.prefetchCount
+
+        // When
+        harness.changeDataLanguage(Language.FRENCH)
+
+        // Then
+        harness.catalog.getMovie(artworkId = 990001L)!!.title shouldBe "Film Interdit"
+        harness.catalog.getArtwork(artworkId = 990001L)!!.title shouldBe "Film Interdit"
+        harness.catalog.getSeasons(artworkId = 1396L).single { it.season == 1 }.title shouldBe "Saison 1"
+        harness.catalog.getEpisodes(artworkId = 1396L).single { it.season == 1 && it.number == 1 }.title shouldBe "Chute libre"
+        harness.details.flowGenres().first().map { it.name } shouldContainAll listOf("Science-Fiction", "Drame")
+        harness.catalog.getArtwork(artworkId = 27205L)!!.logoPath shouldBe "/inception-fr-best.png"
+        harness.prefetch.prefetchCount shouldBe prefetchesBefore + 1
+        harness.states.last() shouldBe SyncState.Idle(failedFiles = 0)
+
+        // When: repeating the same data language
+        harness.changeDataLanguage(Language.FRENCH)
+
+        // Then
+        harness.catalog.getMovie(artworkId = 990001L)!!.title shouldBe "Film Interdit"
+        harness.catalog.getArtwork(artworkId = 990001L)!!.title shouldBe "Film Interdit"
+        harness.catalog.getSeasons(artworkId = 1396L).single { it.season == 1 }.title shouldBe "Saison 1"
+        harness.catalog.getEpisodes(artworkId = 1396L).single { it.season == 1 && it.number == 1 }.title shouldBe "Chute libre"
+        harness.details.flowGenres().first().map { it.name } shouldContainAll listOf("Science-Fiction", "Drame")
+        harness.catalog.getArtwork(artworkId = 27205L)!!.logoPath shouldBe "/inception-fr-best.png"
+        harness.prefetch.prefetchCount shouldBe prefetchesBefore + 2
+        harness.states.last() shouldBe SyncState.Idle(failedFiles = 0)
+
+    }
+
 })

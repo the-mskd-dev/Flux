@@ -3,6 +3,7 @@ package com.mskd.flux.features.sources.presentation
 import app.cash.turbine.test
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.core.model.files.FileSource
+import com.mskd.flux.features.catalog.domain.model.SyncKind
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.sources.domain.model.UserFolder
@@ -93,7 +94,7 @@ class SourcesViewModelTest : FunSpec({
 
     //region Navigation
 
-    test("OnBackTap - after SaveFolder, calls syncCatalogUseCase with onlyNew=true") {
+    test("OnBackTap - after SaveFolder, calls syncCatalogUseCase with Light sync") {
         val syncCatalogUseCase = mockk<SyncCatalogUseCase>(relaxed = true)
         val viewModel = createViewModel(syncCatalogUseCase = syncCatalogUseCase)
 
@@ -106,7 +107,7 @@ class SourcesViewModelTest : FunSpec({
             awaitItem() shouldBe SourcesEvent.BackToPreviousScreen
         }
 
-        coVerify { syncCatalogUseCase(onlyNew = true) }
+        coVerify { syncCatalogUseCase(kind = SyncKind.LIGHT) }
     }
 
     test("OnBackTap - without SaveFolder, doesn't call syncCatalogUseCase") {
@@ -119,7 +120,7 @@ class SourcesViewModelTest : FunSpec({
             awaitItem() shouldBe SourcesEvent.BackToPreviousScreen
         }
 
-        coVerify(exactly = 0) { syncCatalogUseCase(onlyNew = any()) }
+        coVerify(exactly = 0) { syncCatalogUseCase(kind = any()) }
     }
 
     test("OnNextTap - navigate to Token if needed") {

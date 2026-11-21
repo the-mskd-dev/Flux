@@ -9,7 +9,7 @@ interface SyncStep {
     /** Whether the step runs in this Sync. */
     fun isEnabled(context: SyncContext): Boolean = true
 
-    /** Estimated units of work, deduced from the file names or the Catalog. Called once the scan is done, before any step runs. */
+    /** Estimated units of work, deduced from the file names or the Catalog. Called before any remaining Sync step runs (after the scan step when enabled). */
     suspend fun units(context: SyncContext): Int
 
     suspend fun run(context: SyncContext)

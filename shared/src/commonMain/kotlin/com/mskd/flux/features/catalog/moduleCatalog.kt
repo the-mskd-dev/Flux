@@ -16,6 +16,7 @@ import com.mskd.flux.features.catalog.domain.sync.step.GenresStep
 import com.mskd.flux.features.catalog.domain.sync.step.LogosStep
 import com.mskd.flux.features.catalog.domain.sync.step.MissingFilesStep
 import com.mskd.flux.features.catalog.domain.sync.step.NsfwPrivateStep
+import com.mskd.flux.features.catalog.domain.sync.step.PrefetchImagesStep
 import com.mskd.flux.features.catalog.domain.sync.step.ScanStep
 import com.mskd.flux.features.catalog.domain.sync.step.UserChoicesResetStep
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
@@ -35,6 +36,7 @@ val moduleCatalog = module {
     singleOf(::NsfwPrivateStep)
     singleOf(::LogosStep)
     singleOf(::FinalizationStep)
+    singleOf(::PrefetchImagesStep)
 
     single {
         CatalogStep(
@@ -59,6 +61,7 @@ val moduleCatalog = module {
                 get<LogosStep>(),
                 get<NsfwPrivateStep>(),
                 get<FinalizationStep>(),
+                get<PrefetchImagesStep>(),
             )
         )
     }

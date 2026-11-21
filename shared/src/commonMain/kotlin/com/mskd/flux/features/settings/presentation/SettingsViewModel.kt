@@ -7,6 +7,7 @@ import com.mskd.flux.core.model.core.Flavor
 import com.mskd.flux.core.model.core.FluxOptionsDialogItem
 import com.mskd.flux.core.model.core.FluxOptionsDialogState
 import com.mskd.flux.core.model.language.Language
+import com.mskd.flux.features.catalog.domain.model.SyncKind
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
@@ -281,7 +282,7 @@ class SettingsViewModel(
     }
 
     private fun proceedFullSync() {
-        syncCatalogUseCase(onlyNew = false)
+        syncCatalogUseCase(kind = SyncKind.FULL)
         showSettingsDialog(null)
     }
 

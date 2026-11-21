@@ -17,6 +17,7 @@ import com.mskd.flux.utils.Constants
 import com.mskd.flux.features.catalog.domain.datastore.CatalogDataStore
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.domain.model.CatalogViewMode
+import com.mskd.flux.features.catalog.domain.model.SyncKind
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.history.domain.model.HistoryEntry
@@ -249,7 +250,7 @@ class CatalogViewModelTest : FunSpec({
 
         // Then
         verify {
-            syncCatalogUseCaseSpy(onlyNew = true)
+            syncCatalogUseCaseSpy(kind = SyncKind.LIGHT)
         }
     }
 
@@ -266,7 +267,7 @@ class CatalogViewModelTest : FunSpec({
 
         // Then
         verify(exactly = 1) {
-            syncCatalogUseCaseSpy(onlyNew = true)
+            syncCatalogUseCaseSpy(kind = SyncKind.LIGHT)
         }
 
     }
@@ -283,7 +284,7 @@ class CatalogViewModelTest : FunSpec({
 
         // Then
         verify(exactly = 1) {
-            syncCatalogUseCaseSpy(onlyNew = true)
+            syncCatalogUseCaseSpy(kind = SyncKind.LIGHT)
         }
     }
 
@@ -303,7 +304,7 @@ class CatalogViewModelTest : FunSpec({
 
         // Then
         verify(exactly = 1) {
-            syncCatalogUseCaseSpy(onlyNew = false)
+            syncCatalogUseCaseSpy(kind = SyncKind.FULL)
         }
     }
 

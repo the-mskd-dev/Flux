@@ -5,9 +5,9 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
 /**
- * Progression de synchro: units done / units declared, all with the same weight (≈ one call).
+ * Sync progress: units done / units declared, all with the same weight (≈ one call).
  *
- * Steps and Enrichissements [declare] their estimated work and may [declare] more along the way. The progress
+ * Sync steps and Enrichments [declare] their estimated work and may [declare] more along the way. The progress
  * never goes backwards and stays under 100 % until [finish].
  */
 class SyncProgress(private val coordinator: CatalogSyncCoordinator) {

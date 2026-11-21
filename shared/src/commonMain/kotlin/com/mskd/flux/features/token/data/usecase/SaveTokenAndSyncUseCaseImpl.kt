@@ -1,6 +1,7 @@
 package com.mskd.flux.features.token.data.usecase
 
 import com.mskd.flux.core.network.tmdb.data.service.TMDBService
+import com.mskd.flux.features.catalog.domain.model.SyncKind
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.features.token.domain.model.AuthenticateResult
@@ -22,7 +23,7 @@ class SaveTokenAndSyncUseCaseImpl(
 
             if (authentication.success) {
 
-                syncCatalogUseCase(onlyNew = false)
+                syncCatalogUseCase(kind = SyncKind.FULL)
                 AuthenticateResult.SUCCESS
 
             } else {

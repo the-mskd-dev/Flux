@@ -5,6 +5,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.mskd.flux.core.database.data.FluxDatabase
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
+import com.mskd.flux.core.database.domain.repository.DetailsRepository
 import com.mskd.flux.core.database.moduleDatabase
 import com.mskd.flux.core.datastore.InMemoryPreferencesDataStore
 import com.mskd.flux.core.datastore.data.UserDataStoreImpl
@@ -18,6 +19,7 @@ import com.mskd.flux.core.network.tmdb.data.moduleTmdb
 import com.mskd.flux.core.network.tmdb.data.tmdbHttpClient
 import com.mskd.flux.di.Qualifiers
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
+import com.mskd.flux.features.catalog.domain.model.SyncKind
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
@@ -143,6 +145,8 @@ internal class SyncHarness(tmdbToken: String = "test-token", tmdbMaxRequests: In
     /** The Catalog, as persisted in the database. */
     val catalog: DatabaseRepository = koin.get()
 
+    val details: DetailsRepository = koin.get()
+
     val people: PeopleRepository = koin.get()
 
     val privateFolder: PrivateFolderDataStore = koin.get()
@@ -190,6 +194,12 @@ internal class SyncHarness(tmdbToken: String = "test-token", tmdbMaxRequests: In
         awaitIdle()
     }
 
+    /** Runs a Language change Sync and waits for its end. */
+    suspend fun languageChangeSync() {
+        requestLanguageChangeSync()
+        awaitIdle()
+    }
+
     /** Changes the data language like the Settings do, then waits for the Catalog to be updated. */
     suspend fun changeDataLanguage(language: Language) {
         requestDataLanguageChange(language)
@@ -202,9 +212,11 @@ internal class SyncHarness(tmdbToken: String = "test-token", tmdbMaxRequests: In
         updateLanguageUseCase()
     }
 
-    fun requestLightSync() = useCase(onlyNew = true)
+    fun requestLightSync() = useCase(kind = SyncKind.LIGHT)
 
-    fun requestFullSync() = useCase(onlyNew = false)
+    fun requestFullSync() = useCase(kind = SyncKind.FULL)
+
+    fun requestLanguageChangeSync() = useCase(kind = SyncKind.LANGUAGE_CHANGE)
 
     /** Waits for the Sync to end, along with the background work it started. */
     suspend fun awaitIdle() = withTimeout(10.seconds) {

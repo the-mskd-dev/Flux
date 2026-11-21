@@ -6,6 +6,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +33,7 @@ import com.mskd.flux.features.show.ui.ShowScreen
 import com.mskd.flux.features.token.ui.TokenScreen
 import com.mskd.flux.navigation.domain.FluxNavigator
 import com.mskd.flux.navigation.domain.Route
+import com.mskd.flux.navigation.domain.identifiedDestination
 import com.mskd.flux.navigation.domain.navConfig
 import com.mskd.flux.navigation.domain.navigateToTab
 import com.mskd.flux.navigation.domain.popScreen
@@ -126,7 +128,7 @@ fun FluxNavigation(
                     ShowScreen(
                         navigate = { route -> navigator.navigate(route) },
                         onBack = { navigator.onBack() },
-                        replaceShow = { artworkId -> navigator.replace(entry.copy(artworkId = artworkId, rgb = null)) },
+                        onIdentified = { artworkId, type -> navigator.replace(identifiedDestination(artworkId = artworkId, type = type)) },
                         artworkId = entry.artworkId,
                         colorScheme = createColorScheme(
                             theme = customization.uiTheme,
@@ -183,6 +185,10 @@ fun FluxNavigation(
                         },
                         fromSetup = entry.fromSetup
                     )
+                }
+                entry<Route.Unrestorable> {
+                    // A page saved by a previous version: it leaves the back stack as soon as it is shown
+                    LaunchedEffect(Unit) { navigator.onBack() }
                 }
                 entry<Route.Message> {
                     MessageScreen(

@@ -147,6 +147,7 @@ fun SettingsContent(
 
             SettingsAppInfoSection(
                 appVersion = state.appVersion,
+                showPlayStore = state.showPlayStore,
                 sendIntent = sendIntent
             )
 

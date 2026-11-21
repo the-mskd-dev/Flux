@@ -8,6 +8,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,6 +20,8 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.DividerDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.TextButton
@@ -99,11 +102,14 @@ fun FluxDialogHost(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(MaterialTheme.colorScheme.surfaceContainer)
-                        .padding(FluxUI.Space.large),
-                    verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
+                        .padding(horizontal = FluxUI.Space.large),
                 ) {
 
                     Text.Content.Title(
+                        modifier = Modifier.padding(
+                            top = FluxUI.Space.large,
+                            bottom = FluxUI.Space.medium
+                        ),
                         text = entry?.title,
                     )
 
@@ -113,7 +119,7 @@ fun FluxDialogHost(
 
                     Row(
                         modifier = Modifier
-                            .padding(top = FluxUI.Space.small)
+                            .padding(vertical = FluxUI.Space.large)
                             .fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small, Alignment.End),
                     ) {

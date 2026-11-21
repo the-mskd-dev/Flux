@@ -9,6 +9,7 @@ import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.core.AppInfo
+import com.mskd.flux.core.model.core.Flavor
 import com.mskd.flux.features.catalog.domain.datastore.CatalogDataStore
 import com.mskd.flux.features.catalog.domain.model.CatalogPreferences
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
@@ -35,6 +36,8 @@ import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.report.Trace
 import com.mskd.flux.system.UpdateManager
+import com.mskd.flux.system.UrlLauncher
+import com.mskd.flux.utils.Constants
 import com.mskd.flux.utils.extensions.filterFor
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -43,6 +46,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -59,6 +63,7 @@ class CatalogViewModel(
     private val syncCatalogUseCase: SyncCatalogUseCase,
     private val getHistoryUseCase: GetHistoryUseCase,
     private val appInfo: AppInfo,
+    private val urlLauncher: UrlLauncher,
     private val resolvePlaybackAction: ResolvePlaybackActionUseCase,
     private val recordPlaybackResult: SaveProgressUseCase,
     private val setArtworkPrivacy: SetArtworkPrivacyUseCase
@@ -70,6 +75,9 @@ class CatalogViewModel(
     private val _showSortingSheet = MutableStateFlow(false)
     private val _showViewModeSheet = MutableStateFlow(false)
     private val _showMessageDialog = MutableStateFlow(false)
+
+    // TODO: Remove the Play Store announcement (dialog, flag, view model logic, strings) by March 2027
+    private val _showPlayStorePromo = MutableStateFlow(false)
 
     private var currentMedia: Media? = null
 
@@ -97,9 +105,10 @@ class CatalogViewModel(
 
     private val viewFlow = combine(
         _showSortingSheet,
-        _showViewModeSheet
-    ) { sort, view ->
-        sort to view
+        _showViewModeSheet,
+        _showPlayStorePromo
+    ) { sort, view, promo ->
+        Triple(sort, view, promo)
     }
 
     val uiState: StateFlow<CatalogUiState> = combine(
@@ -108,7 +117,7 @@ class CatalogViewModel(
         preferencesFlow,
         viewFlow,
         _showMessageDialog,
-    ) { (artworks, genres), syncState, preferences, (showSortingSheet, showViewModeSheet), showMessageDialog  ->
+    ) { (artworks, genres), syncState, preferences, (showSortingSheet, showViewModeSheet, showPlayStorePromo), showMessageDialog  ->
 
         if (syncState is SyncState.Syncing && syncState.full) {
 
@@ -136,6 +145,7 @@ class CatalogViewModel(
                     viewMode = preferences.viewMode,
                     showSortingSheet = showSortingSheet,
                     showViewSheet = showViewModeSheet,
+                    showPlayStorePromo = showPlayStorePromo,
                     message = CatalogMessageState(),
                 ),
             )
@@ -153,6 +163,7 @@ class CatalogViewModel(
         viewModelScope.launch {
             syncCatalog()
         }
+        viewModelScope.launch { setUpPlayStorePromo() }
     }
 
     fun handleIntent(intent: CatalogIntent) = viewModelScope.launch {
@@ -185,10 +196,34 @@ class CatalogViewModel(
             is CatalogIntent.DeleteHistoryEntry -> deleteHistoryEntry(entry = intent.entry)
             is CatalogIntent.ShowDetails -> showDetails(media = intent.media)
 
+            // Play Store announcement
+            CatalogIntent.OnPlayStorePromoDismiss -> _showPlayStorePromo.update { false }
+            CatalogIntent.OnPlayStorePromoClick -> {
+                urlLauncher.open(url = Constants.CONTACT.PLAY_STORE)
+                _showPlayStorePromo.update { false }
+            }
+
             // Player
             is CatalogIntent.PlayMedia -> playMedia(media = intent.media, forceInternal = intent.forceInternal)
             is CatalogIntent.OnExternalPlayerResult -> onExternalPlayerResult(intent.progress)
         }
+    }
+
+    // TODO: Remove by March 2027 (announcement)
+    private suspend fun setUpPlayStorePromo() {
+
+        if (appInfo.flavor != Flavor.FOSS) return
+
+        // TODO: Remove this debug override when going to production, so the flag is honored in debug builds too
+        val alreadySeen = !appInfo.isDebug && catalogDataStore.flow.first().playStorePromoSeen
+        if (alreadySeen) return
+
+        _showPlayStorePromo.value = true
+
+        // Mark it as seen as soon as it is really displayed (Content state), not on dismissal
+        uiState.first { (it.state as? CatalogState.Content)?.showPlayStorePromo == true }
+        catalogDataStore.setPlayStorePromoSeen()
+
     }
 
     private suspend fun syncCatalog() {

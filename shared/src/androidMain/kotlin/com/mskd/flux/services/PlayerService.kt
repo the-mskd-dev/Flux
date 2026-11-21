@@ -19,6 +19,7 @@ import com.mskd.flux.features.player.data.manager.DecoderManagerHolder
 import com.mskd.flux.features.player.domain.manager.SeekPrecision
 import com.mskd.flux.report.Trace
 import io.github.anilbeesetti.nextlib.media3ext.ffdecoder.DecoderManager
+import io.github.anilbeesetti.nextlib.media3ext.renderer.subtitleDelayMilliseconds
 import org.koin.android.scope.AndroidScopeComponent
 import org.koin.core.scope.Scope
 import org.koin.mp.KoinPlatformTools
@@ -29,9 +30,14 @@ class PlayerService : MediaSessionService(), AndroidScopeComponent {
         private const val TAG = "PlayerService"
         private const val ACTION_SET_SEEK_PRECISION = "com.mskd.flux.SET_SEEK_PRECISION"
         private const val EXTRA_FAST = "fast"
+        private const val ACTION_SET_SUBTITLE_DELAY = "com.mskd.flux.SET_SUBTITLE_DELAY"
+        private const val EXTRA_DELAY_MS = "delayMs"
 
         fun setSeekPrecisionCommand(precision: SeekPrecision): SessionCommand =
             SessionCommand(ACTION_SET_SEEK_PRECISION, bundleOf(EXTRA_FAST to (precision == SeekPrecision.FAST)))
+
+        fun setSubtitleDelayCommand(delayMs: Long): SessionCommand =
+            SessionCommand(ACTION_SET_SUBTITLE_DELAY, bundleOf(EXTRA_DELAY_MS to delayMs))
     }
 
     override val scope: Scope by lazy {
@@ -68,6 +74,7 @@ class PlayerService : MediaSessionService(), AndroidScopeComponent {
                 .setAvailableSessionCommands(
                     MediaSession.ConnectionResult.DEFAULT_SESSION_AND_LIBRARY_COMMANDS.buildUpon()
                         .add(SessionCommand(ACTION_SET_SEEK_PRECISION, Bundle.EMPTY))
+                        .add(SessionCommand(ACTION_SET_SUBTITLE_DELAY, Bundle.EMPTY))
                         .build()
                 )
                 .build()
@@ -85,6 +92,11 @@ class PlayerService : MediaSessionService(), AndroidScopeComponent {
                 (session.player as? ExoPlayer)?.setSeekParameters(
                     if (fast) SeekParameters.CLOSEST_SYNC else SeekParameters.EXACT
                 )
+                return Futures.immediateFuture(SessionResult(SessionResult.RESULT_SUCCESS))
+            }
+            if (customCommand.customAction == ACTION_SET_SUBTITLE_DELAY) {
+                val delayMs = customCommand.customExtras.getLong(EXTRA_DELAY_MS)
+                (session.player as? ExoPlayer)?.subtitleDelayMilliseconds = delayMs
                 return Futures.immediateFuture(SessionResult(SessionResult.RESULT_SUCCESS))
             }
             return super.onCustomCommand(session, controller, customCommand, args)

@@ -10,10 +10,14 @@ interface CatalogDataStore {
 
     suspend fun setSortingMode(mode: CatalogSortingMode)
     suspend fun setViewMode(mode: CatalogViewMode)
+    // TODO: Remove with the Play Store announcement by March 2027
+    suspend fun setPlayStorePromoSeen()
 
     data class State(
         val sortingMode: CatalogSortingMode = CatalogSortingMode.LAST_MODIFICATION,
         val viewMode: CatalogViewMode = CatalogViewMode.BY_TYPE,
+        // TODO: Remove with the Play Store announcement by March 2027
+        val playStorePromoSeen: Boolean = false,
     )
 
 }

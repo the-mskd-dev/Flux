@@ -38,6 +38,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.domain.model.CatalogViewMode
 import com.mskd.flux.features.catalog.presentation.CatalogEvent
@@ -51,11 +52,13 @@ import com.mskd.flux.mockups.DetailsMockup
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.navigation.domain.Route.Player
+import com.mskd.flux.navigation.domain.artworkPage
 import com.mskd.flux.screens.catalog.composable.CatalogEmptyContent
 import com.mskd.flux.screens.catalog.composable.CatalogHeader
 import com.mskd.flux.screens.catalog.composable.CatalogMenu
 import com.mskd.flux.screens.catalog.composable.CatalogViewMenu
 import com.mskd.flux.screens.catalog.composable.history.CatalogHistory
+import com.mskd.flux.screens.catalog.composable.promo.CatalogPlayStorePromoDialog
 import com.mskd.flux.screens.catalog.composable.sorting.CatalogSortingSheet
 import com.mskd.flux.screens.catalog.composable.viewMode.CatalogViewModeSheet
 import com.mskd.flux.screens.catalog.composable.viewMode.catalogViewModeGenre
@@ -92,8 +95,8 @@ fun CatalogScreen(
         viewModel.event.collect { event ->
             when (event) {
                 is CatalogEvent.NavigateToSearch -> navigate(Route.Search(withGenre = event.genre, withType = event.category))
-                is CatalogEvent.NavigateToMovie -> navigate(Route.Artwork(artworkId = event.artworkId, season = null, rgb = event.rgb))
-                is CatalogEvent.NavigateToShow -> navigate(Route.Show(artworkId = event.artworkId, rgb = event.rgb))
+                is CatalogEvent.NavigateToMovie -> navigate(artworkPage(artworkId = event.artworkId, type = ContentType.MOVIE, rgb = event.rgb))
+                is CatalogEvent.NavigateToShow -> navigate(artworkPage(artworkId = event.artworkId, type = ContentType.SHOW, rgb = event.rgb))
                 CatalogEvent.NavigateToUnknown -> navigate(Route.UnknownArtworks)
                 CatalogEvent.NavigateToHowTo -> navigate(Route.HowTo)
                 CatalogEvent.NavigateToSettings -> navigate(Route.Settings)
@@ -324,6 +327,12 @@ fun CatalogContent(
         CatalogViewModeSheet(
             isVisible = state.showViewSheet,
             selectedMode = state.viewMode,
+            sendIntent = sendIntent
+        )
+
+        // TODO: Remove the Play Store announcement by March 2027
+        CatalogPlayStorePromoDialog(
+            isVisible = state.showPlayStorePromo,
             sendIntent = sendIntent
         )
 

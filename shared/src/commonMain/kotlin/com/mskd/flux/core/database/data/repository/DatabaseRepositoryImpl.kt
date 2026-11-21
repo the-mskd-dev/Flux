@@ -157,6 +157,10 @@ class DatabaseRepositoryImpl(
         artworksDao.setArtworkCustomPoster(artworkId = artworkId, path = path)
     }
 
+    override suspend fun setArtworkCustomLogo(artworkId: Long, path: String?) {
+        artworksDao.setArtworkCustomLogo(artworkId = artworkId, path = path)
+    }
+
     override suspend fun setArtworkLogo(artworkId: Long, logoPath: String?) {
         artworksDao.setArtworkLogo(artworkId = artworkId, logoPath = logoPath)
     }
@@ -195,6 +199,7 @@ class DatabaseRepositoryImpl(
                 // Nor a Custom image: only an explicit clear does
                 customBackdropPath = entity.customBackdropPath ?: existing[artwork.id]?.customBackdropPath,
                 customPosterPath = entity.customPosterPath ?: existing[artwork.id]?.customPosterPath,
+                customLogoPath = entity.customLogoPath ?: existing[artwork.id]?.customLogoPath,
             )
         })
     }
@@ -269,7 +274,7 @@ class DatabaseRepositoryImpl(
             addAll(seasons.filter { it.isNotBlank() })
         }
 
-        return ImagesPaths(images = images, logos = artworks.map { it.logoPath })
+        return ImagesPaths(images = images, logos = artworks.flatMap { listOf(it.logoPath, it.customLogoPath) })
     }
 
     override suspend fun updateRealPaths(files: List<UserFile>) {

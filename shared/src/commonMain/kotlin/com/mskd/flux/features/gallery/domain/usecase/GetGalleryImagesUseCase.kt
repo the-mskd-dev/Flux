@@ -5,7 +5,7 @@ import com.mskd.flux.core.network.tmdb.domain.repository.ApiRepository
 import com.mskd.flux.features.gallery.domain.model.GalleryImage
 
 /**
- * Lists the images of the Gallery of an Artwork: backdrops and posters mixed, best rated first.
+ * Lists the images of the Gallery of an Artwork: backdrops, posters and logos mixed, best rated first.
  */
 class GetGalleryImagesUseCase(
     private val apiRepository: ApiRepository,

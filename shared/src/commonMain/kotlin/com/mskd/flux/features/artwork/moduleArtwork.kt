@@ -2,8 +2,6 @@ package com.mskd.flux.features.artwork
 
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCaseImpl
-import com.mskd.flux.features.artwork.presentation.ArtworkViewModel
-import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val moduleArtwork = module {
@@ -13,25 +11,6 @@ val moduleArtwork = module {
             database = get(),
             detailsRepository = get(),
             sourcesUseCase = get()
-        )
-    }
-
-    viewModel<ArtworkViewModel> { params ->
-        ArtworkViewModel(
-            artworkId = params.get(),
-            season = params.getOrNull(),
-            filesLauncher = get(),
-            urlLauncher = get(),
-            settingsDataStore = get(),
-            tokenDataStore = get(),
-            catalogSyncCoordinator = get(),
-            changeMediaStatus = get(),
-            markPreviousAsWatched = get(),
-            resetProgress = get(),
-            observeArtworkUseCase = get(),
-            getPeopleUseCase = get(),
-            resolvePlaybackAction = get(),
-            recordPlaybackResult = get()
         )
     }
 

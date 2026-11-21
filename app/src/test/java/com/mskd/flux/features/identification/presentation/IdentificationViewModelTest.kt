@@ -128,7 +128,7 @@ class IdentificationViewModelTest : FunSpec({
 
     }
 
-    test("choosing a result identifies the Artwork, loading meanwhile, then sends the new Artwork") {
+    test("choosing a result identifies the Artwork, loading meanwhile, then sends the new Artwork with its type") {
 
         // Given
         val gate = CompletableDeferred<Result<Long>>()
@@ -144,7 +144,7 @@ class IdentificationViewModelTest : FunSpec({
             viewModel.uiState.value.isIdentifying shouldBe true
             gate.complete(Result.success(remake.id))
             testDispatcher.scheduler.advanceUntilIdle()
-            awaitItem() shouldBe IdentificationEvent.Identified(artworkId = remake.id)
+            awaitItem() shouldBe IdentificationEvent.Identified(artworkId = remake.id, type = ContentType.MOVIE)
 
         }
 

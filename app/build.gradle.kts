@@ -37,14 +37,19 @@ configure<ApplicationExtension> {
         applicationId = "com.mskd.flux"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 40
-        versionName = "1.9.1"
+        versionCode = 41
+        versionName = "1.9.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }
 
         val tmdbToken = localProperties.getProperty("tmdb_token") ?: ""
         buildConfigField("String", "TMDB_TOKEN", "\"$tmdbToken\"")
+    }
+
+    testOptions {
+        // Media3 builds Tracks on the JVM and calls Android stubs (TextUtils) that would throw
+        unitTests.isReturnDefaultValues = true
     }
 
     signingConfigs {

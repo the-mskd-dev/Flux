@@ -58,21 +58,33 @@ _Avoid_: Fanart, banner, bannière
 2:3 TMDB image of an Artwork, in portrait.
 _Avoid_: Affiche, cover, jaquette
 
+**Artwork page**:
+Page of an Artwork, generic term for a Movie page, a Show page or a Season page.
+_Avoid_: Media page, Detail page, Fiche
+
+**Season page**:
+Page of one Season of a Show, reached from the Show page, listing its Episode. It shows the Season summary, the Episode actions and their Spoiler masking, and always the Backdrop as Artwork image.
+_Avoid_: Episodes page, Page saison
+
 **Logo**:
-TMDB image of an Artwork showing its stylised title, on a transparent background. It replaces the title text on the Artwork page when it is available. An Artwork has at most one Logo.
+TMDB image of an Artwork showing its stylised title, on a transparent background. It replaces the title text on the Artwork page when it is available. An Artwork has at most one shown Logo: the custom Logo if there is one, otherwise the one TMDB gives automatically.
 _Avoid_: Title image, Wordmark, Titre graphique
 
 **Artwork image**:
-Image shown at the top of an Artwork page: its Backdrop, or its Poster when the blurred header is enabled (Movie only). It is the matching Custom image if there is one, otherwise the TMDB one. A tap opens it in the Gallery when a TMDB token is configured, except while it shows the selected Episode and that Episode is a Spoiler: the tap then reveals or hides the Episode.
+Image shown at the top of an Artwork page: its Backdrop, or its Poster when the blurred header is enabled. The blurred header is available for a Movie page and a Show page, not for a Season page, which always shows the Backdrop. It is the matching Custom image if there is one, otherwise the TMDB one. A tap opens it in the Gallery when a TMDB token is configured, except while it shows the selected Episode and that Episode is a Spoiler: the tap then reveals or hides the Episode.
 _Avoid_: Header image, banner, bannière
 
 **Custom image**:
-Backdrop or Poster chosen by the user in the Gallery to replace the TMDB one. The custom Backdrop replaces the Backdrop of the Artwork image; the custom Poster replaces the Poster of the Artwork image (blurred header) and the Artwork thumbnail in the Catalog, the search and the Private Folder. An Artwork, Movie or Show, has at most one custom Backdrop and one custom Poster. It is kept by the Light sync and cleared by the Full sync and the Identification reset. A Manual identification does not carry over the one of the source Artwork; the target Artwork keeps its own if it was already in the Catalog.
+Backdrop, Poster or Logo chosen by the user in the Gallery to replace the TMDB one. The custom Backdrop replaces the Backdrop of the Artwork image; the custom Poster replaces the Poster of the Artwork image (blurred header) and the Artwork thumbnail in the Catalog, the search and the Private Folder; the custom Logo replaces the Logo of the Artwork page. An Artwork, Movie or Show, has at most one custom Backdrop, one custom Poster and one custom Logo. It is kept by the Light sync and cleared by the Full sync and the Identification reset. A Manual identification does not carry over the one of the source Artwork; the target Artwork keeps its own if it was already in the Catalog.
 _Avoid_: Image personnalisée, Affiche personnalisée, override
 
 **Gallery**:
-Page listing all the TMDB images of an Artwork (Backdrop and Poster, all languages) in a single grid sorted by descending rating, with a zoomable full-screen viewer. For a Show, only the images of the Show itself, not those of its Season or Episode. Nothing is stored locally.
+Page listing the TMDB images of an Artwork (Backdrop, Poster and Logo, in every Image language) in a single grid sorted by descending rating, with a zoomable full-screen viewer. The user can narrow the grid by image type and by Image language; the filter is not remembered. For a Show, only the images of the Show itself, not those of its Season or Episode. Nothing is stored locally.
 _Avoid_: Galerie d'images, Images, Photos
+
+**Image language**:
+Language written on a TMDB image (a Poster or a Logo in Japanese, for instance), or Global when the image carries no text. It is independent of the data language chosen in the settings.
+_Avoid_: Locale, Langue des données, No language, Sans langue
 
 **Image Download**:
 Copy, into the device's image storage, of a Gallery image in original resolution. It leaves Flux: the Catalog does not know about it.
@@ -165,8 +177,20 @@ Episode that follows, in the same Show, the one being played (by season then num
 _Avoid_: Prochain épisode, Up next
 
 **Settings sheet**:
-Player settings sheet, either general or dedicated to choosing an audio track, a subtitle track or a Chapter.
+Player settings sheet, either general or dedicated to choosing an audio track, a subtitle track, a Chapter or a Playback speed.
 _Avoid_: Bottom sheet, menu
+
+**Playback speed**:
+Rate at which a Media plays, from 0.25x to 2x by steps of 0.25, chosen in the Settings sheet. Resets to 1x for each new Media.
+_Avoid_: Rate, tempo
+
+**Boost speed**:
+Temporary 2x speed while the viewer presses and holds the video; a "2x" pill shows at the top, and the previous Playback speed is restored on release. Not available in Picture-in-Picture.
+_Avoid_: Fast play, turbo
+
+**Media info**:
+Read-only technical description of a Media (container, video and audio codecs, resolution, frame rate, bitrate, channels, sampling rate), shown in the Settings sheet. A value that cannot be read shows as a placeholder.
+_Avoid_: File info, Technical details, Codec info
 
 **Track**:
 Selectable audio or subtitle track of a Media.
@@ -211,11 +235,11 @@ A file whose TMDB fetch failed (network, API, missing token); nothing is saved a
 _Avoid_: Fichier en échec, unknown file, UNKNOWN
 
 **Manual identification**:
-Choice, by the user, of the TMDB Artwork that all the Media of an Artwork are attached to. It prevails over the name search, including for the new files of a Light sync. It is cleared by an Identification reset or a Full sync, and is not possible when a file of the Artwork carries a TMDB ID in its name.
+Choice, by the user, of the TMDB Artwork that all the Media of an Artwork are attached to. It prevails over the TMDB ID in the name of a file (file name or folder path) and over the name search, including for the new files of a Light sync. It is cleared by an Identification reset or a Full sync, after which the TMDB ID in the name applies again. An Episode that TMDB does not list in a Season of the chosen Show stays in that Show, including the Unrecognized files of the same file-name title that the automatic identification left behind; the Episode of a Season the chosen Show does not have become Unrecognized files.
 _Avoid_: Identification manuelle, Data selection, rematch, correction
 
 **Identification reset**:
-Clearing of the Manual identification of an Artwork: each of its files gets back the Artwork the name search gives it. The Status and the Progress of the Media are kept.
+Clearing of the Manual identification of an Artwork: each of its files gets back the Artwork of the TMDB ID in its name, or else the one the name search gives it. The Status and the Progress of the Media are kept.
 _Avoid_: Réinitialisation, Reset (alone, ambiguous with the progress reset), cancellation
 
 **Unrecognized file**:

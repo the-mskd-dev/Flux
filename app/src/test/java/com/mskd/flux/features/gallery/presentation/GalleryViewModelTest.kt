@@ -13,6 +13,7 @@ import com.mskd.flux.features.gallery.domain.model.GalleryImage
 import com.mskd.flux.features.gallery.domain.model.GalleryImageType
 import com.mskd.flux.features.gallery.domain.usecase.GetGalleryImagesUseCase
 import com.mskd.flux.features.gallery.domain.usecase.ImageDownloadUseCase
+import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.system.FilesLauncher
 import io.kotest.core.spec.style.FunSpec
@@ -38,6 +39,7 @@ class GalleryViewModelTest : FunSpec({
     lateinit var connectivityRepository: ConnectivityRepository
     lateinit var imageDownload: ImageDownloadUseCase
     lateinit var filesLauncher: FilesLauncher
+    lateinit var settingsDataStore: SettingsDataStore
     lateinit var databaseRepository: DatabaseRepository
     lateinit var storedArtwork: MutableStateFlow<Artwork?>
     lateinit var syncState: MutableStateFlow<SyncState>
@@ -57,6 +59,7 @@ class GalleryViewModelTest : FunSpec({
             connectivityRepository = connectivityRepository,
             imageDownload = imageDownload,
             filesLauncher = filesLauncher,
+            settingsDataStore = settingsDataStore,
             catalogSyncCoordinator = mockk { every { state } returns syncState },
         )
     }
@@ -72,11 +75,13 @@ class GalleryViewModelTest : FunSpec({
             coEvery { getArtwork(any()) } answers { storedArtwork.value }
             coEvery { setArtworkCustomBackdrop(any(), any()) } answers { storedArtwork.update { it?.copy(customBackdropPath = secondArg()) } }
             coEvery { setArtworkCustomPoster(any(), any()) } answers { storedArtwork.update { it?.copy(customPosterPath = secondArg()) } }
+            coEvery { setArtworkCustomLogo(any(), any()) } answers { storedArtwork.update { it?.copy(customLogoPath = secondArg()) } }
         }
         apiRepository = mockk()
         connectivityRepository = mockk()
         imageDownload = mockk()
         filesLauncher = mockk(relaxed = true)
+        settingsDataStore = mockk { coEvery { getDataLanguage() } returns "fr-FR" }
         coEvery { imageDownload(any(), any()) } returns Unit
         every { connectivityRepository.currentlyOnline() } returns true
         coEvery { apiRepository.getMovieImages(artwork.id) } returns listOf(lowBackdrop, highPoster, midBackdrop)
@@ -435,6 +440,93 @@ class GalleryViewModelTest : FunSpec({
 
     }
 
+    //region Logo
+
+    val topLogo = GalleryImage(path = "/logo.png", type = GalleryImageType.LOGO, ratio = 2.5f, rating = 9.0)
+
+    test("logos are mixed with backdrops and posters, sorted by rating") {
+
+        coEvery { apiRepository.getMovieImages(artwork.id) } returns listOf(lowBackdrop, topLogo, highPoster)
+        updateVm()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        contentImages() shouldBe listOf(topLogo, highPoster, lowBackdrop)
+
+    }
+
+    test("the viewer opens on a logo that can be used") {
+
+        coEvery { apiRepository.getMovieImages(artwork.id) } returns listOf(lowBackdrop, topLogo)
+        updateVm()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.handleIntent(GalleryIntent.OnImageTap(index = 0))
+
+        contentViewerIndex() shouldBe 0
+        (viewModel.uiState.value.state as State.Content).content.artworkImageButton shouldBe ArtworkImageButton.AVAILABLE
+
+    }
+
+    test("using a logo saves it as custom Logo and it becomes the current Logo") {
+
+        coEvery { apiRepository.getMovieImages(artwork.id) } returns listOf(lowBackdrop, topLogo)
+        updateVm()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val images = contentImages()
+        viewModel.handleIntent(GalleryIntent.OnImageTap(index = images.indexOf(topLogo)))
+        viewModel.handleIntent(GalleryIntent.OnUseImageTap)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        storedArtwork.value?.customLogoPath shouldBe topLogo.path
+        (viewModel.uiState.value.state as State.Content).content.artworkImageButton shouldBe ArtworkImageButton.CURRENT
+
+    }
+
+    test("the automatic Logo is the current Logo") {
+
+        storedArtwork.value = artwork.copy(logoPath = topLogo.path)
+        coEvery { apiRepository.getMovieImages(artwork.id) } returns listOf(topLogo)
+        updateVm()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.handleIntent(GalleryIntent.OnImageTap(index = 0))
+
+        (viewModel.uiState.value.state as State.Content).content.artworkImageButton shouldBe ArtworkImageButton.CURRENT
+
+    }
+
+    test("with a custom Logo, the automatic Logo is available again") {
+
+        val autoLogo = GalleryImage(path = "/auto.png", type = GalleryImageType.LOGO, ratio = 2f, rating = 3.0)
+        storedArtwork.value = artwork.copy(logoPath = autoLogo.path, customLogoPath = topLogo.path)
+        coEvery { apiRepository.getMovieImages(artwork.id) } returns listOf(topLogo, autoLogo)
+        updateVm()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val images = contentImages()
+        viewModel.handleIntent(GalleryIntent.OnImageTap(index = images.indexOf(topLogo)))
+        (viewModel.uiState.value.state as State.Content).content.artworkImageButton shouldBe ArtworkImageButton.CURRENT
+        viewModel.handleIntent(GalleryIntent.OnImageTap(index = images.indexOf(autoLogo)))
+        (viewModel.uiState.value.state as State.Content).content.artworkImageButton shouldBe ArtworkImageButton.AVAILABLE
+
+    }
+
+    test("the logo button is hidden while a Sync runs") {
+
+        coEvery { apiRepository.getMovieImages(artwork.id) } returns listOf(topLogo)
+        updateVm()
+        testDispatcher.scheduler.advanceUntilIdle()
+        syncState.value = SyncState.Syncing(full = false)
+
+        viewModel.handleIntent(GalleryIntent.OnImageTap(index = 0))
+
+        (viewModel.uiState.value.state as State.Content).content.artworkImageButton shouldBe ArtworkImageButton.HIDDEN
+
+    }
+
+    //endregion
+
     //region Custom image
 
     fun buttonOf(path: String): ArtworkImageButton {
@@ -589,6 +681,225 @@ class GalleryViewModelTest : FunSpec({
         testDispatcher.scheduler.advanceUntilIdle()
 
         storedArtwork.value shouldBe artwork
+
+    }
+
+    //endregion
+
+    //region Type filter
+
+    fun content() = (viewModel.uiState.value.state as State.Content).content
+
+    test("selecting a type narrows the images, selecting it again widens them") {
+
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.handleIntent(GalleryIntent.OnFilterTypeTap(GalleryImageType.BACKDROP))
+        contentImages() shouldBe listOf(midBackdrop, lowBackdrop)
+
+        viewModel.handleIntent(GalleryIntent.OnFilterTypeTap(GalleryImageType.POSTER))
+        contentImages() shouldBe listOf(highPoster, midBackdrop, lowBackdrop)
+
+        viewModel.handleIntent(GalleryIntent.OnFilterTypeTap(GalleryImageType.BACKDROP))
+        contentImages() shouldBe listOf(highPoster)
+
+    }
+
+    test("clear restores every image") {
+
+        testDispatcher.scheduler.advanceUntilIdle()
+        viewModel.handleIntent(GalleryIntent.OnFilterTypeTap(GalleryImageType.POSTER))
+
+        viewModel.handleIntent(GalleryIntent.OnFilterClearTap)
+
+        content().selectedTypes shouldBe emptySet()
+        contentImages() shouldBe listOf(highPoster, midBackdrop, lowBackdrop)
+
+    }
+
+    test("the viewer index and swipe bounds follow the filtered images") {
+
+        testDispatcher.scheduler.advanceUntilIdle()
+        viewModel.handleIntent(GalleryIntent.OnFilterTypeTap(GalleryImageType.BACKDROP))
+
+        viewModel.handleIntent(GalleryIntent.OnImageTap(1))
+        contentViewerIndex() shouldBe 1
+
+        // The third image of the full list is not in the filtered list
+        viewModel.handleIntent(GalleryIntent.OnViewerPageChange(2))
+        contentViewerIndex() shouldBe 1
+
+    }
+
+    test("the filter is locked while the viewer is open") {
+
+        testDispatcher.scheduler.advanceUntilIdle()
+        viewModel.handleIntent(GalleryIntent.OnImageTap(0))
+
+        viewModel.handleIntent(GalleryIntent.OnFilterTap)
+        viewModel.handleIntent(GalleryIntent.OnFilterTypeTap(GalleryImageType.LOGO))
+
+        content().filterSheetVisible shouldBe false
+        content().selectedTypes shouldBe emptySet()
+
+    }
+
+    test("a filter without match gives no image and keeps the selection") {
+
+        testDispatcher.scheduler.advanceUntilIdle()
+        viewModel.handleIntent(GalleryIntent.OnFilterTypeTap(GalleryImageType.LOGO))
+
+        contentImages() shouldBe emptyList()
+        content().selectedTypes shouldBe setOf(GalleryImageType.LOGO)
+
+    }
+
+    test("the sheet opens and dismisses") {
+
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.handleIntent(GalleryIntent.OnFilterTap)
+        content().filterSheetVisible shouldBe true
+
+        viewModel.handleIntent(GalleryIntent.OnFilterDismiss)
+        content().filterSheetVisible shouldBe false
+
+    }
+
+    test("a retry keeps the selected types") {
+
+        testDispatcher.scheduler.advanceUntilIdle()
+        viewModel.handleIntent(GalleryIntent.OnFilterTypeTap(GalleryImageType.POSTER))
+
+        viewModel.handleIntent(GalleryIntent.OnRetryTap)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        contentImages() shouldBe listOf(highPoster)
+
+    }
+
+    //endregion
+
+    //region Language filter
+
+    fun image(path: String, language: String?, rating: Double, type: GalleryImageType = GalleryImageType.POSTER) =
+        GalleryImage(path = path, type = type, ratio = .67f, rating = rating, languageCode = language)
+
+    val frPoster = image("/fr.jpg", "fr", 9.0)
+    val enPoster = image("/en1.jpg", "en", 8.0)
+    val enPoster2 = image("/en2.jpg", "en", 7.5)
+    val jaPoster = image("/ja.jpg", "ja", 6.0)
+    val jaPoster2 = image("/ja2.jpg", "ja", 5.5)
+    val koPoster = image("/ko.jpg", "ko", 5.0)
+    val globalBackdrop = image("/global.jpg", null, 4.0, GalleryImageType.BACKDROP)
+    val jaLogo = image("/jalogo.png", "ja", 3.0, GalleryImageType.LOGO)
+
+    fun loadLanguageImages() {
+        coEvery { apiRepository.getMovieImages(artwork.id) } returns
+            listOf(koPoster, jaPoster, jaPoster2, enPoster, enPoster2, frPoster, globalBackdrop, jaLogo)
+        updateVm()
+        testDispatcher.scheduler.advanceUntilIdle()
+    }
+
+    test("images are sorted: user language, then Global and English, then the others, each by descending rating") {
+
+        loadLanguageImages()
+
+        contentImages() shouldBe listOf(frPoster, enPoster, enPoster2, globalBackdrop, jaPoster, jaPoster2, koPoster, jaLogo)
+
+    }
+
+    test("languages are the distinct loaded ones, Global included") {
+
+        loadLanguageImages()
+
+        content().languages.toSet() shouldBe setOf("fr", "en", null, "ja", "ko")
+
+    }
+
+    test("English is not invented when absent") {
+
+        coEvery { apiRepository.getMovieImages(artwork.id) } returns listOf(jaPoster, globalBackdrop)
+        updateVm()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        content().languages.toSet() shouldBe setOf(null, "ja")
+
+    }
+
+    test("selecting languages is a union, selecting again removes it") {
+
+        loadLanguageImages()
+
+        viewModel.handleIntent(GalleryIntent.OnFilterLanguageTap("ko"))
+        contentImages() shouldBe listOf(koPoster)
+
+        viewModel.handleIntent(GalleryIntent.OnFilterLanguageTap(null))
+        contentImages() shouldBe listOf(globalBackdrop, koPoster)
+
+        viewModel.handleIntent(GalleryIntent.OnFilterLanguageTap("ko"))
+        contentImages() shouldBe listOf(globalBackdrop)
+
+    }
+
+    test("types and languages combine with AND between sections and OR within") {
+
+        loadLanguageImages()
+
+        viewModel.handleIntent(GalleryIntent.OnFilterLanguageTap("ja"))
+        viewModel.handleIntent(GalleryIntent.OnFilterLanguageTap("ko"))
+        viewModel.handleIntent(GalleryIntent.OnFilterTypeTap(GalleryImageType.POSTER))
+
+        contentImages() shouldBe listOf(jaPoster, jaPoster2, koPoster)
+
+    }
+
+    test("the languages offered are not narrowed by the selected type") {
+
+        loadLanguageImages()
+        viewModel.handleIntent(GalleryIntent.OnFilterTypeTap(GalleryImageType.BACKDROP))
+
+        content().languages.toSet() shouldBe setOf("fr", "en", null, "ja", "ko")
+
+    }
+
+    test("a language without image for the type gives the empty state and keeps the selection") {
+
+        loadLanguageImages()
+        viewModel.handleIntent(GalleryIntent.OnFilterTypeTap(GalleryImageType.BACKDROP))
+        viewModel.handleIntent(GalleryIntent.OnFilterLanguageTap("ko"))
+
+        contentImages() shouldBe emptyList()
+        content().selectedLanguages shouldBe setOf("ko")
+
+    }
+
+    test("clear resets types and languages") {
+
+        loadLanguageImages()
+        viewModel.handleIntent(GalleryIntent.OnFilterTypeTap(GalleryImageType.LOGO))
+        viewModel.handleIntent(GalleryIntent.OnFilterLanguageTap("ja"))
+
+        viewModel.handleIntent(GalleryIntent.OnFilterClearTap)
+
+        content().selectedTypes shouldBe emptySet()
+        content().selectedLanguages shouldBe emptySet<String?>()
+        contentImages().size shouldBe 8
+
+    }
+
+    test("the language filter is locked while the viewer is open and survives a retry") {
+
+        loadLanguageImages()
+        viewModel.handleIntent(GalleryIntent.OnFilterLanguageTap("ja"))
+
+        viewModel.handleIntent(GalleryIntent.OnRetryTap)
+        testDispatcher.scheduler.advanceUntilIdle()
+        content().selectedLanguages shouldBe setOf("ja")
+
+        viewModel.handleIntent(GalleryIntent.OnImageTap(0))
+        viewModel.handleIntent(GalleryIntent.OnFilterLanguageTap("ko"))
+        content().selectedLanguages shouldBe setOf("ja")
 
     }
 

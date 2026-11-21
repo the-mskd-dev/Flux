@@ -16,7 +16,6 @@ import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.gestures.rememberTransformableState
 import androidx.compose.foundation.gestures.transformable
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -54,6 +53,7 @@ import androidx.media3.ui.compose.ContentFrame
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.core.model.enums.Side
 import com.mskd.flux.features.player.domain.model.PlayerParams
+import com.mskd.flux.features.player.domain.model.SubtitleCue
 import com.mskd.flux.features.player.presentation.AmbientOverlay
 import com.mskd.flux.features.player.presentation.PlayerIntent
 import com.mskd.flux.features.player.presentation.PlayerInterfaceState
@@ -63,17 +63,17 @@ import com.mskd.flux.features.player.presentation.PlayerViewModel
 import com.mskd.flux.features.player.presentation.WindowStateHolder
 import com.mskd.flux.features.player.presentation.rememberPlayerScaleEffects
 import com.mskd.flux.features.player.presentation.rememberWindowStateHolder
+import com.mskd.flux.features.player.ui.PlayerSubtitles
 import com.mskd.flux.screens.player.composables.PlayerSideEffects
 import com.mskd.flux.screens.player.composables.collectSelectedAsState
 import com.mskd.flux.screens.player.composables.playerInterface.PlayerAmbientOverlay
+import com.mskd.flux.screens.player.composables.playerInterface.PlayerBoostPill
 import com.mskd.flux.screens.player.composables.playerInterface.PlayerInterface
 import com.mskd.flux.screens.player.composables.playerInterface.PlayerSeekOverlay
-import com.mskd.flux.screens.player.composables.playerInterface.PlayerSubtitles
 import com.mskd.flux.screens.player.composables.settings.PlayerSettings
 import com.mskd.flux.ui.components.ErrorScreen
 import com.mskd.flux.ui.components.LoadingScreen
 import com.mskd.flux.ui.global.BackGesture
-import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.extensions.description
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.oups_an_error_occured
@@ -187,7 +187,7 @@ fun PlayerContent(
     isPlaying: StateFlow<Boolean>,
     volume: Flow<Int>,
     windowStateHolder: WindowStateHolder,
-    subtitles: () -> List<String?>,
+    subtitles: () -> List<SubtitleCue>,
     progress: () -> Long,
     focusRequester: FocusRequester,
     sendIntent: (PlayerIntent) -> Unit
@@ -239,6 +239,7 @@ fun PlayerContent(
     val currentWindowStateHolder by rememberUpdatedState(windowStateHolder)
     val isInPip by interfaceState.collectSelectedAsState { it.isInPip }
     val seekOverlay by overlays.collectSelectedAsState { it.seekOverlay }
+    val isBoosting by overlays.collectSelectedAsState { it.isBoosting }
 
     // The Ambient overlay is local to the screen: brightness is applied here, volume comes back from the VM
     var ambientOverlay by remember { mutableStateOf<AmbientOverlay?>(null) }
@@ -260,6 +261,13 @@ fun PlayerContent(
     }
 
     val currentShowAmbient by rememberUpdatedState(showAmbient)
+
+    // A pinch zoom that starts during a boost ends it
+    LaunchedEffect(stateTransform) {
+        snapshotFlow { stateTransform.isTransformInProgress }.collect {
+            if (it) currentSendIntent(PlayerIntent.EndBoostSpeed)
+        }
+    }
 
     LaunchedEffect(volume) {
         volume.collect { showAmbient(AmbientOverlay.Type.VOLUME, it) }
@@ -305,6 +313,18 @@ fun PlayerContent(
             }
             .pointerInput(Unit) {
                 detectTapGestures(
+                    onPress = {
+                        // The release (or a cancelled gesture) always ends the boost
+                        try {
+                            tryAwaitRelease()
+                        } finally {
+                            currentSendIntent(PlayerIntent.EndBoostSpeed)
+                        }
+                    },
+                    onLongPress = {
+                        // Not on top of a pinch zoom
+                        if (!stateTransform.isTransformInProgress) currentSendIntent(PlayerIntent.StartBoostSpeed)
+                    },
                     onTap = { offset ->
                         val edgeMargin = 32.dp.toPx()
                         if (offset.x > edgeMargin && offset.x < (size.width - edgeMargin)) {
@@ -377,10 +397,8 @@ fun PlayerContent(
         if (!isInPip) {
 
             PlayerSubtitles(
-                modifier = Modifier
-                    .layoutId("subtitles")
-                    .padding(bottom = FluxUI.Space.large),
-                subtitles = subtitles,
+                modifier = Modifier.layoutId("subtitles"),
+                cues = subtitles,
                 smallText = isPortrait
             )
 
@@ -403,6 +421,11 @@ fun PlayerContent(
             PlayerAmbientOverlay(
                 modifier = Modifier.layoutId("ambientOverlay"),
                 ambientOverlay = { ambientOverlay }
+            )
+
+            PlayerBoostPill(
+                modifier = Modifier.layoutId("boostPill"),
+                isBoosting = { isBoosting }
             )
 
         }
@@ -429,13 +452,14 @@ fun playerConstraintSet(videoSize: VideoSize) = remember( videoSize) {
             "16:9"
         }
 
-        val (player, subtitles, playerInterface, leftSeekOverlay, rightSeekOverlay, ambientOverlay) = createRefsFor(
+        val (player, subtitles, playerInterface, leftSeekOverlay, rightSeekOverlay, ambientOverlay, boostPill) = createRefsFor(
             "player",
             "subtitles",
             "playerInterface",
             "leftSeekOverlay",
             "rightSeekOverlay",
-            "ambientOverlay"
+            "ambientOverlay",
+            "boostPill"
         )
 
         val leftGuideline = createGuidelineFromStart(.33f)
@@ -450,10 +474,14 @@ fun playerConstraintSet(videoSize: VideoSize) = remember( videoSize) {
             height = Dimension.ratio(playerRatio)
         }
 
+        // Same box as the player: positioned cues are fractions of the video frame
         constrain(subtitles) {
-            start.linkTo(parent.start)
-            end.linkTo(parent.end)
+            top.linkTo(player.top)
+            start.linkTo(player.start)
+            end.linkTo(player.end)
             bottom.linkTo(player.bottom)
+            width = Dimension.fillToConstraints
+            height = Dimension.fillToConstraints
         }
 
         constrain(playerInterface) {
@@ -485,6 +513,11 @@ fun playerConstraintSet(videoSize: VideoSize) = remember( videoSize) {
 
         constrain(ambientOverlay) {
             centerTo(parent)
+        }
+
+        constrain(boostPill) {
+            top.linkTo(parent.top)
+            centerHorizontallyTo(parent)
         }
 
     }

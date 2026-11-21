@@ -7,7 +7,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Status
-import com.mskd.flux.features.artwork.presentation.ArtworkIntent
 import com.mskd.flux.ui.modal.menu.FluxPopUpMenu
 import com.mskd.flux.ui.modal.menu.FluxPopUpMenuItem
 import flux.shared.generated.resources.Res
@@ -30,7 +29,7 @@ fun EpisodeDropDownMenu(
     isVisible: Boolean,
     episode: Episode,
     onDismissRequest: () -> Unit,
-    sendIntent: (ArtworkIntent) -> Unit
+    actions: EpisodeActions,
 ) {
 
     val items = buildList {
@@ -48,7 +47,7 @@ fun EpisodeDropDownMenu(
                 FluxPopUpMenuItem(
                     text = text,
                     onClick = {
-                        sendIntent(ArtworkIntent.PlayMedia(media = episode))
+                        actions.onPlay(episode)
                         onDismissRequest()
                     },
                     leadingIcon = {
@@ -64,7 +63,7 @@ fun EpisodeDropDownMenu(
             FluxPopUpMenuItem(
                 text = if (episode.status == Status.WATCHED) stringResource(Res.string.mark_as_not_watched) else stringResource(Res.string.mark_as_watched),
                 onClick = {
-                    sendIntent(ArtworkIntent.ChangeWatchStatus(media = episode))
+                    actions.onChangeWatchStatus(episode)
                     onDismissRequest()
                 },
                 leadingIcon = {
@@ -81,7 +80,7 @@ fun EpisodeDropDownMenu(
             FluxPopUpMenuItem(
                 text = stringResource(Res.string.more_info),
                 onClick = {
-                    sendIntent(ArtworkIntent.OpenEpisodeInfo(episode = episode))
+                    actions.onOpenInfo(episode)
                     onDismissRequest()
                 },
                 leadingIcon = {
@@ -95,7 +94,7 @@ fun EpisodeDropDownMenu(
             FluxPopUpMenuItem(
                 text = stringResource(Res.string.open_in_file_explorer),
                 onClick = {
-                    sendIntent(ArtworkIntent.OpenFileExplorer(media = episode))
+                    actions.onOpenFileExplorer(episode)
                     onDismissRequest()
                 },
                 leadingIcon = {

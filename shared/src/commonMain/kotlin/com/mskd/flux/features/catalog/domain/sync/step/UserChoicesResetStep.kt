@@ -6,8 +6,8 @@ import com.mskd.flux.features.catalog.domain.sync.SyncStep
 
 /**
  * Clears the user choices that a Full sync resets, before the catalog step and in a Full sync only:
- * - every Manual identification: every file is then identified by name search again (a TMDB ID in the name still
- *   wins). Status and Progress are kept by the save, by path;
+ * - every Manual identification: every file is then identified by the TMDB ID in its name again, or else by name
+ *   search. Status and Progress are kept by the save, by path;
  * - every Custom image: the TMDB Backdrop and Poster are shown again.
  */
 class UserChoicesResetStep(private val database: DatabaseRepository) : SyncStep {

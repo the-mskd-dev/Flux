@@ -12,9 +12,26 @@
 
 # Flux
 
+<p align="center">
+  <img src="fastlane/metadata/android/en-US/images/icon.png" width="128" alt="Flux logo">
+</p>
+
 **Flux** is a modern, open-source media library and video player for Android. It scans your local video files, fetches rich metadata (posters, descriptions, genres...) from [The Movie Database (TMDB)](https://www.themoviedb.org/), and organises everything into a clean, browsable library. **Here you can find the completely free, ad-free, and tracker-free version.**
 
 > **Platform status:** Flux currently ships on **Android**. The shared module is structured for Kotlin Multiplatform, I will probably make a Desktop and iOS support in the future.
+
+---
+
+## Download
+
+<p align="center">
+  <a href="https://play.google.com/store/apps/details?id=com.mskd.flux.playstore">
+    <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" height="80">
+  </a>
+  <a href="https://f-droid.org/packages/com.mskd.flux/">
+    <img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="80">
+  </a>
+</p>
 
 ---
 
@@ -26,6 +43,16 @@
 - ▶️ **External player support** - If you don't like my player, you can use another one
 - 🆓 **Truly free** - No ads, no trackers, no account required
 - 📦 **Available on F-Droid** - Fully FOSS build with no proprietary dependencies
+
+---
+
+## Screenshots
+
+<p align="center">
+  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/1.png" width="240" alt="Flux screenshot 1">
+  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/2.png" width="240" alt="Flux screenshot 2">
+  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/3.png" width="240" alt="Flux screenshot 3">
+</p>
 
 ---
 

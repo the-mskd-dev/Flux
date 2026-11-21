@@ -26,6 +26,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import com.mskd.flux.features.player.domain.model.VideoChapter
 import com.mskd.flux.features.player.presentation.PlayerIntent
+import com.mskd.flux.features.player.presentation.SettingsSheet
+import com.mskd.flux.features.player.ui.PlayerSheetTopBar
 import com.mskd.flux.mockups.PlayerMockups
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.text.Text
@@ -67,14 +69,10 @@ fun PlayerChaptersSheet(
                             .background(MaterialTheme.colorScheme.surfaceContainerHigh)
                     ) {
 
-                        Text.Content.Title(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = FluxUI.Space.large, start = FluxUI.Space.medium, end = FluxUI.Space.medium, bottom = FluxUI.Space.medium),
-                            text = stringResource(Res.string.chapters),
+                        PlayerSheetTopBar(
+                            title = stringResource(Res.string.chapters),
+                            onBack = { sendIntent(PlayerIntent.ShowSettings(sheet = SettingsSheet.Settings)) },
                         )
-
-                        HorizontalDivider(modifier = Modifier.fillMaxWidth())
 
                     }
 

@@ -25,11 +25,22 @@ object Constants {
         const val RELEASES = "https://github.com/the-mskd-dev/Flux/releases"
         const val ISSUES = "https://github.com/the-mskd-dev/Flux/issues"
         const val BUY_COFFEE = "https://buymeacoffee.com/the.masked.dev"
+        // TODO: Replace with the real Play Store link once available
+        const val PLAY_STORE = "https://play.google.com/store/apps/details?id=com.mskd.flux.playstore"
         const val SPONSOR = "https://github.com/sponsors/the-mskd-dev/"
     }
 
     object PLAYER {
         const val PROGRESS_THRESHOLD = 0.92
+
+        /** Speed while pressing and holding the video. */
+        const val BOOST_SPEED = 2f
+
+        /** Selectable Playback speeds: 0.25x to 2x by steps of 0.25. */
+        val PLAYBACK_SPEEDS = listOf(0.25f, 0.5f, 0.75f, 1f, 1.25f, 1.5f, 1.75f, 2f)
+
+        /** One press of the Subtitle delay control. */
+        const val SUBTITLE_DELAY_STEP_MS = 100L
     }
 
 }

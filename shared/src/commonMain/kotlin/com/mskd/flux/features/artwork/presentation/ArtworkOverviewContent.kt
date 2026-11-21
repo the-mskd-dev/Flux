@@ -12,4 +12,6 @@ sealed interface ArtworkOverviewContent {
     data class EpisodeOverview(val episode: Episode) : ArtworkOverviewContent
     /** [description] is null when there is no summary to show. */
     data class Summary(val description: String?) : ArtworkOverviewContent
+    /** Summary of a whole Show, with its genres. [description] is null when there is no summary to show. */
+    data class ShowOverview(val description: String?, val genres: ImmutableList<Genre>) : ArtworkOverviewContent
 }

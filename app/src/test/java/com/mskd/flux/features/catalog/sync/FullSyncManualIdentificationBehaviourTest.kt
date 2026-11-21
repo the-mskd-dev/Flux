@@ -43,4 +43,27 @@ class FullSyncManualIdentificationBehaviourTest : FunSpec({
 
     }
 
+    test("a manually identified file with a TMDB ID in its name gets back the Artwork of its TMDB ID after a Full sync") {
+
+        // Given
+        val fileName = "Breaking Bad S01E01 {tmdb-$breakingBad}.mkv"
+        harness.deviceStorage.availableFiles = listOf(harness.deviceFile(fileName))
+        harness.lightSync()
+        harness.identifyManually(artworkId = breakingBad, target = lostPages).getOrThrow()
+        harness.lightSync()
+        harness.catalog.getEpisodes(artworkId = lostPages.id).map { it.file.name } shouldBe listOf(fileName)
+        harness.tmdb.resetCalls()
+
+        // When
+        harness.fullSync()
+
+        // Then
+        harness.tmdb.callCount("search/tv") shouldBe 0
+        val artwork = harness.catalog.getArtworks(includePrivates = true).single()
+        artwork.id shouldBe breakingBad
+        artwork.isManuallyIdentified shouldBe false
+        harness.catalog.getEpisodes(artworkId = breakingBad).map { it.file.name } shouldBe listOf(fileName)
+
+    }
+
 })

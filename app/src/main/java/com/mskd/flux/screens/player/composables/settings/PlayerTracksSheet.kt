@@ -25,6 +25,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import com.mskd.flux.core.model.player.PlayerTrack
 import com.mskd.flux.features.player.presentation.PlayerIntent
+import com.mskd.flux.features.player.presentation.SettingsSheet
+import com.mskd.flux.features.player.ui.PlayerSheetTopBar
 import com.mskd.flux.mockups.PlayerMockups
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.text.Text
@@ -48,9 +50,6 @@ fun PlayerTracksSheet(
 
     val selectedTrack = if (type == PlayerTrack.Type.AUDIO) selectedAudio else selectedSubtitles
 
-    val title = stringResource(if (type == PlayerTrack.Type.AUDIO) Res.string.audio_tracks else Res.string.subtitles)
-    Text.Content.Title(text = title)
-
     BasicAlertDialog(
         modifier = Modifier
             .clip(AlertDialogDefaults.shape),
@@ -68,22 +67,16 @@ fun PlayerTracksSheet(
 
                 stickyHeader {
 
-                    val title = stringResource(if (type == PlayerTrack.Type.AUDIO) Res.string.audio_tracks else Res.string.subtitles)
-
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(MaterialTheme.colorScheme.surfaceContainerHigh)
                     ) {
 
-                        Text.Content.Title(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = FluxUI.Space.large, start = FluxUI.Space.medium, end = FluxUI.Space.medium, bottom = FluxUI.Space.medium),
-                            text = title,
+                        PlayerSheetTopBar(
+                            title = stringResource(if (type == PlayerTrack.Type.AUDIO) Res.string.audio_tracks else Res.string.subtitles),
+                            onBack = { sendIntent(PlayerIntent.ShowSettings(sheet = SettingsSheet.Settings)) },
                         )
-
-                        HorizontalDivider(modifier = Modifier.fillMaxWidth())
 
                     }
 

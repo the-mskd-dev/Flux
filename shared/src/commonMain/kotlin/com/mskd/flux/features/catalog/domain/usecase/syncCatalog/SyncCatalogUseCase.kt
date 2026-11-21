@@ -1,7 +1,7 @@
 package com.mskd.flux.features.catalog.domain.usecase.syncCatalog
 
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
-import com.mskd.flux.features.catalog.domain.model.SyncKind
+import com.mskd.flux.features.catalog.domain.model.SyncType
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.sync.SyncContext
 import com.mskd.flux.features.catalog.domain.sync.SyncPipeline
@@ -17,14 +17,14 @@ class SyncCatalogUseCase(
 
     val state: StateFlow<SyncState> = coordinator.state
 
-    operator fun invoke(kind: SyncKind) {
+    operator fun invoke(type: SyncType) {
 
-        if (coordinator.isBusy && (coordinator.state.value as? SyncState.Syncing)?.full == true && kind == SyncKind.LIGHT)
+        if (coordinator.isBusy && (coordinator.state.value as? SyncState.Syncing)?.full == true && type == SyncType.LIGHT)
             return
 
-        coordinator.launch(full = kind == SyncKind.FULL) {
+        coordinator.launch(full = type == SyncType.FULL) {
 
-            val context = SyncContext(kind = kind, progress = SyncProgress(coordinator))
+            val context = SyncContext(type = type, progress = SyncProgress(coordinator))
 
             pipeline.run(context)
 

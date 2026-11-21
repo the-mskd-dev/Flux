@@ -2,14 +2,14 @@ package com.mskd.flux.features.catalog.domain.sync
 
 import com.mskd.flux.core.model.catalog.CatalogFolder
 import com.mskd.flux.core.model.files.UserFile
-import com.mskd.flux.features.catalog.domain.model.SyncKind
+import com.mskd.flux.features.catalog.domain.model.SyncType
 import com.mskd.flux.features.files.domain.model.SourcesScan
 import com.mskd.flux.utils.extensions.groupInFolders
 
 /** What the Sync steps share during a Sync. */
 class SyncContext(
-    /** Kind of Sync running: Light sync, Full sync or Language change. */
-    val kind: SyncKind,
+    /** Type of Sync running: Light sync, Full sync or Language change. */
+    val type: SyncType,
     val progress: SyncProgress,
 ) {
 

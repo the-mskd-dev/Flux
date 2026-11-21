@@ -2,7 +2,7 @@ package com.mskd.flux.features.catalog.domain.sync.step
 
 import com.mskd.flux.core.datastore.domain.UserDataStore
 import com.mskd.flux.core.model.core.AppInfo
-import com.mskd.flux.features.catalog.domain.model.SyncKind
+import com.mskd.flux.features.catalog.domain.model.SyncType
 import com.mskd.flux.features.catalog.domain.sync.SyncContext
 import com.mskd.flux.features.catalog.domain.sync.SyncStep
 import kotlin.time.Clock
@@ -13,7 +13,7 @@ class FinalizationStep(
     private val appInfo: AppInfo,
 ) : SyncStep {
 
-    override fun isEnabled(context: SyncContext) = context.kind != SyncKind.LANGUAGE_CHANGE
+    override fun isEnabled(context: SyncContext) = context.type != SyncType.LANGUAGE_CHANGE
 
     override suspend fun units(context: SyncContext) = 1
 

@@ -17,7 +17,7 @@ import com.mskd.flux.utils.Constants
 import com.mskd.flux.features.catalog.domain.datastore.CatalogDataStore
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.domain.model.CatalogViewMode
-import com.mskd.flux.features.catalog.domain.model.SyncKind
+import com.mskd.flux.features.catalog.domain.model.SyncType
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.history.domain.model.HistoryEntry
@@ -37,7 +37,6 @@ import io.kotest.property.Arb
 import io.kotest.property.Exhaustive
 import io.kotest.property.arbitrary.element
 import io.kotest.property.checkAll
-import io.kotest.property.exhaustive.boolean
 import io.kotest.property.exhaustive.enum
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -250,7 +249,7 @@ class CatalogViewModelTest : FunSpec({
 
         // Then
         verify {
-            syncCatalogUseCaseSpy(kind = SyncKind.LIGHT)
+            syncCatalogUseCaseSpy(type = SyncType.LIGHT)
         }
     }
 
@@ -267,7 +266,7 @@ class CatalogViewModelTest : FunSpec({
 
         // Then
         verify(exactly = 1) {
-            syncCatalogUseCaseSpy(kind = SyncKind.LIGHT)
+            syncCatalogUseCaseSpy(type = SyncType.LIGHT)
         }
 
     }
@@ -284,7 +283,7 @@ class CatalogViewModelTest : FunSpec({
 
         // Then
         verify(exactly = 1) {
-            syncCatalogUseCaseSpy(kind = SyncKind.LIGHT)
+            syncCatalogUseCaseSpy(type = SyncType.LIGHT)
         }
     }
 
@@ -304,7 +303,7 @@ class CatalogViewModelTest : FunSpec({
 
         // Then
         verify(exactly = 1) {
-            syncCatalogUseCaseSpy(kind = SyncKind.FULL)
+            syncCatalogUseCaseSpy(type = SyncType.FULL)
         }
     }
 

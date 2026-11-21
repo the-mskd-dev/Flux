@@ -19,7 +19,7 @@ import com.mskd.flux.core.network.tmdb.data.moduleTmdb
 import com.mskd.flux.core.network.tmdb.data.tmdbHttpClient
 import com.mskd.flux.di.Qualifiers
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
-import com.mskd.flux.features.catalog.domain.model.SyncKind
+import com.mskd.flux.features.catalog.domain.model.SyncType
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
@@ -212,11 +212,11 @@ internal class SyncHarness(tmdbToken: String = "test-token", tmdbMaxRequests: In
         updateLanguageUseCase()
     }
 
-    fun requestLightSync() = useCase(kind = SyncKind.LIGHT)
+    fun requestLightSync() = useCase(type = SyncType.LIGHT)
 
-    fun requestFullSync() = useCase(kind = SyncKind.FULL)
+    fun requestFullSync() = useCase(type = SyncType.FULL)
 
-    fun requestLanguageChangeSync() = useCase(kind = SyncKind.LANGUAGE_CHANGE)
+    fun requestLanguageChangeSync() = useCase(type = SyncType.LANGUAGE_CHANGE)
 
     /** Waits for the Sync to end, along with the background work it started. */
     suspend fun awaitIdle() = withTimeout(10.seconds) {

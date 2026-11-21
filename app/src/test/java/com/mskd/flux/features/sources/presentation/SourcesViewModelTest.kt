@@ -3,7 +3,7 @@ package com.mskd.flux.features.sources.presentation
 import app.cash.turbine.test
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.core.model.files.FileSource
-import com.mskd.flux.features.catalog.domain.model.SyncKind
+import com.mskd.flux.features.catalog.domain.model.SyncType
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.sources.domain.model.UserFolder
@@ -107,7 +107,7 @@ class SourcesViewModelTest : FunSpec({
             awaitItem() shouldBe SourcesEvent.BackToPreviousScreen
         }
 
-        coVerify { syncCatalogUseCase(kind = SyncKind.LIGHT) }
+        coVerify { syncCatalogUseCase(kind = SyncType.LIGHT) }
     }
 
     test("OnBackTap - without SaveFolder, doesn't call syncCatalogUseCase") {

@@ -43,7 +43,7 @@ class SaveTokenAndSyncUseCaseTest : FunSpec({
         result shouldBe AuthenticateResult.SUCCESS
         coVerify(exactly = 1) { tokenDataStore.saveToken(testToken) }
         coVerify(exactly = 1) { tmdbService.authenticate() }
-        coVerify(exactly = 1) { syncCatalogUseCase(kind = SyncType.FULL) }
+        coVerify(exactly = 1) { syncCatalogUseCase(type = SyncType.FULL) }
         coVerify(exactly = 0) { tokenDataStore.clearToken() }
     }
 

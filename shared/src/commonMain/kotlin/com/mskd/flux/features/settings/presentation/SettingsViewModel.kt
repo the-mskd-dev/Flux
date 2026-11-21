@@ -282,7 +282,7 @@ class SettingsViewModel(
     }
 
     private fun proceedFullSync() {
-        syncCatalogUseCase(kind = SyncType.FULL)
+        syncCatalogUseCase(type = SyncType.FULL)
         showSettingsDialog(null)
     }
 

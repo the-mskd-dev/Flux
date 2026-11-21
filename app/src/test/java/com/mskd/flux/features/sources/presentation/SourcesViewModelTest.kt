@@ -107,7 +107,7 @@ class SourcesViewModelTest : FunSpec({
             awaitItem() shouldBe SourcesEvent.BackToPreviousScreen
         }
 
-        coVerify { syncCatalogUseCase(kind = SyncType.LIGHT) }
+        coVerify { syncCatalogUseCase(type = SyncType.LIGHT) }
     }
 
     test("OnBackTap - without SaveFolder, doesn't call syncCatalogUseCase") {
@@ -120,7 +120,7 @@ class SourcesViewModelTest : FunSpec({
             awaitItem() shouldBe SourcesEvent.BackToPreviousScreen
         }
 
-        coVerify(exactly = 0) { syncCatalogUseCase(kind = any()) }
+        coVerify(exactly = 0) { syncCatalogUseCase(type = any()) }
     }
 
     test("OnNextTap - navigate to Token if needed") {

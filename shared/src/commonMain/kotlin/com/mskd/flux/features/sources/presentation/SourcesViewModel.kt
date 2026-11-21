@@ -120,7 +120,7 @@ class SourcesViewModel(
     private suspend fun onBackTap() {
         finalizeDelete()
 
-        if (needSync) syncCatalogUseCase(kind = SyncType.LIGHT)
+        if (needSync) syncCatalogUseCase(type = SyncType.LIGHT)
         _event.send(SourcesEvent.BackToPreviousScreen)
     }
 

@@ -289,7 +289,7 @@ class SettingsViewModelTest : FunSpec({
                 // Then
                 val state = expectMostRecentItem()
                 state.settingsDialog shouldBe null
-                coVerify { syncCatalogUseCase(kind = SyncType.FULL) }
+                coVerify { syncCatalogUseCase(type = SyncType.FULL) }
             }
         }
 

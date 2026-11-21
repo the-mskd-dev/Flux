@@ -19,9 +19,9 @@ import kotlinx.coroutines.supervisorScope
  * Updates the Logo of Artwork in the Catalog (see [Artwork.logoPath]), in parallel within the TMDB call limit,
  * saving each Logo as soon as it is found.
  *
- * During a Language change, every Artwork except the Unknown Artwork is searched again in the new data language;
- * otherwise only Artwork never searched before (`logoPath == null`) are queried. A failed lookup keeps the previous
- * Logo, records no Failed file, and never stops the Sync.
+ * During a Language change, every Artwork except the Unknown Artwork and those with a custom Logo is searched again
+ * in the new data language; otherwise only Artwork never searched before (`logoPath == null`) without a custom Logo
+ * are queried. A failed lookup keeps the previous Logo, records no Failed file, and never stops the Sync.
  */
 class LogosStep(
     private val database: DatabaseRepository,
@@ -70,7 +70,7 @@ class LogosStep(
         if (!tokenDataStore.tokenIsAvailable()) return emptyList()
         val refreshAll = context.type == SyncType.LANGUAGE_CHANGE
         return database.getArtworks(includePrivates = true)
-            .filter { !it.isUnknown && (refreshAll || it.logoPath == null) }
+            .filter { !it.isUnknown && it.customLogoPath.isNullOrBlank() && (refreshAll || it.logoPath == null) }
     }
 
 }

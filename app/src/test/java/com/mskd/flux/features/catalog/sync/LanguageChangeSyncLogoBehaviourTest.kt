@@ -190,13 +190,15 @@ class LanguageChangeSyncLogoBehaviourTest : FunSpec({
 
     }
 
-    test("Custom images (Backdrop, Poster, and Logo) are preserved during a Language change") {
+    test("Custom images (Backdrop, Poster, and Logo) are preserved during a Language change and a custom Logo skips the Logo lookup") {
 
         // Given
-        englishCatalog("Inception (2010).mkv")
+        englishCatalog("Inception (2010).mkv", "Forgotten Tale (2015).mkv")
         harness.catalog.setArtworkCustomBackdrop(artworkId = 27205L, path = "/custom-backdrop.jpg")
         harness.catalog.setArtworkCustomPoster(artworkId = 27205L, path = "/custom-poster.jpg")
         harness.catalog.setArtworkCustomLogo(artworkId = 27205L, path = "/custom-logo.png")
+        harness.catalog.setArtworkCustomBackdrop(artworkId = 990002L, path = "/tale-backdrop.jpg")
+        harness.catalog.setArtworkCustomPoster(artworkId = 990002L, path = "/tale-poster.jpg")
 
         // When
         harness.settings.setDataLanguage(Language.FRENCH)
@@ -204,10 +206,16 @@ class LanguageChangeSyncLogoBehaviourTest : FunSpec({
 
         // Then
         val inception = harness.catalog.getArtwork(artworkId = 27205L)!!
-        inception.logoPath shouldBe "/inception-fr-best.png"
+        harness.tmdb.callCount("movie/27205/images") shouldBe 0
+        inception.logoPath shouldBe "/inception-en.png"
         inception.customBackdropPath shouldBe "/custom-backdrop.jpg"
         inception.customPosterPath shouldBe "/custom-poster.jpg"
         inception.customLogoPath shouldBe "/custom-logo.png"
+
+        val forgottenTale = harness.catalog.getArtwork(artworkId = 990002L)!!
+        forgottenTale.logoPath shouldBe "/forgotten-tale-fr.png"
+        forgottenTale.customBackdropPath shouldBe "/tale-backdrop.jpg"
+        forgottenTale.customPosterPath shouldBe "/tale-poster.jpg"
 
     }
 

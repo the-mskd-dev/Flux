@@ -46,7 +46,8 @@ import org.koin.compose.koinInject
 fun FluxNavigation(
     startingScreen: Route,
     platformEntries: EntryProviderScope<NavKey>.(FluxNavigator) -> Unit = {},
-    customization: CustomizationDataStore.State
+    customization: CustomizationDataStore.State,
+    effects: @Composable (FluxNavigator) -> Unit = {},
 ) {
 
     val backStack = rememberNavBackStack(navConfig, startingScreen)
@@ -78,6 +79,8 @@ fun FluxNavigation(
             },
         )
     }
+
+    effects(navigator)
 
     val currentRoute = backStack.lastOrNull() as? Route
     val showBottomBar = currentRoute.let {

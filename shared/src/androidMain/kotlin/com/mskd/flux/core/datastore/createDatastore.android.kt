@@ -19,6 +19,13 @@ val Context.customizationDatastore by preferencesDataStore(
     )
 )
 
+val Context.playbackDataStore by preferencesDataStore(
+    name = "PlaybackDataStore",
+    corruptionHandler = ReplaceFileCorruptionHandler(
+        produceNewData = { emptyPreferences() }
+    )
+)
+
 val Context.privateFolderDatastore by preferencesDataStore(
     name = "PrivateFolderDataStore",
     corruptionHandler = ReplaceFileCorruptionHandler(

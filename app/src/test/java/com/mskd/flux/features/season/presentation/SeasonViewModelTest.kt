@@ -14,12 +14,11 @@ import com.mskd.flux.features.artwork.fake.FakeObserveArtworkUseCase
 import com.mskd.flux.features.artwork.presentation.ArtworkOverviewContent
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.model.SyncState
-import com.mskd.flux.features.player.domain.model.PlaybackAction
-import com.mskd.flux.features.player.domain.usecase.ResolvePlaybackActionUseCase
+import com.mskd.flux.features.player.domain.playback.PlaybackLaunch
+import com.mskd.flux.features.player.domain.playback.PlaybackOutcome
 import com.mskd.flux.features.progress.domain.usecase.ChangeMediaStatusUseCase
 import com.mskd.flux.features.progress.domain.usecase.MarkPreviousAsWatchedUseCase
 import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
-import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.mockups.MediaMockups
@@ -51,8 +50,7 @@ class SeasonViewModelTest : FunSpec({
     lateinit var changeMediaStatus: ChangeMediaStatusUseCase
     lateinit var markPreviousAsWatched: MarkPreviousAsWatchedUseCase
     lateinit var resetProgress: ResetProgressUseCase
-    lateinit var resolvePlaybackAction: ResolvePlaybackActionUseCase
-    lateinit var recordPlaybackResult: SaveProgressUseCase
+    lateinit var playbackLaunch: PlaybackLaunch
 
     val updateVm: (id: Long, season: Int) -> Unit = { id, season ->
 
@@ -61,8 +59,7 @@ class SeasonViewModelTest : FunSpec({
         changeMediaStatus = mockk(relaxed = true)
         markPreviousAsWatched = mockk(relaxed = true)
         resetProgress = mockk(relaxed = true)
-        resolvePlaybackAction = mockk(relaxed = true)
-        recordPlaybackResult = mockk(relaxed = true)
+        playbackLaunch = mockk(relaxed = true)
 
         viewModel = SeasonViewModel(
             artworkId = id,
@@ -74,8 +71,7 @@ class SeasonViewModelTest : FunSpec({
             changeMediaStatus = changeMediaStatus,
             markPreviousAsWatched = markPreviousAsWatched,
             resetProgress = resetProgress,
-            resolvePlaybackAction = resolvePlaybackAction,
-            recordPlaybackResult = recordPlaybackResult,
+            playbackLaunch = playbackLaunch,
             filesLauncher = filesLauncher,
             urlLauncher = urlLauncher,
         )
@@ -156,38 +152,46 @@ class SeasonViewModelTest : FunSpec({
 
     context("playback") {
 
-        test("PlayMedia selects the episode and opens the player chosen by resolvePlaybackAction") {
-            listOf(true, false).forEach { externalPlayer ->
-                coEvery { resolvePlaybackAction(media = MediaMockups.episode2, forceInternal = false) } returns
-                    PlaybackAction.OpenPlayer(media = MediaMockups.episode2, externalPlayer = externalPlayer)
-                viewModel.uiState.test {
-                    expectMostRecentItem()
-                    viewModel.event.test {
-                        viewModel.handleIntent(SeasonIntent.PlayMedia(media = MediaMockups.episode2))
-                        awaitItem() shouldBe SeasonEvent.PlayMedia(media = MediaMockups.episode2, externalPlayer = externalPlayer)
-                    }
-                    current().selectedEpisode shouldBe MediaMockups.episode2
-                    cancelAndIgnoreRemainingEvents()
-                }
-            }
-        }
-
-        test("the internal player is forced as a fallback of the external player") {
-            coEvery { resolvePlaybackAction(media = MediaMockups.episode1, forceInternal = true) } returns
-                PlaybackAction.OpenPlayer(media = MediaMockups.episode1, externalPlayer = false)
-            viewModel.event.test {
-                viewModel.handleIntent(SeasonIntent.PlayMedia(media = MediaMockups.episode1, forceInternal = true))
-                awaitItem() shouldBe SeasonEvent.PlayMedia(media = MediaMockups.episode1, externalPlayer = false)
-            }
-        }
-
-        test("the external player result is recorded on the selected episode") {
+        test("the Internal player outcome selects the episode and opens the Internal player") {
+            coEvery { playbackLaunch.play(media = MediaMockups.episode2, forceInternal = false) } returns
+                PlaybackOutcome.OpenInternalPlayer(MediaMockups.episode2)
             viewModel.uiState.test {
                 expectMostRecentItem()
-                viewModel.handleIntent(SeasonIntent.PlayMedia(MediaMockups.episode2))
+                viewModel.event.test {
+                    viewModel.handleIntent(SeasonIntent.PlayMedia(media = MediaMockups.episode2))
+                    awaitItem() shouldBe SeasonEvent.OpenInternalPlayer(media = MediaMockups.episode2)
+                }
+                current().selectedEpisode shouldBe MediaMockups.episode2
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+        test("a Media handed to the External player keeps the episode selected and emits nothing") {
+            coEvery { playbackLaunch.play(media = MediaMockups.episode2, forceInternal = false) } returns
+                PlaybackOutcome.HandedToExternalPlayer
+            viewModel.uiState.test {
                 expectMostRecentItem()
-                viewModel.handleIntent(SeasonIntent.OnExternalPlayerResult(progress = 5000L))
-                coVerify { recordPlaybackResult(media = MediaMockups.episode2, progress = 5000L) }
+                viewModel.event.test {
+                    viewModel.handleIntent(SeasonIntent.PlayMedia(media = MediaMockups.episode2))
+                    expectNoEvents()
+                }
+                current().selectedEpisode shouldBe MediaMockups.episode2
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+        test("an Unavailable Media emits nothing and is not selected") {
+            coEvery { playbackLaunch.play(media = MediaMockups.episode2, forceInternal = false) } returns
+                PlaybackOutcome.Unavailable
+            viewModel.uiState.test {
+                expectMostRecentItem()
+                val before = current().selectedEpisode
+                viewModel.event.test {
+                    viewModel.handleIntent(SeasonIntent.PlayMedia(media = MediaMockups.episode2))
+                    expectNoEvents()
+                }
+                current().selectedEpisode shouldBe before
+                cancelAndIgnoreRemainingEvents()
             }
         }
 

@@ -11,12 +11,11 @@ import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtwo
 import com.mskd.flux.features.artwork.presentation.ArtworkOverviewContent
 import com.mskd.flux.features.artwork.presentation.ArtworkViewModel
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
-import com.mskd.flux.features.player.domain.model.PlaybackAction
-import com.mskd.flux.features.player.domain.usecase.ResolvePlaybackActionUseCase
+import com.mskd.flux.features.player.domain.playback.PlaybackLaunch
+import com.mskd.flux.features.player.domain.playback.PlaybackOutcome
 import com.mskd.flux.features.progress.domain.usecase.ChangeMediaStatusUseCase
 import com.mskd.flux.features.progress.domain.usecase.MarkPreviousAsWatchedUseCase
 import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
-import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.system.FilesLauncher
@@ -47,15 +46,13 @@ class SeasonViewModel(
     private val changeMediaStatus: ChangeMediaStatusUseCase,
     private val markPreviousAsWatched: MarkPreviousAsWatchedUseCase,
     resetProgress: ResetProgressUseCase,
-    private val resolvePlaybackAction: ResolvePlaybackActionUseCase,
-    recordPlaybackResult: SaveProgressUseCase,
+    private val playbackLaunch: PlaybackLaunch,
 ) : ArtworkViewModel<SeasonUiState, SeasonIntent, SeasonEvent>(
     artworkId = artworkId,
     observeArtworkUseCase = observeArtworkUseCase,
     tokenDataStore = tokenDataStore,
     catalogSyncCoordinator = catalogSyncCoordinator,
     resetProgressUseCase = resetProgress,
-    recordPlaybackResult = recordPlaybackResult,
 ) {
 
     private data class UserState(
@@ -122,7 +119,6 @@ class SeasonViewModel(
             SeasonIntent.ResetProgress -> resetProgress()
 
             // Other
-            is SeasonIntent.OnExternalPlayerResult -> onExternalPlayerResult(media = seasonContent?.selectedEpisode, progress = intent.progress)
             is SeasonIntent.ExpandEpisodeDescription -> _userState.update { it.copy(expandedEpisodeId = intent.episode.id) }
             SeasonIntent.CollapseEpisodeDescription -> _userState.update { it.copy(expandedEpisodeId = null) }
             is SeasonIntent.ToggleEpisodeSpoiler -> toggleEpisodeSpoiler(episode = intent.episode)
@@ -220,14 +216,12 @@ class SeasonViewModel(
 
     private suspend fun playMedia(media: Media, forceInternal: Boolean) {
 
-        if (!media.isAvailable) return
+        val outcome = playbackLaunch.play(media = media, forceInternal = forceInternal)
+        if (outcome == PlaybackOutcome.Unavailable) return
 
         _userState.update { it.copy(selectedEpisodeId = media.mediaId) }
 
-        when (val action = resolvePlaybackAction(media = media, forceInternal = forceInternal)) {
-            is PlaybackAction.OpenPlayer -> emit(SeasonEvent.PlayMedia(media = action.media, externalPlayer = action.externalPlayer))
-            PlaybackAction.Unavailable -> Unit
-        }
+        if (outcome is PlaybackOutcome.OpenInternalPlayer) emit(SeasonEvent.OpenInternalPlayer(media = outcome.media))
 
     }
 

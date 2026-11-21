@@ -15,11 +15,10 @@ import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.identification.presentation.IdentificationAvailability
 import com.mskd.flux.features.people.domain.usecase.GetPeopleUseCase
-import com.mskd.flux.features.player.domain.model.PlaybackAction
-import com.mskd.flux.features.player.domain.usecase.ResolvePlaybackActionUseCase
+import com.mskd.flux.features.player.domain.playback.PlaybackLaunch
+import com.mskd.flux.features.player.domain.playback.PlaybackOutcome
 import com.mskd.flux.features.progress.domain.usecase.ChangeMediaStatusUseCase
 import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
-import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.PeopleMockup
@@ -28,9 +27,6 @@ import com.mskd.flux.system.UrlLauncher
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
-import io.kotest.property.Exhaustive
-import io.kotest.property.checkAll
-import io.kotest.property.exhaustive.boolean
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -55,8 +51,7 @@ class MovieViewModelTest : FunSpec({
     lateinit var getPeopleUseCase: GetPeopleUseCase
     lateinit var changeMediaStatus: ChangeMediaStatusUseCase
     lateinit var resetProgress: ResetProgressUseCase
-    lateinit var resolvePlaybackAction: ResolvePlaybackActionUseCase
-    lateinit var recordPlaybackResult: SaveProgressUseCase
+    lateinit var playbackLaunch: PlaybackLaunch
     lateinit var token: MutableStateFlow<String>
     lateinit var syncState: MutableStateFlow<SyncState>
 
@@ -69,8 +64,7 @@ class MovieViewModelTest : FunSpec({
         urlLauncher = mockk(relaxed = true)
         changeMediaStatus = mockk(relaxed = true)
         resetProgress = mockk(relaxed = true)
-        resolvePlaybackAction = mockk(relaxed = true)
-        recordPlaybackResult = mockk(relaxed = true)
+        playbackLaunch = mockk(relaxed = true)
 
         viewModel = MovieViewModel(
             artworkId = id,
@@ -80,8 +74,7 @@ class MovieViewModelTest : FunSpec({
             catalogSyncCoordinator = mockk<CatalogSyncCoordinator> { every { state } returns syncState },
             changeMediaStatus = changeMediaStatus,
             resetProgress = resetProgress,
-            resolvePlaybackAction = resolvePlaybackAction,
-            recordPlaybackResult = recordPlaybackResult,
+            playbackLaunch = playbackLaunch,
             filesLauncher = filesLauncher,
             urlLauncher = urlLauncher
         )
@@ -184,32 +177,26 @@ class MovieViewModelTest : FunSpec({
         }
     }
 
-    test("PlayMedia - should call resolvePlaybackAction and then launch player event") {
+    context("play") {
 
-        checkAll(Exhaustive.boolean(), Exhaustive.boolean()) { forceInternal, externalPlayerRequested ->
-
-            // Given
-            val externalPlayer = !forceInternal && externalPlayerRequested
-            coEvery { resolvePlaybackAction(media = movie, forceInternal = forceInternal) } returns PlaybackAction.OpenPlayer(media = movie, externalPlayer = externalPlayer)
-
+        test("the Internal player outcome opens the Internal player") {
+            coEvery { playbackLaunch.play(media = movie, forceInternal = true) } returns PlaybackOutcome.OpenInternalPlayer(movie)
             viewModel.event.test {
-
-                // When
-                viewModel.handleIntent(intent = MovieIntent.PlayMedia(media = movie, forceInternal = forceInternal))
-
-                // Then
-                awaitItem() shouldBe MovieEvent.PlayMedia(media = movie, externalPlayer = externalPlayer)
-
+                viewModel.handleIntent(MovieIntent.PlayMedia(media = movie, forceInternal = true))
+                awaitItem() shouldBe MovieEvent.OpenInternalPlayer(media = movie)
             }
-
         }
 
-    }
+        test("a Media handed to the External player or Unavailable emits nothing") {
+            listOf(PlaybackOutcome.HandedToExternalPlayer, PlaybackOutcome.Unavailable).forEach { outcome ->
+                coEvery { playbackLaunch.play(media = movie, forceInternal = false) } returns outcome
+                viewModel.event.test {
+                    viewModel.handleIntent(MovieIntent.PlayMedia(media = movie))
+                    expectNoEvents()
+                }
+            }
+        }
 
-    test("the progress returned by the external player is saved for the movie") {
-        content()
-        viewModel.handleIntent(MovieIntent.OnExternalPlayerResult(progress = 5000L))
-        coVerify { recordPlaybackResult(media = movie, progress = 5000L) }
     }
 
     test("mark movie as watched") {

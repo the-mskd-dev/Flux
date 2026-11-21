@@ -28,11 +28,10 @@ import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToUnknow
 import com.mskd.flux.features.history.domain.model.HistoryEntry
 import com.mskd.flux.features.history.domain.repository.HistoryRepository
 import com.mskd.flux.features.history.domain.usecase.GetHistoryUseCase
-import com.mskd.flux.features.player.domain.model.PlaybackAction
-import com.mskd.flux.features.player.domain.usecase.ResolvePlaybackActionUseCase
+import com.mskd.flux.features.player.domain.playback.PlaybackLaunch
+import com.mskd.flux.features.player.domain.playback.PlaybackOutcome
 import com.mskd.flux.features.privateFolder.domain.datastore.PrivateFolderDataStore
 import com.mskd.flux.features.privateFolder.domain.usecase.setArtworkPrivacy.SetArtworkPrivacyUseCase
-import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.report.Trace
 import com.mskd.flux.system.UpdateManager
@@ -64,8 +63,7 @@ class CatalogViewModel(
     private val getHistoryUseCase: GetHistoryUseCase,
     private val appInfo: AppInfo,
     private val urlLauncher: UrlLauncher,
-    private val resolvePlaybackAction: ResolvePlaybackActionUseCase,
-    private val recordPlaybackResult: SaveProgressUseCase,
+    private val playbackLaunch: PlaybackLaunch,
     private val setArtworkPrivacy: SetArtworkPrivacyUseCase
 ): ViewModel() {
 
@@ -78,8 +76,6 @@ class CatalogViewModel(
 
     // TODO: Remove the Play Store announcement (dialog, flag, view model logic, strings) by March 2027
     private val _showPlayStorePromo = MutableStateFlow(false)
-
-    private var currentMedia: Media? = null
 
     private val preferencesFlow = combine(
         getHistoryUseCase(),
@@ -205,7 +201,6 @@ class CatalogViewModel(
 
             // Player
             is CatalogIntent.PlayMedia -> playMedia(media = intent.media, forceInternal = intent.forceInternal)
-            is CatalogIntent.OnExternalPlayerResult -> onExternalPlayerResult(intent.progress)
         }
     }
 
@@ -290,18 +285,10 @@ class CatalogViewModel(
     }
 
     private suspend fun playMedia(media: Media, forceInternal: Boolean) {
-        currentMedia = media
-        when (val action = resolvePlaybackAction(media = media, forceInternal = forceInternal)) {
-            is PlaybackAction.OpenPlayer -> _event.emit(CatalogEvent.PlayMedia(
-                media = action.media,
-                externalPlayer = action.externalPlayer,
-            ))
-            PlaybackAction.Unavailable -> Unit
+        when (val outcome = playbackLaunch.play(media = media, forceInternal = forceInternal)) {
+            is PlaybackOutcome.OpenInternalPlayer -> _event.emit(CatalogEvent.OpenInternalPlayer(media = outcome.media))
+            PlaybackOutcome.HandedToExternalPlayer, PlaybackOutcome.Unavailable -> Unit
         }
-    }
-
-    private suspend fun onExternalPlayerResult(progress: Long) {
-        currentMedia?.let { recordPlaybackResult(media = it, progress = progress) }
     }
 
 }

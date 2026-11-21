@@ -17,8 +17,7 @@ val moduleMovie = module {
             getPeopleUseCase = get(),
             changeMediaStatus = get(),
             resetProgress = get(),
-            resolvePlaybackAction = get(),
-            recordPlaybackResult = get(),
+            playbackLaunch = get(),
         )
     }
 

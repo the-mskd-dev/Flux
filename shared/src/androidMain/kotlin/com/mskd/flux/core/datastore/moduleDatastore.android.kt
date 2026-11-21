@@ -16,6 +16,10 @@ val moduleDatastoreAndroid = module {
         get<Context>().customizationDatastore
     }
 
+    single<DataStore<Preferences>>(Qualifiers.PLAYBACK_DATASTORE) {
+        get<Context>().playbackDataStore
+    }
+
     single<DataStore<Preferences>>(Qualifiers.PRIVATE_FOLDER_DATASTORE) {
         get<Context>().privateFolderDatastore
     }

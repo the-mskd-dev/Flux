@@ -1,0 +1,25 @@
+{
+  "id": 62085,
+  "translations": [
+    {
+      "iso_639_1": "en",
+      "iso_3166_1": "US",
+      "name": "English",
+      "english_name": "English",
+      "data": {
+        "name": "Pilot",
+        "overview": "Walter White learns that he has terminal lung cancer."
+      }
+    },
+    {
+      "iso_639_1": "fr",
+      "iso_3166_1": "FR",
+      "name": "Français",
+      "english_name": "French",
+      "data": {
+        "name": "Chute libre",
+        "overview": "Walter White apprend qu'il est atteint d'un cancer du poumon en phase terminale."
+      }
+    }
+  ]
+}

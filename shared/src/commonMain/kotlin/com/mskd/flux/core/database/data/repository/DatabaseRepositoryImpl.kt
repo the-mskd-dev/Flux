@@ -204,6 +204,21 @@ class DatabaseRepositoryImpl(
         })
     }
 
+    override suspend fun updateArtworksTranslations(artworks: List<Artwork>) {
+        if (artworks.isEmpty()) return
+        database.useWriterConnection { transactor ->
+            transactor.immediateTransaction {
+                artworks.forEach { artwork ->
+                    artworksDao.updateArtworkTranslation(
+                        artworkId = artwork.id,
+                        title = artwork.title,
+                        description = artwork.description,
+                    )
+                }
+            }
+        }
+    }
+
     override suspend fun getMedias(): List<Media> {
         return mediasDao.getAll().map { it.toDomain() }
     }

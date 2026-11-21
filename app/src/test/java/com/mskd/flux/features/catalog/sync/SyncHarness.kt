@@ -219,7 +219,7 @@ internal class SyncHarness(tmdbToken: String = "test-token", tmdbMaxRequests: In
     fun requestLanguageChangeSync() = useCase(type = SyncType.LANGUAGE_CHANGE)
 
     /** Waits for the Sync to end, along with the background work it started. */
-    suspend fun awaitIdle() = withTimeout(10.seconds) {
+    suspend fun awaitIdle() = withTimeout(20.seconds) {
         useCase.state.first { it is SyncState.Idle }
         while (true) {
             val running = scope.coroutineContext.job.children.filter { it.isActive }.toList()

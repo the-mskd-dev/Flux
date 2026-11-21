@@ -8,17 +8,18 @@
 
 ## 2. Agent skills
 
-### Issue tracker
+### Global rules
 
-Issues and specs live in GitHub Issues (`the-mskd-dev/Flux`, via the `gh` CLI). See `docs/agents/issue-tracker.md`.
+In the whole code, specs, tickets, GLOSSARY.md, you should use English only. Other languages are authorized only in strings.xml files.
+
+### Issues, specs and tickets
+- GitHub Issues (`the-mskd-dev/Flux`) are **read-only** for agents: read them with `gh issue view <number> --json number,title,body,labels,comments`. Never create, edit, label, close or comment on issues.
+- All specs go in `.scratch/<REQUEST>/specs.md`, all tickets in `.scratch/<REQUEST>/tickets/`.
+- `.scratch/` is the only place where agents write planning documents. See `docs/agents/issue-tracker.md`.
 
 ### Triage labels
 
 Default five-role vocabulary (needs-triage, needs-info, ready-for-agent, ready-for-human, wontfix), applied as GitHub labels. See `docs/agents/triage-labels.md`.
-
-### Specs and Tickets
-
-Write specs in `/.scratch/<REQUEST>/specs.md` and tickets in `/.scratch/<REQUEST>/tickets/`. Put nothing in GitHub Issues.
 
 ### Domain docs
 
@@ -49,3 +50,11 @@ You are allowed to execute terminal commands to interact with the Android enviro
 - Always check that a device/emulator is connected via `adb devices` before running installation or UI inspection commands.
 
 - Never run long-polling logcat commands (`adb logcat` without `-d`); always use `-d` to dump and exit so the terminal process does not hang.
+
+### Notes for future agents
+
+- Write a note only for what the code cannot tell: a non-obvious constraint, a trap hit during the task, or a decision with trade-offs (→ ADR).
+- Never describe what the code already says.
+- Before adding, search existing notes: update or delete rather than append.
+- If you find a note contradicting the code, fix or remove it.
+- Keep each note under ~5 lines.

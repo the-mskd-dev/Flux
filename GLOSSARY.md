@@ -75,7 +75,7 @@ Image shown at the top of an Artwork page: its Backdrop, or its Poster when the 
 _Avoid_: Header image, banner, bannière
 
 **Custom image**:
-Backdrop, Poster or Logo chosen by the user in the Gallery to replace the TMDB one. The custom Backdrop replaces the Backdrop of the Artwork image; the custom Poster replaces the Poster of the Artwork image (blurred header) and the Artwork thumbnail in the Catalog, the search and the Private Folder; the custom Logo replaces the Logo of the Artwork page. An Artwork, Movie or Show, has at most one custom Backdrop, one custom Poster and one custom Logo. It is kept by the Light sync and the Language change, and cleared by the Full sync and the Identification reset. A Manual identification does not carry over the one of the source Artwork; the target Artwork keeps its own if it was already in the Catalog.
+Backdrop, Poster or Logo chosen by the user in the Gallery to replace the TMDB one. The custom Backdrop replaces the Backdrop of the Artwork image; the custom Poster replaces the Poster of the Artwork image (blurred header) and the Artwork thumbnail in the Catalog, the search and the Private Folder; the custom Logo replaces the Logo of the Artwork page. An Artwork, Movie or Show, has at most one custom Backdrop, one custom Poster and one custom Logo. It is kept by the Light sync and the Language change (while a custom Logo is set, Sync skips TMDB Logo lookups for that Artwork), and cleared by the Full sync and the Identification reset. A Manual identification does not carry over the one of the source Artwork; the target Artwork keeps its own if it was already in the Catalog.
 _Avoid_: Image personnalisée, Affiche personnalisée, override
 
 **Gallery**:
@@ -230,7 +230,7 @@ An explicitly requested Sync that fetches the TMDB data of every file again.
 _Avoid_: Synchro complète, resync
 
 **Language change**:
-A Sync requested when the data language changes: it translates the Catalog, refreshes Genres, searches Logos again in the new language, and prefetches Artwork images, without scanning the UserFolder, removing Missing files, or resetting Custom images or Manual identification.
+A Sync requested when the data language changes: it translates the Catalog, refreshes Genres, searches Logos again in the new language (skipping Artwork with a custom Logo), and prefetches Artwork images, without scanning the UserFolder, removing Missing files, or resetting Custom images or Manual identification.
 _Avoid_: Language update, locale sync
 
 **Sync progress**:

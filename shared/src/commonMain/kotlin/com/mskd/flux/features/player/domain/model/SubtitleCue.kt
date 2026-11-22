@@ -8,7 +8,11 @@ data class SubtitleBitmap(
     val image: SubtitleImage,
     val widthFraction: Float,
     val heightFraction: Float,
-)
+) {
+    /** True when both normalized frame fractions lie strictly inside (0, 1]. */
+    val hasValidDimensions: Boolean
+        get() = widthFraction > 0f && widthFraction <= 1f && heightFraction > 0f && heightFraction <= 1f
+}
 
 /**
  * One subtitle on screen, independent of the playback engine.

@@ -29,7 +29,7 @@ fun Cue.toSubtitleCue(): SubtitleCue {
         lineAnchor = lineAnchor.toCueAnchor(default = CueAnchor.END),
         position = position.fractionOrNull(),
         positionAnchor = positionAnchor.toCueAnchor(default = CueAnchor.CENTER),
-        bitmap = bitmap?.toSubtitleBitmap(width = size.fractionOrNull(), height = bitmapHeight.fractionOrNull()),
+        bitmap = bitmap?.toSubtitleBitmap(width = size, height = bitmapHeight),
     )
 }
 
@@ -61,11 +61,9 @@ private fun Int.toCueAnchor(default: CueAnchor): CueAnchor = when (this) {
 }
 
 /** An image cue without a known size in (0, 1] cannot be placed honestly, so it is dropped. */
-private fun Bitmap.toSubtitleBitmap(width: Float?, height: Float?): SubtitleBitmap? {
-    if (width == null || height == null || width <= 0f || height <= 0f) return null
-    return SubtitleBitmap(
+private fun Bitmap.toSubtitleBitmap(width: Float, height: Float): SubtitleBitmap? =
+    SubtitleBitmap(
         image = SubtitleImage(this),
         widthFraction = width,
         heightFraction = height,
-    )
-}
+    ).takeIf { it.hasValidDimensions }

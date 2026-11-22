@@ -50,6 +50,12 @@ class AndroidPlayerManagerTest : FunSpec({
         (stateField.get(manager) as MutableStateFlow<PlayerManager.State<Player>>).value = PlayerManager.State.Ready(player = player)
     }
 
+    fun setReadySession(sessionId: String = "session", player: Player = mockk(relaxed = true)) {
+        setReady(player)
+        val sessionField = AndroidPlayerManager::class.java.getDeclaredField("currentSessionId").apply { isAccessible = true }
+        sessionField.set(manager, sessionId)
+    }
+
     fun trackGroup(format: Format, selected: Boolean = true) = Tracks.Group(
         TrackGroup(format),
         false,
@@ -99,10 +105,7 @@ class AndroidPlayerManagerTest : FunSpec({
     }
 
     test("disconnect clears the last cues so they never leak into the next Media") {
-        val player = mockk<Player>(relaxed = true)
-        setReady(player)
-        val sessionField = AndroidPlayerManager::class.java.getDeclaredField("currentSessionId").apply { isAccessible = true }
-        sessionField.set(manager, "session")
+        setReadySession(sessionId = "session")
         manager.onCues(CueGroup(listOf(Cue.Builder().setText("Last line of the previous file").build()), 0L))
 
         manager.disconnect(sessionId = "session")
@@ -175,10 +178,7 @@ class AndroidPlayerManagerTest : FunSpec({
     }
 
     test("disconnect clears active bitmap cues immediately") {
-        val player = mockk<Player>(relaxed = true)
-        setReady(player)
-        val sessionField = AndroidPlayerManager::class.java.getDeclaredField("currentSessionId").apply { isAccessible = true }
-        sessionField.set(manager, "session")
+        setReadySession(sessionId = "session")
         val bitmapCue = Cue.Builder()
             .setBitmap(mockk<Bitmap>(relaxed = true))
             .setSize(0.5f)

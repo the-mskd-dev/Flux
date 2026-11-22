@@ -1370,7 +1370,7 @@ class PlayerViewModelTest : FunSpec({
             }
             updateVm()
 
-            val frame1 = listOf(
+            fun bitmapFrame() = listOf(
                 SubtitleCue(
                     line = 0.8f,
                     lineAnchor = CueAnchor.START,
@@ -1383,19 +1383,8 @@ class PlayerViewModelTest : FunSpec({
                     )
                 )
             )
-            val frame2 = listOf(
-                SubtitleCue(
-                    line = 0.8f,
-                    lineAnchor = CueAnchor.START,
-                    position = 0.1f,
-                    positionAnchor = CueAnchor.START,
-                    bitmap = SubtitleBitmap(
-                        image = SubtitleImage(mockk<Bitmap>(relaxed = true)),
-                        widthFraction = 0.5f,
-                        heightFraction = 0.1f,
-                    )
-                )
-            )
+            val frame1 = bitmapFrame()
+            val frame2 = bitmapFrame()
 
             viewModel.subtitles.test {
                 awaitItem() shouldBe emptyList()

@@ -20,7 +20,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Constraints
 import com.mskd.flux.features.player.domain.model.CueAnchor
-import com.mskd.flux.features.player.domain.model.SubtitleBitmap
 import com.mskd.flux.features.player.domain.model.SubtitleCue
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxUI
@@ -74,7 +73,7 @@ private fun DefaultCue(text: String?, smallText: Boolean) {
 @Composable
 private fun StyledCue(cue: SubtitleCue, smallText: Boolean) {
     val bitmap = cue.bitmap
-    if (bitmap != null && !bitmap.hasValidDimensions()) return
+    if (bitmap != null && !bitmap.hasValidDimensions) return
     val image = remember(bitmap?.image) { bitmap?.image?.toImageBitmap() }
 
     Layout(
@@ -114,9 +113,6 @@ private fun StyledCue(cue: SubtitleCue, smallText: Boolean) {
         }
     }
 }
-
-private fun SubtitleBitmap.hasValidDimensions(): Boolean =
-    widthFraction > 0f && widthFraction <= 1f && heightFraction > 0f && heightFraction <= 1f
 
 @Composable
 private fun StyledText(cue: SubtitleCue, smallText: Boolean) {

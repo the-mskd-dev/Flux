@@ -2,66 +2,98 @@ package com.mskd.flux.features.player.data.mapper
 
 import android.graphics.Bitmap
 import android.graphics.Typeface
-import android.text.Spanned
-import android.text.style.ForegroundColorSpan
-import android.text.style.StyleSpan
+import android.text.style.CharacterStyle
 import androidx.media3.common.text.Cue
 import com.mskd.flux.features.player.domain.model.CueAnchor
+import com.mskd.flux.features.player.domain.model.SubtitleTextSpan
+import com.mskd.flux.features.player.fake.SpanFixture
+import com.mskd.flux.features.player.fake.colorSpan
+import com.mskd.flux.features.player.fake.spannedText
+import com.mskd.flux.features.player.fake.stubSpannedStringValueOf
+import com.mskd.flux.features.player.fake.styleSpan
+import com.mskd.flux.features.player.fake.underlineSpan
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
-import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 
 class CueMapperTest : FunSpec({
 
-    // Spans are Android objects and Media3 copies a Spanned when a cue is built, so the style
-    // is tested on the text itself: the text is a mock answering its spans explicitly.
-    fun spannedOf(
-        text: String,
-        color: Int? = null,
-        style: Int? = null,
-    ): Spanned {
-        val spanned = mockk<Spanned>()
-        every { spanned.toString() } returns text
-        every { spanned.length } returns text.length
-        val colorSpans: Array<ForegroundColorSpan> =
-            color?.let { arrayOf(mockk<ForegroundColorSpan> { every { foregroundColor } returns it }) }
-                ?: emptyArray()
-        val styleSpans: Array<StyleSpan> =
-            style?.let { arrayOf(mockk<StyleSpan> { every { getStyle() } returns it }) }
-                ?: emptyArray()
-        every { spanned.getSpans<ForegroundColorSpan>(any(), any(), ForegroundColorSpan::class.java) } returns colorSpans
-        every { spanned.getSpans<StyleSpan>(any(), any(), StyleSpan::class.java) } returns styleSpans
-        return spanned
-    }
+    stubSpannedStringValueOf()
 
-    test("plain cue without style or position keeps the default look") {
+    test("plain cue without style or position keeps default placement") {
         val cue = Cue.Builder().setText("Hello").build()
 
         cue.toSubtitleCue().let {
             it.text shouldBe "Hello"
-            it.isStyled shouldBe false
+            it.spans shouldBe emptyList()
+            it.line shouldBe null
+            it.position shouldBe null
+            it.isPositioned shouldBe false
         }
     }
 
-    test("color and bold are read from the spans of a styled text") {
-        val style = spannedOf(text = "Translated sign", color = 0xFFFF0000.toInt(), style = Typeface.BOLD).textStyle()
+    test("per-span bold, italic, bold-italic, underline, and color extract exact ranges without positioning") {
+        // "Hello world, watch carefully!" -> bold "world" (6..11), italic "watch" (13..18),
+        // bold-italic "!" (28..29), underline "carefully" (19..28), color "Hello" (0..5),
+        // and Typeface.NORMAL span on "watch" is ignored.
+        val text = "Hello world, watch carefully!"
+        val spanned = spannedText(
+            text = text,
+            colorSpan(color = 0xFFFF0000.toInt(), start = 0, end = 5),
+            styleSpan(style = Typeface.BOLD, start = 6, end = 11),
+            styleSpan(style = Typeface.ITALIC, start = 13, end = 18),
+            styleSpan(style = Typeface.BOLD_ITALIC, start = 28, end = 29),
+            styleSpan(style = Typeface.NORMAL, start = 13, end = 18),
+            underlineSpan(start = 19, end = 28),
+        )
 
-        style shouldBe CueTextStyle(color = 0xFFFF0000.toInt(), bold = true, italic = false)
+        val mapped = Cue.Builder().setText(spanned).build().toSubtitleCue()
+
+        mapped.text shouldBe text
+        mapped.isPositioned shouldBe false
+        mapped.line shouldBe null
+        mapped.position shouldBe null
+        mapped.spans shouldContainExactly listOf(
+            SubtitleTextSpan(start = 0, end = 5, color = 0xFFFF0000.toInt()),
+            SubtitleTextSpan(start = 6, end = 11, bold = true),
+            SubtitleTextSpan(start = 13, end = 18, italic = true),
+            SubtitleTextSpan(start = 28, end = 29, bold = true, italic = true),
+            SubtitleTextSpan(start = 19, end = 28, underline = true),
+        )
     }
 
-    test("italic style is mapped to italic, not bold") {
-        val style = spannedOf(text = "Thought", style = Typeface.ITALIC).textStyle()
+    test("overlapping and nested spans preserve individual ranges and order") {
+        val text = "Nested red blue"
+        val spanned = spannedText(
+            text = text,
+            colorSpan(color = 0xFFFF0000.toInt(), start = 0, end = 15),
+            colorSpan(color = 0xFF0000FF.toInt(), start = 11, end = 15),
+            styleSpan(style = Typeface.ITALIC, start = 7, end = 15),
+            underlineSpan(start = 0, end = 6),
+        )
 
-        style shouldBe CueTextStyle(color = null, bold = false, italic = true)
+        val mapped = Cue.Builder().setText(spanned).build().toSubtitleCue()
+
+        mapped.isPositioned shouldBe false
+        mapped.spans shouldContainExactly listOf(
+            SubtitleTextSpan(start = 0, end = 15, color = 0xFFFF0000.toInt()),
+            SubtitleTextSpan(start = 11, end = 15, color = 0xFF0000FF.toInt()),
+            SubtitleTextSpan(start = 7, end = 15, italic = true),
+            SubtitleTextSpan(start = 0, end = 6, underline = true),
+        )
     }
 
-    test("a styled cue keeps its placement from the file, with anchors") {
+    test("explicitly positioned text cue keeps coordinates, anchors, and inline spans") {
+        val spanned = spannedText(
+            text = "Translated sign",
+            styleSpan(style = Typeface.BOLD, start = 0, end = 10),
+        )
         val cue = Cue.Builder()
-            .setText("Translated sign")
+            .setText(spanned)
             .setLine(0.05f, Cue.LINE_TYPE_FRACTION)
             .setLineAnchor(Cue.ANCHOR_TYPE_START)
             .setPosition(0.5f)
@@ -73,14 +105,134 @@ class CueMapperTest : FunSpec({
             it.lineAnchor shouldBe CueAnchor.START
             it.position shouldBe 0.5f
             it.positionAnchor shouldBe CueAnchor.CENTER
-            it.isStyled shouldBe true
+            it.isPositioned shouldBe true
+            it.spans shouldContainExactly listOf(
+                SubtitleTextSpan(start = 0, end = 10, bold = true)
+            )
         }
+    }
+
+    test("out-of-bounds spans are clamped to text length") {
+        val text = "0123456789" // length 10
+        val spanned = spannedText(
+            text = text,
+            styleSpan(style = Typeface.BOLD, start = -3, end = 4),
+            styleSpan(style = Typeface.ITALIC, start = 6, end = 50),
+            colorSpan(color = 0xFF00FF00.toInt(), start = -5, end = 99),
+        )
+
+        val mapped = Cue.Builder().setText(spanned).build().toSubtitleCue()
+
+        mapped.spans shouldContainExactly listOf(
+            SubtitleTextSpan(start = 0, end = 4, bold = true),
+            SubtitleTextSpan(start = 6, end = 10, italic = true),
+            SubtitleTextSpan(start = 0, end = 10, color = 0xFF00FF00.toInt()),
+        )
+    }
+
+    test("degenerate spans and empty text produce no spans") {
+        val text = "0123456789" // length 10
+        val spanned = spannedText(
+            text = text,
+            styleSpan(style = Typeface.BOLD, start = -1, end = -1), // detached
+            styleSpan(style = Typeface.ITALIC, start = 4, end = 4), // zero-length
+            underlineSpan(start = 8, end = 3), // inverted
+            colorSpan(color = 0xFFFF0000.toInt(), start = 12, end = 20), // completely past end
+        )
+
+        Cue.Builder().setText(spanned).build().toSubtitleCue().spans shouldBe emptyList()
+
+        val emptySpanned = spannedText(
+            text = "",
+            styleSpan(style = Typeface.BOLD, start = 0, end = 5),
+        )
+        Cue.Builder().setText(emptySpanned).build().toSubtitleCue().spans shouldBe emptyList()
+    }
+
+    test("unpositioned WebVTT cue with default centered position routes to bottom band") {
+        val spanned = spannedText(
+            text = "WebVTT line",
+            styleSpan(style = Typeface.ITALIC, start = 0, end = 6),
+        )
+        val cue = Cue.Builder()
+            .setText(spanned)
+            .setLine(-1f, Cue.LINE_TYPE_NUMBER)
+            .setPosition(0.5f)
+            .setPositionAnchor(Cue.ANCHOR_TYPE_MIDDLE)
+            .build()
+
+        cue.toSubtitleCue().let {
+            it.line shouldBe null
+            it.position shouldBe null
+            it.isPositioned shouldBe false
+            it.spans shouldContainExactly listOf(SubtitleTextSpan(start = 0, end = 6, italic = true))
+        }
+    }
+
+    test("horizontally positioned WebVTT cues stay explicitly positioned") {
+        val shiftedCue = Cue.Builder()
+            .setText("Left cue")
+            .setLine(-1f, Cue.LINE_TYPE_NUMBER)
+            .setPosition(0.2f)
+            .setPositionAnchor(Cue.ANCHOR_TYPE_MIDDLE)
+            .build()
+
+        shiftedCue.toSubtitleCue().let {
+            it.line shouldBe null
+            it.position shouldBe 0.2f
+            it.positionAnchor shouldBe CueAnchor.CENTER
+            it.isPositioned shouldBe true
+        }
+
+        val anchoredAtCenterCue = Cue.Builder()
+            .setText("Start-anchored at 50%")
+            .setLine(-1f, Cue.LINE_TYPE_NUMBER)
+            .setPosition(0.5f)
+            .setPositionAnchor(Cue.ANCHOR_TYPE_START)
+            .build()
+
+        anchoredAtCenterCue.toSubtitleCue().let {
+            it.line shouldBe null
+            it.position shouldBe 0.5f
+            it.positionAnchor shouldBe CueAnchor.START
+            it.isPositioned shouldBe true
+        }
+    }
+
+    test("vertically positioned WebVTT cue preserves default centered horizontal coordinate") {
+        val cue = Cue.Builder()
+            .setText("Top center note")
+            .setLine(0.1f, Cue.LINE_TYPE_FRACTION)
+            .setLineAnchor(Cue.ANCHOR_TYPE_START)
+            .setPosition(0.5f)
+            .setPositionAnchor(Cue.ANCHOR_TYPE_MIDDLE)
+            .build()
+
+        cue.toSubtitleCue().let {
+            it.line shouldBe 0.1f
+            it.position shouldBe 0.5f
+            it.positionAnchor shouldBe CueAnchor.CENTER
+            it.isPositioned shouldBe true
+        }
+    }
+
+    test("unsupported CharacterStyle spans are ignored cleanly") {
+        val text = "Plain with unknown span"
+        val spanned = spannedText(
+            text = text,
+            SpanFixture(mockk<CharacterStyle>(), start = 0, end = 5),
+        )
+
+        Cue.Builder().setText(spanned).build().toSubtitleCue().spans shouldBe emptyList()
     }
 
     test("a line counted in lines, not as a fraction of the frame, is not placed") {
         val cue = Cue.Builder().setText("Numbered").setLine(3f, Cue.LINE_TYPE_NUMBER).build()
 
-        cue.toSubtitleCue().line shouldBe null
+        cue.toSubtitleCue().let {
+            it.line shouldBe null
+            it.isPositioned shouldBe false
+        }
     }
 
     test("image cue maps bitmap zero-copy with normalized bounds and anchors") {
@@ -100,7 +252,7 @@ class CueMapperTest : FunSpec({
         mapped.lineAnchor shouldBe CueAnchor.START
         mapped.position shouldBe 0.1f
         mapped.positionAnchor shouldBe CueAnchor.START
-        mapped.isStyled shouldBe true
+        mapped.isPositioned shouldBe true
 
         val subtitleBitmap = mapped.bitmap.shouldNotBeNull()
         subtitleBitmap.widthFraction shouldBe 0.5f

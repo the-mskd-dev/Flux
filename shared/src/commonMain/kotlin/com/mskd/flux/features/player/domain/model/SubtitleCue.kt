@@ -14,17 +14,41 @@ data class SubtitleBitmap(
         get() = widthFraction > 0f && widthFraction <= 1f && heightFraction > 0f && heightFraction <= 1f
 }
 
-/**
- * One subtitle on screen, independent of the playback engine.
- *
- * Plain cues (no color, no weight, no position, no image) keep the default look: a centred pill at the bottom.
- */
-data class SubtitleCue(
-    val text: String? = null,
-    /** ARGB color from the file, null when the file gives none. */
+/** Inline formatting applied to a character range `[start, end)` of [SubtitleCue.text]. */
+data class SubtitleTextSpan(
+    val start: Int,
+    val end: Int,
+    /** ARGB color from the file, null when the span does not override color. */
     val color: Int? = null,
     val bold: Boolean = false,
     val italic: Boolean = false,
+    val underline: Boolean = false,
+) {
+    /** True when this span carries at least one formatting override. */
+    val hasStyle: Boolean
+        get() = color != null || bold || italic || underline
+
+    /** Returns a copy clamped to `[0, textLength]`, or null when empty or carrying no style. */
+    fun normalizedFor(textLength: Int): SubtitleTextSpan? {
+        if (!hasStyle || textLength <= 0) return null
+        val clampedStart = start.coerceIn(0, textLength)
+        val clampedEnd = end.coerceIn(0, textLength)
+        if (clampedStart >= clampedEnd) return null
+        return if (clampedStart == start && clampedEnd == end) this else copy(start = clampedStart, end = clampedEnd)
+    }
+}
+
+/**
+ * One subtitle on screen, independent of the playback engine.
+ *
+ * Text cues without explicit [line] or [position] render in the default bottom band with any inline
+ * [spans]; cues with [line] or [position] render at their authored coordinates; cues with [bitmap]
+ * render as rasterized images.
+ */
+data class SubtitleCue(
+    val text: String? = null,
+    /** Inline formatting spans over [text]; independent of explicit cue positioning. */
+    val spans: List<SubtitleTextSpan> = emptyList(),
     /** Vertical position as a fraction of the frame height, from the top; null for the default bottom band. */
     val line: Float? = null,
     val lineAnchor: CueAnchor = CueAnchor.END,
@@ -33,7 +57,7 @@ data class SubtitleCue(
     val positionAnchor: CueAnchor = CueAnchor.CENTER,
     val bitmap: SubtitleBitmap? = null,
 ) {
-    /** True when the file styled or placed the cue, so it must not be drawn with the default look. */
-    val isStyled: Boolean
-        get() = color != null || bold || italic || line != null || position != null || bitmap != null
+    /** True when the file placed this cue at explicit coordinates rather than the default bottom band. */
+    val isPositioned: Boolean
+        get() = line != null || position != null
 }

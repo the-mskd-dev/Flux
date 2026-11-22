@@ -1,6 +1,7 @@
 package com.mskd.flux.features.player.data.manager
 
 import android.graphics.Bitmap
+import android.graphics.Typeface
 import android.net.Uri
 import androidx.media3.common.C
 import androidx.media3.common.Format
@@ -24,7 +25,13 @@ import com.mskd.flux.features.player.domain.manager.PlayerManager
 import com.mskd.flux.features.player.domain.model.CueAnchor
 import com.mskd.flux.features.player.domain.model.MediaInfo
 import com.mskd.flux.features.player.domain.model.SubtitleCue
+import com.mskd.flux.features.player.domain.model.SubtitleTextSpan
 import com.mskd.flux.features.player.domain.usecase.SaveTrackLanguageUseCase
+import com.mskd.flux.features.player.fake.colorSpan
+import com.mskd.flux.features.player.fake.spannedText
+import com.mskd.flux.features.player.fake.stubSpannedStringValueOf
+import com.mskd.flux.features.player.fake.styleSpan
+import com.mskd.flux.features.player.fake.underlineSpan
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.external_subtitle
 import flux.shared.generated.resources.season_and_episode
@@ -54,6 +61,7 @@ import org.jetbrains.compose.resources.getString
 class AndroidPlayerManagerTest : FunSpec({
 
     fluxExtensions()
+    stubSpannedStringValueOf()
 
     lateinit var manager: AndroidPlayerManager
     lateinit var saveTrackLanguageUseCase: SaveTrackLanguageUseCase
@@ -136,6 +144,66 @@ class AndroidPlayerManagerTest : FunSpec({
         )
     }
 
+    test("simultaneous plain and inline-styled unpositioned cues keep default bottom placement") {
+        val plainCue = Cue.Builder().setText("First plain line").build()
+        val styledSpanned = spannedText(
+            text = "Second bold italic under color line",
+            colorSpan(color = 0xFFFFFF00.toInt(), start = 25, end = 30),
+            styleSpan(style = Typeface.BOLD, start = 7, end = 11),
+            styleSpan(style = Typeface.ITALIC, start = 12, end = 18),
+            underlineSpan(start = 19, end = 24),
+        )
+        val styledCue = Cue.Builder().setText(styledSpanned).build()
+
+        manager.onCues(CueGroup(listOf(plainCue, styledCue), 0L))
+
+        val emitted = manager.subtitles.first().shouldHaveSize(2)
+        emitted[0].let {
+            it.text shouldBe "First plain line"
+            it.spans shouldBe emptyList()
+            it.line shouldBe null
+            it.position shouldBe null
+            it.isPositioned shouldBe false
+        }
+        emitted[1].let {
+            it.text shouldBe "Second bold italic under color line"
+            it.line shouldBe null
+            it.position shouldBe null
+            it.isPositioned shouldBe false
+            it.spans shouldContainExactly listOf(
+                SubtitleTextSpan(start = 25, end = 30, color = 0xFFFFFF00.toInt()),
+                SubtitleTextSpan(start = 7, end = 11, bold = true),
+                SubtitleTextSpan(start = 12, end = 18, italic = true),
+                SubtitleTextSpan(start = 19, end = 24, underline = true),
+            )
+        }
+    }
+
+    test("explicitly positioned inline-styled cue emits with authored coordinates and clamped spans") {
+        val spanned = spannedText(
+            text = "Top note",
+            styleSpan(style = Typeface.ITALIC, start = -2, end = 20),
+        )
+        val positioned = Cue.Builder()
+            .setText(spanned)
+            .setLine(0.1f, Cue.LINE_TYPE_FRACTION)
+            .setLineAnchor(Cue.ANCHOR_TYPE_START)
+            .setPosition(0.8f)
+            .setPositionAnchor(Cue.ANCHOR_TYPE_END)
+            .build()
+
+        manager.onCues(CueGroup(listOf(positioned), 0L))
+
+        val emitted = manager.subtitles.first().shouldHaveSize(1).first()
+        emitted.isPositioned shouldBe true
+        emitted.line shouldBe 0.1f
+        emitted.lineAnchor shouldBe CueAnchor.START
+        emitted.position shouldBe 0.8f
+        emitted.positionAnchor shouldBe CueAnchor.END
+        emitted.spans shouldContainExactly listOf(
+            SubtitleTextSpan(start = 0, end = 8, italic = true)
+        )
+    }
 
     test("disconnect clears the last cues so they never leak into the next Media") {
         setReadySession(sessionId = "session")

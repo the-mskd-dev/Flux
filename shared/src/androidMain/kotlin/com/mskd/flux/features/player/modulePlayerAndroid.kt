@@ -97,11 +97,10 @@ val modulePlayerAndroid = module {
             settingsDataStore = get(),
             playerManager = get(),
             pipIsEnabledUseCase = get(),
-            saveProgressUseCase = get(),
+            progressTracker = get(),
             getSubtitlesUseCase = get(),
             saveTrackLanguageUseCase = get(),
             getChaptersUseCase = get(),
-            getNextEpisodeUseCase = get()
         )
     }
 

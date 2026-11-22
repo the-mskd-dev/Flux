@@ -1,5 +1,6 @@
 package com.mskd.flux.features.progress
 
+import com.mskd.flux.features.progress.domain.ProgressTracker
 import com.mskd.flux.features.progress.domain.usecase.ChangeMediaStatusUseCase
 import com.mskd.flux.features.progress.domain.usecase.MarkPreviousAsWatchedUseCase
 import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
@@ -9,6 +10,7 @@ import org.koin.dsl.module
 
 val moduleProgress = module {
 
+    singleOf(::ProgressTracker)
     singleOf(::ChangeMediaStatusUseCase)
     singleOf(::MarkPreviousAsWatchedUseCase)
     singleOf(::ResetProgressUseCase)

@@ -46,6 +46,10 @@ _Avoid_: State, watched/unwatched
 Playback position of a Media, updated during playback and remembered for resuming.
 _Avoid_: History, currentTime, Position
 
+**History**:
+List of resumable Media shown on the home screen, ordered with the most recent first, with at most one entry per Artwork. Excludes Private Artwork, the Unknown Artwork, and Media from an Unavailable source.
+_Avoid_: Resume list, Recently watched
+
 **Genre**:
 Genre of the Artwork.
 _Avoid_: Type, category

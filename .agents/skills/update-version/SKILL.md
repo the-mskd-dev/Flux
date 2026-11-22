@@ -26,3 +26,7 @@ arguments: version
 
 1. Create a new file `<versionCode>.txt` in `fastlane/metadata` for `android` and `playstore`, inside their `en-US` folders
 2. Add the content of `CHANGELOG.md` inside, except the first line with the `versionName`
+
+## Commit & Push
+
+1. Commit and push changes to GitHub with the commit message `[UPDATE] Version <versionName>`

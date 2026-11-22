@@ -119,7 +119,7 @@ class SubtitleSelectionPolicyTest : FunSpec({
             SubtitleSelection.Override("embedded FR")
     }
 
-    // Current behavior, to be flipped by ticket 06: the container default flag is ignored
+    // Pins current behavior: the container default flag is not taken into account yet
     test("among embedded-only Tracks, an unflagged ASS Track beats a default bitmap Track of the same language") {
         val tracks = listOf(
             embedded("embedded fr PGS default", language = "fr", isDefault = true),

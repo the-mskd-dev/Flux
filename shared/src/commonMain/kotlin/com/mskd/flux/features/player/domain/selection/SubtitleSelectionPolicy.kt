@@ -16,7 +16,7 @@ enum class SubtitleTrackFormat {
  * @param track Caller's handle on the Track, handed back in [SubtitleSelection.Override].
  * @param externalOrder Position of the external subtitle file among those attached to the Media,
  * null for a Track embedded in the UserFile.
- * @param isDefault Container default flag.
+ * @param isDefault Container default flag, not used by the policy yet.
  */
 data class SubtitleTrackDescription<out T>(
     val track: T,
@@ -39,7 +39,7 @@ sealed interface SubtitleSelection<out T> {
 }
 
 /** How closely a Track language matches the preferred subtitle language, weakest first. */
-enum class LanguageMatch {
+internal enum class LanguageMatch {
     NONE,
     /** Same primary language, different or missing region (`pt-BR` vs `pt`). */
     PRIMARY,
@@ -82,12 +82,12 @@ object SubtitleSelectionPolicy {
             matchingPreferred.minWithOrNull(
                 compareByDescending<RankedTrack<T>> { it.description.isExternal }
                     .thenByDescending { it.languageMatch }
-                    .then(formatOrder())
+                    .then(tieBreakOrder())
             )
         } else {
             ranked
                 .filter { it.description.isExternal && it.description.language.isNullOrBlank() }
-                .minWithOrNull(formatOrder())
+                .minWithOrNull(tieBreakOrder())
         }
 
         return chosen?.let { SubtitleSelection.Override(it.description.track) }
@@ -100,28 +100,8 @@ object SubtitleSelectionPolicy {
         val languageMatch: LanguageMatch,
     )
 
-    private fun <T> formatOrder() = compareByDescending<RankedTrack<T>> { it.description.format == SubtitleTrackFormat.ASS_SSA }
+    private fun <T> tieBreakOrder() = compareByDescending<RankedTrack<T>> { it.description.format == SubtitleTrackFormat.ASS_SSA }
         .thenBy { it.description.isForced }
         .thenBy { it.description.externalOrder ?: Int.MAX_VALUE }
         .thenBy { it.position }
-}
-
-/**
- * ID given to each external subtitle attached to a Media, so its Track is recognized as external.
- *
- * MergingMediaSource (and nested FfmpegSubtitleSourceFactory + DefaultMediaSourceFactory) prepends one
- * or more "<sourceIndex>:" prefixes to the Track ID (e.g. "2:flux-ext-1", "0:1:flux-ext-3").
- */
-object ExternalSubtitleTrackId {
-
-    private const val PREFIX = "flux-ext-"
-    private val REGEX = Regex("^(?:\\d+:)*${Regex.escape(PREFIX)}(\\d+)$")
-
-    fun of(externalOrder: Int): String = "$PREFIX$externalOrder"
-
-    /** External order encoded in [trackId], null for an embedded Track. */
-    fun externalOrderOf(trackId: String?): Int? {
-        if (trackId == null) return null
-        return REGEX.matchEntire(trackId)?.groupValues?.getOrNull(1)?.toIntOrNull()
-    }
 }

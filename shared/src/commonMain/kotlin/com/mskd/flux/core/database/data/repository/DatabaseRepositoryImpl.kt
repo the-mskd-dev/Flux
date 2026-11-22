@@ -96,7 +96,10 @@ class DatabaseRepositoryImpl(
 
                 saveFolder(artwork = artwork, seasons = seasons, medias = medias, people = people)
 
-                if (sourceHistory != null && historyPath != null) {
+                // Read persisted isPrivate after saveFolder: an already-Private target only gets isPrivate = true inside saveArtworks
+                if (artworksDao.getArtwork(artworkId = artwork.id)?.isPrivate == true) {
+                    historyDao.delete(artworkId = artwork.id)
+                } else if (sourceHistory != null && historyPath != null) {
                     val media = mediasDao.findByPaths(paths = listOf(historyPath)).find { it.artworkId == artwork.id }
                     val targetHistory = historyDao.get(artworkId = artwork.id)
                     if (media != null && (targetHistory == null || targetHistory.timestamp < sourceHistory.timestamp)) {

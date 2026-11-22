@@ -177,7 +177,32 @@ class ShowManualIdentificationBehaviourTest : FunSpec({
 
     }
 
-    test("the Status, the Progress, the history entry and the private flag follow the episodes to the chosen Show") {
+    test("the Status, the Progress and the History entry follow the episodes to the chosen Show") {
+
+        // Given
+        harness.deviceStorage.availableFiles = listOf(
+            harness.deviceFile("Breaking Bad S01E01.mkv"),
+            harness.deviceFile("Breaking Bad S02E01.mkv"),
+        )
+        harness.lightSync()
+        val episode = harness.catalog.getEpisodes(artworkId = breakingBad).single { it.season == 2 }
+        harness.catalog.saveMedias(listOf(episode.copy(status = Status.IS_WATCHING, currentTime = 1234L)))
+        harness.history.upsert(HistoryEntity(artworkId = breakingBad, mediaId = episode.id, timestamp = 1000L))
+
+        // When
+        harness.identifyManually(artworkId = breakingBad, target = lostPages)
+
+        // Then
+        val moved = harness.catalog.getEpisodes(artworkId = lostPages.id).single { it.season == 2 }
+        moved.id shouldBe lostPagesS02E01
+        moved.status shouldBe Status.IS_WATCHING
+        moved.currentTime shouldBe 1234L
+        harness.history.getAll() shouldBe listOf(HistoryEntity(artworkId = lostPages.id, mediaId = lostPagesS02E01, timestamp = 1000L))
+        harness.catalog.getArtwork(artworkId = lostPages.id)?.isPrivate shouldBe false
+
+    }
+
+    test("the private flag follows the episodes to the chosen Show without migrating any History entry") {
 
         // Given
         harness.deviceStorage.availableFiles = listOf(
@@ -198,8 +223,8 @@ class ShowManualIdentificationBehaviourTest : FunSpec({
         moved.id shouldBe lostPagesS02E01
         moved.status shouldBe Status.IS_WATCHING
         moved.currentTime shouldBe 1234L
-        harness.history.getAll() shouldBe listOf(HistoryEntity(artworkId = lostPages.id, mediaId = lostPagesS02E01, timestamp = 1000L))
         harness.catalog.getArtwork(artworkId = lostPages.id)?.isPrivate shouldBe true
+        harness.history.getAll() shouldBe emptyList()
 
     }
 

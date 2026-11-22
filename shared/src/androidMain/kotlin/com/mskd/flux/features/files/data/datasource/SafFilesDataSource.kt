@@ -8,6 +8,9 @@ import com.mskd.flux.core.model.files.FileSource
 import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.features.files.data.FileExtensions
 import com.mskd.flux.features.files.domain.datasource.FilesDataSource
+import com.mskd.flux.features.files.domain.model.ExternalSubtitle
+import com.mskd.flux.features.files.domain.model.ExternalSubtitleMatcher
+import com.mskd.flux.features.files.domain.model.SubtitleCandidate
 import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.report.Trace
 import kotlinx.coroutines.Dispatchers
@@ -40,59 +43,48 @@ class SafFilesDataSource(
         getFilesFromFolder(folder = folder)
     }
 
-    override suspend fun getSubtitlesFor(file: UserFile): String? = withContext(Dispatchers.IO) {
-        if (!contains(file)) return@withContext null
+    override suspend fun getSubtitlesFor(file: UserFile): List<ExternalSubtitle> = withContext(Dispatchers.IO) {
+        if (!contains(file)) return@withContext emptyList()
 
         val videoUri = file.path.toUri()
 
-        // Cleanly extract the video name without its extension
-        val videoNameWithoutExtension = file.name.substringAfterLast('/').substringBeforeLast('.')
-
         try {
-
-            // Reconstruct the parent folder ID by removing the last encoded segment
             val parentDocumentId = file.parentDocId
-            if (parentDocumentId.isNullOrEmpty()) return@withContext null
+            if (parentDocumentId.isNullOrEmpty()) return@withContext emptyList()
 
             val childrenUri = DocumentsContract.buildChildDocumentsUriUsingTree(videoUri, parentDocumentId)
-
-            val subtitleExtensions = FileExtensions.SUBTITLES
-            var targetSubtitleUri: Uri? = null
+            val candidates = mutableListOf<SubtitleCandidate>()
 
             // Targeted query on the parent folder
             context.contentResolver.query(
                 childrenUri,
                 arrayOf(
                     DocumentsContract.Document.COLUMN_DOCUMENT_ID,
-                    DocumentsContract.Document.COLUMN_DISPLAY_NAME
+                    DocumentsContract.Document.COLUMN_DISPLAY_NAME,
+                    DocumentsContract.Document.COLUMN_MIME_TYPE
                 ),
                 null, null, null
             )?.use { cursor ->
                 val idCol = cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DOCUMENT_ID)
                 val nameCol = cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DISPLAY_NAME)
+                val mimeCol = cursor.getColumnIndex(DocumentsContract.Document.COLUMN_MIME_TYPE)
 
                 while (cursor.moveToNext()) {
-                    val currentName = cursor.getString(nameCol)
-                    val currentExt = currentName.substringAfterLast('.', "").lowercase()
-                    val currentBaseName = currentName.substringBeforeLast('.')
+                    val mime = if (mimeCol >= 0) cursor.getString(mimeCol) else null
+                    if (mime == DocumentsContract.Document.MIME_TYPE_DIR) continue
 
-                    // Exact name match (case-insensitive) + valid extension
-                    if (currentBaseName.equals(videoNameWithoutExtension, ignoreCase = true) && currentExt in subtitleExtensions) {
-                        val currentId = cursor.getString(idCol)
-                        targetSubtitleUri = DocumentsContract.buildDocumentUriUsingTree(videoUri, currentId)
-                        break // Found, stop the cursor immediately.
-                    }
+                    val currentId = cursor.getString(idCol) ?: continue
+                    val currentName = cursor.getString(nameCol) ?: continue
+                    val docUri = DocumentsContract.buildDocumentUriUsingTree(videoUri, currentId)
+                    candidates += SubtitleCandidate(uri = docUri.toString(), fileName = currentName)
                 }
             }
 
-            // Return the SAF URI directly as a String
-            return@withContext targetSubtitleUri?.toString()
-
+            ExternalSubtitleMatcher.matchAll(userFileName = file.name, candidates = candidates)
         } catch (e: Exception) {
             Trace.error(TAG, "Failed to resolve SAF subtitles for ${file.name}", e)
-            null
+            emptyList()
         }
-
     }
 
     private fun getFilesFromFolder(folder: UserFolder): List<UserFile> {

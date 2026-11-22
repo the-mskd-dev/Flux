@@ -11,6 +11,7 @@ import com.mskd.flux.core.model.language.Language
 import com.mskd.flux.core.model.player.PlayerTrack
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.features.artwork.fake.FakeObserveArtworkUseCase
+import com.mskd.flux.features.files.domain.model.ExternalSubtitle
 import com.mskd.flux.features.files.domain.usecase.GetSubtitlesUseCase
 import com.mskd.flux.features.player.data.PipIsEnabledUseCase
 import com.mskd.flux.features.player.domain.manager.PlayerManager
@@ -1397,6 +1398,38 @@ class PlayerViewModelTest : FunSpec({
 
                 subtitlesFlow.value = emptyList()
                 awaitItem() shouldBe emptyList()
+            }
+        }
+
+        test("forwards the full list of discovered external subtitles to PlayerManager.playMedia") {
+            val discovered = listOf(
+                ExternalSubtitle(
+                    uri = "content://tree/doc/1",
+                    fileName = "naruto_shippuuden_S01E01.fr.ass",
+                    extension = "ass",
+                    language = "fr",
+                ),
+                ExternalSubtitle(
+                    uri = "content://tree/doc/2",
+                    fileName = "naruto_shippuuden_S01E01.en.srt",
+                    extension = "srt",
+                    language = "en",
+                ),
+            )
+            coEvery { getSubtitlesUseCase(file = MediaMockups.episode1.file) } returns discovered
+            updateVm(mediaId = MediaMockups.episode1.mediaId)
+
+            viewModel.session.test {
+                var item = awaitItem()
+                while (item !is State.Content) item = awaitItem()
+                cancelAndConsumeRemainingEvents()
+            }
+
+            coVerify(timeout = 1000) {
+                playerManager.playMedia(
+                    media = MediaMockups.episode1,
+                    externalSubtitles = discovered,
+                )
             }
         }
 

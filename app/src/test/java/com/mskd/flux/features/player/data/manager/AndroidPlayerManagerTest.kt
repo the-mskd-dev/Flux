@@ -681,8 +681,36 @@ class AndroidPlayerManagerTest : FunSpec({
         manager.selectTrack(PlayerTrack(id = null, label = "Français", language = "fr", type = PlayerTrack.Type.SUBTITLES))
 
         val latestParams = capturedParams.last()
-        latestParams.overrides.keys shouldContain embeddedFr.mediaTrackGroup
-        (manager.flow.first() as PlayerManager.State.Ready).selectedSubtitles?.label shouldBe "French Embedded"
+        latestParams.overrides.keys shouldNotContain externalUntagged.mediaTrackGroup
+        latestParams.overrides.keys shouldNotContain embeddedFr.mediaTrackGroup
+    }
+
+    test("automatic subtitle selection applies no Track override when only embedded Tracks match the preferred language") {
+        val embeddedFrPgsDefault = subtitleGroup(
+            subtitleFormat(
+                id = "emb-1",
+                mimeType = MimeTypes.APPLICATION_PGS,
+                language = "fr",
+                label = "French PGS",
+                selectionFlags = C.SELECTION_FLAG_DEFAULT,
+            )
+        )
+        val embeddedFrAssSigns = subtitleGroup(
+            subtitleFormat(id = "emb-2", mimeType = MimeTypes.TEXT_SSA, language = "fr", label = "French signs")
+        )
+        val embeddedFrSrt = subtitleGroup(
+            subtitleFormat(id = "emb-3", mimeType = MimeTypes.APPLICATION_SUBRIP, language = "fr", label = "French SRT")
+        )
+        val (_, capturedParams) = setupSelectionPlayer(
+            Tracks(listOf(embeddedFrPgsDefault, embeddedFrAssSigns, embeddedFrSrt))
+        )
+
+        manager.selectTrack(PlayerTrack(id = null, label = "Français", language = "fr", type = PlayerTrack.Type.SUBTITLES))
+
+        val latestParams = capturedParams.last()
+        latestParams.overrides shouldBe emptyMap()
+        latestParams.preferredTextLanguages shouldContain "fr"
+        latestParams.disabledTrackTypes shouldNotContain C.TRACK_TYPE_TEXT
     }
 
     test("disabling subtitles turns off text tracks and clears overrides even when external subtitles exist") {

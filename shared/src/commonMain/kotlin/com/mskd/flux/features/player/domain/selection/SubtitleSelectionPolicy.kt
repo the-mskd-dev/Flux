@@ -16,7 +16,8 @@ enum class SubtitleTrackFormat {
  * @param track Caller's handle on the Track, handed back in [SubtitleSelection.Override].
  * @param externalOrder Position of the external subtitle file among those attached to the Media,
  * null for a Track embedded in the UserFile.
- * @param isDefault Container default flag, not used by the policy yet.
+ * @param isDefault Container default flag, not used by the policy: it is honored by the player
+ * when no Track is forced.
  */
 data class SubtitleTrackDescription<out T>(
     val track: T,
@@ -59,8 +60,9 @@ internal enum class LanguageMatch {
 /**
  * Automatic subtitle Track selection, used when the viewer has not tapped a Track in the Settings sheet.
  *
- * Among Tracks matching the preferred language: external before embedded, then exact before primary
- * language match, then ASS/SSA first, non-forced first, external order, list position.
+ * Among external Tracks matching the preferred language: exact before primary language match, then
+ * ASS/SSA first, non-forced first, external order. When only embedded Tracks match, none is forced
+ * so the player honors the container's default and forced flags.
  * When no Track matches, an untagged external Track is selected with the same format ordering.
  */
 object SubtitleSelectionPolicy {
@@ -77,18 +79,17 @@ object SubtitleSelectionPolicy {
             )
         }
 
-        val matchingPreferred = ranked.filter { it.languageMatch != LanguageMatch.NONE }
-        val chosen = if (matchingPreferred.isNotEmpty()) {
-            matchingPreferred.minWithOrNull(
-                compareByDescending<RankedTrack<T>> { it.description.isExternal }
-                    .thenByDescending { it.languageMatch }
-                    .then(tieBreakOrder())
-            )
-        } else {
-            ranked
-                .filter { it.description.isExternal && it.description.language.isNullOrBlank() }
-                .minWithOrNull(tieBreakOrder())
-        }
+        val chosen = ranked
+            .filter { it.description.isExternal && it.languageMatch != LanguageMatch.NONE }
+            .minWithOrNull(compareByDescending<RankedTrack<T>> { it.languageMatch }.then(tieBreakOrder()))
+            ?: if (ranked.any { it.languageMatch != LanguageMatch.NONE }) {
+                // Only embedded Tracks match: the container's default and forced flags decide, not us
+                null
+            } else {
+                ranked
+                    .filter { it.description.isExternal && it.description.language.isNullOrBlank() }
+                    .minWithOrNull(tieBreakOrder())
+            }
 
         return chosen?.let { SubtitleSelection.Override(it.description.track) }
             ?: SubtitleSelection.PreferredLanguageOnly

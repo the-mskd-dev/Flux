@@ -102,32 +102,21 @@ class SubtitleSelectionPolicyTest : FunSpec({
             SubtitleSelection.Override("external fr #1")
     }
 
-    test("list position breaks ties among otherwise equal embedded Tracks") {
-        val tracks = listOf(
-            embedded("embedded fr first", language = "fr"),
-            embedded("embedded fr second", language = "fr"),
-        )
-
-        SubtitleSelectionPolicy.select(preferredLanguage = "fr", tracks = tracks) shouldBe
-            SubtitleSelection.Override("embedded fr first")
-    }
-
     test("language matching ignores case") {
-        val tracks = listOf(embedded("embedded FR", language = "FR"))
+        val tracks = listOf(external("external FR", order = 0, language = "FR"))
 
         SubtitleSelectionPolicy.select(preferredLanguage = "fr", tracks = tracks) shouldBe
-            SubtitleSelection.Override("embedded FR")
+            SubtitleSelection.Override("external FR")
     }
 
-    // Pins current behavior: the container default flag is not taken into account yet
-    test("among embedded-only Tracks, an unflagged ASS Track beats a default bitmap Track of the same language") {
+    test("with only embedded Tracks matching the preferred language, no Track is forced so the container flags decide") {
         val tracks = listOf(
             embedded("embedded fr PGS default", language = "fr", isDefault = true),
             embedded("embedded fr ASS signs", language = "fr", format = SubtitleTrackFormat.ASS_SSA),
         )
 
         SubtitleSelectionPolicy.select(preferredLanguage = "fr", tracks = tracks) shouldBe
-            SubtitleSelection.Override("embedded fr ASS signs")
+            SubtitleSelection.PreferredLanguageOnly
     }
 
     test("an embedded Track matching the preferred language prevents the untagged external fallback") {
@@ -137,7 +126,7 @@ class SubtitleSelectionPolicyTest : FunSpec({
         )
 
         SubtitleSelectionPolicy.select(preferredLanguage = "fr", tracks = tracks) shouldBe
-            SubtitleSelection.Override("embedded fr")
+            SubtitleSelection.PreferredLanguageOnly
     }
 
     test("with no Track matching the preferred language, the untagged external Track is selected by format") {

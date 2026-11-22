@@ -28,7 +28,6 @@ class SettingsDataStoreImpl(val settingsDataStore: DataStore<Preferences>) : Set
         val PIP_IS_ENABLED = booleanPreferencesKey("pip_is_enabled")
         val AUTO_KEYBOARD = booleanPreferencesKey("auto_keyboard_in_search")
         val DATA_LANGUAGE = stringPreferencesKey("data_language")
-        val PREFETCH_IMAGES = booleanPreferencesKey("prefetch_hd_images")
         val SYSTEM_FOLDERS_ENABLED = booleanPreferencesKey("system_folders_enabled")
         val BLUR_SPOILERS = booleanPreferencesKey("blur_spoilers")
     }
@@ -46,7 +45,6 @@ class SettingsDataStoreImpl(val settingsDataStore: DataStore<Preferences>) : Set
             val pipIsEnabled = preferences[Keys.PIP_IS_ENABLED] ?: true
             val autoKeyboard = preferences[Keys.AUTO_KEYBOARD] ?: true
             val dataLanguage = preferences[Keys.DATA_LANGUAGE]?.let { Language.fromCode(it) }
-            val prefetchImages = preferences[Keys.PREFETCH_IMAGES] ?: false
             val systemFoldersEnabled = preferences[Keys.SYSTEM_FOLDERS_ENABLED] ?: true
             val blurSpoilers = preferences[Keys.BLUR_SPOILERS] ?: false
 
@@ -60,7 +58,6 @@ class SettingsDataStoreImpl(val settingsDataStore: DataStore<Preferences>) : Set
                 pipIsEnabled = pipIsEnabled,
                 autoKeyboard = autoKeyboard,
                 dataLanguage = dataLanguage,
-                prefetchHdImages = prefetchImages,
                 systemFoldersEnabled = systemFoldersEnabled,
                 blurSpoilers = blurSpoilers,
             )
@@ -141,12 +138,6 @@ class SettingsDataStoreImpl(val settingsDataStore: DataStore<Preferences>) : Set
     override suspend fun setAutoKeyboard(autoKeyboard: Boolean) {
         settingsDataStore.edit { preferences ->
             preferences[Keys.AUTO_KEYBOARD] = autoKeyboard
-        }
-    }
-
-    override suspend fun setPrefetchHdImages(prefetch: Boolean) {
-        settingsDataStore.edit { preferences ->
-            preferences[Keys.PREFETCH_IMAGES] = prefetch
         }
     }
 

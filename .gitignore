@@ -17,6 +17,9 @@ local.properties
 /app/src/playstore/google-services.json
 *.log
 
+# --- AI ---
+.scratch
+
 # --- Firebase ---
 firebase-distribution.json
 

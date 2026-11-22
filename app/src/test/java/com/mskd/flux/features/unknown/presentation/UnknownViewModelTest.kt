@@ -5,22 +5,15 @@ import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.features.artwork.fake.FakeObserveArtworkUseCase
-import com.mskd.flux.features.player.domain.model.PlaybackAction
-import com.mskd.flux.features.player.domain.usecase.ResolvePlaybackActionUseCase
-import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
+import com.mskd.flux.features.player.domain.playback.PlaybackLaunch
+import com.mskd.flux.features.player.domain.playback.PlaybackOutcome
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.system.FilesLauncher
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
-import io.kotest.property.Arb
-import io.kotest.property.Exhaustive
-import io.kotest.property.arbitrary.element
-import io.kotest.property.checkAll
-import io.kotest.property.exhaustive.boolean
 import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -33,21 +26,18 @@ class UnknownViewModelTest : FunSpec({
     lateinit var viewModel: UnknownViewModel
     lateinit var observeArtworkUseCase: ObserveArtworkUseCase
     lateinit var settingsDataStore: SettingsDataStore
-    lateinit var resolvePlaybackAction: ResolvePlaybackActionUseCase
-    lateinit var recordPlaybackResult: SaveProgressUseCase
+    lateinit var playbackLaunch: PlaybackLaunch
     lateinit var filesLauncher: FilesLauncher
 
     val updateVm: () -> Unit = {
 
-        resolvePlaybackAction = mockk(relaxed = true)
-        recordPlaybackResult = mockk(relaxed = true)
+        playbackLaunch = mockk(relaxed = true)
         filesLauncher = mockk(relaxed = true)
 
         viewModel = UnknownViewModel(
             observeArtworkUseCase = observeArtworkUseCase,
             settingsDataStore = settingsDataStore,
-            resolvePlaybackAction = resolvePlaybackAction,
-            recordPlaybackResult = recordPlaybackResult,
+            playbackLaunch = playbackLaunch,
             filesLauncher = filesLauncher
         )
 
@@ -84,41 +74,27 @@ class UnknownViewModelTest : FunSpec({
 
     context("PlayMedia") {
 
-        test("should call resolvePlaybackAction and then launch player event") {
+        val media = MediaMockups.unknownEpisode
 
-            checkAll(
-                iterations = 20,
-                Arb.element(MediaMockups.allMedias),
-                Exhaustive.boolean(),
-                Exhaustive.boolean(),
-            ) { media, forceInternal, externalPlayerRequested ->
-
-                // Given
-                val externalPlayer = !forceInternal && externalPlayerRequested
-                coEvery { resolvePlaybackAction(media = media, forceInternal = forceInternal) } returns PlaybackAction.OpenPlayer(media = media, externalPlayer = externalPlayer)
-
-                viewModel.event.test {
-
-                    // When
-                    viewModel.handleIntent(intent = UnknownIntent.PlayMedia(media = media, forceInternal = forceInternal))
-
-                    // Then
-                    val event = awaitItem()
-                    event.shouldBeInstanceOf<UnknownEvent.PlayMedia>()
-                    event.media shouldBe media
-                    event.externalPlayer shouldBe externalPlayer
-
-                    cancelAndConsumeRemainingEvents()
-
-                }
-
-
+        test("the Internal player outcome opens the Internal player") {
+            coEvery { playbackLaunch.play(media = media, forceInternal = true) } returns PlaybackOutcome.OpenInternalPlayer(media)
+            viewModel.event.test {
+                viewModel.handleIntent(UnknownIntent.PlayMedia(media = media, forceInternal = true))
+                awaitItem() shouldBe UnknownEvent.OpenInternalPlayer(media = media)
             }
+        }
 
+        test("a Media handed to the External player or Unavailable emits nothing") {
+            listOf(PlaybackOutcome.HandedToExternalPlayer, PlaybackOutcome.Unavailable).forEach { outcome ->
+                coEvery { playbackLaunch.play(media = media, forceInternal = false) } returns outcome
+                viewModel.event.test {
+                    viewModel.handleIntent(UnknownIntent.PlayMedia(media = media))
+                    expectNoEvents()
+                }
+            }
         }
 
     }
-
 
     context("OnBackTap") {
 
@@ -145,21 +121,6 @@ class UnknownViewModelTest : FunSpec({
             }
         }
 
-
-    }
-
-    context("OnExternalPlayerResult") {
-
-        test("should save progress for external player result") {
-            viewModel.uiState.test {
-                awaitItem()
-
-                viewModel.handleIntent(UnknownIntent.PlayMedia(media = MediaMockups.unknownEpisode))
-                viewModel.handleIntent(UnknownIntent.OnExternalPlayerResult(progress = 5000L))
-
-                coVerify { recordPlaybackResult(media = MediaMockups.unknownEpisode, progress = 5000L) }
-            }
-        }
 
     }
 

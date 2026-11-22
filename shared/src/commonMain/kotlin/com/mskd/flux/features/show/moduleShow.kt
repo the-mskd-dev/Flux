@@ -14,7 +14,7 @@ val moduleShow = module {
             getPeopleUseCase = get(),
             tokenDataStore = get(),
             catalogSyncCoordinator = get(),
-            resetProgress = get(),
+            progressTracker = get(),
         )
     }
 

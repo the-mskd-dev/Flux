@@ -5,11 +5,13 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.mskd.flux.core.database.data.FluxDatabase
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
+import com.mskd.flux.core.database.domain.repository.DetailsRepository
 import com.mskd.flux.core.database.moduleDatabase
 import com.mskd.flux.core.datastore.InMemoryPreferencesDataStore
 import com.mskd.flux.core.datastore.data.UserDataStoreImpl
 import com.mskd.flux.core.datastore.domain.UserDataStore
 import com.mskd.flux.core.model.core.AppInfo
+import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.files.FileSource
 import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.core.model.language.Language
@@ -18,9 +20,9 @@ import com.mskd.flux.core.network.tmdb.data.moduleTmdb
 import com.mskd.flux.core.network.tmdb.data.tmdbHttpClient
 import com.mskd.flux.di.Qualifiers
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
+import com.mskd.flux.features.catalog.domain.model.SyncType
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
-import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
 import com.mskd.flux.features.catalog.fake.FakeCatalogSyncCoordinator
 import com.mskd.flux.features.catalog.moduleCatalog
 import com.mskd.flux.features.files.domain.datasource.FilesDataSource
@@ -31,15 +33,20 @@ import com.mskd.flux.features.history.data.dao.HistoryDao
 import com.mskd.flux.features.history.moduleHistory
 import com.mskd.flux.features.identification.domain.usecase.IdentifyManuallyUseCase
 import com.mskd.flux.features.identification.moduleIdentification
-import com.mskd.flux.features.images.domain.ImagesPrefetchManager
-import com.mskd.flux.features.images.fake.FakeImagesPrefetchManager
+import com.mskd.flux.features.images.domain.usecase.PrefetchImagesUseCase
+import com.mskd.flux.features.images.fake.FakePrefetchImagesUseCase
 import com.mskd.flux.features.people.domain.repository.PeopleRepository
 import com.mskd.flux.features.people.modulePeople
+import com.mskd.flux.features.player.domain.model.VideoChapter
+import com.mskd.flux.features.player.domain.usecase.GetChaptersUseCase
 import com.mskd.flux.features.privateFolder.data.datastore.PrivateFolderDataStoreImpl
 import com.mskd.flux.features.privateFolder.domain.datastore.PrivateFolderDataStore
+import com.mskd.flux.features.progress.moduleProgress
 import com.mskd.flux.features.settings.data.datastore.SettingsDataStoreImpl
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.sources.domain.provider.SourcesProvider
+import com.mskd.flux.features.sources.domain.repository.SourcesRepository
+import com.mskd.flux.features.sources.fake.FakeSourcesRepository
 import com.mskd.flux.features.token.data.datastore.TokenDataStoreImpl
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import io.ktor.client.HttpClient
@@ -87,7 +94,7 @@ internal class SyncHarness(tmdbToken: String = "test-token", tmdbMaxRequests: In
     private val recorderScope = CoroutineScope(SupervisorJob() + Dispatchers.Unconfined)
 
     /** The images prefetch, counting its requests. */
-    val prefetch = FakeImagesPrefetchManager()
+    val prefetch = FakePrefetchImagesUseCase()
 
     private val _states = CopyOnWriteArrayList<SyncState>()
 
@@ -103,6 +110,7 @@ internal class SyncHarness(tmdbToken: String = "test-token", tmdbMaxRequests: In
             moduleFiles,
             modulePeople,
             moduleHistory,
+            moduleProgress,
             moduleIdentification,
             module {
                 single<RoomDatabase.Builder<FluxDatabase>> {
@@ -114,7 +122,13 @@ internal class SyncHarness(tmdbToken: String = "test-token", tmdbMaxRequests: In
                 single<TokenDataStore> { TokenDataStoreImpl(tokenDataStore = InMemoryPreferencesDataStore(), appInfo = get()) }
                 single<UserDataStore> { UserDataStoreImpl(userDataStore = InMemoryPreferencesDataStore(), json = get()) }
                 single<PrivateFolderDataStore> { PrivateFolderDataStoreImpl(privateFolderDataStore = InMemoryPreferencesDataStore()) }
-                single<ImagesPrefetchManager> { prefetch }
+                single<PrefetchImagesUseCase> { prefetch }
+                single<GetChaptersUseCase> {
+                    object : GetChaptersUseCase {
+                        override suspend fun invoke(media: Media): List<VideoChapter> = emptyList()
+                    }
+                }
+                single<SourcesRepository> { FakeSourcesRepository() }
                 single<GetFileDurationUseCase> {
                     object : GetFileDurationUseCase {
                         override suspend fun invoke(file: UserFile): Int {
@@ -138,10 +152,10 @@ internal class SyncHarness(tmdbToken: String = "test-token", tmdbMaxRequests: In
 
     private val useCase: SyncCatalogUseCase = koin.get()
 
-    private val updateLanguageUseCase: UpdateLanguageUseCase = koin.get()
-
     /** The Catalog, as persisted in the database. */
     val catalog: DatabaseRepository = koin.get()
+
+    val details: DetailsRepository = koin.get()
 
     val people: PeopleRepository = koin.get()
 
@@ -190,6 +204,12 @@ internal class SyncHarness(tmdbToken: String = "test-token", tmdbMaxRequests: In
         awaitIdle()
     }
 
+    /** Runs a Language change Sync and waits for its end. */
+    suspend fun languageChangeSync() {
+        requestLanguageChangeSync()
+        awaitIdle()
+    }
+
     /** Changes the data language like the Settings do, then waits for the Catalog to be updated. */
     suspend fun changeDataLanguage(language: Language) {
         requestDataLanguageChange(language)
@@ -199,15 +219,17 @@ internal class SyncHarness(tmdbToken: String = "test-token", tmdbMaxRequests: In
     /** Changes the data language like the Settings do, without waiting for the Catalog to be updated. */
     suspend fun requestDataLanguageChange(language: Language) {
         settings.setDataLanguage(language)
-        updateLanguageUseCase()
+        requestLanguageChangeSync()
     }
 
-    fun requestLightSync() = useCase(onlyNew = true)
+    fun requestLightSync() = useCase(type = SyncType.LIGHT)
 
-    fun requestFullSync() = useCase(onlyNew = false)
+    fun requestFullSync() = useCase(type = SyncType.FULL)
+
+    fun requestLanguageChangeSync() = useCase(type = SyncType.LANGUAGE_CHANGE)
 
     /** Waits for the Sync to end, along with the background work it started. */
-    suspend fun awaitIdle() = withTimeout(10.seconds) {
+    suspend fun awaitIdle() = withTimeout(20.seconds) {
         useCase.state.first { it is SyncState.Idle }
         while (true) {
             val running = scope.coroutineContext.job.children.filter { it.isActive }.toList()

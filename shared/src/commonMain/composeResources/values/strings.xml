@@ -93,6 +93,7 @@
     <string name="episodes">Episodes</string>
     <string name="watched">Watched</string>
     <string name="track">Track</string>
+    <string name="external_subtitle">External</string>
     <string name="subtitles">Subtitles</string>
     <string name="audio_tracks">Audio tracks</string>
     <string name="next_episode">Next episode</string>
@@ -141,10 +142,6 @@
     <string name="sync_in_progress">Synchronization in progress…</string>
     <string name="by_default">Default</string>
     <string name="subtitles_disabled">Disabled</string>
-    <string name="cache_images">Caches HD Images</string>
-    <string name="images_cached">Images Cached</string>
-    <string name="caching_images_in_progress">Caching images… %1$d%</string>
-    <string name="cache_images_desc">Download images for offline use</string>
     <string name="no_summary">No summary available</string>
     <string name="customization">Customization</string>
     <string name="customization_desc">Interface customization</string>

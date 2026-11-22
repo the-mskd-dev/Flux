@@ -61,6 +61,7 @@ import com.mskd.flux.features.player.presentation.PlayerOverlays
 import com.mskd.flux.features.player.presentation.PlayerSession
 import com.mskd.flux.features.player.presentation.PlayerViewModel
 import com.mskd.flux.features.player.presentation.WindowStateHolder
+import com.mskd.flux.features.player.presentation.displayAspectRatio
 import com.mskd.flux.features.player.presentation.rememberPlayerScaleEffects
 import com.mskd.flux.features.player.presentation.rememberWindowStateHolder
 import com.mskd.flux.features.player.ui.PlayerSubtitles
@@ -396,10 +397,12 @@ fun PlayerContent(
 
         if (!isInPip) {
 
+            // Bitmap cues zoom with the picture, text cues stay readable inside the screen
             PlayerSubtitles(
                 modifier = Modifier.layoutId("subtitles"),
                 cues = subtitles,
-                smallText = isPortrait
+                smallText = isPortrait,
+                bitmapScale = { animatedScale.value }
             )
 
             PlayerInterface(
@@ -446,11 +449,8 @@ fun PlayerContent(
 fun playerConstraintSet(videoSize: VideoSize) = remember( videoSize) {
     ConstraintSet {
 
-        val playerRatio = if (videoSize.width > 0 && videoSize.height > 0) {
-            "${videoSize.width}:${videoSize.height}"
-        } else {
-            "16:9"
-        }
+        // Same ratio ContentFrame fits the picture to (non-square pixels included), so the box is the picture
+        val playerRatio = videoSize.displayAspectRatio?.let { "$it:1" } ?: "16:9"
 
         val (player, subtitles, playerInterface, leftSeekOverlay, rightSeekOverlay, ambientOverlay, boostPill) = createRefsFor(
             "player",
@@ -474,7 +474,7 @@ fun playerConstraintSet(videoSize: VideoSize) = remember( videoSize) {
             height = Dimension.ratio(playerRatio)
         }
 
-        // Same box as the player: positioned cues are fractions of the video frame
+        // Same box as the player (the fitted picture): cues are fractions of the video frame
         constrain(subtitles) {
             top.linkTo(player.top)
             start.linkTo(player.start)

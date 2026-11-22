@@ -76,6 +76,13 @@ interface ArtworkDao {
 
 //endregion
 
+//region Translation
+
+    @Query("UPDATE artworks SET title = :title, description = :description WHERE id = :artworkId")
+    suspend fun updateArtworkTranslation(artworkId: Long, title: String, description: String)
+
+//endregion
+
 //region Custom image
 
     @Query("UPDATE artworks SET customBackdropPath = :path WHERE id = :artworkId")

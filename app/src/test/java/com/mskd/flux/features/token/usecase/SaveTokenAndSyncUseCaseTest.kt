@@ -3,6 +3,7 @@ package com.mskd.flux.features.token.usecase
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.network.tmdb.data.dto.AuthenticationDto
 import com.mskd.flux.core.network.tmdb.data.service.TMDBService
+import com.mskd.flux.features.catalog.domain.model.SyncType
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.token.data.usecase.SaveTokenAndSyncUseCaseImpl
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
@@ -42,7 +43,7 @@ class SaveTokenAndSyncUseCaseTest : FunSpec({
         result shouldBe AuthenticateResult.SUCCESS
         coVerify(exactly = 1) { tokenDataStore.saveToken(testToken) }
         coVerify(exactly = 1) { tmdbService.authenticate() }
-        coVerify(exactly = 1) { syncCatalogUseCase(onlyNew = false) }
+        coVerify(exactly = 1) { syncCatalogUseCase(type = SyncType.FULL) }
         coVerify(exactly = 0) { tokenDataStore.clearToken() }
     }
 

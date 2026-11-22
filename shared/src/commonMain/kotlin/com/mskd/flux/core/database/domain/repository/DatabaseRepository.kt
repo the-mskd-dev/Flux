@@ -22,6 +22,10 @@ interface DatabaseRepository {
 
     // Save
     suspend fun saveArtworks(artworks: List<Artwork>, overrideLastModification: Boolean = true)
+
+    /** Updates only the title and description of the given Artworks in place, keeping user state, Logo and Cast/Crew. */
+    suspend fun updateArtworksTranslations(artworks: List<Artwork>)
+
     suspend fun saveMedias(medias: List<Media>)
 
     /** Saves medias coming from TMDB: their user state (current time, status) is kept from the existing file path. */

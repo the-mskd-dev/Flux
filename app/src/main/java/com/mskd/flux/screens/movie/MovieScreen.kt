@@ -20,7 +20,6 @@ import com.mskd.flux.features.player.domain.model.PlayerParams
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.ui.components.ErrorScreen
 import com.mskd.flux.ui.components.LoadingScreen
-import com.mskd.flux.utils.rememberExternalPlayerAction
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.oups_an_error_occured
 import org.jetbrains.compose.resources.stringResource
@@ -39,11 +38,6 @@ fun MovieScreen(
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    val launchExternalPlayer = rememberExternalPlayerAction(
-        onProgressResult = { progress -> viewModel.handleIntent(MovieIntent.OnExternalPlayerResult(progress = progress)) },
-        onFallbackToInternal = { media -> viewModel.handleIntent(MovieIntent.PlayMedia(media = media, forceInternal = true)) }
-    )
-
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
             when (event) {
@@ -51,12 +45,7 @@ fun MovieScreen(
                 is MovieEvent.Identified -> onIdentified(event.artworkId, event.type)
                 is MovieEvent.NavigateToPerson -> navigate(Route.Person(person = event.person))
                 is MovieEvent.NavigateToGallery -> navigate(Route.Gallery(artworkId = event.artworkId, contentType = event.contentType))
-                is MovieEvent.PlayMedia -> {
-                    if (event.externalPlayer)
-                        launchExternalPlayer(event.media)
-                    else
-                        navigate(Route.Player(params = PlayerParams.fromMedia(event.media)))
-                }
+                is MovieEvent.OpenInternalPlayer -> navigate(Route.Player(params = PlayerParams.fromMedia(event.media)))
             }
         }
     }

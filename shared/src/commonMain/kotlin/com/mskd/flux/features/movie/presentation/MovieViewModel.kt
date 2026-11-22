@@ -12,11 +12,9 @@ import com.mskd.flux.features.artwork.presentation.ArtworkViewModel
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.identification.presentation.IdentificationAvailability
 import com.mskd.flux.features.people.domain.usecase.GetPeopleUseCase
-import com.mskd.flux.features.player.domain.model.PlaybackAction
-import com.mskd.flux.features.player.domain.usecase.ResolvePlaybackActionUseCase
-import com.mskd.flux.features.progress.domain.usecase.ChangeMediaStatusUseCase
-import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
-import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
+import com.mskd.flux.features.player.domain.playback.PlaybackLaunch
+import com.mskd.flux.features.player.domain.playback.PlaybackOutcome
+import com.mskd.flux.features.progress.domain.ProgressTracker
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.system.FilesLauncher
 import com.mskd.flux.system.UrlLauncher
@@ -35,17 +33,14 @@ class MovieViewModel(
     catalogSyncCoordinator: CatalogSyncCoordinator,
     observeArtworkUseCase: ObserveArtworkUseCase,
     getPeopleUseCase: GetPeopleUseCase,
-    private val changeMediaStatus: ChangeMediaStatusUseCase,
-    resetProgress: ResetProgressUseCase,
-    private val resolvePlaybackAction: ResolvePlaybackActionUseCase,
-    recordPlaybackResult: SaveProgressUseCase,
+    progressTracker: ProgressTracker,
+    private val playbackLaunch: PlaybackLaunch,
 ) : ArtworkViewModel<MovieUiState, MovieIntent, MovieEvent>(
     artworkId = artworkId,
     observeArtworkUseCase = observeArtworkUseCase,
     tokenDataStore = tokenDataStore,
     catalogSyncCoordinator = catalogSyncCoordinator,
-    resetProgressUseCase = resetProgress,
-    recordPlaybackResult = recordPlaybackResult,
+    progressTracker = progressTracker,
 ) {
 
     //region Flow
@@ -121,9 +116,6 @@ class MovieViewModel(
             // Status
             is MovieIntent.ChangeWatchStatus -> changeWatchStatus(media = intent.media)
             MovieIntent.ResetProgress -> resetProgress()
-
-            // Other
-            is MovieIntent.OnExternalPlayerResult -> onExternalPlayerResult(media = movieContent?.fullMovie?.movie, progress = intent.progress)
         }
     }
 
@@ -138,16 +130,14 @@ class MovieViewModel(
     }
 
     private suspend fun playMedia(media: Media, forceInternal: Boolean) {
-        if (!media.isAvailable) return
-        when (val action = resolvePlaybackAction(media = media, forceInternal = forceInternal)) {
-            is PlaybackAction.OpenPlayer -> emit(MovieEvent.PlayMedia(media = action.media, externalPlayer = action.externalPlayer))
-            PlaybackAction.Unavailable -> Unit
+        when (val outcome = playbackLaunch.play(media = media, forceInternal = forceInternal)) {
+            is PlaybackOutcome.OpenInternalPlayer -> emit(MovieEvent.OpenInternalPlayer(media = outcome.media))
+            PlaybackOutcome.HandedToExternalPlayer, PlaybackOutcome.Unavailable -> Unit
         }
     }
 
     private suspend fun changeWatchStatus(media: Media) {
-        val status = if (media.status != Status.WATCHED) Status.WATCHED else Status.TO_WATCH
-        changeMediaStatus(media = media, status = status)
+        progressTracker.setWatched(media = media, watched = media.status != Status.WATCHED)
     }
 
     private fun showIdentificationDialog() {

@@ -68,11 +68,6 @@ object FilesMockups {
         )
     )
 
-    val subtitles = listOf(
-        "naruto_S01E01",
-        "spider-man(2002)"
-    )
-
     val userFolders = listOf(
         UserFolder(
             path = "path/to/folder",

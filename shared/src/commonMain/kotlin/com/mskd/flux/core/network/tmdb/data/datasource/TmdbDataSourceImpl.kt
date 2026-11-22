@@ -293,8 +293,8 @@ class TmdbDataSourceImpl(
                     ),
                 )?.let {
                     tmdbEpisode = tmdbEpisode.copy(
-                        title = it.data.name ?: tmdbEpisode.title,
-                        description = it.data.overview ?: tmdbEpisode.description
+                        title = it.data.name?.takeIf(String::isNotBlank) ?: tmdbEpisode.title,
+                        description = it.data.overview?.takeIf(String::isNotBlank) ?: tmdbEpisode.description
                     )
                 }
 
@@ -385,6 +385,8 @@ class TmdbDataSourceImpl(
 
             return translation
 
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             Napier.e(tag = TAG, message = "getTmdbTranslations - Fail to get translations for $request", throwable = e)
             null
@@ -395,14 +397,16 @@ class TmdbDataSourceImpl(
     /** Translation in [language], each blank field completed by English; English when there is none in [language]. */
     private fun TranslationsDto.translationFor(language: String): TranslationsDto.Translation? {
 
-        val requestedTranslation = translations.find { it.language.equals(language.languageCode(), true) && !it.data.overview.isNullOrBlank() }
+        val matching = translations.filter { it.language.equals(language.languageCode(), true) }
+        val requestedTranslation = matching.find { !it.data.overview.isNullOrBlank() }
+            ?: matching.find { !it.data.text.isNullOrBlank() }
         val fallbackTranslation = translations.find { it.language.equals(Language.ENGLISH.code, true) && !it.data.overview.isNullOrBlank() }
 
         return when {
             requestedTranslation != null -> requestedTranslation.copy(
                 data = TranslationsDto.Data(
-                    name = requestedTranslation.data.text?.ifBlank { fallbackTranslation?.data?.text } ?: "",
-                    overview = requestedTranslation.data.overview?.ifBlank { fallbackTranslation?.data?.overview } ?: ""
+                    name = requestedTranslation.data.text.orEmpty().ifBlank { fallbackTranslation?.data?.text.orEmpty() },
+                    overview = requestedTranslation.data.overview.orEmpty().ifBlank { fallbackTranslation?.data?.overview.orEmpty() }
                 )
             )
             else -> fallbackTranslation

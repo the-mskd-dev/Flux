@@ -1,0 +1,25 @@
+{
+  "id": 27205,
+  "translations": [
+    {
+      "iso_639_1": "en",
+      "iso_3166_1": "US",
+      "name": "English",
+      "english_name": "English",
+      "data": {
+        "title": "Inception",
+        "overview": "Cobb, a skilled thief, steals secrets from deep within the subconscious during the dream state."
+      }
+    },
+    {
+      "iso_639_1": "fr",
+      "iso_3166_1": "FR",
+      "name": "Français",
+      "english_name": "French",
+      "data": {
+        "title": "Inception",
+        "overview": "Dom Cobb est un voleur expérimenté dans l'art périlleux de l'extraction."
+      }
+    }
+  ]
+}

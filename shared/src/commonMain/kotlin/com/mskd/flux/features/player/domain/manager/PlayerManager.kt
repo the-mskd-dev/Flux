@@ -2,6 +2,7 @@ package com.mskd.flux.features.player.domain.manager
 
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.player.PlayerTrack
+import com.mskd.flux.features.files.domain.model.ExternalSubtitle
 import com.mskd.flux.features.player.domain.model.MediaInfo
 import com.mskd.flux.features.player.domain.model.SubtitleCue
 import kotlinx.coroutines.flow.Flow
@@ -51,7 +52,7 @@ interface PlayerManager<out T> {
 
     fun changeVolume(delta: Float): Int
 
-    suspend fun playMedia(media: Media, subtitlesPath: String?)
+    suspend fun playMedia(media: Media, externalSubtitles: List<ExternalSubtitle> = emptyList())
 
     fun selectTrack(track: PlayerTrack)
 

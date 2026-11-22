@@ -14,6 +14,7 @@ import com.mskd.flux.features.catalog.domain.datastore.CatalogDataStore
 import com.mskd.flux.features.catalog.domain.model.CatalogPreferences
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.domain.model.CatalogViewMode
+import com.mskd.flux.features.catalog.domain.model.SyncType
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToHowTo
@@ -26,13 +27,11 @@ import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToSource
 import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToToken
 import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToUnknown
 import com.mskd.flux.features.history.domain.model.HistoryEntry
-import com.mskd.flux.features.history.domain.repository.HistoryRepository
 import com.mskd.flux.features.history.domain.usecase.GetHistoryUseCase
-import com.mskd.flux.features.player.domain.model.PlaybackAction
-import com.mskd.flux.features.player.domain.usecase.ResolvePlaybackActionUseCase
+import com.mskd.flux.features.player.domain.playback.PlaybackLaunch
+import com.mskd.flux.features.player.domain.playback.PlaybackOutcome
 import com.mskd.flux.features.privateFolder.domain.datastore.PrivateFolderDataStore
-import com.mskd.flux.features.privateFolder.domain.usecase.setArtworkPrivacy.SetArtworkPrivacyUseCase
-import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
+import com.mskd.flux.features.progress.domain.ProgressTracker
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.report.Trace
 import com.mskd.flux.system.UpdateManager
@@ -55,7 +54,6 @@ import kotlinx.coroutines.launch
 class CatalogViewModel(
     private val artworkDb: DatabaseRepository,
     private val detailsDb: DetailsRepository,
-    private val historyDb: HistoryRepository,
     private val userDataStore: UserDataStore,
     private val tokenDataStore: TokenDataStore,
     private val catalogDataStore: CatalogDataStore,
@@ -64,9 +62,8 @@ class CatalogViewModel(
     private val getHistoryUseCase: GetHistoryUseCase,
     private val appInfo: AppInfo,
     private val urlLauncher: UrlLauncher,
-    private val resolvePlaybackAction: ResolvePlaybackActionUseCase,
-    private val recordPlaybackResult: SaveProgressUseCase,
-    private val setArtworkPrivacy: SetArtworkPrivacyUseCase
+    private val playbackLaunch: PlaybackLaunch,
+    private val progressTracker: ProgressTracker
 ): ViewModel() {
 
     private val _event = MutableSharedFlow<CatalogEvent>()
@@ -78,8 +75,6 @@ class CatalogViewModel(
 
     // TODO: Remove the Play Store announcement (dialog, flag, view model logic, strings) by March 2027
     private val _showPlayStorePromo = MutableStateFlow(false)
-
-    private var currentMedia: Media? = null
 
     private val preferencesFlow = combine(
         getHistoryUseCase(),
@@ -119,7 +114,7 @@ class CatalogViewModel(
         _showMessageDialog,
     ) { (artworks, genres), syncState, preferences, (showSortingSheet, showViewModeSheet, showPlayStorePromo), showMessageDialog  ->
 
-        if (syncState is SyncState.Syncing && syncState.full) {
+        if (syncState is SyncState.Syncing && syncState.type == SyncType.FULL) {
 
             CatalogUiState(
                 state = CatalogState.Loading(syncState = syncState),
@@ -205,7 +200,6 @@ class CatalogViewModel(
 
             // Player
             is CatalogIntent.PlayMedia -> playMedia(media = intent.media, forceInternal = intent.forceInternal)
-            is CatalogIntent.OnExternalPlayerResult -> onExternalPlayerResult(intent.progress)
         }
     }
 
@@ -237,7 +231,7 @@ class CatalogViewModel(
             Trace.info("CatalogViewModel", "Full sync requested")
         }
 
-        syncCatalogUseCase(onlyNew = !fullSyncNeeded)
+        syncCatalogUseCase(type = if (fullSyncNeeded) SyncType.FULL else SyncType.LIGHT)
 
     }
 
@@ -282,26 +276,18 @@ class CatalogViewModel(
     }
 
     private suspend fun addArtworkToPrivateFolder(artwork: Artwork) {
-        setArtworkPrivacy(artworkId = artwork.id, isPrivate = true)
+        progressTracker.setArtworkPrivacy(artworkId = artwork.id, isPrivate = true)
     }
 
     private suspend fun deleteHistoryEntry(entry: HistoryEntry) {
-        historyDb.delete(artworkId = entry.media.artworkId)
+        progressTracker.removeFromHistory(artworkId = entry.media.artworkId)
     }
 
     private suspend fun playMedia(media: Media, forceInternal: Boolean) {
-        currentMedia = media
-        when (val action = resolvePlaybackAction(media = media, forceInternal = forceInternal)) {
-            is PlaybackAction.OpenPlayer -> _event.emit(CatalogEvent.PlayMedia(
-                media = action.media,
-                externalPlayer = action.externalPlayer,
-            ))
-            PlaybackAction.Unavailable -> Unit
+        when (val outcome = playbackLaunch.play(media = media, forceInternal = forceInternal)) {
+            is PlaybackOutcome.OpenInternalPlayer -> _event.emit(CatalogEvent.OpenInternalPlayer(media = outcome.media))
+            PlaybackOutcome.HandedToExternalPlayer, PlaybackOutcome.Unavailable -> Unit
         }
-    }
-
-    private suspend fun onExternalPlayerResult(progress: Long) {
-        currentMedia?.let { recordPlaybackResult(media = it, progress = progress) }
     }
 
 }

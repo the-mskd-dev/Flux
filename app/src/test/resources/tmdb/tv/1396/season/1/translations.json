@@ -1,0 +1,25 @@
+{
+  "id": 3572,
+  "translations": [
+    {
+      "iso_639_1": "en",
+      "iso_3166_1": "US",
+      "name": "English",
+      "english_name": "English",
+      "data": {
+        "name": "Season 1",
+        "overview": "High school chemistry teacher Walter White's life is suddenly transformed."
+      }
+    },
+    {
+      "iso_639_1": "fr",
+      "iso_3166_1": "FR",
+      "name": "Français",
+      "english_name": "French",
+      "data": {
+        "name": "Saison 1",
+        "overview": "La vie de Walter White, professeur de chimie, bascule soudainement."
+      }
+    }
+  ]
+}

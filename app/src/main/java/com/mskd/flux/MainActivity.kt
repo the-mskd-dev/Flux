@@ -5,6 +5,15 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import android.content.Intent
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.lifecycleScope
+import com.mskd.flux.external.AndroidExternalPlayerAdapter
+import com.mskd.flux.external.ExternalPlayerResult
+import com.mskd.flux.features.player.domain.model.PlayerParams
+import com.mskd.flux.features.player.domain.playback.PlaybackLaunch
+import kotlinx.coroutines.launch
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -30,7 +39,10 @@ class MainActivity : ComponentActivity() {
 
     val viewModel: AppViewModel by inject()
     val connectivityRepository: ConnectivityRepository by inject()
+    private val externalPlayerAdapter: AndroidExternalPlayerAdapter by inject()
+    private val playbackLaunch: PlaybackLaunch by inject()
 
+    private var externalPlayerLauncher: ActivityResultLauncher<Intent>? = null
     private var onUserLeaveHintCallback: (() -> Unit)? = null
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -38,6 +50,14 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         enableEdgeToEdge()
+
+        // Registered once for the whole app: the result is recorded even when the user left the page.
+        externalPlayerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            when (val outcome = externalPlayerAdapter.onResult(result.resultCode, result.data)) {
+                is ExternalPlayerResult.Finished -> lifecycleScope.launch { playbackLaunch.onExternalResult(outcome.position) }
+                is ExternalPlayerResult.Failed -> lifecycleScope.launch { playbackLaunch.onExternalFailure(outcome.cause) }
+            }
+        }.also { externalPlayerAdapter.attach(it) }
 
         setContent {
 
@@ -61,6 +81,14 @@ class MainActivity : ComponentActivity() {
             ) {
 
                 FluxNavigation(
+                    effects = { nav ->
+                        // The External player failed after it started: fall back to the Internal player.
+                        LaunchedEffect(Unit) {
+                            playbackLaunch.internalPlayerRequests.collect { media ->
+                                nav.navigate(Route.Player(params = PlayerParams.fromMedia(media)))
+                            }
+                        }
+                    },
                     startingScreen = viewModel.getStartingScreen(),
                     customization = customization,
                     platformEntries = { nav ->
@@ -129,6 +157,11 @@ class MainActivity : ComponentActivity() {
 
         }
 
+    }
+
+    override fun onDestroy() {
+        externalPlayerLauncher?.let { externalPlayerAdapter.detach(it) }
+        super.onDestroy()
     }
 
     override fun onUserLeaveHint() {

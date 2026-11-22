@@ -46,7 +46,6 @@ import com.mskd.flux.ui.media.episode.EpisodeItem
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.utils.rememberExternalPlayerAction
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_help
 import flux.shared.generated.resources.no_item
@@ -67,22 +66,12 @@ fun UnknownScreen(
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    val launchExternalPlayer = rememberExternalPlayerAction(
-        onProgressResult = { progress -> viewModel.handleIntent(UnknownIntent.OnExternalPlayerResult(progress = progress)) },
-        onFallbackToInternal = { media -> viewModel.handleIntent(UnknownIntent.PlayMedia(media = media, forceInternal = true)) }
-    )
-
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
             when (event) {
                 UnknownEvent.BackToPreviousScreen -> onBack()
                 UnknownEvent.NavigateToHowToScreen -> navigate(Route.HowTo)
-                is UnknownEvent.PlayMedia -> {
-                    if (event.externalPlayer)
-                        launchExternalPlayer(event.media)
-                    else
-                        navigate(Player(params = PlayerParams.fromMedia(event.media)))
-                }
+                is UnknownEvent.OpenInternalPlayer -> navigate(Player(params = PlayerParams.fromMedia(event.media)))
             }
         }
     }

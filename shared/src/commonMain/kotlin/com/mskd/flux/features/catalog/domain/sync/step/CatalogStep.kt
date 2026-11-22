@@ -2,6 +2,7 @@ package com.mskd.flux.features.catalog.domain.sync.step
 
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
 import com.mskd.flux.core.model.catalog.CatalogFolder
+import com.mskd.flux.features.catalog.domain.model.SyncType
 import com.mskd.flux.features.catalog.domain.sync.SyncContext
 import com.mskd.flux.features.catalog.domain.sync.SyncStep
 import com.mskd.flux.features.catalog.domain.sync.enrichment.Enrichment
@@ -27,6 +28,8 @@ class CatalogStep(
         const val TAG = "CatalogStep"
         const val SAVE_UNITS = 1
     }
+
+    override val syncTypes = setOf(SyncType.LIGHT, SyncType.FULL)
 
     override suspend fun units(context: SyncContext) =
         context.foldersToFetch.sumOf { folder -> enrichments.sumOf { it.units(folder) } } + SAVE_UNITS

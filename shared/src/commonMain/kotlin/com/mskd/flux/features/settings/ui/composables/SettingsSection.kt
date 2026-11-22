@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import com.mskd.flux.features.settings.domain.model.SettingsDialog
 import com.mskd.flux.features.settings.presentation.SettingsIntent
 import com.mskd.flux.features.settings.presentation.SettingsUiState
@@ -30,9 +29,6 @@ import flux.shared.generated.resources.blur_spoilers
 import flux.shared.generated.resources.blur_spoilers_desc
 import flux.shared.generated.resources.button_forward
 import flux.shared.generated.resources.button_rewind
-import flux.shared.generated.resources.cache_images
-import flux.shared.generated.resources.cache_images_desc
-import flux.shared.generated.resources.caching_images_in_progress
 import flux.shared.generated.resources.contact_me
 import flux.shared.generated.resources.contact_me_desc
 import flux.shared.generated.resources.customization
@@ -46,7 +42,6 @@ import flux.shared.generated.resources.ic_api
 import flux.shared.generated.resources.ic_customization
 import flux.shared.generated.resources.ic_folder
 import flux.shared.generated.resources.ic_help
-import flux.shared.generated.resources.ic_images
 import flux.shared.generated.resources.ic_info
 import flux.shared.generated.resources.ic_keyboard
 import flux.shared.generated.resources.ic_language
@@ -63,7 +58,6 @@ import flux.shared.generated.resources.ic_sources
 import flux.shared.generated.resources.ic_sync
 import flux.shared.generated.resources.ic_version
 import flux.shared.generated.resources.ic_visibility
-import flux.shared.generated.resources.images_cached
 import flux.shared.generated.resources.information_language
 import flux.shared.generated.resources.make_a_donation
 import flux.shared.generated.resources.picture_in_picture
@@ -85,7 +79,6 @@ import flux.shared.generated.resources.watch_on_external_player
 import flux.shared.generated.resources.x
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import kotlin.math.roundToInt
 
 @Composable
 fun SettingsSection(
@@ -340,26 +333,6 @@ fun SettingsSyncSection(
             iconColor = iconColor,
             iconBackgroundColor = bgColor,
             onClick = { sendIntent(SettingsIntent.OnSourcesTap) }
-        )
-
-        val imagesTextColor by animateColorAsState(if (state.prefetchImagesState is ImagesPrefetchManager.State.InProgress) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onBackground.copy(alpha = .8f))
-        val imagesText = when {
-            state.prefetchHdImages && state.prefetchImagesState is ImagesPrefetchManager.State.Idle -> stringResource(Res.string.images_cached)
-            state.prefetchHdImages && state.prefetchImagesState is ImagesPrefetchManager.State.InProgress -> {
-                val progressState = state.prefetchImagesState as ImagesPrefetchManager.State.InProgress
-                stringResource(Res.string.caching_images_in_progress, progressState.progress.times(100).roundToInt())
-            }
-            else -> stringResource(Res.string.cache_images_desc)
-        }
-        SettingsSwitch(
-            text = stringResource(Res.string.cache_images),
-            subText = imagesText,
-            checked = state.prefetchHdImages,
-            onCheckedChange = { sendIntent(SettingsIntent.OnPrefetchHdImagesCheck(it)) },
-            painter = painterResource(Res.drawable.ic_images),
-            iconColor = iconColor,
-            iconBackgroundColor = bgColor,
-            subTextColor = imagesTextColor
         )
 
     }

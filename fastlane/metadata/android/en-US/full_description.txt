@@ -2,19 +2,19 @@ Flux is a modern, 100% open-source media library and video player for Android, b
 
 This F-Droid build is completely free, ad-free, tracker-free, and contains zero proprietary Google dependencies.
 
-### 🎬 Key Features
+🎬 KEY FEATURES
 
 - 📂 Movies, Shows & Anime Library: Organize your offline film and series collection into a modern, easy-to-browse catalog.
 - 🍿 TMDB Metadata Sync: Automatic posters, plot summaries, episode tracking, and ratings.
 - ▶️ Built-in & External Players: Smooth video playback with progress history or launch in your favorite external player.
 - 🛡️ Pure FOSS: No ads, no telemetry, no proprietary SDKs, and no account required.
 
-### 💖 Support the Project
+💖 SUPPORT THE PROJECT
 If you enjoy Flux, consider supporting its development by purchasing the Supporter Edition on the Google Play Store or via GitHub Sponsors. Thanks a lot, Kisses. 🙏
 
 ---
 
-### 📜 Legal & Credits
+📜 LEGAL & CREDITS
 
 This product uses the TMDB API but is not endorsed or certified by TMDB.
 Licensed under the GNU General Public License v3.0 (GPL-3.0).

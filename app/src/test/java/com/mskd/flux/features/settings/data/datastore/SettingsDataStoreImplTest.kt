@@ -198,25 +198,6 @@ class SettingsDataStoreImplTest : FunSpec({
 
     }
 
-    test("setPrefetchHdImages should update value in flow") {
-
-        // Given
-        val newValue = !SettingsDataStore.State().prefetchHdImages
-        settingsDataStore.flow.test {
-            awaitItem()
-
-            // When
-            settingsDataStore.setPrefetchHdImages(newValue)
-
-            // Then
-            val updated = awaitItem()
-            updated.prefetchHdImages shouldBe newValue
-
-            cancelAndConsumeRemainingEvents()
-        }
-
-    }
-
     test("setDataLanguage should update value in flow") {
 
         // Given

@@ -208,7 +208,7 @@ Read-only technical description of a Media (container, video and audio codecs, r
 _Avoid_: File info, Technical details, Codec info
 
 **Track**:
-Selectable audio or subtitle track of a Media.
+Selectable audio or subtitle track of a Media. A subtitle Track can be embedded in the UserFile or come from an external subtitle file matching the UserFile in the same folder.
 _Avoid_: Stream, language
 
 ## Language

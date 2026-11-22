@@ -76,6 +76,7 @@
     <string name="episodes">エピソード</string>
     <string name="watched">視聴済み</string>
     <string name="track">トラック</string>
+    <string name="external_subtitle">外部</string>
     <string name="subtitles">字幕</string>
     <string name="audio_tracks">音声トラック</string>
     <string name="next_episode">次のエピソード</string>

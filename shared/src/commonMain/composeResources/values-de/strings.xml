@@ -76,6 +76,7 @@
     <string name="episodes">Episoden</string>
     <string name="watched">Gesehen</string>
     <string name="track">Spur</string>
+    <string name="external_subtitle">Extern</string>
     <string name="subtitles">Untertitel</string>
     <string name="audio_tracks">Tonspuren</string>
     <string name="next_episode">Nächste Folge</string>

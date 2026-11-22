@@ -275,7 +275,7 @@ class PlayerViewModel<out T>(
     }
 
     private suspend fun playMedia(media: Media) {
-        val subtitlesPath = getSubtitlesUseCase(file = media.file)
+        val externalSubtitles = getSubtitlesUseCase(file = media.file)
         chapters.value = getChaptersUseCase(media = media)
         // Every Media starts at 1x, and never inside a leftover boost
         speedBeforeBoost = null
@@ -285,7 +285,7 @@ class PlayerViewModel<out T>(
         playerManager.setSubtitleDelay(delayMs = 0L)
         playerManager.playMedia(
             media = media,
-            subtitlesPath = subtitlesPath
+            externalSubtitles = externalSubtitles
         )
     }
 

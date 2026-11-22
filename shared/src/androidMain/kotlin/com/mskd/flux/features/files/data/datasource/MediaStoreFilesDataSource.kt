@@ -12,6 +12,9 @@ import com.mskd.flux.core.model.files.FileSource
 import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.features.files.data.FileExtensions
 import com.mskd.flux.features.files.domain.datasource.FilesDataSource
+import com.mskd.flux.features.files.domain.model.ExternalSubtitle
+import com.mskd.flux.features.files.domain.model.ExternalSubtitleMatcher
+import com.mskd.flux.features.files.domain.model.SubtitleCandidate
 import com.mskd.flux.report.Trace
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -125,12 +128,12 @@ class MediaStoreFilesDataSource(
 
     }
 
-    override suspend fun getSubtitlesFor(file: UserFile): String? = withContext(Dispatchers.IO) {
+    override suspend fun getSubtitlesFor(file: UserFile): List<ExternalSubtitle> = withContext(Dispatchers.IO) {
+        if (!contains(file)) return@withContext emptyList()
 
         try {
-
             val mediaUri = file.path.toUri()
-            val mediaId = mediaUri.lastPathSegment?.toLongOrNull() ?: return@withContext null
+            val mediaId = mediaUri.lastPathSegment?.toLongOrNull() ?: return@withContext emptyList()
 
             // Get real path of file
             val videoPath = context.contentResolver.query(
@@ -143,25 +146,24 @@ class MediaStoreFilesDataSource(
                 if (cursor.moveToFirst())
                     cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA))
                 else null
-            } ?: return@withContext null
+            } ?: return@withContext emptyList()
 
             val videoFile = File(videoPath)
-            val baseName = videoFile.nameWithoutExtension
-            val parentDir = videoFile.parentFile ?: return@withContext null
+            val parentDir = videoFile.parentFile ?: return@withContext emptyList()
 
-            // Get subtitles file, if exists, in the same directory, with the same name
-            val subtitlesPath = FileExtensions.SUBTITLES
-                .map { ext -> File(parentDir, "$baseName.$ext") }
-                .firstOrNull { it.exists() }
-                ?.toUri()?.toString()
+            // Best-effort scan of the parent directory; Scoped Storage may hide sibling files created by other apps.
+            val candidates = parentDir.listFiles()
+                ?.asSequence()
+                ?.filter { it.isFile }
+                ?.map { SubtitleCandidate(uri = it.toUri().toString(), fileName = it.name) }
+                ?.toList()
+                .orEmpty()
 
-            subtitlesPath
-
+            ExternalSubtitleMatcher.matchAll(userFileName = videoFile.name, candidates = candidates)
         } catch (e: Exception) {
             Trace.error(TAG, "Fail to get subtitles for ${file.name}", e)
-            null
+            emptyList()
         }
-
     }
 
     /**

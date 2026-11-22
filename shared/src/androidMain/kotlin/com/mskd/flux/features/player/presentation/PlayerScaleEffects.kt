@@ -16,14 +16,14 @@ class PlayerScaleEffects(
     var isFullPage by mutableStateOf(false)
         private set
 
+    /** Scale that makes the fitted picture cover the whole container. */
     val fillScale: Float
         get() {
-            if (videoSize.width <= 0 || videoSize.height <= 0 || containerSize.width <= 0) return 1f
+            val videoRatio = videoSize.displayAspectRatio ?: return 1f
+            if (containerSize.width <= 0 || containerSize.height <= 0) return 1f
 
-            val widthRatio = containerSize.width.toFloat() / videoSize.width
-            val heightRatio = containerSize.height.toFloat() / videoSize.height
-
-            return maxOf(widthRatio / minOf(widthRatio, heightRatio), heightRatio / minOf(widthRatio, heightRatio))
+            val containerRatio = containerSize.width.toFloat() / containerSize.height
+            return maxOf(videoRatio / containerRatio, containerRatio / videoRatio)
         }
 
     val targetScale: Float get() = if (isFullPage) fillScale else 1f

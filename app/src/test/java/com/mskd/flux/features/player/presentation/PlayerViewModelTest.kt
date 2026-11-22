@@ -1,5 +1,6 @@
 package com.mskd.flux.features.player.presentation
 
+import android.graphics.Bitmap
 import androidx.media3.common.Player
 import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
@@ -10,12 +11,17 @@ import com.mskd.flux.core.model.language.Language
 import com.mskd.flux.core.model.player.PlayerTrack
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.features.artwork.fake.FakeObserveArtworkUseCase
+import com.mskd.flux.features.files.domain.model.ExternalSubtitle
 import com.mskd.flux.features.files.domain.usecase.GetSubtitlesUseCase
 import com.mskd.flux.features.player.data.PipIsEnabledUseCase
 import com.mskd.flux.features.player.domain.manager.PlayerManager
 import com.mskd.flux.features.player.domain.manager.SeekPrecision
+import com.mskd.flux.features.player.domain.model.CueAnchor
 import com.mskd.flux.features.player.domain.model.MediaInfo
 import com.mskd.flux.features.player.domain.model.PlayerParams
+import com.mskd.flux.features.player.domain.model.SubtitleBitmap
+import com.mskd.flux.features.player.domain.model.SubtitleCue
+import com.mskd.flux.features.player.domain.model.SubtitleImage
 import com.mskd.flux.features.player.domain.model.VideoChapter
 import com.mskd.flux.features.player.domain.model.VideoChapterType
 import com.mskd.flux.features.player.domain.usecase.GetChaptersUseCase
@@ -1351,6 +1357,80 @@ class PlayerViewModelTest : FunSpec({
 
             coVerify(exactly = 0) { playerManager.setPlaybackSpeed(speed = 1.5f) }
 
+        }
+
+    }
+
+    context("subtitles") {
+
+        test("consecutive bitmap frames with distinct image references propagate through StateFlow") {
+            val subtitlesFlow = MutableStateFlow<List<SubtitleCue>>(emptyList())
+            playerManager = mockk(relaxed = true) {
+                every { flow } returns MutableStateFlow(PlayerManager.State.Ready(player = player))
+                every { subtitles } returns subtitlesFlow
+            }
+            updateVm()
+
+            fun bitmapFrame() = listOf(
+                SubtitleCue(
+                    line = 0.8f,
+                    lineAnchor = CueAnchor.START,
+                    position = 0.1f,
+                    positionAnchor = CueAnchor.START,
+                    bitmap = SubtitleBitmap(
+                        image = SubtitleImage(mockk<Bitmap>(relaxed = true)),
+                        widthFraction = 0.5f,
+                        heightFraction = 0.1f,
+                    )
+                )
+            )
+            val frame1 = bitmapFrame()
+            val frame2 = bitmapFrame()
+
+            viewModel.subtitles.test {
+                awaitItem() shouldBe emptyList()
+
+                subtitlesFlow.value = frame1
+                awaitItem() shouldBe frame1
+
+                subtitlesFlow.value = frame2
+                awaitItem() shouldBe frame2
+
+                subtitlesFlow.value = emptyList()
+                awaitItem() shouldBe emptyList()
+            }
+        }
+
+        test("forwards the full list of discovered external subtitles to PlayerManager.playMedia") {
+            val discovered = listOf(
+                ExternalSubtitle(
+                    uri = "content://tree/doc/1",
+                    fileName = "naruto_shippuuden_S01E01.fr.ass",
+                    extension = "ass",
+                    language = "fr",
+                ),
+                ExternalSubtitle(
+                    uri = "content://tree/doc/2",
+                    fileName = "naruto_shippuuden_S01E01.en.srt",
+                    extension = "srt",
+                    language = "en",
+                ),
+            )
+            coEvery { getSubtitlesUseCase(file = MediaMockups.episode1.file) } returns discovered
+            updateVm(mediaId = MediaMockups.episode1.mediaId)
+
+            viewModel.session.test {
+                var item = awaitItem()
+                while (item !is State.Content) item = awaitItem()
+                cancelAndConsumeRemainingEvents()
+            }
+
+            coVerify(timeout = 1000) {
+                playerManager.playMedia(
+                    media = MediaMockups.episode1,
+                    externalSubtitles = discovered,
+                )
+            }
         }
 
     }

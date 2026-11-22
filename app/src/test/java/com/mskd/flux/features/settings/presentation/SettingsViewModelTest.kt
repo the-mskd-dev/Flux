@@ -9,7 +9,6 @@ import com.mskd.flux.core.model.language.Language
 import com.mskd.flux.features.catalog.domain.model.SyncType
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
-import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import com.mskd.flux.features.privateFolder.domain.datastore.PrivateFolderDataStore
 import com.mskd.flux.features.privateFolder.domain.usecase.disablePrivateFolder.DisablePrivateFolderUseCase
 import com.mskd.flux.features.privateFolder.domain.usecase.enablePrivateFolder.EnablePrivateFolderUseCase
@@ -27,7 +26,6 @@ import io.kotest.property.Exhaustive
 import io.kotest.property.arbitrary.int
 import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.boolean
-import io.mockk.clearMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.coVerifyOrder
@@ -45,7 +43,6 @@ class SettingsViewModelTest : FunSpec({
     lateinit var appInfo: AppInfo
     lateinit var settingsDataStore: SettingsDataStore
     lateinit var privateFolderDataStore: PrivateFolderDataStore
-    lateinit var imagesPrefetchManager: ImagesPrefetchManager
     lateinit var syncCatalogUseCase: SyncCatalogUseCase
     lateinit var enablePrivateFolderUseCase: EnablePrivateFolderUseCase
     lateinit var disablePrivateFolderUseCase: DisablePrivateFolderUseCase
@@ -55,7 +52,6 @@ class SettingsViewModelTest : FunSpec({
 
     val dataStoreFlow = MutableStateFlow(SettingsDataStore.State())
     val privateFolderFlow = MutableStateFlow(PrivateFolderDataStore.State())
-    val imagesPrefetchFlow = MutableStateFlow(ImagesPrefetchManager.State.Idle)
     val syncCatalogFlow = MutableStateFlow(SyncState.Idle())
 
     beforeTest {
@@ -73,10 +69,6 @@ class SettingsViewModelTest : FunSpec({
             every { flow } returns privateFolderFlow
         }
 
-        imagesPrefetchManager = mockk(relaxed = true) {
-            every { state } returns imagesPrefetchFlow
-        }
-
         syncCatalogUseCase = mockk(relaxed = true) {
             every { state } returns syncCatalogFlow
         }
@@ -91,7 +83,6 @@ class SettingsViewModelTest : FunSpec({
             appInfo = appInfo,
             settingsDataStore = settingsDataStore,
             privateFolderDataStore = privateFolderDataStore,
-            imagesPrefetchManager = imagesPrefetchManager,
             syncCatalogUseCase = syncCatalogUseCase,
             enablePrivateFolderUseCase = enablePrivateFolderUseCase,
             disablePrivateFolderUseCase = disablePrivateFolderUseCase,
@@ -114,7 +105,6 @@ class SettingsViewModelTest : FunSpec({
                 appInfo = appInfo.copy(flavor = Flavor.PLAY_STORE),
                 settingsDataStore = settingsDataStore,
                 privateFolderDataStore = privateFolderDataStore,
-                imagesPrefetchManager = imagesPrefetchManager,
                 syncCatalogUseCase = syncCatalogUseCase,
                 enablePrivateFolderUseCase = enablePrivateFolderUseCase,
                 disablePrivateFolderUseCase = disablePrivateFolderUseCase,
@@ -137,7 +127,6 @@ class SettingsViewModelTest : FunSpec({
                 initialState.optionsDialog shouldBe null
                 initialState.settingsDialog shouldBe null
                 initialState.fullSyncInProgress shouldBe false
-                initialState.prefetchHdImages shouldBe false
                 initialState.privateFolderEnabled shouldBe false
                 initialState.privateFolderIncludeNsfw shouldBe true
             }
@@ -154,11 +143,9 @@ class SettingsViewModelTest : FunSpec({
                 Exhaustive.boolean(),
                 Exhaustive.boolean(),
                 Exhaustive.boolean(),
-                Exhaustive.boolean(),
             ) {
                 rewindValue,
                 forwardValue,
-                prefetchHdImages,
                 privateFolderEnabled,
                 privateFolderIncludeNsfw,
                 pipIsEnabled,
@@ -169,7 +156,6 @@ class SettingsViewModelTest : FunSpec({
                 dataStoreFlow.value = dataStoreFlow.value.copy(
                     playerRewindValue = rewindValue,
                     playerForwardValue = forwardValue,
-                    prefetchHdImages = prefetchHdImages,
                     pipIsEnabled = pipIsEnabled,
                     autoKeyboard = autoKeyboard,
                     externalPlayer = externalPlayer
@@ -187,7 +173,6 @@ class SettingsViewModelTest : FunSpec({
                     // Then
                     initialState.rewindValue shouldBe rewindValue
                     initialState.forwardValue shouldBe forwardValue
-                    initialState.prefetchHdImages shouldBe prefetchHdImages
                     initialState.privateFolderEnabled shouldBe privateFolderEnabled
                     initialState.privateFolderIncludeNsfw shouldBe privateFolderIncludeNsfw
                     initialState.pipIsEnabled shouldBe pipIsEnabled
@@ -560,32 +545,6 @@ class SettingsViewModelTest : FunSpec({
 
                     // Then
                     coVerify { settingsDataStore.setEnablePip(check) }
-                    cancelAndConsumeRemainingEvents()
-
-                }
-
-            }
-
-        }
-
-        test("OnPrefetchHdImagesCheck should set value in datastore and prefetch images if needed") {
-
-            checkAll(
-                Exhaustive.boolean()
-            ) { check ->
-
-                clearMocks(settingsDataStore, imagesPrefetchManager)
-
-                // Given
-                viewModel.uiState.test {
-                    awaitItem()
-
-                    // When
-                    viewModel.handleIntent(SettingsIntent.OnPrefetchHdImagesCheck(check))
-
-                    // Then
-                    coVerify { settingsDataStore.setPrefetchHdImages(check) }
-                    coVerify(exactly = if (check) 1 else 0) { imagesPrefetchManager.prefetchImages() }
                     cancelAndConsumeRemainingEvents()
 
                 }

@@ -25,8 +25,6 @@ interface SettingsDataStore {
 
     suspend fun setEnablePip(enable: Boolean)
 
-    suspend fun setPrefetchHdImages(prefetch: Boolean)
-
     suspend fun setAutoKeyboard(autoKeyboard: Boolean)
 
     suspend fun getDataLanguage() : String
@@ -46,7 +44,6 @@ interface SettingsDataStore {
         val pipIsEnabled: Boolean = true,
         val autoKeyboard: Boolean = true,
         val dataLanguage: Language? = null,
-        val prefetchHdImages: Boolean = false,
         val systemFoldersEnabled: Boolean = true,
         val blurSpoilers: Boolean = false,
     )

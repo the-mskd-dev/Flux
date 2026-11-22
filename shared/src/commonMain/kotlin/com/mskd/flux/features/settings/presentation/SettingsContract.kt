@@ -2,7 +2,6 @@ package com.mskd.flux.features.settings.presentation
 
 import androidx.compose.runtime.Immutable
 import com.mskd.flux.core.model.core.FluxOptionsDialogState
-import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import com.mskd.flux.features.settings.domain.model.SettingsDialog
 @Immutable
 data class SettingsUiState(
@@ -16,8 +15,6 @@ data class SettingsUiState(
     val optionsDialog: FluxOptionsDialogState<*, SettingsIntent>? = null,
     val settingsDialog: SettingsDialog? = null,
     val fullSyncInProgress: Boolean = false,
-    val prefetchHdImages: Boolean = false,
-    val prefetchImagesState: ImagesPrefetchManager.State = ImagesPrefetchManager.State.Idle,
     val privateFolderEnabled: Boolean = false,
     val privateFolderIncludeNsfw: Boolean = true,
     val privateFolderPinDialog: PrivateFolderPinDialog? = null,
@@ -69,7 +66,6 @@ sealed interface SettingsIntent {
     data class OnAutoKeyboardCheck(val checked: Boolean): SettingsIntent
     data class OnExternalPlayerCheck(val checked: Boolean): SettingsIntent
     data class OnEnablePipCheck(val checked: Boolean): SettingsIntent
-    data class OnPrefetchHdImagesCheck(val checked: Boolean): SettingsIntent
     data class OnBlurSpoilersCheck(val checked: Boolean): SettingsIntent
     data class OpenUrl(val url: String): SettingsIntent
     data object SendEmail: SettingsIntent

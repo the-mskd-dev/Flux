@@ -230,7 +230,7 @@ An explicitly requested Sync that fetches the TMDB data of every file again.
 _Avoid_: Synchro complète, resync
 
 **Language change**:
-A Sync requested when the data language changes: it translates the Catalog, refreshes Genres, searches Logos again in the new language (skipping Artwork with a custom Logo), and prefetches Artwork images, without scanning the UserFolder, removing Missing files, or resetting Custom images or Manual identification.
+A Sync requested when the data language changes: it translates the Catalog, refreshes Genres, searches Logos again in the new language (skipping Artwork with a custom Logo), and runs the Image prefetch, without scanning the UserFolder, removing Missing files, or resetting Custom images or Manual identification.
 _Avoid_: Language update, locale sync
 
 **Sync progress**:
@@ -244,6 +244,10 @@ _Avoid_: Étape de synchro, Fetcher, resolver
 **Translation**:
 A Sync step that runs during a Language change to update the title and description of every Movie, Show, Season and Episode in the Catalog (including Private Artwork and Unavailable Media, excluding the Unknown Artwork) into the selected data language, keeping previous values for missing or blank fields and recording no Failed file on lookup error.
 _Avoid_: Language update, translation enrichment
+
+**Image prefetch**:
+Background caching of the Catalog's TMDB images (Poster, Backdrop, Custom image, Logo, Season and Episode images) triggered at the end of every Sync for offline display, without delaying the end of the Sync.
+_Avoid_: Image cache, HD prefetch, Image Download
 
 **Enrichment**:
 A piece of data fetched for an Artwork during the catalog Sync step (identification, details, seasons, translations, credits, durations); adding a TMDB piece of data almost always means adding an Enrichment.

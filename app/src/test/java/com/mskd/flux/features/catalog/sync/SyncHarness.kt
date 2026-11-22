@@ -32,8 +32,8 @@ import com.mskd.flux.features.history.data.dao.HistoryDao
 import com.mskd.flux.features.history.moduleHistory
 import com.mskd.flux.features.identification.domain.usecase.IdentifyManuallyUseCase
 import com.mskd.flux.features.identification.moduleIdentification
-import com.mskd.flux.features.images.domain.ImagesPrefetchManager
-import com.mskd.flux.features.images.fake.FakeImagesPrefetchManager
+import com.mskd.flux.features.images.domain.usecase.PrefetchImagesUseCase
+import com.mskd.flux.features.images.fake.FakePrefetchImagesUseCase
 import com.mskd.flux.features.people.domain.repository.PeopleRepository
 import com.mskd.flux.features.people.modulePeople
 import com.mskd.flux.features.privateFolder.data.datastore.PrivateFolderDataStoreImpl
@@ -88,7 +88,7 @@ internal class SyncHarness(tmdbToken: String = "test-token", tmdbMaxRequests: In
     private val recorderScope = CoroutineScope(SupervisorJob() + Dispatchers.Unconfined)
 
     /** The images prefetch, counting its requests. */
-    val prefetch = FakeImagesPrefetchManager()
+    val prefetch = FakePrefetchImagesUseCase()
 
     private val _states = CopyOnWriteArrayList<SyncState>()
 
@@ -115,7 +115,7 @@ internal class SyncHarness(tmdbToken: String = "test-token", tmdbMaxRequests: In
                 single<TokenDataStore> { TokenDataStoreImpl(tokenDataStore = InMemoryPreferencesDataStore(), appInfo = get()) }
                 single<UserDataStore> { UserDataStoreImpl(userDataStore = InMemoryPreferencesDataStore(), json = get()) }
                 single<PrivateFolderDataStore> { PrivateFolderDataStoreImpl(privateFolderDataStore = InMemoryPreferencesDataStore()) }
-                single<ImagesPrefetchManager> { prefetch }
+                single<PrefetchImagesUseCase> { prefetch }
                 single<GetFileDurationUseCase> {
                     object : GetFileDurationUseCase {
                         override suspend fun invoke(file: UserFile): Int {

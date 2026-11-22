@@ -30,3 +30,6 @@ arguments: version
 ## Commit & Push
 
 1. Commit and push changes to GitHub with the commit message `[UPDATE] Version <versionName>`
+2. Create a Pull Request to `develop`, with these:
+   - title: `[UPDATE] Version <versionName>`
+   - description: A simple and detailed, understandable by a non developer, of each new features, fixes, cores, or others. 

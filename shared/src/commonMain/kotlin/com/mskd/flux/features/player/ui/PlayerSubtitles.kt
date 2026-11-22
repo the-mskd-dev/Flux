@@ -14,7 +14,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Measurable
@@ -58,31 +57,21 @@ private data class SubtitleLayers(
  * text cues at authored coordinates, and a centred bottom column stacking all unpositioned plain
  * and inline-styled text cues so simultaneous lines never overlap.
  *
- * Only the bitmap layer follows [bitmapScale], the zoom applied around the centre of the picture,
- * so authored signs stay locked to it; text stays unzoomed so it is never cropped off-screen.
+ * No layer follows the pinch-to-fill zoom: subtitles keep their size and position so they are never
+ * cropped off-screen, at the cost of authored signs drifting from the zoomed picture.
  */
 @Composable
 fun PlayerSubtitles(
     cues: () -> List<SubtitleCue>,
     smallText: Boolean,
     modifier: Modifier = Modifier,
-    bitmapScale: () -> Float = { 1f },
 ) {
     val current = cues()
     val layers = remember(current) { current.partitionIntoLayers() }
 
     Box(modifier = modifier.fillMaxSize()) {
         if (layers.bitmaps.isNotEmpty()) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    // Read in the layer block: a zoom animation redraws without recomposing
-                    .graphicsLayer {
-                        val scale = bitmapScale()
-                        scaleX = scale
-                        scaleY = scale
-                    }
-            ) {
+            Box(modifier = Modifier.fillMaxSize()) {
                 layers.bitmaps.forEach { BitmapCue(cue = it) }
             }
         }

@@ -41,6 +41,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalWindowInfo
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
@@ -89,6 +90,11 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.time.Duration.Companion.seconds
+
+/** Test tags of the Player screen. */
+object PlayerScreenTags {
+    const val PICTURE = "player_picture"
+}
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -391,18 +397,18 @@ fun PlayerContent(
                     val scale = animatedScale.value
                     scaleX = scale
                     scaleY = scale
-                },
+                }
+                .testTag(PlayerScreenTags.PICTURE),
             player = session.player
         )
 
         if (!isInPip) {
 
-            // Bitmap cues zoom with the picture, text cues stay readable inside the screen
+            // Not zoomed with the picture: subtitles keep their size and position in fill mode
             PlayerSubtitles(
                 modifier = Modifier.layoutId("subtitles"),
                 cues = subtitles,
-                smallText = isPortrait,
-                bitmapScale = { animatedScale.value }
+                smallText = isPortrait
             )
 
             PlayerInterface(

@@ -14,11 +14,13 @@ arguments: version
 
 ## CHANGELOG.md
 
-1. Replace the `versionName` from the `build.gradle.kts (:app)` at the top of `CHANGELOG.md`
-2. For every new things since the last update (from the latest release tag or `[UPDATE]` block if not available), add a one-line description in the file. For each line, you must start by a keyword to categorize the change. For exemple:
+1. Clear `CHANGELOG.md`.
+2. Replace the `versionName` from the `build.gradle.kts (:app)` at the top of `CHANGELOG.md`.
+3. For every new things since the last update (from the latest release tag or `[UPDATE]` block if not available), add a one-line description in the file. For each line, you must start by a keyword to categorize the change. For exemple:
     - feature: for a new feature or feature improvement
     - fix: for a bug fix
     - core: for a refactoring, internal change, or any other change in the core like dependencies update
+    - doc: for a documentation
 
 ## Fastlane changelog
 

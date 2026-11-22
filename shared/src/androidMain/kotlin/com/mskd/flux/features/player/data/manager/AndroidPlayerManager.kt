@@ -23,7 +23,6 @@ import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Media
-import com.mskd.flux.core.model.language.languageCode
 import com.mskd.flux.core.model.player.PlayerTrack
 import com.mskd.flux.features.files.domain.model.ExternalSubtitle
 import com.mskd.flux.features.player.data.mapper.toSubtitleCue
@@ -31,6 +30,11 @@ import com.mskd.flux.features.player.domain.manager.PlayerManager
 import com.mskd.flux.features.player.domain.manager.SeekPrecision
 import com.mskd.flux.features.player.domain.model.MediaInfo
 import com.mskd.flux.features.player.domain.model.SubtitleCue
+import com.mskd.flux.features.player.domain.selection.ExternalSubtitleTrackId
+import com.mskd.flux.features.player.domain.selection.SubtitleSelection
+import com.mskd.flux.features.player.domain.selection.SubtitleSelectionPolicy
+import com.mskd.flux.features.player.domain.selection.SubtitleTrackDescription
+import com.mskd.flux.features.player.domain.selection.SubtitleTrackFormat
 import com.mskd.flux.features.player.domain.usecase.SaveTrackLanguageUseCase
 import com.mskd.flux.report.Trace
 import com.mskd.flux.services.PlayerService
@@ -66,15 +70,6 @@ class AndroidPlayerManager(
 
     private companion object {
         const val TAG = "AndroidPlayerManager"
-        const val EXTERNAL_SUBTITLE_ID_PREFIX = "flux-ext-"
-        // MergingMediaSource (and nested FfmpegSubtitleSourceFactory + DefaultMediaSourceFactory)
-        // prepends one or more "<sourceIndex>:" prefixes to Format.id (e.g. "2:flux-ext-1", "0:1:flux-ext-3").
-        val EXTERNAL_SUBTITLE_ID_REGEX = Regex("^(?:\\d+:)*${Regex.escape(EXTERNAL_SUBTITLE_ID_PREFIX)}(\\d+)$")
-
-        val SUBTITLE_FORMAT_ORDER = compareByDescending<SubtitleCandidateInfo> { it.isAssOrSsa }
-            .thenBy { it.isForced }
-            .thenBy { it.externalOrder }
-            .thenBy { it.originalIndex }
 
         /** Video SOFTWARE, then audio FFMPEG, then video FFMPEG (the failing track is unknown client side). */
         const val MAX_DECODER_RECOVERY_ATTEMPTS = 3
@@ -500,7 +495,7 @@ class AndroidPlayerManager(
             )
 
             MediaItem.SubtitleConfiguration.Builder(subtitle.uri.toUri())
-                .setId("$EXTERNAL_SUBTITLE_ID_PREFIX$index")
+                .setId(ExternalSubtitleTrackId.of(externalOrder = index))
                 .setMimeType(mimeType)
                 .setLanguage(subtitle.language)
                 .setLabel(label)
@@ -518,7 +513,7 @@ class AndroidPlayerManager(
         var selectedAudio: PlayerTrack? = null
         var selectedSubtitles: PlayerTrack? = null
 
-        val indexedTracks = tracks.groups.flatMapIndexed { groupIndex, group ->
+        val orderedTracks = tracks.groups.flatMapIndexed { groupIndex, group ->
             if (group.type != C.TRACK_TYPE_AUDIO && group.type != C.TRACK_TYPE_TEXT) {
                 emptyList()
             } else {
@@ -543,16 +538,16 @@ class AndroidPlayerManager(
                         }
                     }
 
-                    IndexedTrack(
+                    TrackWithExternalOrder(
                         track = playerTrack,
-                        externalOrder = externalSubtitleIndex(format.id),
+                        externalOrder = ExternalSubtitleTrackId.externalOrderOf(format.id),
                     )
                 }
             }
         }
 
-        val audioTracks = indexedTracks.filter { it.track.type == PlayerTrack.Type.AUDIO }.map { it.track }
-        val subtitleTracks = indexedTracks
+        val audioTracks = orderedTracks.filter { it.track.type == PlayerTrack.Type.AUDIO }.map { it.track }
+        val subtitleTracks = orderedTracks
             .filter { it.track.type == PlayerTrack.Type.SUBTITLES }
             .sortedWith(compareBy { it.externalOrder ?: Int.MIN_VALUE })
             .map { it.track }
@@ -672,12 +667,12 @@ class AndroidPlayerManager(
         }
 
         val subtitleTracks = current.tracks.filter { it.type == PlayerTrack.Type.SUBTITLES }
-        val chosen = selectPreferredSubtitleTrack(
+        val selection = SubtitleSelectionPolicy.select(
             preferredLanguage = track.language,
-            subtitleTracks = subtitleTracks,
-            groups = currentTracks.groups,
+            tracks = subtitleTracks.map { describeSubtitleTrack(it, currentTracks.groups) },
         )
-        if (chosen != null) {
+        if (selection is SubtitleSelection.Override) {
+            val chosen = selection.track
             chosen.language?.let(::setPreferredTextLanguage)
             val applied = chosen.id?.let { applyTrackOverride(trackId = it, groups = currentTracks.groups) } == true
             if (applied || chosen.language != null) return chosen
@@ -687,62 +682,28 @@ class AndroidPlayerManager(
         return null
     }
 
-    private data class IndexedTrack(
+    private data class TrackWithExternalOrder(
         val track: PlayerTrack,
         val externalOrder: Int?,
     )
 
-    private data class SubtitleCandidateInfo(
-        val track: PlayerTrack,
-        val isExternal: Boolean,
-        val isAssOrSsa: Boolean,
-        val isForced: Boolean,
-        val externalOrder: Int,
-        val originalIndex: Int,
-        val langScore: Int,
-    )
-
-    private fun selectPreferredSubtitleTrack(
-        preferredLanguage: String?,
-        subtitleTracks: List<PlayerTrack>,
+    private fun describeSubtitleTrack(
+        playerTrack: PlayerTrack,
         groups: List<Tracks.Group>,
-    ): PlayerTrack? {
-        if (subtitleTracks.isEmpty()) return null
+    ): SubtitleTrackDescription<PlayerTrack> {
+        val parsedId = parseTrackId(playerTrack.id)
+        val format = parsedId?.let { findFormatForTrack(it, groups) }
+        val isAssOrSsa = format?.sampleMimeType == MimeTypes.TEXT_SSA || format?.codecs == MimeTypes.TEXT_SSA
+        val selectionFlags = format?.selectionFlags ?: 0
 
-        val candidates = subtitleTracks.mapIndexed { index, playerTrack ->
-            val parsedId = parseTrackId(playerTrack.id)
-            val format = parsedId?.let { findFormatForTrack(it, groups) }
-            val formatId = format?.id ?: parsedId?.formatId
-            val externalOrder = externalSubtitleIndex(formatId)
-            val isExternal = externalOrder != null
-            val isAssOrSsa = format?.sampleMimeType == MimeTypes.TEXT_SSA || format?.codecs == MimeTypes.TEXT_SSA
-            val isForced = format != null && (format.selectionFlags and C.SELECTION_FLAG_FORCED) != 0
-
-            SubtitleCandidateInfo(
-                track = playerTrack,
-                isExternal = isExternal,
-                isAssOrSsa = isAssOrSsa,
-                isForced = isForced,
-                externalOrder = externalOrder ?: Int.MAX_VALUE,
-                originalIndex = index,
-                langScore = languageMatchScore(playerTrack.language, preferredLanguage),
-            )
-        }
-
-        val matchingPreferred = candidates.filter { it.langScore > 0 }
-        if (matchingPreferred.isNotEmpty()) {
-            return matchingPreferred.minWithOrNull(
-                compareByDescending<SubtitleCandidateInfo> { it.isExternal }
-                    .thenByDescending { it.langScore }
-                    .thenComparing(SUBTITLE_FORMAT_ORDER)
-            )?.track
-        }
-
-        // Fall back to an untagged external subtitle only when no Track matches the preferred language
-        return candidates
-            .filter { it.isExternal && it.track.language.isNullOrBlank() }
-            .minWithOrNull(SUBTITLE_FORMAT_ORDER)
-            ?.track
+        return SubtitleTrackDescription(
+            track = playerTrack,
+            language = playerTrack.language,
+            externalOrder = ExternalSubtitleTrackId.externalOrderOf(format?.id ?: parsedId?.formatId),
+            format = if (isAssOrSsa) SubtitleTrackFormat.ASS_SSA else SubtitleTrackFormat.OTHER,
+            isForced = (selectionFlags and C.SELECTION_FLAG_FORCED) != 0,
+            isDefault = (selectionFlags and C.SELECTION_FLAG_DEFAULT) != 0,
+        )
     }
 
     private data class ParsedTrackId(
@@ -762,21 +723,9 @@ class AndroidPlayerManager(
         )
     }
 
-    private fun languageMatchScore(candidateLanguage: String?, preferredLanguage: String?): Int {
-        if (candidateLanguage.isNullOrBlank() || preferredLanguage.isNullOrBlank()) return 0
-        if (candidateLanguage.equals(preferredLanguage, ignoreCase = true)) return 2
-        if (candidateLanguage.languageCode().equals(preferredLanguage.languageCode(), ignoreCase = true)) return 1
-        return 0
-    }
-
     private fun findFormatForTrack(parsedId: ParsedTrackId, groups: List<Tracks.Group>): Format? {
         val group = groups.getOrNull(parsedId.groupIndex) ?: return null
         return if (parsedId.trackIndex in 0 until group.length) group.getTrackFormat(parsedId.trackIndex) else null
-    }
-
-    private fun externalSubtitleIndex(formatId: String?): Int? {
-        if (formatId == null) return null
-        return EXTERNAL_SUBTITLE_ID_REGEX.matchEntire(formatId)?.groupValues?.getOrNull(1)?.toIntOrNull()
     }
 
     private fun TrackSelectionParameters.Builder.applyTrackOverride(

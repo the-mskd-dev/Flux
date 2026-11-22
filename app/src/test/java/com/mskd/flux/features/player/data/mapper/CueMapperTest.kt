@@ -10,8 +10,10 @@ import com.mskd.flux.features.player.domain.model.CueAnchor
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 
 class CueMapperTest : FunSpec({
 
@@ -81,24 +83,90 @@ class CueMapperTest : FunSpec({
         cue.toSubtitleCue().line shouldBe null
     }
 
-    test("image cue keeps its size as a fraction of the frame") {
+    test("image cue maps bitmap zero-copy with normalized bounds and anchors") {
+        val rawBitmap = mockk<Bitmap>(relaxed = true)
         val cue = Cue.Builder()
-            .setBitmap(mockk<Bitmap>(relaxed = true))
+            .setBitmap(rawBitmap)
+            .setSize(0.5f)
+            .setBitmapHeight(0.25f)
+            .setLine(0.8f, Cue.LINE_TYPE_FRACTION)
+            .setLineAnchor(Cue.ANCHOR_TYPE_START)
+            .setPosition(0.1f)
+            .setPositionAnchor(Cue.ANCHOR_TYPE_START)
+            .build()
+
+        val mapped = cue.toSubtitleCue()
+        mapped.line shouldBe 0.8f
+        mapped.lineAnchor shouldBe CueAnchor.START
+        mapped.position shouldBe 0.1f
+        mapped.positionAnchor shouldBe CueAnchor.START
+        mapped.isStyled shouldBe true
+
+        val subtitleBitmap = mapped.bitmap.shouldNotBeNull()
+        subtitleBitmap.widthFraction shouldBe 0.5f
+        subtitleBitmap.heightFraction shouldBe 0.25f
+        subtitleBitmap.image.toImageBitmap().shouldNotBeNull()
+        verify(exactly = 0) { rawBitmap.compress(any(), any(), any()) }
+    }
+
+    test("bitmap cue equality uses O(1) identity across consecutive frames") {
+        val firstBitmap = mockk<Bitmap>(relaxed = true)
+        val secondBitmap = mockk<Bitmap>(relaxed = true)
+        fun bitmapCue(bitmap: Bitmap) = Cue.Builder()
+            .setBitmap(bitmap)
             .setSize(0.5f)
             .setBitmapHeight(0.25f)
             .setLine(0.8f, Cue.LINE_TYPE_FRACTION)
             .setPosition(0.1f)
             .build()
+            .toSubtitleCue()
 
-        cue.toSubtitleCue().bitmap.shouldNotBeNull().let {
-            it.widthFraction shouldBe 0.5f
-            it.heightFraction shouldBe 0.25f
-        }
+        val cue1 = bitmapCue(firstBitmap)
+        val cue2 = bitmapCue(secondBitmap)
+        val sameCue1 = bitmapCue(firstBitmap)
+
+        cue1 shouldNotBe cue2
+        cue1.bitmap shouldNotBe cue2.bitmap
+        cue1.bitmap.shouldNotBeNull().image shouldNotBe cue2.bitmap.shouldNotBeNull().image
+
+        cue1 shouldBe sameCue1
+        cue1.bitmap shouldBe sameCue1.bitmap
+        cue1.bitmap.shouldNotBeNull().image.hashCode() shouldBe sameCue1.bitmap.shouldNotBeNull().image.hashCode()
     }
 
-    test("image cue without a known size is dropped rather than drawn at a guessed size") {
-        val cue = Cue.Builder().setBitmap(mockk<Bitmap>(relaxed = true)).build()
+    test("image cue with invalid dimensions is dropped while 0f placement coordinates stay valid") {
+        val rawBitmap = mockk<Bitmap>(relaxed = true)
+        val invalidValues = listOf(Cue.DIMEN_UNSET, 0f, -0.1f, 1.1f, Float.NaN)
 
-        cue.toSubtitleCue().bitmap shouldBe null
+        invalidValues.forEach { invalidWidth ->
+            val cue = Cue.Builder()
+                .setBitmap(rawBitmap)
+                .setSize(invalidWidth)
+                .setBitmapHeight(0.25f)
+                .build()
+            cue.toSubtitleCue().bitmap shouldBe null
+        }
+
+        invalidValues.forEach { invalidHeight ->
+            val cue = Cue.Builder()
+                .setBitmap(rawBitmap)
+                .setSize(0.5f)
+                .setBitmapHeight(invalidHeight)
+                .build()
+            cue.toSubtitleCue().bitmap shouldBe null
+        }
+
+        val edgeCue = Cue.Builder()
+            .setBitmap(rawBitmap)
+            .setSize(0.5f)
+            .setBitmapHeight(0.25f)
+            .setLine(0f, Cue.LINE_TYPE_FRACTION)
+            .setPosition(0f)
+            .build()
+            .toSubtitleCue()
+
+        edgeCue.line shouldBe 0f
+        edgeCue.position shouldBe 0f
+        edgeCue.bitmap.shouldNotBeNull()
     }
 })

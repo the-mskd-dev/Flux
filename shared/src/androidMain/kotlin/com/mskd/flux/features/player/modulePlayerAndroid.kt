@@ -4,6 +4,7 @@ package com.mskd.flux.features.player
 import androidx.annotation.OptIn
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.Player
+import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.SeekParameters
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
@@ -20,7 +21,9 @@ import com.mskd.flux.features.player.domain.usecase.GetChaptersUseCase
 import com.mskd.flux.features.player.presentation.PlayerViewModel
 import com.mskd.flux.report.Trace
 import io.github.anilbeesetti.nextlib.media3ext.ffdecoder.DecoderManager
+import io.github.anilbeesetti.nextlib.media3ext.ffdecoder.FfmpegSubtitleExtractorsFactory
 import io.github.anilbeesetti.nextlib.media3ext.ffdecoder.NextRenderersFactory
+import io.github.anilbeesetti.nextlib.media3ext.ffdecoder.withFfmpegSubtitles
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
@@ -46,10 +49,15 @@ val modulePlayerAndroid = module {
             val context = androidContext()
             val decoderManager = get<DecoderManager>()
 
-            val extractorsFactory = DefaultExtractorsFactory()
-                .setMp4ExtractorFlags(Mp4Extractor.FLAG_WORKAROUND_IGNORE_EDIT_LISTS)
+            val dataSourceFactory = DefaultDataSource.Factory(context)
 
-            val mediaSourceFactory = DefaultMediaSourceFactory(context, extractorsFactory)
+            val extractorsFactory = FfmpegSubtitleExtractorsFactory(
+                delegate = DefaultExtractorsFactory()
+                    .setMp4ExtractorFlags(Mp4Extractor.FLAG_WORKAROUND_IGNORE_EDIT_LISTS)
+            )
+
+            val mediaSourceFactory = DefaultMediaSourceFactory(dataSourceFactory, extractorsFactory)
+                .withFfmpegSubtitles(dataSourceFactory)
 
             ExoPlayer.Builder(context)
                 .setAudioAttributes(AudioAttributes.DEFAULT, true)

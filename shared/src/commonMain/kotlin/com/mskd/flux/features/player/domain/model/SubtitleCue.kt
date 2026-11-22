@@ -3,27 +3,12 @@ package com.mskd.flux.features.player.domain.model
 /** Which edge of a cue sits on its position: the start, the middle or the end of the frame axis. */
 enum class CueAnchor { START, CENTER, END }
 
-/** An image cue (PGS, VobSub, DVB): PNG bytes, and its size as a fraction of the video frame. */
-class SubtitleBitmap(
-    val pngBytes: ByteArray,
+/** An image cue (ASS/SSA via libass, PGS, VobSub, DVB): a zero-copy image handle and its size as a fraction of the video frame. */
+data class SubtitleBitmap(
+    val image: SubtitleImage,
     val widthFraction: Float,
     val heightFraction: Float,
-) {
-    // Computed once: equality is checked on every recomposition of the overlay
-    private val contentHash = pngBytes.contentHashCode()
-
-    override fun equals(other: Any?): Boolean =
-        this === other || (
-            other is SubtitleBitmap &&
-                contentHash == other.contentHash &&
-                widthFraction == other.widthFraction &&
-                heightFraction == other.heightFraction &&
-                pngBytes.contentEquals(other.pngBytes)
-            )
-
-    override fun hashCode(): Int =
-        (contentHash * 31 + widthFraction.hashCode()) * 31 + heightFraction.hashCode()
-}
+)
 
 /**
  * One subtitle on screen, independent of the playback engine.

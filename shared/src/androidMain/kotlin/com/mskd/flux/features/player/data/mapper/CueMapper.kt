@@ -9,7 +9,7 @@ import androidx.media3.common.text.Cue
 import com.mskd.flux.features.player.domain.model.CueAnchor
 import com.mskd.flux.features.player.domain.model.SubtitleBitmap
 import com.mskd.flux.features.player.domain.model.SubtitleCue
-import java.io.ByteArrayOutputStream
+import com.mskd.flux.features.player.domain.model.SubtitleImage
 
 /**
  * Turns a Media3 cue into the platform-independent [SubtitleCue].
@@ -60,9 +60,12 @@ private fun Int.toCueAnchor(default: CueAnchor): CueAnchor = when (this) {
     else -> default
 }
 
-/** An image cue without a known size cannot be placed honestly, so it is dropped. */
+/** An image cue without a known size in (0, 1] cannot be placed honestly, so it is dropped. */
 private fun Bitmap.toSubtitleBitmap(width: Float?, height: Float?): SubtitleBitmap? {
-    if (width == null || height == null) return null
-    val png = ByteArrayOutputStream().also { compress(Bitmap.CompressFormat.PNG, 100, it) }
-    return SubtitleBitmap(png.toByteArray(), widthFraction = width, heightFraction = height)
+    if (width == null || height == null || width <= 0f || height <= 0f) return null
+    return SubtitleBitmap(
+        image = SubtitleImage(this),
+        widthFraction = width,
+        heightFraction = height,
+    )
 }

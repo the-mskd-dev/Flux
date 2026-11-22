@@ -7,14 +7,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
@@ -22,12 +20,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Constraints
 import com.mskd.flux.features.player.domain.model.CueAnchor
+import com.mskd.flux.features.player.domain.model.SubtitleBitmap
 import com.mskd.flux.features.player.domain.model.SubtitleCue
-import com.mskd.flux.ui.image.decodeImageBitmap
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxUI
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import kotlin.math.roundToInt
 
 /** Vertical position of a styled cue that the file did not place: near the bottom of the frame. */
@@ -78,17 +74,18 @@ private fun DefaultCue(text: String?, smallText: Boolean) {
 @Composable
 private fun StyledCue(cue: SubtitleCue, smallText: Boolean) {
     val bitmap = cue.bitmap
-    // Decoded off the main thread; the cue is drawn once the image is ready
-    val image by produceState<ImageBitmap?>(initialValue = null, bitmap) {
-        value = bitmap?.let { withContext(Dispatchers.Default) { decodeImageBitmap(it.pngBytes) } }
-    }
+    if (bitmap != null && !bitmap.hasValidDimensions()) return
+    val image = remember(bitmap?.image) { bitmap?.image?.toImageBitmap() }
 
-    val decoded = image
     Layout(
         content = {
-            if (decoded != null) {
-                Image(bitmap = decoded, contentDescription = null)
-            } else if (bitmap == null) {
+            if (image != null) {
+                Image(
+                    bitmap = image,
+                    contentDescription = null,
+                    contentScale = ContentScale.FillBounds,
+                )
+            } else {
                 StyledText(cue = cue, smallText = smallText)
             }
         }
@@ -96,7 +93,6 @@ private fun StyledCue(cue: SubtitleCue, smallText: Boolean) {
         val frameWidth = constraints.maxWidth
         val frameHeight = constraints.maxHeight
 
-        // An image that could not be decoded has nothing to place
         val child = measurables.firstOrNull() ?: return@Layout layout(frameWidth, frameHeight) {}
 
         val placeable = child.measure(
@@ -118,6 +114,9 @@ private fun StyledCue(cue: SubtitleCue, smallText: Boolean) {
         }
     }
 }
+
+private fun SubtitleBitmap.hasValidDimensions(): Boolean =
+    widthFraction > 0f && widthFraction <= 1f && heightFraction > 0f && heightFraction <= 1f
 
 @Composable
 private fun StyledText(cue: SubtitleCue, smallText: Boolean) {

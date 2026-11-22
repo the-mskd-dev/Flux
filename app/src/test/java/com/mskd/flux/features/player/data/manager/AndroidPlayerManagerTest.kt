@@ -1,5 +1,6 @@
 package com.mskd.flux.features.player.data.manager
 
+import android.graphics.Bitmap
 import androidx.media3.common.C
 import androidx.media3.common.Format
 import androidx.media3.common.MimeTypes
@@ -9,13 +10,17 @@ import androidx.media3.common.Tracks
 import androidx.media3.common.text.Cue
 import androidx.media3.common.text.CueGroup
 import androidx.media3.session.MediaController
+import app.cash.turbine.test
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.features.player.domain.manager.PlayerManager
 import com.mskd.flux.features.player.domain.model.CueAnchor
 import com.mskd.flux.features.player.domain.model.MediaInfo
 import com.mskd.flux.features.player.domain.model.SubtitleCue
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -99,6 +104,88 @@ class AndroidPlayerManagerTest : FunSpec({
         val sessionField = AndroidPlayerManager::class.java.getDeclaredField("currentSessionId").apply { isAccessible = true }
         sessionField.set(manager, "session")
         manager.onCues(CueGroup(listOf(Cue.Builder().setText("Last line of the previous file").build()), 0L))
+
+        manager.disconnect(sessionId = "session")
+
+        manager.subtitles.first() shouldBe emptyList()
+    }
+
+    test("bitmap cues reach the subtitles flow with normalized bounds and anchors") {
+        val bitmapCue = Cue.Builder()
+            .setBitmap(mockk<Bitmap>(relaxed = true))
+            .setSize(0.6f)
+            .setBitmapHeight(0.2f)
+            .setPosition(0.15f)
+            .setPositionAnchor(Cue.ANCHOR_TYPE_START)
+            .setLine(0.75f, Cue.LINE_TYPE_FRACTION)
+            .setLineAnchor(Cue.ANCHOR_TYPE_START)
+            .build()
+
+        manager.onCues(CueGroup(listOf(bitmapCue), 0L))
+
+        val emitted = manager.subtitles.first().shouldHaveSize(1).first()
+        emitted.position shouldBe 0.15f
+        emitted.positionAnchor shouldBe CueAnchor.START
+        emitted.line shouldBe 0.75f
+        emitted.lineAnchor shouldBe CueAnchor.START
+        emitted.bitmap.shouldNotBeNull().let {
+            it.widthFraction shouldBe 0.6f
+            it.heightFraction shouldBe 0.2f
+        }
+    }
+
+    test("consecutive distinct bitmap frames at identical bounds both emit on subtitles") {
+        fun frameCue(bitmap: Bitmap) = Cue.Builder()
+            .setBitmap(bitmap)
+            .setSize(0.5f)
+            .setBitmapHeight(0.15f)
+            .setPosition(0.25f)
+            .setPositionAnchor(Cue.ANCHOR_TYPE_START)
+            .setLine(0.8f, Cue.LINE_TYPE_FRACTION)
+            .setLineAnchor(Cue.ANCHOR_TYPE_START)
+            .build()
+
+        manager.subtitles.test {
+            awaitItem() shouldBe emptyList()
+
+            manager.onCues(CueGroup(listOf(frameCue(mockk(relaxed = true))), 0L))
+            val frame1 = awaitItem().shouldHaveSize(1).first()
+
+            manager.onCues(CueGroup(listOf(frameCue(mockk(relaxed = true))), 33_000L))
+            val frame2 = awaitItem().shouldHaveSize(1).first()
+
+            frame1 shouldNotBe frame2
+            frame1.bitmap shouldNotBe frame2.bitmap
+        }
+    }
+
+    test("bitmap cues with invalid dimensions are dropped") {
+        val unsetCue = Cue.Builder()
+            .setBitmap(mockk<Bitmap>(relaxed = true))
+            .build()
+        val outOfBoundsCue = Cue.Builder()
+            .setBitmap(mockk<Bitmap>(relaxed = true))
+            .setSize(1.2f)
+            .setBitmapHeight(0.2f)
+            .build()
+
+        manager.onCues(CueGroup(listOf(unsetCue, outOfBoundsCue), 0L))
+
+        manager.subtitles.first().map { it.bitmap } shouldBe listOf(null, null)
+    }
+
+    test("disconnect clears active bitmap cues immediately") {
+        val player = mockk<Player>(relaxed = true)
+        setReady(player)
+        val sessionField = AndroidPlayerManager::class.java.getDeclaredField("currentSessionId").apply { isAccessible = true }
+        sessionField.set(manager, "session")
+        val bitmapCue = Cue.Builder()
+            .setBitmap(mockk<Bitmap>(relaxed = true))
+            .setSize(0.5f)
+            .setBitmapHeight(0.2f)
+            .build()
+        manager.onCues(CueGroup(listOf(bitmapCue), 0L))
+        manager.subtitles.first().first().bitmap.shouldNotBeNull()
 
         manager.disconnect(sessionId = "session")
 

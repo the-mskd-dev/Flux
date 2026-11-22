@@ -10,6 +10,5 @@ The Internal player renders native libass/FFmpeg bitmap cues (ASS/SSA, PGS, VobS
 ## Consequences
 
 - Bitmap cues must travel through an `expect`/`actual` platform image handle (wrapping Android's `Bitmap` directly with `asImageBitmap()` and O(1) reference equality) — never PNG-encoded in `CueMapper`.
-- `PlayerSubtitles` renders three layers: bitmap cues at their normalized bounds in the fitted picture box, explicitly positioned text cues, and a bottom stacked `Column` for unpositioned text cues (both plain and inline-styled) so simultaneous lines never overlap.
-- No layer follows the pinch-to-fill zoom. libass renders ordinary ASS dialogue as bitmaps too, so zooming the bitmap layer pushed dialogue off-screen; subtitles keep their size and position instead, and authored ASS signs and drawings drift from the zoomed picture in fill mode.
+- `PlayerSubtitles` renders three layers: video-aligned bitmap cues that follow the pinch-to-fill zoom transform, explicitly positioned text cues (unzoomed), and a bottom stacked `Column` for unpositioned text cues (both plain and inline-styled, unzoomed) so simultaneous lines never overlap.
 - Rare non-ASS text layout features such as WebVTT/TTML ruby annotations, vertical text, and CEA-608/708 broadcast grids are intentionally unsupported.

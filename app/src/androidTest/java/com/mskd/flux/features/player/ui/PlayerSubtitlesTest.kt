@@ -3,6 +3,7 @@ package com.mskd.flux.features.player.ui
 import android.graphics.Bitmap
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.getBoundsInRoot
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -29,6 +30,8 @@ class PlayerSubtitlesTest {
 
     @get:Rule
     val composeRule = createComposeRule()
+
+    private val zoom = mutableFloatStateOf(1f)
 
     /** A centred sign covering 20% x 10% of the frame. */
     private val bitmapCue = SubtitleCue(
@@ -64,6 +67,7 @@ class PlayerSubtitlesTest {
                     PlayerSubtitles(
                         cues = { cues },
                         smallText = false,
+                        bitmapScale = { zoom.floatValue },
                     )
                 }
             }
@@ -72,23 +76,45 @@ class PlayerSubtitlesTest {
 
     private fun boundsOf(tag: String): DpRect = composeRule.onNodeWithTag(tag).getBoundsInRoot()
 
+    private fun zoomTo(scale: Float) {
+        zoom.floatValue = scale
+        composeRule.waitForIdle()
+    }
+
     @Test
-    fun cuesSitAtTheirAuthoredCoordinatesInsideTheFrame() {
+    fun bitmapLayerScalesWithZoomAroundTheFrameCentre() {
+        setSubtitles(listOf(bitmapCue))
+
+        val unzoomed = boundsOf(PlayerSubtitlesTags.BITMAP_CUE)
+        assertThat(unzoomed.width.value).isWithin(1f).of(80f)
+        assertThat(unzoomed.height.value).isWithin(1f).of(30f)
+
+        zoomTo(2f)
+        val zoomed = boundsOf(PlayerSubtitlesTags.BITMAP_CUE)
+
+        assertThat(zoomed.width.value).isWithin(1f).of(160f)
+        assertThat(zoomed.height.value).isWithin(1f).of(60f)
+        assertThat(zoomed.centerX).isWithin(1f).of(unzoomed.centerX)
+        assertThat(zoomed.centerY).isWithin(1f).of(unzoomed.centerY)
+    }
+
+    @Test
+    fun textLayersStayUnzoomedWhileBitmapsZoom() {
         setSubtitles(listOf(bitmapCue, positionedCue, plainCue))
 
-        // Centred sign covering 20% x 10% of the 400 x 300 frame
-        val bitmap = boundsOf(PlayerSubtitlesTags.BITMAP_CUE)
-        assertThat(bitmap.width.value).isWithin(1f).of(80f)
-        assertThat(bitmap.height.value).isWithin(1f).of(30f)
-        assertThat(bitmap.centerX).isWithin(1f).of(200f)
-        assertThat(bitmap.centerY).isWithin(1f).of(150f)
-
-        // 10% from the top, centred
         val positioned = boundsOf(PlayerSubtitlesTags.POSITIONED_TEXT_CUE)
+        val bottom = boundsOf(PlayerSubtitlesTags.BOTTOM_TEXT_CUE)
+
+        zoomTo(1.5f)
+
+        assertThat(boundsOf(PlayerSubtitlesTags.POSITIONED_TEXT_CUE)).isEqualTo(positioned)
+        assertThat(boundsOf(PlayerSubtitlesTags.BOTTOM_TEXT_CUE)).isEqualTo(bottom)
+        assertThat(boundsOf(PlayerSubtitlesTags.BITMAP_CUE).width.value).isWithin(1f).of(120f)
+
+        // Authored coordinates: 10% from the top, centred, all inside the frame
         assertThat(positioned.top.value).isWithin(1f).of(30f)
         assertThat(positioned.centerX).isWithin(1f).of(200f)
-
-        assertThat(boundsOf(PlayerSubtitlesTags.BOTTOM_TEXT_CUE).bottom.value).isAtMost(300f)
+        assertThat(bottom.bottom.value).isAtMost(300f)
     }
 
     @Test

@@ -8,6 +8,7 @@ import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.core.network.tmdb.domain.repository.ApiRepository
 import com.mskd.flux.features.catalog.domain.model.SyncState
+import com.mskd.flux.features.catalog.domain.model.SyncType
 import com.mskd.flux.features.connectivity.domain.ConnectivityRepository
 import com.mskd.flux.features.gallery.domain.model.GalleryImage
 import com.mskd.flux.features.gallery.domain.model.GalleryImageType
@@ -517,7 +518,7 @@ class GalleryViewModelTest : FunSpec({
         coEvery { apiRepository.getMovieImages(artwork.id) } returns listOf(topLogo)
         updateVm()
         testDispatcher.scheduler.advanceUntilIdle()
-        syncState.value = SyncState.Syncing(full = false)
+        syncState.value = SyncState.Syncing(type = SyncType.LIGHT)
 
         viewModel.handleIntent(GalleryIntent.OnImageTap(index = 0))
 
@@ -603,7 +604,7 @@ class GalleryViewModelTest : FunSpec({
 
     test("the button is hidden while a Sync runs") {
 
-        syncState.value = SyncState.Syncing(full = false)
+        syncState.value = SyncState.Syncing(type = SyncType.LIGHT)
 
         buttonOf(midBackdrop.path) shouldBe ArtworkImageButton.HIDDEN
         buttonOf(highPoster.path) shouldBe ArtworkImageButton.HIDDEN

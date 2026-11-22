@@ -19,10 +19,10 @@ class SyncCatalogUseCase(
 
     operator fun invoke(type: SyncType) {
 
-        if (coordinator.isBusy && (coordinator.state.value as? SyncState.Syncing)?.full == true && type == SyncType.LIGHT)
+        if (coordinator.isBusy && (coordinator.state.value as? SyncState.Syncing)?.type == SyncType.FULL && type == SyncType.LIGHT)
             return
 
-        coordinator.launch(full = type == SyncType.FULL) {
+        coordinator.launch(type = type) {
 
             val context = SyncContext(type = type, progress = SyncProgress(coordinator))
 

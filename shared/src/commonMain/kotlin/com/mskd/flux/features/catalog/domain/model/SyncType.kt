@@ -1,6 +1,6 @@
 package com.mskd.flux.features.catalog.domain.model
 
-/** Kind of Sync run by the Sync pipeline. */
+/** Sync type run by the Sync pipeline. */
 enum class SyncType {
     /** Processes only new files and removes Missing files. */
     LIGHT,

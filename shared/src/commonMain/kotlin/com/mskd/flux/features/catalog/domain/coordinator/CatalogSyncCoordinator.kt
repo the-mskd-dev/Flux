@@ -1,6 +1,7 @@
 package com.mskd.flux.features.catalog.domain.coordinator
 
 import com.mskd.flux.features.catalog.domain.model.SyncState
+import com.mskd.flux.features.catalog.domain.model.SyncType
 import com.mskd.flux.report.Trace
 import com.mskd.flux.ui.text.TextProvider
 import flux.shared.generated.resources.Res
@@ -18,7 +19,7 @@ import kotlin.math.roundToInt
 interface CatalogSyncCoordinator {
     val state: StateFlow<SyncState>
     val isBusy: Boolean
-    fun launch(full: Boolean, block: suspend CoroutineScope.() -> Unit)
+    fun launch(type: SyncType, block: suspend CoroutineScope.() -> Unit)
     fun setFailedFiles(count: Int)
     fun setProgress(progress: Float)
 }
@@ -40,10 +41,10 @@ class CatalogSyncCoordinatorImpl(
     override val isBusy: Boolean get() = _state.value is SyncState.Syncing
 
     @OptIn(InternalCoroutinesApi::class)
-    override fun launch(full: Boolean, block: suspend CoroutineScope.() -> Unit) {
+    override fun launch(type: SyncType, block: suspend CoroutineScope.() -> Unit) {
         activeJob?.cancel()
         failedFiles = 0
-        _state.value = SyncState.Syncing(full = full)
+        _state.value = SyncState.Syncing(type = type)
 
         activeJob = scope.launch {
             block()

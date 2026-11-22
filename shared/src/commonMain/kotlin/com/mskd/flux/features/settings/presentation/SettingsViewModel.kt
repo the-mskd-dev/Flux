@@ -100,7 +100,7 @@ class SettingsViewModel(
             autoKeyboard = base.settings.autoKeyboard,
             optionsDialog = base.optionsDialog,
             settingsDialog = base.settingsDialog,
-            fullSyncInProgress = (base.syncState as? SyncState.Syncing)?.full == true,
+            fullSyncInProgress = (base.syncState as? SyncState.Syncing)?.type == SyncType.FULL,
             prefetchHdImages = base.settings.prefetchHdImages,
             prefetchImagesState = base.imagesState,
             privateFolderEnabled = privateFolder.enabled,

@@ -116,7 +116,7 @@ class CatalogViewModel(
         _showMessageDialog,
     ) { (artworks, genres), syncState, preferences, (showSortingSheet, showViewModeSheet, showPlayStorePromo), showMessageDialog  ->
 
-        if (syncState is SyncState.Syncing && syncState.full) {
+        if (syncState is SyncState.Syncing && syncState.type == SyncType.FULL) {
 
             CatalogUiState(
                 state = CatalogState.Loading(syncState = syncState),

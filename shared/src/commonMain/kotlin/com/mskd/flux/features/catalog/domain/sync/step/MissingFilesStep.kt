@@ -8,7 +8,7 @@ import com.mskd.flux.features.catalog.domain.sync.SyncStep
 /** Removes the Missing files right after the scan, whatever happens next. */
 class MissingFilesStep(private val database: DatabaseRepository) : SyncStep {
 
-    override fun isEnabled(context: SyncContext) = context.type != SyncType.LANGUAGE_CHANGE
+    override val syncTypes = setOf(SyncType.LIGHT, SyncType.FULL)
 
     override suspend fun units(context: SyncContext) = 1
 

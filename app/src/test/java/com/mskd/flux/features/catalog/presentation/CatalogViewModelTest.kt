@@ -163,7 +163,7 @@ class CatalogViewModelTest : FunSpec({
         test("should not be shown in Loading") {
             val store = CatalogDataStoreImpl(InMemoryPreferencesDataStore())
             val syncing = mockk<SyncCatalogUseCase>(relaxed = true) {
-                every { state } returns MutableStateFlow(SyncState.Syncing(full = true))
+                every { state } returns MutableStateFlow(SyncState.Syncing(type = SyncType.FULL))
             }
             viewModel = createViewModel(syncUseCase = syncing, catalogDataStore = store, info = foss())
             viewModel.uiState.test {

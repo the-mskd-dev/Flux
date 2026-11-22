@@ -13,7 +13,7 @@ import com.mskd.flux.features.catalog.domain.sync.SyncStep
  */
 class UserChoicesResetStep(private val database: DatabaseRepository) : SyncStep {
 
-    override fun isEnabled(context: SyncContext) = context.type == SyncType.FULL
+    override val syncTypes = setOf(SyncType.FULL)
 
     override suspend fun units(context: SyncContext) = 1
 

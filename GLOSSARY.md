@@ -131,7 +131,7 @@ Device folder that the user entrusted to Flux to look for UserFile in it.
 _Avoid_: Source, directory
 
 **Sync**:
-Operation that aligns the Catalog with the UserFolder and TMDB data. There are three Sync kinds: Light sync, Full sync, and Language change.
+Operation that aligns the Catalog with the UserFolder and TMDB data. There are three Sync types: Light sync, Full sync, and Language change.
 _Avoid_: Synchro, Scan, refresh, import, matching
 
 **Private Artwork**:

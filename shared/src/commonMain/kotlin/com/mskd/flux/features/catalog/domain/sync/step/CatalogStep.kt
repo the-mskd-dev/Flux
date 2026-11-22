@@ -29,7 +29,7 @@ class CatalogStep(
         const val SAVE_UNITS = 1
     }
 
-    override fun isEnabled(context: SyncContext) = context.type != SyncType.LANGUAGE_CHANGE
+    override val syncTypes = setOf(SyncType.LIGHT, SyncType.FULL)
 
     override suspend fun units(context: SyncContext) =
         context.foldersToFetch.sumOf { folder -> enrichments.sumOf { it.units(folder) } } + SAVE_UNITS

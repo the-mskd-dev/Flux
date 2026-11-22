@@ -12,7 +12,7 @@ class ScanStep(
     private val scanSourcesUseCase: ScanSourcesUseCase,
 ) : SyncStep {
 
-    override fun isEnabled(context: SyncContext) = context.type != SyncType.LANGUAGE_CHANGE
+    override val syncTypes = setOf(SyncType.LIGHT, SyncType.FULL)
 
     override suspend fun units(context: SyncContext) = 1
 

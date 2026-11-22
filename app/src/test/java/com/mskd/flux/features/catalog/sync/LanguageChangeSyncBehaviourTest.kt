@@ -4,6 +4,7 @@ import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.language.Language
 import com.mskd.flux.features.catalog.domain.model.SyncState
+import com.mskd.flux.features.catalog.domain.model.SyncType
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainAll
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
@@ -16,7 +17,7 @@ import kotlinx.coroutines.withTimeout
 import kotlin.time.Duration.Companion.seconds
 
 /**
- * Behaviour of the Language change Sync kind, observed through the Catalog in database,
+ * Behaviour of the Language change Sync type, observed through the Catalog in database,
  * the Genres, the Sync state, the images prefetch and the TMDB calls.
  */
 class LanguageChangeSyncBehaviourTest : FunSpec({
@@ -158,7 +159,7 @@ class LanguageChangeSyncBehaviourTest : FunSpec({
 
         // Then
         val syncingStates = harness.states.drop(statesBefore).filterIsInstance<SyncState.Syncing>()
-        syncingStates.map { it.full }.distinct() shouldBe listOf(false)
+        syncingStates.map { it.type }.distinct() shouldBe listOf(SyncType.LANGUAGE_CHANGE)
         val progresses = syncingStates.map { it.progress }
         progresses.zipWithNext().all { (previous, next) -> next >= previous } shouldBe true
         progresses.distinct().size shouldBeGreaterThan 1
@@ -222,7 +223,7 @@ class LanguageChangeSyncBehaviourTest : FunSpec({
         harness.awaitIdle()
 
         // Then
-        harness.states.filterIsInstance<SyncState.Syncing>().map { it.full }.distinct() shouldBe listOf(true, false)
+        harness.states.filterIsInstance<SyncState.Syncing>().map { it.type }.distinct() shouldBe listOf(SyncType.FULL, SyncType.LANGUAGE_CHANGE)
         harness.tmdb.callCount("movie/{id}") shouldBe 0
         harness.catalog.getArtworks(includePrivates = true) shouldBe emptyList()
         harness.details.flowGenres().first().map { it.name } shouldContainAll listOf("Science-Fiction", "Drame")
@@ -266,7 +267,7 @@ class LanguageChangeSyncBehaviourTest : FunSpec({
         harness.awaitIdle()
 
         // Then
-        harness.states.filterIsInstance<SyncState.Syncing>().map { it.full }.distinct() shouldBe listOf(false, true)
+        harness.states.filterIsInstance<SyncState.Syncing>().map { it.type }.distinct() shouldBe listOf(SyncType.LANGUAGE_CHANGE, SyncType.FULL)
         harness.catalog.getArtworks(includePrivates = true).map { it.title } shouldContainExactlyInAnyOrder listOf("Inception")
         harness.prefetch.prefetchCount shouldBe 1
         harness.states.last() shouldBe SyncState.Idle(failedFiles = 0)

@@ -46,7 +46,7 @@ class TranslationStep(
 
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO.limitedParallelism(MAX_PARALLELISM)
 
-    override fun isEnabled(context: SyncContext): Boolean = context.type == SyncType.LANGUAGE_CHANGE
+    override val syncTypes = setOf(SyncType.LANGUAGE_CHANGE)
 
     override suspend fun units(context: SyncContext): Int = translatableCatalog().totalItems
 

@@ -13,7 +13,7 @@ class NsfwPrivateStep(
     private val privateFolder: PrivateFolderDataStore,
 ) : SyncStep {
 
-    override fun isEnabled(context: SyncContext) = context.type != SyncType.LANGUAGE_CHANGE
+    override val syncTypes = setOf(SyncType.LIGHT, SyncType.FULL)
 
     override suspend fun units(context: SyncContext) = 1
 

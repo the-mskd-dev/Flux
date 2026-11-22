@@ -2,6 +2,7 @@ package com.mskd.flux.features.catalog.fake
 
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.model.SyncState
+import com.mskd.flux.features.catalog.domain.model.SyncType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,18 +23,18 @@ internal class FakeCatalogSyncCoordinator(
 
     var launchCallCount = 0
         private set
-    var lastFull: Boolean? = null
+    var lastType: SyncType? = null
         private set
     var job: Job? = null
         private set
 
-    override fun launch(full: Boolean, block: suspend CoroutineScope.() -> Unit) {
+    override fun launch(type: SyncType, block: suspend CoroutineScope.() -> Unit) {
         launchCallCount++
-        lastFull = full
+        lastType = type
         // Like the real coordinator, a new Sync cancels the running one
         job?.cancel()
         failedFiles = 0
-        _state.update { SyncState.Syncing(full = full) }
+        _state.update { SyncState.Syncing(type = type) }
         job = scope.launch {
             block()
             _state.update { SyncState.Idle(failedFiles = failedFiles) }

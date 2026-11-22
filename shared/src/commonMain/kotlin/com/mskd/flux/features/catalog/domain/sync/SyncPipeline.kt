@@ -13,7 +13,7 @@ class SyncPipeline(
 
     suspend fun run(context: SyncContext) {
 
-        val scanUnits = if (scanStep.isEnabled(context)) {
+        val scanUnits = if (context.type in scanStep.syncTypes) {
             scanStep.units(context).also { units ->
                 context.progress.declare(units)
                 scanStep.run(context)
@@ -22,7 +22,7 @@ class SyncPipeline(
             0
         }
 
-        val enabled = steps.filter { it.isEnabled(context) }
+        val enabled = steps.filter { context.type in it.syncTypes }
         enabled.forEach { context.progress.declare(it.units(context)) }
 
         // Completed only now: Sync progress must not reach the end of the declared work before every Sync step declared its own

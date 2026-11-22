@@ -31,6 +31,8 @@ class LogosStep(
 
     private companion object { const val TAG = "LogosStep" }
 
+    override val syncTypes = setOf(SyncType.LIGHT, SyncType.FULL, SyncType.LANGUAGE_CHANGE)
+
     /** The Artwork whose files the catalog step fetches again get their Logo from the details call, not from this step. */
     override suspend fun units(context: SyncContext): Int {
         val artworks = artworksToSearch(context)

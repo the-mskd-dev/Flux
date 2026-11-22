@@ -8,11 +8,13 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.withTimeoutOrNull
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 /**
  * Behaviour of the Logos Sync step in refresh-all mode during a Language change,
- * observed through the Catalog in database, the Sync state, and the TMDB calls.
+ * observed through the Catalog in database, the Sync state, the images prefetch, and the TMDB calls.
  */
 class LanguageChangeSyncLogoBehaviourTest : FunSpec({
 
@@ -216,6 +218,65 @@ class LanguageChangeSyncLogoBehaviourTest : FunSpec({
         forgottenTale.logoPath shouldBe "/forgotten-tale-fr.png"
         forgottenTale.customBackdropPath shouldBe "/tale-backdrop.jpg"
         forgottenTale.customPosterPath shouldBe "/tale-poster.jpg"
+
+    }
+
+    test("the new Logo is not overwritten by the translated Artwork saved during a Language change") {
+
+        // Given
+        englishCatalog("Breaking Bad S01E01.mkv")
+        // The translation is slow to come: a Logo saved meanwhile would be overwritten by the translated Artwork
+        harness.tmdb.pause("tv/{id}/translations")
+
+        // When
+        harness.settings.setDataLanguage(Language.GERMAN)
+        harness.requestLanguageChangeSync()
+        withTimeout(10.seconds) {
+            while (harness.tmdb.callCount("tv/{id}/translations") == 0) delay(10)
+        }
+        // Leaves time to a Logo searched before the end of the translations to be saved; none is expected
+        withTimeoutOrNull(500.milliseconds) {
+            while (harness.tmdb.callCount("tv/{id}/images") == 0) delay(10)
+        }
+
+        // Then
+        harness.tmdb.callCount("tv/{id}/images") shouldBe 0
+
+        // When
+        harness.tmdb.resume()
+        harness.awaitIdle()
+
+        // Then
+        val breakingBad = harness.catalog.getArtwork(artworkId = 1396L)!!
+        breakingBad.description shouldBe "Walter White, ein Chemielehrer, beginnt Methamphetamin herzustellen."
+        breakingBad.logoPath shouldBe "/breaking-bad-de.png"
+
+    }
+
+    test("the images are prefetched once the Logos are updated, so they are available offline") {
+
+        // Given
+        englishCatalog("Inception (2010).mkv")
+        val prefetchesBefore = harness.prefetch.prefetchCount
+        harness.tmdb.pause("movie/{id}/images")
+
+        // When
+        harness.settings.setDataLanguage(Language.FRENCH)
+        harness.requestLanguageChangeSync()
+        withTimeout(10.seconds) {
+            while (harness.tmdb.callCount("movie/{id}/images") == 0) delay(10)
+        }
+
+        // Then
+        harness.prefetch.prefetchCount shouldBe prefetchesBefore
+
+        // When
+        harness.tmdb.resume()
+        harness.awaitIdle()
+
+        // Then
+        logoOf(27205L) shouldBe "/inception-fr-best.png"
+        harness.prefetch.prefetchCount shouldBe prefetchesBefore + 1
 
     }
 

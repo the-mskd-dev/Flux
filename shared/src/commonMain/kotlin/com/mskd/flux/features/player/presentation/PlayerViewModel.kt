@@ -20,9 +20,8 @@ import com.mskd.flux.features.player.domain.model.VideoChapter
 import com.mskd.flux.features.player.domain.model.VideoChapterType
 import com.mskd.flux.features.player.domain.model.currentAt
 import com.mskd.flux.features.player.domain.usecase.GetChaptersUseCase
-import com.mskd.flux.features.player.domain.usecase.GetNextEpisodeUseCase
 import com.mskd.flux.features.player.domain.usecase.SaveTrackLanguageUseCase
-import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
+import com.mskd.flux.features.progress.domain.ProgressTracker
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.ui.text.TextProvider
 import com.mskd.flux.utils.Constants
@@ -58,11 +57,10 @@ class PlayerViewModel<out T>(
     private val playerManager: PlayerManager<T>,
     private val observeArtworkUseCase: ObserveArtworkUseCase,
     private val pipIsEnabledUseCase: PipIsEnabledUseCase,
-    private val saveProgressUseCase: SaveProgressUseCase,
+    private val progressTracker: ProgressTracker,
     private val getSubtitlesUseCase: GetSubtitlesUseCase,
     private val saveTrackLanguageUseCase: SaveTrackLanguageUseCase,
     private val getChaptersUseCase: GetChaptersUseCase,
-    private val getNextEpisodeUseCase: GetNextEpisodeUseCase
 ) : ViewModel() {
 
     //region Variables
@@ -419,7 +417,8 @@ class PlayerViewModel<out T>(
         val cache = nextEpisodeCache
         if (cache?.first == media.mediaId) return cache.second
 
-        return getNextEpisodeUseCase(media = media).also { nextEpisodeCache = media.mediaId to it }
+        return progressTracker.nextEpisode(media = media, onlyAvailable = true)
+            .also { nextEpisodeCache = media.mediaId to it }
 
     }
 
@@ -486,7 +485,7 @@ class PlayerViewModel<out T>(
         val media = currentSession?.media ?: return
         val progress = _progress.value
 
-        saveProgressUseCase(media = media, progress = progress, forceWatched = forceWatched)
+        progressTracker.recordProgress(media = media, position = progress, forceWatched = forceWatched)
     }
 
     private fun updateSeekOverlay(type: SeekOverlay.Type, value: Int) {

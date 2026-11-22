@@ -9,7 +9,7 @@ import com.mskd.flux.features.player.domain.playback.ExternalLaunchResult.Failed
 import com.mskd.flux.features.player.domain.playback.ExternalLaunchResult.Launched
 import com.mskd.flux.features.player.domain.playback.ExternalLaunchResult.NoPlayerInstalled
 import com.mskd.flux.features.player.domain.playback.ExternalLaunchResult.PermissionDenied
-import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
+import com.mskd.flux.features.progress.domain.ProgressTracker
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.mockups.MediaMockups
 import io.kotest.core.spec.style.FunSpec
@@ -41,7 +41,7 @@ class PlaybackLaunchTest : FunSpec({
 
     lateinit var settings: SettingsDataStore
     lateinit var adapter: FakeExternalPlayerAdapter
-    lateinit var saveProgress: SaveProgressUseCase
+    lateinit var progressTracker: ProgressTracker
     lateinit var database: DatabaseRepository
     lateinit var store: PendingLaunchStore
     lateinit var playback: PlaybackLaunch
@@ -49,7 +49,7 @@ class PlaybackLaunchTest : FunSpec({
     fun newModule() = PlaybackLaunch(
         settings = settings,
         externalPlayer = adapter,
-        saveProgress = saveProgress,
+        progressTracker = progressTracker,
         pendingLaunchStore = store,
         database = database,
     )
@@ -61,7 +61,7 @@ class PlaybackLaunchTest : FunSpec({
         settings = mockk(relaxed = true)
         coEvery { settings.externalPlayerIsEnabled() } returns true
         adapter = FakeExternalPlayerAdapter()
-        saveProgress = mockk(relaxed = true)
+        progressTracker = mockk(relaxed = true)
         store = PendingLaunchStoreImpl(InMemoryPreferencesDataStore())
         database = mockk()
         coEvery { database.getMovie(any()) } returns null
@@ -111,7 +111,7 @@ class PlaybackLaunchTest : FunSpec({
             adapter.result = NoPlayerInstalled
             playback.play(movie, forceInternal = false)
             playback.onExternalResult(1000L)
-            coVerify(exactly = 0) { saveProgress(any(), any(), any()) }
+            coVerify(exactly = 0) { progressTracker.recordProgress(any(), any(), any()) }
         }
 
     }
@@ -121,26 +121,26 @@ class PlaybackLaunchTest : FunSpec({
         test("the position is recorded on the launched Media") {
             playback.play(movie, forceInternal = false)
             playback.onExternalResult(5000L)
-            coVerify(exactly = 1) { saveProgress(media = movie, progress = 5000L) }
+            coVerify(exactly = 1) { progressTracker.recordProgress(media = movie, position = 5000L) }
         }
 
         test("a null position records nothing") {
             playback.play(movie, forceInternal = false)
             playback.onExternalResult(null)
-            coVerify(exactly = 0) { saveProgress(any(), any(), any()) }
+            coVerify(exactly = 0) { progressTracker.recordProgress(any(), any(), any()) }
         }
 
         test("a result without launch records nothing") {
             playback.onExternalResult(5000L)
-            coVerify(exactly = 0) { saveProgress(any(), any(), any()) }
+            coVerify(exactly = 0) { progressTracker.recordProgress(any(), any(), any()) }
         }
 
         test("a new launch replaces the pending one") {
             playback.play(movie, forceInternal = false)
             playback.play(episode, forceInternal = false)
             playback.onExternalResult(5000L)
-            coVerify(exactly = 1) { saveProgress(media = episode, progress = 5000L) }
-            coVerify(exactly = 0) { saveProgress(media = movie, progress = any()) }
+            coVerify(exactly = 1) { progressTracker.recordProgress(media = episode, position = 5000L) }
+            coVerify(exactly = 0) { progressTracker.recordProgress(media = movie, position = any()) }
         }
 
         test("known limit: Media A then Media B launched, one result is recorded on B, once") {
@@ -148,15 +148,15 @@ class PlaybackLaunchTest : FunSpec({
             playback.play(episode, forceInternal = false)
             playback.onExternalResult(5000L)
             playback.onExternalResult(6000L)
-            coVerify(exactly = 1) { saveProgress(any(), any(), any()) }
-            coVerify(exactly = 1) { saveProgress(media = episode, progress = 5000L) }
+            coVerify(exactly = 1) { progressTracker.recordProgress(any(), any(), any()) }
+            coVerify(exactly = 1) { progressTracker.recordProgress(media = episode, position = 5000L) }
         }
 
         test("a result is recorded at most once") {
             playback.play(movie, forceInternal = false)
             playback.onExternalResult(5000L)
             playback.onExternalResult(6000L)
-            coVerify(exactly = 1) { saveProgress(any(), any(), any()) }
+            coVerify(exactly = 1) { progressTracker.recordProgress(any(), any(), any()) }
         }
 
     }
@@ -167,18 +167,18 @@ class PlaybackLaunchTest : FunSpec({
             playback.play(movie, forceInternal = false)
             val restarted = newModule() // Flux was killed while the External player was open
             restarted.onExternalResult(5000L)
-            coVerify(exactly = 1) { saveProgress(media = movie, progress = 5000L) }
+            coVerify(exactly = 1) { progressTracker.recordProgress(media = movie, position = 5000L) }
         }
 
         test("an Episode launched before a restart is found again") {
             playback.play(episode, forceInternal = false)
             newModule().onExternalResult(5000L)
-            coVerify(exactly = 1) { saveProgress(media = episode, progress = 5000L) }
+            coVerify(exactly = 1) { progressTracker.recordProgress(media = episode, position = 5000L) }
         }
 
         test("a result after a restart with no pending launch records nothing") {
             newModule().onExternalResult(5000L)
-            coVerify(exactly = 0) { saveProgress(any(), any(), any()) }
+            coVerify(exactly = 0) { progressTracker.recordProgress(any(), any(), any()) }
         }
 
         test("a result after a restart is recorded at most once") {
@@ -187,14 +187,14 @@ class PlaybackLaunchTest : FunSpec({
             restarted.onExternalResult(5000L)
             restarted.onExternalResult(6000L)
             newModule().onExternalResult(7000L)
-            coVerify(exactly = 1) { saveProgress(any(), any(), any()) }
+            coVerify(exactly = 1) { progressTracker.recordProgress(any(), any(), any()) }
         }
 
         test("a persisted Media that no longer exists records nothing and clears the entry") {
             playback.play(movie, forceInternal = false)
             coEvery { database.getMovie(movie.artworkId) } returns null
             newModule().onExternalResult(5000L)
-            coVerify(exactly = 0) { saveProgress(any(), any(), any()) }
+            coVerify(exactly = 0) { progressTracker.recordProgress(any(), any(), any()) }
             store.take() shouldBe null
         }
 
@@ -203,7 +203,7 @@ class PlaybackLaunchTest : FunSpec({
             val restarted = newModule()
             restarted.play(episode, forceInternal = true)
             restarted.onExternalResult(5000L)
-            coVerify(exactly = 0) { saveProgress(any(), any(), any()) }
+            coVerify(exactly = 0) { progressTracker.recordProgress(any(), any(), any()) }
         }
 
         test("a failed launch clears the persisted launch") {
@@ -233,9 +233,9 @@ class PlaybackLaunchTest : FunSpec({
             caller.cancel() // Activity destroyed after the pending launch was consumed
             release.complete(Unit)
             caller.join()
-            coVerify(exactly = 1) { saveProgress(media = movie, progress = 5000L) }
+            coVerify(exactly = 1) { progressTracker.recordProgress(media = movie, position = 5000L) }
             playback.onExternalResult(6000L) // and a retry cannot record it twice
-            coVerify(exactly = 1) { saveProgress(any(), any(), any()) }
+            coVerify(exactly = 1) { progressTracker.recordProgress(any(), any(), any()) }
         }
 
         test("the persisted launch is cleared once consumed") {
@@ -252,7 +252,7 @@ class PlaybackLaunchTest : FunSpec({
             playback.play(movie, forceInternal = false) // handed off, result never comes back
             next()
             playback.onExternalResult(9000L) // late result
-            coVerify(exactly = 0) { saveProgress(any(), any(), any()) }
+            coVerify(exactly = 0) { progressTracker.recordProgress(any(), any(), any()) }
         }
 
         test("a stale launch is cleared by a later fallback") {
@@ -280,7 +280,7 @@ class PlaybackLaunchTest : FunSpec({
         test("a result delivered from inside launch is recorded on the launched Media") {
             adapter.onLaunch = { runBlocking { playback.onExternalResult(7000L) } }
             playback.play(movie, forceInternal = false)
-            coVerify(exactly = 1) { saveProgress(media = movie, progress = 7000L) }
+            coVerify(exactly = 1) { progressTracker.recordProgress(media = movie, position = 7000L) }
         }
 
     }
@@ -299,7 +299,7 @@ class PlaybackLaunchTest : FunSpec({
             playback.onExternalFailure()
             playback.onExternalFailure()
             playback.onExternalResult(5000L)
-            coVerify(exactly = 0) { saveProgress(any(), any(), any()) }
+            coVerify(exactly = 0) { progressTracker.recordProgress(any(), any(), any()) }
             playback.internalPlayerRequests.first() shouldBe movie
             withTimeoutOrNull(100) { playback.internalPlayerRequests.first() } shouldBe null
         }

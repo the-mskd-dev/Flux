@@ -21,12 +21,11 @@ import com.mskd.flux.features.catalog.domain.model.SyncType
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.history.domain.model.HistoryEntry
-import com.mskd.flux.features.history.domain.repository.HistoryRepository
 import com.mskd.flux.features.history.domain.usecase.GetHistoryUseCase
 import com.mskd.flux.features.player.domain.playback.PlaybackLaunch
 import com.mskd.flux.features.player.domain.playback.PlaybackOutcome
 import com.mskd.flux.features.privateFolder.domain.datastore.PrivateFolderDataStore
-import com.mskd.flux.features.privateFolder.domain.usecase.setArtworkPrivacy.SetArtworkPrivacyUseCase
+import com.mskd.flux.features.progress.domain.ProgressTracker
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.mockups.DetailsMockup
 import com.mskd.flux.mockups.MediaMockups
@@ -62,14 +61,13 @@ class CatalogViewModelTest : FunSpec({
     lateinit var syncCatalogUseCase: SyncCatalogUseCase
     lateinit var artworkDb: DatabaseRepository
     lateinit var detailsDb: DetailsRepository
-    lateinit var historyDb: HistoryRepository
     lateinit var userDataStore: UserDataStore
     lateinit var tokenDataStore: TokenDataStore
     lateinit var privateFolderDataStore: PrivateFolderDataStore
     lateinit var appInfo: AppInfo
     lateinit var getHistoryUseCase: GetHistoryUseCase
     lateinit var playbackLaunch: PlaybackLaunch
-    lateinit var setArtworkPrivacy: SetArtworkPrivacyUseCase
+    lateinit var progressTracker: ProgressTracker
     lateinit var urlLauncher: UrlLauncher
 
     beforeTest {
@@ -95,13 +93,11 @@ class CatalogViewModelTest : FunSpec({
             every { flowGenres() } returns MutableStateFlow(DetailsMockup.allGenres)
         }
 
-        historyDb = mockk(relaxed = true)
-
         getHistoryUseCase = mockk<GetHistoryUseCase>(relaxed = true)
         every { getHistoryUseCase() } returns MutableStateFlow(persistentListOf())
 
         playbackLaunch = mockk(relaxed = true)
-        setArtworkPrivacy = mockk(relaxed = true)
+        progressTracker = mockk(relaxed = true)
 
         appInfo = AppInfo(
             versionCode = 0,
@@ -120,7 +116,6 @@ class CatalogViewModelTest : FunSpec({
         return CatalogViewModel(
             artworkDb = artworkDb,
             detailsDb = detailsDb,
-            historyDb = historyDb,
             userDataStore = userDataStore,
             tokenDataStore = tokenDataStore,
             catalogDataStore = catalogDataStore,
@@ -130,7 +125,7 @@ class CatalogViewModelTest : FunSpec({
             syncCatalogUseCase = syncUseCase,
             getHistoryUseCase = getHistoryUseCase,
             playbackLaunch = playbackLaunch,
-            setArtworkPrivacy = setArtworkPrivacy
+            progressTracker = progressTracker
         )
     }
 
@@ -531,7 +526,7 @@ class CatalogViewModelTest : FunSpec({
 
     }
 
-    test("DeleteHistoryEntry - should delete history entry in database") {
+    test("DeleteHistoryEntry - should delete history entry via ProgressTracker") {
 
         // Given
         val entry = HistoryEntry(
@@ -545,7 +540,7 @@ class CatalogViewModelTest : FunSpec({
         viewModel.handleIntent(intent = CatalogIntent.DeleteHistoryEntry(entry = entry))
 
         // Then
-        coVerify { historyDb.delete(entry.media.artworkId) }
+        coVerify { progressTracker.removeFromHistory(artworkId = entry.media.artworkId) }
 
     }
 
@@ -676,7 +671,7 @@ class CatalogViewModelTest : FunSpec({
         viewModel.handleIntent(intent = CatalogIntent.AddArtworkToPrivateFolder(artwork = artwork))
 
         // Then
-        coVerify { setArtworkPrivacy(artworkId = artwork.id, isPrivate = true) }
+        coVerify { progressTracker.setArtworkPrivacy(artworkId = artwork.id, isPrivate = true) }
 
     }
 

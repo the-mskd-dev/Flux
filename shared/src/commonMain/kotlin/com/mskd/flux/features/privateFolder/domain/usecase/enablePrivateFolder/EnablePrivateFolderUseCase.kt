@@ -1,12 +1,12 @@
 package com.mskd.flux.features.privateFolder.domain.usecase.enablePrivateFolder
 
 import com.mskd.flux.features.privateFolder.domain.datastore.PrivateFolderDataStore
-import com.mskd.flux.features.privateFolder.domain.usecase.markNsfwArtworksPrivate.MarkNsfwArtworksPrivateUseCase
+import com.mskd.flux.features.progress.domain.ProgressTracker
 import kotlinx.coroutines.flow.first
 
 class EnablePrivateFolderUseCase(
     private val privateFolderDataStore: PrivateFolderDataStore,
-    private val markNsfwArtworksPrivate: MarkNsfwArtworksPrivateUseCase
+    private val progressTracker: ProgressTracker
 ) {
 
     suspend operator fun invoke(pin: String) {
@@ -17,7 +17,7 @@ class EnablePrivateFolderUseCase(
         val includeNsfw = privateFolderDataStore.flow.first().includeNsfw
 
         if (includeNsfw)
-            markNsfwArtworksPrivate()
+            progressTracker.markNsfwArtworksPrivate()
     }
 
 }

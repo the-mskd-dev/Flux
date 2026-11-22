@@ -6,7 +6,7 @@ import com.mskd.flux.core.FakeDatabaseRepository
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.privateFolder.domain.datastore.PrivateFolderDataStore
-import com.mskd.flux.features.privateFolder.domain.usecase.setArtworkPrivacy.SetArtworkPrivacyUseCase
+import com.mskd.flux.features.progress.domain.ProgressTracker
 import com.mskd.flux.mockups.MediaMockups
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -25,14 +25,14 @@ class PrivateFolderViewModelTest : FunSpec({
     lateinit var viewModel: PrivateFolderViewModel
     lateinit var database: DatabaseRepository
     lateinit var privateFolderDataStore: PrivateFolderDataStore
-    lateinit var setArtworkPrivacy: SetArtworkPrivacyUseCase
+    lateinit var progressTracker: ProgressTracker
 
     val privateFolderFlow = MutableStateFlow(PrivateFolderDataStore.State())
 
     beforeTest {
 
         database = FakeDatabaseRepository()
-        setArtworkPrivacy = mockk(relaxed = true)
+        progressTracker = mockk(relaxed = true)
 
         privateFolderDataStore = mockk(relaxed = true) {
             every { flow } returns privateFolderFlow
@@ -41,7 +41,7 @@ class PrivateFolderViewModelTest : FunSpec({
         viewModel = PrivateFolderViewModel(
             database = database,
             privateFolderDataStore = privateFolderDataStore,
-            setArtworkPrivacy = setArtworkPrivacy
+            progressTracker = progressTracker
         )
 
     }
@@ -158,7 +158,7 @@ class PrivateFolderViewModelTest : FunSpec({
 
         viewModel.handleIntent(PrivateFolderIntent.RemoveFromPrivateFolder(artwork = artwork))
 
-        coVerify { setArtworkPrivacy(artworkId = artwork.id, isPrivate = false) }
+        coVerify { progressTracker.setArtworkPrivacy(artworkId = artwork.id, isPrivate = false) }
     }
 
 })

@@ -81,7 +81,7 @@ class ManualIdentificationBehaviourTest : FunSpec({
 
     }
 
-    test("choosing an Artwork of the Catalog merges into it, Private when it was, keeping its more recent history entry") {
+    test("choosing a public Artwork of the Catalog merges into it, keeping its more recent History entry") {
 
         // Given
         harness.deviceStorage.availableFiles = listOf(
@@ -89,7 +89,6 @@ class ManualIdentificationBehaviourTest : FunSpec({
             harness.deviceFile("Forgotten Tale (2015).mkv"),
         )
         harness.lightSync()
-        harness.catalog.setArtworkPrivate(artworkId = forgottenTale.id, isPrivate = true)
         harness.history.upsert(HistoryEntity(artworkId = inception, mediaId = inception, timestamp = 1000L))
         harness.history.upsert(HistoryEntity(artworkId = forgottenTale.id, mediaId = forgottenTale.id, timestamp = 2000L))
 
@@ -99,11 +98,41 @@ class ManualIdentificationBehaviourTest : FunSpec({
         // Then
         val artwork = harness.catalog.getArtworks(includePrivates = true).single()
         artwork.id shouldBe forgottenTale.id
-        artwork.isPrivate shouldBe true
+        artwork.isPrivate shouldBe false
         artwork.isManuallyIdentified shouldBe true
         harness.catalog.getMedias().map { it.file.name } shouldContainExactlyInAnyOrder listOf("Inception (2010).mkv")
         harness.history.getAll() shouldBe listOf(HistoryEntity(artworkId = forgottenTale.id, mediaId = forgottenTale.id, timestamp = 2000L))
 
+    }
+
+    listOf(
+        "into a Private Artwork" to forgottenTale.id,
+        "from a Private Artwork" to inception,
+    ).forEach { (direction, privateArtworkId) ->
+        test("merging $direction makes the result Private and leaves no History entry") {
+
+            // Given
+            harness.deviceStorage.availableFiles = listOf(
+                harness.deviceFile("Inception (2010).mkv"),
+                harness.deviceFile("Forgotten Tale (2015).mkv"),
+            )
+            harness.lightSync()
+            harness.catalog.setArtworkPrivate(artworkId = privateArtworkId, isPrivate = true)
+            harness.history.upsert(HistoryEntity(artworkId = inception, mediaId = inception, timestamp = 3000L))
+            harness.history.upsert(HistoryEntity(artworkId = forgottenTale.id, mediaId = forgottenTale.id, timestamp = 2000L))
+
+            // When
+            harness.identifyManually(artworkId = inception, target = forgottenTale)
+
+            // Then
+            val artwork = harness.catalog.getArtworks(includePrivates = true).single()
+            artwork.id shouldBe forgottenTale.id
+            artwork.isPrivate shouldBe true
+            artwork.isManuallyIdentified shouldBe true
+            harness.catalog.getMedias().map { it.file.name } shouldContainExactlyInAnyOrder listOf("Inception (2010).mkv")
+            harness.history.getAll() shouldBe emptyList()
+
+        }
     }
 
     test("on a merge, the history entry of the source Artwork replaces an older one") {

@@ -19,10 +19,9 @@ import com.mskd.flux.features.player.domain.model.PlayerParams
 import com.mskd.flux.features.player.domain.model.VideoChapter
 import com.mskd.flux.features.player.domain.model.VideoChapterType
 import com.mskd.flux.features.player.domain.usecase.GetChaptersUseCase
-import com.mskd.flux.features.player.domain.usecase.GetNextEpisodeUseCase
 import com.mskd.flux.features.player.domain.usecase.SaveTrackLanguageUseCase
 import com.mskd.flux.features.player.fake.PlayerTestCases
-import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
+import com.mskd.flux.features.progress.domain.ProgressTracker
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.PlayerMockups
@@ -49,14 +48,13 @@ class PlayerViewModelTest : FunSpec({
     lateinit var viewModel: PlayerViewModel<Player>
     lateinit var observeArtworkUseCase: ObserveArtworkUseCase
     lateinit var settingsDataStore: SettingsDataStore
-    lateinit var recordProgress: SaveProgressUseCase
+    lateinit var progressTracker: ProgressTracker
     lateinit var playerManager: PlayerManager<Player>
     lateinit var player: Player
     lateinit var pipIsEnabledUseCase: PipIsEnabledUseCase
     lateinit var getSubtitlesUseCase: GetSubtitlesUseCase
     lateinit var saveTrackLanguageUseCase: SaveTrackLanguageUseCase
     lateinit var getChaptersUseCase: GetChaptersUseCase
-    lateinit var getNextEpisodeUseCase: GetNextEpisodeUseCase
 
     fun updateVm(mediaId: Long = MediaMockups.episode1.mediaId) {
 
@@ -73,11 +71,10 @@ class PlayerViewModelTest : FunSpec({
             settingsDataStore = settingsDataStore,
             playerManager = playerManager,
             pipIsEnabledUseCase = pipIsEnabledUseCase,
-            saveProgressUseCase = recordProgress,
+            progressTracker = progressTracker,
             getSubtitlesUseCase = getSubtitlesUseCase,
             saveTrackLanguageUseCase = saveTrackLanguageUseCase,
             getChaptersUseCase = getChaptersUseCase,
-            getNextEpisodeUseCase = getNextEpisodeUseCase,
         )
 
     }
@@ -98,12 +95,11 @@ class PlayerViewModelTest : FunSpec({
 
         pipIsEnabledUseCase = mockk(relaxed = true)
         getSubtitlesUseCase = mockk(relaxed = true)
-        recordProgress = mockk(relaxed = true)
+        progressTracker = mockk(relaxed = true)
+        coEvery { progressTracker.nextEpisode(any(), any()) } returns null
+        coEvery { progressTracker.nextEpisode(media = MediaMockups.episode1, onlyAvailable = true) } returns MediaMockups.episode2
         getChaptersUseCase = mockk(relaxed = true)
         coEvery { getChaptersUseCase(any()) } returns emptyList()
-        getNextEpisodeUseCase = mockk(relaxed = true)
-        coEvery { getNextEpisodeUseCase(any()) } returns null
-        coEvery { getNextEpisodeUseCase(MediaMockups.episode1) } returns MediaMockups.episode2
         saveTrackLanguageUseCase = mockk(relaxed = true) {
             coEvery { getAudioLanguage() } returns Language.ENGLISH.code
             coEvery { getSubtitlesLanguage() } returns Language.ENGLISH.code
@@ -254,7 +250,7 @@ class PlayerViewModelTest : FunSpec({
                 viewModel.handleIntent(PlayerIntent.OnClosePiP)
 
                 // Then
-                coVerify { recordProgress(testCase.media, testCase.time) }
+                coVerify { progressTracker.recordProgress(media = testCase.media, position = testCase.time, forceWatched = false) }
 
             }
 
@@ -409,7 +405,7 @@ class PlayerViewModelTest : FunSpec({
                 // Then
                 expectNoEvents()
                 viewModel.overlays.value.chapterButton shouldBe null
-                coVerify(exactly = 0) { recordProgress(any(), any(), any()) }
+                coVerify(exactly = 0) { progressTracker.recordProgress(any(), any(), any()) }
 
                 cancelAndIgnoreRemainingEvents()
             }
@@ -427,7 +423,7 @@ class PlayerViewModelTest : FunSpec({
                 // Then
                 (awaitItem() as State.Content).content.media.mediaId shouldBe MediaMockups.episode2.mediaId
                 viewModel.overlays.value.chapterButton shouldBe null
-                coVerify { recordProgress(MediaMockups.episode1, any(), false) }
+                coVerify { progressTracker.recordProgress(media = MediaMockups.episode1, position = any(), forceWatched = false) }
 
                 cancelAndIgnoreRemainingEvents()
             }
@@ -459,7 +455,7 @@ class PlayerViewModelTest : FunSpec({
 
                 // Then
                 awaitItem().chapterButton shouldBe null
-                coVerify { recordProgress(MediaMockups.episode1, any(), true) }
+                coVerify { progressTracker.recordProgress(media = MediaMockups.episode1, position = any(), forceWatched = true) }
 
                 cancelAndIgnoreRemainingEvents()
             }
@@ -559,7 +555,7 @@ class PlayerViewModelTest : FunSpec({
                 // Then
                 (awaitItem() as State.Content).content.media.mediaId shouldBe MediaMockups.episode2.mediaId
                 viewModel.overlays.value.chapterButton shouldBe null
-                coVerify { recordProgress(MediaMockups.episode1, any(), true) }
+                coVerify { progressTracker.recordProgress(media = MediaMockups.episode1, position = any(), forceWatched = true) }
 
                 cancelAndIgnoreRemainingEvents()
             }
@@ -577,7 +573,7 @@ class PlayerViewModelTest : FunSpec({
                 // Then
                 expectNoEvents()
                 coVerify(exactly = 0) { playerManager.seekTo(any(), any()) }
-                coVerify(exactly = 0) { recordProgress(any(), any(), any()) }
+                coVerify(exactly = 0) { progressTracker.recordProgress(any(), any(), any()) }
 
                 cancelAndIgnoreRemainingEvents()
             }
@@ -912,7 +908,7 @@ class PlayerViewModelTest : FunSpec({
             }
 
             // Then
-            coVerify(exactly = 1) { getNextEpisodeUseCase(MediaMockups.episode1) }
+            coVerify(exactly = 1) { progressTracker.nextEpisode(media = MediaMockups.episode1, onlyAvailable = true) }
 
             cancelAndIgnoreRemainingEvents()
         }
@@ -951,7 +947,7 @@ class PlayerViewModelTest : FunSpec({
             viewModel.handleIntent(PlayerIntent.GoToBackground)
 
             coVerify { playerManager.pause() }
-            coVerify { recordProgress(any(), 2000L) }
+            coVerify { progressTracker.recordProgress(media = any(), position = 2000L, forceWatched = false) }
         }
     }
 
@@ -973,7 +969,7 @@ class PlayerViewModelTest : FunSpec({
 
             viewModel.handleIntent(PlayerIntent.GoToBackground)
             coVerify { playerManager.pause() }
-            coVerify { recordProgress(any(), 3000L) }
+            coVerify { progressTracker.recordProgress(media = any(), position = 3000L, forceWatched = false) }
 
             viewModel.handleIntent(PlayerIntent.GoToForeground)
             coVerify { playerManager.play() }
@@ -1027,7 +1023,7 @@ class PlayerViewModelTest : FunSpec({
             viewModel.handleIntent(PlayerIntent.GoToBackground)
 
             coVerify(exactly = 0) { playerManager.pause() }
-            coVerify { recordProgress(any(), 2000L) }
+            coVerify { progressTracker.recordProgress(media = any(), position = 2000L, forceWatched = false) }
         }
     }
 

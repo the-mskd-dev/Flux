@@ -2,7 +2,7 @@ package com.mskd.flux.features.player.domain.playback
 
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
 import com.mskd.flux.core.model.artwork.Media
-import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
+import com.mskd.flux.features.progress.domain.ProgressTracker
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.report.Trace
 import kotlinx.coroutines.NonCancellable
@@ -20,7 +20,7 @@ import kotlinx.coroutines.withContext
 class PlaybackLaunch(
     private val settings: SettingsDataStore,
     private val externalPlayer: ExternalPlayerAdapter,
-    private val saveProgress: SaveProgressUseCase,
+    private val progressTracker: ProgressTracker,
     private val pendingLaunchStore: PendingLaunchStore,
     private val database: DatabaseRepository,
 ) {
@@ -61,7 +61,7 @@ class PlaybackLaunch(
         // save would lose the Progress for good.
         val media = takePending() ?: return@withContext
         if (position == null) return@withContext
-        saveProgress(media = media, progress = position)
+        progressTracker.recordProgress(media = media, position = position)
     }
 
     /**

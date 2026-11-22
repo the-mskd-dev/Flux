@@ -14,11 +14,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Measurable
 import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.layout.Placeable
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -36,6 +38,13 @@ import kotlin.math.roundToInt
 /** Vertical position of an explicitly positioned cue when only horizontal placement is provided. */
 private const val DEFAULT_LINE = 0.95f
 
+/** Test tags of the rendered cues, one per layer. */
+object PlayerSubtitlesTags {
+    const val BITMAP_CUE = "subtitles_bitmap_cue"
+    const val POSITIONED_TEXT_CUE = "subtitles_positioned_text_cue"
+    const val BOTTOM_TEXT_CUE = "subtitles_bottom_text_cue"
+}
+
 private data class SubtitleLayers(
     val bitmaps: List<SubtitleCue>,
     val positionedText: List<SubtitleCue>,
@@ -43,24 +52,37 @@ private data class SubtitleLayers(
 )
 
 /**
- * Subtitles over the video frame, which is the player box (its ratio follows the video).
+ * Subtitles over the video frame: the caller sizes this box to the fitted (unzoomed) picture rectangle.
  *
  * Renders three layers: rasterized bitmap cues at authored normalized bounds, explicitly positioned
  * text cues at authored coordinates, and a centred bottom column stacking all unpositioned plain
  * and inline-styled text cues so simultaneous lines never overlap.
+ *
+ * Only the bitmap layer follows [bitmapScale], the zoom applied around the centre of the picture,
+ * so authored signs stay locked to it; text stays unzoomed so it is never cropped off-screen.
  */
 @Composable
 fun PlayerSubtitles(
     cues: () -> List<SubtitleCue>,
     smallText: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    bitmapScale: () -> Float = { 1f },
 ) {
     val current = cues()
     val layers = remember(current) { current.partitionIntoLayers() }
 
     Box(modifier = modifier.fillMaxSize()) {
         if (layers.bitmaps.isNotEmpty()) {
-            Box(modifier = Modifier.fillMaxSize()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    // Read in the layer block: a zoom animation redraws without recomposing
+                    .graphicsLayer {
+                        val scale = bitmapScale()
+                        scaleX = scale
+                        scaleY = scale
+                    }
+            ) {
                 layers.bitmaps.forEach { BitmapCue(cue = it) }
             }
         }
@@ -84,7 +106,11 @@ fun PlayerSubtitles(
                     verticalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall),
                 ) {
                     layers.bottomText.forEach { cue ->
-                        CuePill(cue = cue, smallText = smallText)
+                        CuePill(
+                            cue = cue,
+                            smallText = smallText,
+                            modifier = Modifier.testTag(PlayerSubtitlesTags.BOTTOM_TEXT_CUE),
+                        )
                     }
                 }
             }
@@ -131,6 +157,7 @@ private fun BitmapCue(cue: SubtitleCue) {
         },
     ) {
         Image(
+            modifier = Modifier.testTag(PlayerSubtitlesTags.BITMAP_CUE),
             bitmap = image,
             contentDescription = null,
             contentScale = ContentScale.FillBounds,
@@ -148,7 +175,11 @@ private fun PositionedTextCue(cue: SubtitleCue, smallText: Boolean) {
             )
         },
     ) {
-        CuePill(cue = cue, smallText = smallText)
+        CuePill(
+            cue = cue,
+            smallText = smallText,
+            modifier = Modifier.testTag(PlayerSubtitlesTags.POSITIONED_TEXT_CUE),
+        )
     }
 }
 
@@ -175,12 +206,12 @@ private fun PositionedCueLayout(
 }
 
 @Composable
-private fun CuePill(cue: SubtitleCue, smallText: Boolean) {
+private fun CuePill(cue: SubtitleCue, smallText: Boolean, modifier: Modifier = Modifier) {
     val annotatedText = remember(cue.text, cue.spans) { cue.toAnnotatedString() }
     val base = if (smallText) Text.Style.contentLabel() else Text.Style.contentBody()
 
     Text.Annotated(
-        modifier = Modifier
+        modifier = modifier
             .clip(shape = MaterialTheme.shapes.extraSmall)
             .background(color = Color.Black.copy(.5f))
             .padding(horizontal = FluxUI.Space.small, vertical = FluxUI.Space.extraSmall),

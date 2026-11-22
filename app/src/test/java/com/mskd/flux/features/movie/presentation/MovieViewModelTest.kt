@@ -18,8 +18,7 @@ import com.mskd.flux.features.identification.presentation.IdentificationAvailabi
 import com.mskd.flux.features.people.domain.usecase.GetPeopleUseCase
 import com.mskd.flux.features.player.domain.playback.PlaybackLaunch
 import com.mskd.flux.features.player.domain.playback.PlaybackOutcome
-import com.mskd.flux.features.progress.domain.usecase.ChangeMediaStatusUseCase
-import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
+import com.mskd.flux.features.progress.domain.ProgressTracker
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.PeopleMockup
@@ -50,8 +49,7 @@ class MovieViewModelTest : FunSpec({
     lateinit var urlLauncher: UrlLauncher
     lateinit var observeArtworkUseCase: ObserveArtworkUseCase
     lateinit var getPeopleUseCase: GetPeopleUseCase
-    lateinit var changeMediaStatus: ChangeMediaStatusUseCase
-    lateinit var resetProgress: ResetProgressUseCase
+    lateinit var progressTracker: ProgressTracker
     lateinit var playbackLaunch: PlaybackLaunch
     lateinit var token: MutableStateFlow<String>
     lateinit var syncState: MutableStateFlow<SyncState>
@@ -63,8 +61,7 @@ class MovieViewModelTest : FunSpec({
 
         filesLauncher = mockk(relaxed = true)
         urlLauncher = mockk(relaxed = true)
-        changeMediaStatus = mockk(relaxed = true)
-        resetProgress = mockk(relaxed = true)
+        progressTracker = mockk(relaxed = true)
         playbackLaunch = mockk(relaxed = true)
 
         viewModel = MovieViewModel(
@@ -73,8 +70,7 @@ class MovieViewModelTest : FunSpec({
             getPeopleUseCase = getPeopleUseCase,
             tokenDataStore = tokenDataStore,
             catalogSyncCoordinator = mockk<CatalogSyncCoordinator> { every { state } returns syncState },
-            changeMediaStatus = changeMediaStatus,
-            resetProgress = resetProgress,
+            progressTracker = progressTracker,
             playbackLaunch = playbackLaunch,
             filesLauncher = filesLauncher,
             urlLauncher = urlLauncher
@@ -206,7 +202,16 @@ class MovieViewModelTest : FunSpec({
 
         viewModel.handleIntent(MovieIntent.ChangeWatchStatus(media = movie))
 
-        coVerify { changeMediaStatus(media = movie, status = Status.WATCHED) }
+        coVerify { progressTracker.setWatched(media = movie, watched = true) }
+    }
+
+    test("mark watched movie as to watch") {
+        val watchedMovie = movie.copy(status = Status.WATCHED)
+        content()
+
+        viewModel.handleIntent(MovieIntent.ChangeWatchStatus(media = watchedMovie))
+
+        coVerify { progressTracker.setWatched(media = watchedMovie, watched = false) }
     }
 
     context("reset progress") {
@@ -232,7 +237,7 @@ class MovieViewModelTest : FunSpec({
                 viewModel.handleIntent(MovieIntent.ResetProgress)
 
                 (awaitItem().state as State.Content).content.dialog shouldBe null
-                coVerify { resetProgress(artwork = movieArtwork, season = null) }
+                coVerify { progressTracker.resetProgress(artwork = movieArtwork, season = null) }
             }
         }
 

@@ -37,7 +37,18 @@ internal class ProgressHarness : AutoCloseable {
         builder = Room.inMemoryDatabaseBuilder(mockk<Context>(relaxed = true), FluxDatabase::class.java)
     )
 
-    val database: DatabaseRepository = DatabaseRepositoryImpl(database = fluxDatabase)
+    private val realDatabase: DatabaseRepository = DatabaseRepositoryImpl(database = fluxDatabase)
+
+    val database: DatabaseRepository = realDatabase
+
+    var onSaveMedias: ((List<Media>) -> Unit)? = null
+
+    private val trackedDatabase: DatabaseRepository = object : DatabaseRepository by realDatabase {
+        override suspend fun saveMedias(medias: List<Media>) {
+            onSaveMedias?.invoke(medias)
+            realDatabase.saveMedias(medias)
+        }
+    }
 
     private val historyDao: HistoryDao = fluxDatabase.historyDao()
 
@@ -79,7 +90,7 @@ internal class ProgressHarness : AutoCloseable {
     )
 
     val tracker: ProgressTracker = ProgressTracker(
-        database = database,
+        database = trackedDatabase,
         history = history,
         getChapters = fakeGetChapters,
         sources = sourcesRepository,

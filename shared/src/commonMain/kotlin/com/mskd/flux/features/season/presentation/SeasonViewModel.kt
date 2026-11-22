@@ -13,9 +13,7 @@ import com.mskd.flux.features.artwork.presentation.ArtworkViewModel
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.player.domain.playback.PlaybackLaunch
 import com.mskd.flux.features.player.domain.playback.PlaybackOutcome
-import com.mskd.flux.features.progress.domain.usecase.ChangeMediaStatusUseCase
-import com.mskd.flux.features.progress.domain.usecase.MarkPreviousAsWatchedUseCase
-import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
+import com.mskd.flux.features.progress.domain.ProgressTracker
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.system.FilesLauncher
@@ -43,16 +41,14 @@ class SeasonViewModel(
     tokenDataStore: TokenDataStore,
     catalogSyncCoordinator: CatalogSyncCoordinator,
     observeArtworkUseCase: ObserveArtworkUseCase,
-    private val changeMediaStatus: ChangeMediaStatusUseCase,
-    private val markPreviousAsWatched: MarkPreviousAsWatchedUseCase,
-    resetProgress: ResetProgressUseCase,
+    progressTracker: ProgressTracker,
     private val playbackLaunch: PlaybackLaunch,
 ) : ArtworkViewModel<SeasonUiState, SeasonIntent, SeasonEvent>(
     artworkId = artworkId,
     observeArtworkUseCase = observeArtworkUseCase,
     tokenDataStore = tokenDataStore,
     catalogSyncCoordinator = catalogSyncCoordinator,
-    resetProgressUseCase = resetProgress,
+    progressTracker = progressTracker,
 ) {
 
     private data class UserState(
@@ -232,13 +228,13 @@ class SeasonViewModel(
 
     private suspend fun changeWatchStatus(media: Media) {
 
-        val status = if (media.status != Status.WATCHED) Status.WATCHED else Status.TO_WATCH
+        val watched = media.status != Status.WATCHED
 
-        changeMediaStatus(media = media, status = status)
+        progressTracker.setWatched(media = media, watched = watched)
 
         val allEpisodes = seasonContent?.fullShow?.episodes.orEmpty()
         if (
-            status == Status.WATCHED
+            watched
             && media is Episode
             && allEpisodes.getPreviousEpisodesFor(media).any { it.status != Status.WATCHED }
         ) {
@@ -249,7 +245,7 @@ class SeasonViewModel(
 
     private suspend fun markPreviousEpisodesAsWatched() {
         val episode = (_userState.value.dialog as? SeasonPageDialog.EpisodeStatusConfirmation)?.episode ?: return
-        markPreviousAsWatched(episode = episode)
+        progressTracker.markPreviousAsWatched(episode = episode)
         setDialog(null)
     }
 

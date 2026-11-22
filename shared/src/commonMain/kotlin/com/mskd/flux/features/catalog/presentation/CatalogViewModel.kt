@@ -27,12 +27,11 @@ import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToSource
 import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToToken
 import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToUnknown
 import com.mskd.flux.features.history.domain.model.HistoryEntry
-import com.mskd.flux.features.history.domain.repository.HistoryRepository
 import com.mskd.flux.features.history.domain.usecase.GetHistoryUseCase
 import com.mskd.flux.features.player.domain.playback.PlaybackLaunch
 import com.mskd.flux.features.player.domain.playback.PlaybackOutcome
 import com.mskd.flux.features.privateFolder.domain.datastore.PrivateFolderDataStore
-import com.mskd.flux.features.privateFolder.domain.usecase.setArtworkPrivacy.SetArtworkPrivacyUseCase
+import com.mskd.flux.features.progress.domain.ProgressTracker
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.report.Trace
 import com.mskd.flux.system.UpdateManager
@@ -55,7 +54,6 @@ import kotlinx.coroutines.launch
 class CatalogViewModel(
     private val artworkDb: DatabaseRepository,
     private val detailsDb: DetailsRepository,
-    private val historyDb: HistoryRepository,
     private val userDataStore: UserDataStore,
     private val tokenDataStore: TokenDataStore,
     private val catalogDataStore: CatalogDataStore,
@@ -65,7 +63,7 @@ class CatalogViewModel(
     private val appInfo: AppInfo,
     private val urlLauncher: UrlLauncher,
     private val playbackLaunch: PlaybackLaunch,
-    private val setArtworkPrivacy: SetArtworkPrivacyUseCase
+    private val progressTracker: ProgressTracker
 ): ViewModel() {
 
     private val _event = MutableSharedFlow<CatalogEvent>()
@@ -278,11 +276,11 @@ class CatalogViewModel(
     }
 
     private suspend fun addArtworkToPrivateFolder(artwork: Artwork) {
-        setArtworkPrivacy(artworkId = artwork.id, isPrivate = true)
+        progressTracker.setArtworkPrivacy(artworkId = artwork.id, isPrivate = true)
     }
 
     private suspend fun deleteHistoryEntry(entry: HistoryEntry) {
-        historyDb.delete(artworkId = entry.media.artworkId)
+        progressTracker.removeFromHistory(artworkId = entry.media.artworkId)
     }
 
     private suspend fun playMedia(media: Media, forceInternal: Boolean) {

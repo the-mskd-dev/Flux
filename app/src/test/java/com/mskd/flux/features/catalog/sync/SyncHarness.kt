@@ -11,6 +11,7 @@ import com.mskd.flux.core.datastore.InMemoryPreferencesDataStore
 import com.mskd.flux.core.datastore.data.UserDataStoreImpl
 import com.mskd.flux.core.datastore.domain.UserDataStore
 import com.mskd.flux.core.model.core.AppInfo
+import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.files.FileSource
 import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.core.model.language.Language
@@ -36,11 +37,16 @@ import com.mskd.flux.features.images.domain.usecase.PrefetchImagesUseCase
 import com.mskd.flux.features.images.fake.FakePrefetchImagesUseCase
 import com.mskd.flux.features.people.domain.repository.PeopleRepository
 import com.mskd.flux.features.people.modulePeople
+import com.mskd.flux.features.player.domain.model.VideoChapter
+import com.mskd.flux.features.player.domain.usecase.GetChaptersUseCase
 import com.mskd.flux.features.privateFolder.data.datastore.PrivateFolderDataStoreImpl
 import com.mskd.flux.features.privateFolder.domain.datastore.PrivateFolderDataStore
+import com.mskd.flux.features.progress.moduleProgress
 import com.mskd.flux.features.settings.data.datastore.SettingsDataStoreImpl
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.sources.domain.provider.SourcesProvider
+import com.mskd.flux.features.sources.domain.repository.SourcesRepository
+import com.mskd.flux.features.sources.fake.FakeSourcesRepository
 import com.mskd.flux.features.token.data.datastore.TokenDataStoreImpl
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import io.ktor.client.HttpClient
@@ -104,6 +110,7 @@ internal class SyncHarness(tmdbToken: String = "test-token", tmdbMaxRequests: In
             moduleFiles,
             modulePeople,
             moduleHistory,
+            moduleProgress,
             moduleIdentification,
             module {
                 single<RoomDatabase.Builder<FluxDatabase>> {
@@ -116,6 +123,12 @@ internal class SyncHarness(tmdbToken: String = "test-token", tmdbMaxRequests: In
                 single<UserDataStore> { UserDataStoreImpl(userDataStore = InMemoryPreferencesDataStore(), json = get()) }
                 single<PrivateFolderDataStore> { PrivateFolderDataStoreImpl(privateFolderDataStore = InMemoryPreferencesDataStore()) }
                 single<PrefetchImagesUseCase> { prefetch }
+                single<GetChaptersUseCase> {
+                    object : GetChaptersUseCase {
+                        override suspend fun invoke(media: Media): List<VideoChapter> = emptyList()
+                    }
+                }
+                single<SourcesRepository> { FakeSourcesRepository() }
                 single<GetFileDurationUseCase> {
                     object : GetFileDurationUseCase {
                         override suspend fun invoke(file: UserFile): Int {

@@ -16,9 +16,7 @@ import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.player.domain.playback.PlaybackLaunch
 import com.mskd.flux.features.player.domain.playback.PlaybackOutcome
-import com.mskd.flux.features.progress.domain.usecase.ChangeMediaStatusUseCase
-import com.mskd.flux.features.progress.domain.usecase.MarkPreviousAsWatchedUseCase
-import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
+import com.mskd.flux.features.progress.domain.ProgressTracker
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.mockups.MediaMockups
@@ -47,18 +45,14 @@ class SeasonViewModelTest : FunSpec({
     lateinit var filesLauncher: FilesLauncher
     lateinit var urlLauncher: UrlLauncher
     lateinit var observeArtworkUseCase: ObserveArtworkUseCase
-    lateinit var changeMediaStatus: ChangeMediaStatusUseCase
-    lateinit var markPreviousAsWatched: MarkPreviousAsWatchedUseCase
-    lateinit var resetProgress: ResetProgressUseCase
+    lateinit var progressTracker: ProgressTracker
     lateinit var playbackLaunch: PlaybackLaunch
 
     val updateVm: (id: Long, season: Int) -> Unit = { id, season ->
 
         filesLauncher = mockk(relaxed = true)
         urlLauncher = mockk(relaxed = true)
-        changeMediaStatus = mockk(relaxed = true)
-        markPreviousAsWatched = mockk(relaxed = true)
-        resetProgress = mockk(relaxed = true)
+        progressTracker = mockk(relaxed = true)
         playbackLaunch = mockk(relaxed = true)
 
         viewModel = SeasonViewModel(
@@ -68,9 +62,7 @@ class SeasonViewModelTest : FunSpec({
             settingsDataStore = settingsDataStore,
             tokenDataStore = tokenDataStore,
             catalogSyncCoordinator = mockk<CatalogSyncCoordinator> { every { state } returns MutableStateFlow(SyncState.Idle()) },
-            changeMediaStatus = changeMediaStatus,
-            markPreviousAsWatched = markPreviousAsWatched,
-            resetProgress = resetProgress,
+            progressTracker = progressTracker,
             playbackLaunch = playbackLaunch,
             filesLauncher = filesLauncher,
             urlLauncher = urlLauncher,
@@ -203,7 +195,7 @@ class SeasonViewModelTest : FunSpec({
             viewModel.uiState.test {
                 expectMostRecentItem()
                 viewModel.handleIntent(SeasonIntent.ChangeWatchStatus(media = MediaMockups.episode1))
-                coVerify { changeMediaStatus(media = MediaMockups.episode1, status = Status.WATCHED) }
+                coVerify { progressTracker.setWatched(media = MediaMockups.episode1, watched = true) }
                 current().dialog shouldBe null
             }
         }
@@ -212,10 +204,21 @@ class SeasonViewModelTest : FunSpec({
             viewModel.uiState.test {
                 expectMostRecentItem()
                 viewModel.handleIntent(SeasonIntent.ChangeWatchStatus(media = MediaMockups.episode2))
+                coVerify { progressTracker.setWatched(media = MediaMockups.episode2, watched = true) }
                 content().dialog shouldBe SeasonPageDialog.EpisodeStatusConfirmation(episode = MediaMockups.episode2)
 
                 viewModel.handleIntent(SeasonIntent.CloseDialog)
                 content().dialog shouldBe null
+            }
+        }
+
+        test("marking a watched episode as to watch does not ask for previous ones") {
+            val watchedEpisode2 = MediaMockups.episode2.copy(status = Status.WATCHED)
+            viewModel.uiState.test {
+                expectMostRecentItem()
+                viewModel.handleIntent(SeasonIntent.ChangeWatchStatus(media = watchedEpisode2))
+                coVerify { progressTracker.setWatched(media = watchedEpisode2, watched = false) }
+                current().dialog shouldBe null
             }
         }
 
@@ -225,7 +228,7 @@ class SeasonViewModelTest : FunSpec({
                 viewModel.handleIntent(SeasonIntent.ChangeWatchStatus(media = MediaMockups.episode2))
                 content()
                 viewModel.handleIntent(SeasonIntent.MarkPreviousEpisodesAsWatched)
-                coVerify { markPreviousAsWatched(episode = MediaMockups.episode2) }
+                coVerify { progressTracker.markPreviousAsWatched(episode = MediaMockups.episode2) }
                 content().dialog shouldBe null
             }
         }
@@ -262,7 +265,7 @@ class SeasonViewModelTest : FunSpec({
                 content().selectedEpisode shouldBe MediaMockups.episode2
 
                 viewModel.handleIntent(SeasonIntent.ResetProgress)
-                coVerify { resetProgress(MediaMockups.showArtwork, 1) }
+                coVerify { progressTracker.resetProgress(artwork = MediaMockups.showArtwork, season = 1) }
                 val content = content()
                 content.selectedEpisode shouldBe MediaMockups.episode1
                 content.dialog shouldBe null

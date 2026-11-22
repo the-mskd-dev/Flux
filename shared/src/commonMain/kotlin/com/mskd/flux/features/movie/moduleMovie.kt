@@ -15,8 +15,7 @@ val moduleMovie = module {
             catalogSyncCoordinator = get(),
             observeArtworkUseCase = get(),
             getPeopleUseCase = get(),
-            changeMediaStatus = get(),
-            resetProgress = get(),
+            progressTracker = get(),
             playbackLaunch = get(),
         )
     }

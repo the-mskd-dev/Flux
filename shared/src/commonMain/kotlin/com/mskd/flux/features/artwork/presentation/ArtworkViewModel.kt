@@ -8,7 +8,7 @@ import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.model.SyncState
-import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
+import com.mskd.flux.features.progress.domain.ProgressTracker
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -30,7 +30,7 @@ abstract class ArtworkViewModel<UiState, Intent, Event>(
     observeArtworkUseCase: ObserveArtworkUseCase,
     protected val tokenDataStore: TokenDataStore,
     catalogSyncCoordinator: CatalogSyncCoordinator,
-    private val resetProgressUseCase: ResetProgressUseCase,
+    protected val progressTracker: ProgressTracker,
 ) : ViewModel() {
 
     private val _event = MutableSharedFlow<Event>()
@@ -54,7 +54,7 @@ abstract class ArtworkViewModel<UiState, Intent, Event>(
     protected suspend fun emit(event: Event) = _event.emit(event)
 
     protected suspend fun resetProgress(artwork: Artwork, season: Int?) {
-        resetProgressUseCase(artwork = artwork, season = season)
+        progressTracker.resetProgress(artwork = artwork, season = season)
     }
 
 }

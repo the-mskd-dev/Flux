@@ -14,8 +14,7 @@ import com.mskd.flux.features.identification.presentation.IdentificationAvailabi
 import com.mskd.flux.features.people.domain.usecase.GetPeopleUseCase
 import com.mskd.flux.features.player.domain.playback.PlaybackLaunch
 import com.mskd.flux.features.player.domain.playback.PlaybackOutcome
-import com.mskd.flux.features.progress.domain.usecase.ChangeMediaStatusUseCase
-import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
+import com.mskd.flux.features.progress.domain.ProgressTracker
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.system.FilesLauncher
 import com.mskd.flux.system.UrlLauncher
@@ -34,15 +33,14 @@ class MovieViewModel(
     catalogSyncCoordinator: CatalogSyncCoordinator,
     observeArtworkUseCase: ObserveArtworkUseCase,
     getPeopleUseCase: GetPeopleUseCase,
-    private val changeMediaStatus: ChangeMediaStatusUseCase,
-    resetProgress: ResetProgressUseCase,
+    progressTracker: ProgressTracker,
     private val playbackLaunch: PlaybackLaunch,
 ) : ArtworkViewModel<MovieUiState, MovieIntent, MovieEvent>(
     artworkId = artworkId,
     observeArtworkUseCase = observeArtworkUseCase,
     tokenDataStore = tokenDataStore,
     catalogSyncCoordinator = catalogSyncCoordinator,
-    resetProgressUseCase = resetProgress,
+    progressTracker = progressTracker,
 ) {
 
     //region Flow
@@ -139,8 +137,7 @@ class MovieViewModel(
     }
 
     private suspend fun changeWatchStatus(media: Media) {
-        val status = if (media.status != Status.WATCHED) Status.WATCHED else Status.TO_WATCH
-        changeMediaStatus(media = media, status = status)
+        progressTracker.setWatched(media = media, watched = media.status != Status.WATCHED)
     }
 
     private fun showIdentificationDialog() {

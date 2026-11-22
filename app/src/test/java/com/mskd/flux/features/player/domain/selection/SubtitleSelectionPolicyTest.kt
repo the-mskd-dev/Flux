@@ -10,14 +10,12 @@ class SubtitleSelectionPolicyTest : FunSpec({
         language: String?,
         format: SubtitleTrackFormat = SubtitleTrackFormat.OTHER,
         isForced: Boolean = false,
-        isDefault: Boolean = false,
     ) = SubtitleTrackDescription(
         track = name,
         language = language,
         externalOrder = null,
         format = format,
         isForced = isForced,
-        isDefault = isDefault,
     )
 
     fun external(
@@ -32,7 +30,6 @@ class SubtitleSelectionPolicyTest : FunSpec({
         externalOrder = order,
         format = format,
         isForced = isForced,
-        isDefault = false,
     )
 
     test("an external Track is selected ahead of an embedded Track of the preferred language") {
@@ -109,9 +106,9 @@ class SubtitleSelectionPolicyTest : FunSpec({
             SubtitleSelection.Override("external FR")
     }
 
-    test("with only embedded Tracks matching the preferred language, no Track is forced so the container flags decide") {
+    test("with only embedded Tracks matching the preferred language, no Track is forced whatever their format, so the container flags decide") {
         val tracks = listOf(
-            embedded("embedded fr PGS default", language = "fr", isDefault = true),
+            embedded("embedded fr PGS", language = "fr"),
             embedded("embedded fr ASS signs", language = "fr", format = SubtitleTrackFormat.ASS_SSA),
         )
 
@@ -131,7 +128,7 @@ class SubtitleSelectionPolicyTest : FunSpec({
 
     test("with no Track matching the preferred language, the untagged external Track is selected by format") {
         val tracks = listOf(
-            embedded("embedded ja", language = "ja", isDefault = true),
+            embedded("embedded ja", language = "ja"),
             external("external en", order = 0, language = "en", format = SubtitleTrackFormat.ASS_SSA),
             external("external untagged SRT", order = 1, language = null),
             external("external untagged ASS", order = 2, language = "", format = SubtitleTrackFormat.ASS_SSA),

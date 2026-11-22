@@ -702,7 +702,6 @@ class AndroidPlayerManager(
             externalOrder = ExternalSubtitleTrackId.externalOrderOf(format?.id ?: parsedId?.formatId),
             format = if (isAssOrSsa) SubtitleTrackFormat.ASS_SSA else SubtitleTrackFormat.OTHER,
             isForced = (selectionFlags and C.SELECTION_FLAG_FORCED) != 0,
-            isDefault = (selectionFlags and C.SELECTION_FLAG_DEFAULT) != 0,
         )
     }
 

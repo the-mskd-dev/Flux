@@ -16,8 +16,6 @@ enum class SubtitleTrackFormat {
  * @param track Caller's handle on the Track, handed back in [SubtitleSelection.Override].
  * @param externalOrder Position of the external subtitle file among those attached to the Media,
  * null for a Track embedded in the UserFile.
- * @param isDefault Container default flag, not used by the policy: it is honored by the player
- * when no Track is forced.
  */
 data class SubtitleTrackDescription<out T>(
     val track: T,
@@ -25,7 +23,6 @@ data class SubtitleTrackDescription<out T>(
     val externalOrder: Int?,
     val format: SubtitleTrackFormat,
     val isForced: Boolean,
-    val isDefault: Boolean,
 ) {
     val isExternal: Boolean get() = externalOrder != null
 }
@@ -71,25 +68,21 @@ object SubtitleSelectionPolicy {
         preferredLanguage: String?,
         tracks: List<SubtitleTrackDescription<T>>,
     ): SubtitleSelection<T> {
-        val ranked = tracks.mapIndexed { position, description ->
-            RankedTrack(
-                description = description,
-                position = position,
-                languageMatch = LanguageMatch.of(description.language, preferredLanguage),
-            )
-        }
+        val ranked = tracks.map { RankedTrack(it, LanguageMatch.of(it.language, preferredLanguage)) }
 
-        val chosen = ranked
+        val externalMatch = ranked
             .filter { it.description.isExternal && it.languageMatch != LanguageMatch.NONE }
             .minWithOrNull(compareByDescending<RankedTrack<T>> { it.languageMatch }.then(tieBreakOrder()))
-            ?: if (ranked.any { it.languageMatch != LanguageMatch.NONE }) {
-                // Only embedded Tracks match: the container's default and forced flags decide, not us
-                null
-            } else {
-                ranked
-                    .filter { it.description.isExternal && it.description.language.isNullOrBlank() }
-                    .minWithOrNull(tieBreakOrder())
-            }
+        val anyMatch = ranked.any { it.languageMatch != LanguageMatch.NONE }
+
+        val chosen = when {
+            externalMatch != null -> externalMatch
+            // Only embedded Tracks match: the container's default and forced flags decide, not us
+            anyMatch -> null
+            else -> ranked
+                .filter { it.description.isExternal && it.description.language.isNullOrBlank() }
+                .minWithOrNull(tieBreakOrder())
+        }
 
         return chosen?.let { SubtitleSelection.Override(it.description.track) }
             ?: SubtitleSelection.PreferredLanguageOnly
@@ -97,12 +90,10 @@ object SubtitleSelectionPolicy {
 
     private class RankedTrack<T>(
         val description: SubtitleTrackDescription<T>,
-        val position: Int,
         val languageMatch: LanguageMatch,
     )
 
     private fun <T> tieBreakOrder() = compareByDescending<RankedTrack<T>> { it.description.format == SubtitleTrackFormat.ASS_SSA }
         .thenBy { it.description.isForced }
-        .thenBy { it.description.externalOrder ?: Int.MAX_VALUE }
-        .thenBy { it.position }
+        .thenBy { it.description.externalOrder }
 }

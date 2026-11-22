@@ -67,6 +67,9 @@ class AndroidPlayerManager(
     private companion object {
         const val TAG = "AndroidPlayerManager"
         const val EXTERNAL_SUBTITLE_ID_PREFIX = "flux-ext-"
+        // MergingMediaSource (and nested FfmpegSubtitleSourceFactory + DefaultMediaSourceFactory)
+        // prepends one or more "<sourceIndex>:" prefixes to Format.id (e.g. "2:flux-ext-1", "0:1:flux-ext-3").
+        val EXTERNAL_SUBTITLE_ID_REGEX = Regex("^(?:\\d+:)*${Regex.escape(EXTERNAL_SUBTITLE_ID_PREFIX)}(\\d+)$")
 
         val SUBTITLE_FORMAT_ORDER = compareByDescending<SubtitleCandidateInfo> { it.isAssOrSsa }
             .thenBy { it.isForced }
@@ -711,7 +714,7 @@ class AndroidPlayerManager(
             val format = parsedId?.let { findFormatForTrack(it, groups) }
             val formatId = format?.id ?: parsedId?.formatId
             val externalOrder = externalSubtitleIndex(formatId)
-            val isExternal = externalOrder != null || formatId?.startsWith(EXTERNAL_SUBTITLE_ID_PREFIX) == true
+            val isExternal = externalOrder != null
             val isAssOrSsa = format?.sampleMimeType == MimeTypes.TEXT_SSA || format?.codecs == MimeTypes.TEXT_SSA
             val isForced = format != null && (format.selectionFlags and C.SELECTION_FLAG_FORCED) != 0
 
@@ -772,8 +775,8 @@ class AndroidPlayerManager(
     }
 
     private fun externalSubtitleIndex(formatId: String?): Int? {
-        if (formatId == null || !formatId.startsWith(EXTERNAL_SUBTITLE_ID_PREFIX)) return null
-        return formatId.removePrefix(EXTERNAL_SUBTITLE_ID_PREFIX).toIntOrNull()
+        if (formatId == null) return null
+        return EXTERNAL_SUBTITLE_ID_REGEX.matchEntire(formatId)?.groupValues?.getOrNull(1)?.toIntOrNull()
     }
 
     private fun TrackSelectionParameters.Builder.applyTrackOverride(

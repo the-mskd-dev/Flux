@@ -720,4 +720,37 @@ class AndroidPlayerManagerTest : FunSpec({
         latestParams.overrides.keys shouldContain embeddedFrSrt.mediaTrackGroup
         (manager.flow.first() as PlayerManager.State.Ready).selectedSubtitles shouldBe embeddedTrack
     }
+
+    test("automatic subtitle selection recognizes external tracks when MergingMediaSource prefixes Format.id") {
+        val embeddedFrAss = subtitleGroup(
+            subtitleFormat(id = "0:0:3", mimeType = MimeTypes.TEXT_SSA, language = "fr", label = "Français"),
+            selectedIndex = 0,
+        )
+        val externalFrAss = subtitleGroup(
+            subtitleFormat(id = "2:flux-ext-1", mimeType = MimeTypes.TEXT_SSA, language = "fr", label = "Français (ASS)")
+        )
+        val externalFrSrt = subtitleGroup(
+            subtitleFormat(
+                id = "0:1:flux-ext-2",
+                mimeType = MimeTypes.APPLICATION_MEDIA3_CUES,
+                codecs = MimeTypes.APPLICATION_SUBRIP,
+                language = "fr",
+                label = "Français (SRT)",
+            )
+        )
+        val (_, capturedParams) = setupSelectionPlayer(Tracks(listOf(embeddedFrAss, externalFrSrt, externalFrAss)))
+
+        val ready = manager.flow.first() as PlayerManager.State.Ready
+        ready.tracks.map { it.label } shouldContainExactly listOf(
+            "Français",
+            "Français (ASS)",
+            "Français (SRT)",
+        )
+
+        manager.selectTrack(PlayerTrack(id = null, label = "French", language = "fr", type = PlayerTrack.Type.SUBTITLES))
+
+        val latestParams = capturedParams.last()
+        latestParams.overrides.keys shouldContain externalFrAss.mediaTrackGroup
+        (manager.flow.first() as PlayerManager.State.Ready).selectedSubtitles?.label shouldBe "Français (ASS)"
+    }
 })

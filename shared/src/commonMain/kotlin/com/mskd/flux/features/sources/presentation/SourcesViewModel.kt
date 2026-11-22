@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.core.model.files.FileSource
+import com.mskd.flux.features.catalog.domain.model.SyncType
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.features.sources.domain.model.UserFolder
@@ -119,7 +120,7 @@ class SourcesViewModel(
     private suspend fun onBackTap() {
         finalizeDelete()
 
-        if (needSync) syncCatalogUseCase(onlyNew = true)
+        if (needSync) syncCatalogUseCase(type = SyncType.LIGHT)
         _event.send(SourcesEvent.BackToPreviousScreen)
     }
 

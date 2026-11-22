@@ -3,6 +3,7 @@ package com.mskd.flux.features.catalog.usecase
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinatorImpl
 import com.mskd.flux.features.catalog.domain.model.SyncState
+import com.mskd.flux.features.catalog.domain.model.SyncType
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
@@ -29,14 +30,14 @@ class CatalogSyncCoordinatorImplTest : FunSpec({
     test("launch changes state to Syncing and back to Idle when done") {
         val coordinator = CatalogSyncCoordinatorImpl(scope = testScope)
 
-        coordinator.launch(full = true) {
+        coordinator.launch(type = SyncType.FULL) {
             delay(100.milliseconds)
         }
 
         // Job starts, transitions to Syncing
         testDispatcher.scheduler.runCurrent()
         coordinator.state.value.shouldBeInstanceOf<SyncState.Syncing>()
-        (coordinator.state.value as SyncState.Syncing).full shouldBe true
+        (coordinator.state.value as SyncState.Syncing).type shouldBe SyncType.FULL
         coordinator.isBusy shouldBe true
 
         // Advance time for delay to finish
@@ -50,7 +51,7 @@ class CatalogSyncCoordinatorImplTest : FunSpec({
     test("setProgress exposes the progress while syncing") {
         val coordinator = CatalogSyncCoordinatorImpl(scope = testScope)
 
-        coordinator.launch(full = false) {
+        coordinator.launch(type = SyncType.LIGHT) {
             delay(1000.milliseconds)
         }
         testDispatcher.scheduler.runCurrent()
@@ -63,6 +64,30 @@ class CatalogSyncCoordinatorImplTest : FunSpec({
 
         coordinator.setProgress(0.5f)
         (coordinator.state.value as SyncState.Syncing).progress shouldBe 0.5f
+    }
+
+    test("launching a new SyncType cancels the active job and updates Syncing.type") {
+        val coordinator = CatalogSyncCoordinatorImpl(scope = testScope)
+        var firstCompleted = false
+
+        coordinator.launch(type = SyncType.LIGHT) {
+            delay(100.milliseconds)
+            firstCompleted = true
+        }
+        testDispatcher.scheduler.runCurrent()
+        (coordinator.state.value as SyncState.Syncing).type shouldBe SyncType.LIGHT
+
+        coordinator.launch(type = SyncType.LANGUAGE_CHANGE) {
+            delay(100.milliseconds)
+        }
+        testDispatcher.scheduler.runCurrent()
+        (coordinator.state.value as SyncState.Syncing).type shouldBe SyncType.LANGUAGE_CHANGE
+
+        testDispatcher.scheduler.advanceTimeBy(150)
+        testDispatcher.scheduler.runCurrent()
+
+        firstCompleted shouldBe false
+        coordinator.state.value shouldBe SyncState.Idle()
     }
 
 })

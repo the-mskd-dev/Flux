@@ -8,6 +8,7 @@ import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.domain.model.CatalogViewMode
 import com.mskd.flux.features.catalog.domain.model.SyncState
+import com.mskd.flux.features.catalog.domain.model.SyncType
 import com.mskd.flux.features.history.domain.model.HistoryEntry
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -22,7 +23,7 @@ sealed class CatalogState {
     data object Error: CatalogState()
 
     @Immutable
-    data class Loading(val syncState: SyncState.Syncing = SyncState.Syncing(full = true)): CatalogState()
+    data class Loading(val syncState: SyncState.Syncing = SyncState.Syncing(type = SyncType.FULL)): CatalogState()
 
     data class Content(
         val artworks: ImmutableList<Artwork> = persistentListOf(),

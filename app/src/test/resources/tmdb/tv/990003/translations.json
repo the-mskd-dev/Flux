@@ -1,0 +1,25 @@
+{
+  "id": 990003,
+  "translations": [
+    {
+      "iso_639_1": "en",
+      "iso_3166_1": "US",
+      "name": "English",
+      "english_name": "English",
+      "data": {
+        "name": "Lost Pages",
+        "overview": "Pages nobody translated."
+      }
+    },
+    {
+      "iso_639_1": "fr",
+      "iso_3166_1": "FR",
+      "name": "Français",
+      "english_name": "French",
+      "data": {
+        "name": "Pages Perdues",
+        "overview": "Des pages que personne n'a traduites."
+      }
+    }
+  ]
+}

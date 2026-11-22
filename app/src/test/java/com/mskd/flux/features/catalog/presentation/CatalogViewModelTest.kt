@@ -17,6 +17,7 @@ import com.mskd.flux.utils.Constants
 import com.mskd.flux.features.catalog.domain.datastore.CatalogDataStore
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.domain.model.CatalogViewMode
+import com.mskd.flux.features.catalog.domain.model.SyncType
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.history.domain.model.HistoryEntry
@@ -36,7 +37,6 @@ import io.kotest.property.Arb
 import io.kotest.property.Exhaustive
 import io.kotest.property.arbitrary.element
 import io.kotest.property.checkAll
-import io.kotest.property.exhaustive.boolean
 import io.kotest.property.exhaustive.enum
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -163,7 +163,7 @@ class CatalogViewModelTest : FunSpec({
         test("should not be shown in Loading") {
             val store = CatalogDataStoreImpl(InMemoryPreferencesDataStore())
             val syncing = mockk<SyncCatalogUseCase>(relaxed = true) {
-                every { state } returns MutableStateFlow(SyncState.Syncing(full = true))
+                every { state } returns MutableStateFlow(SyncState.Syncing(type = SyncType.FULL))
             }
             viewModel = createViewModel(syncUseCase = syncing, catalogDataStore = store, info = foss())
             viewModel.uiState.test {
@@ -249,7 +249,7 @@ class CatalogViewModelTest : FunSpec({
 
         // Then
         verify {
-            syncCatalogUseCaseSpy(onlyNew = true)
+            syncCatalogUseCaseSpy(type = SyncType.LIGHT)
         }
     }
 
@@ -266,7 +266,7 @@ class CatalogViewModelTest : FunSpec({
 
         // Then
         verify(exactly = 1) {
-            syncCatalogUseCaseSpy(onlyNew = true)
+            syncCatalogUseCaseSpy(type = SyncType.LIGHT)
         }
 
     }
@@ -283,7 +283,7 @@ class CatalogViewModelTest : FunSpec({
 
         // Then
         verify(exactly = 1) {
-            syncCatalogUseCaseSpy(onlyNew = true)
+            syncCatalogUseCaseSpy(type = SyncType.LIGHT)
         }
     }
 
@@ -303,7 +303,7 @@ class CatalogViewModelTest : FunSpec({
 
         // Then
         verify(exactly = 1) {
-            syncCatalogUseCaseSpy(onlyNew = false)
+            syncCatalogUseCaseSpy(type = SyncType.FULL)
         }
     }
 

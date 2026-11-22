@@ -10,6 +10,7 @@ import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.core.model.language.Language
 import com.mskd.flux.core.network.tmdb.data.TMDB_MAX_REQUESTS
 import com.mskd.flux.features.catalog.domain.model.SyncState
+import com.mskd.flux.features.catalog.domain.model.SyncType
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.ints.shouldBeGreaterThan
@@ -203,7 +204,7 @@ class SyncCatalogBehaviourTest : FunSpec({
 
         // Then
         harness.states.first() shouldBe SyncState.Idle()
-        harness.states.filterIsInstance<SyncState.Syncing>().map { it.full }.distinct() shouldBe listOf(false)
+        harness.states.filterIsInstance<SyncState.Syncing>().map { it.type }.distinct() shouldBe listOf(SyncType.LIGHT)
         harness.states.last() shouldBe SyncState.Idle()
 
     }
@@ -221,7 +222,7 @@ class SyncCatalogBehaviourTest : FunSpec({
         harness.awaitIdle()
 
         // Then
-        harness.states.filterIsInstance<SyncState.Syncing>().map { it.full }.distinct() shouldBe listOf(true)
+        harness.states.filterIsInstance<SyncState.Syncing>().map { it.type }.distinct() shouldBe listOf(SyncType.FULL)
         harness.tmdb.callCount("genre/movie/list") shouldBe 1
         harness.catalog.getMedias().map { it.title } shouldContainExactlyInAnyOrder listOf("Inception")
 
@@ -240,7 +241,7 @@ class SyncCatalogBehaviourTest : FunSpec({
         harness.awaitIdle()
 
         // Then
-        harness.states.filterIsInstance<SyncState.Syncing>().map { it.full }.distinct() shouldBe listOf(false, true)
+        harness.states.filterIsInstance<SyncState.Syncing>().map { it.type }.distinct() shouldBe listOf(SyncType.LIGHT, SyncType.FULL)
         harness.tmdb.callCount("genre/movie/list") shouldBe 1
         // The cancelled light sync never got further than its search
         harness.tmdb.callCount("movie/{id}") shouldBe 1

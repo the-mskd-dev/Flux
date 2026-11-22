@@ -7,9 +7,9 @@ import com.mskd.flux.core.model.core.Flavor
 import com.mskd.flux.core.model.core.FluxOptionsDialogItem
 import com.mskd.flux.core.model.core.FluxOptionsDialogState
 import com.mskd.flux.core.model.language.Language
+import com.mskd.flux.features.catalog.domain.model.SyncType
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
-import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
 import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import com.mskd.flux.features.privateFolder.domain.datastore.PrivateFolderDataStore
 import com.mskd.flux.features.privateFolder.domain.usecase.disablePrivateFolder.DisablePrivateFolderUseCase
@@ -44,7 +44,6 @@ class SettingsViewModel(
     private val emailLauncher: EmailLauncher,
     private val urlLauncher: UrlLauncher,
     private val syncCatalogUseCase: SyncCatalogUseCase,
-    private val updateLanguageUseCase: UpdateLanguageUseCase,
     private val enablePrivateFolderUseCase: EnablePrivateFolderUseCase,
     private val disablePrivateFolderUseCase: DisablePrivateFolderUseCase,
     private val setIncludeNsfwUseCase: SetIncludeNsfwUseCase,
@@ -101,7 +100,7 @@ class SettingsViewModel(
             autoKeyboard = base.settings.autoKeyboard,
             optionsDialog = base.optionsDialog,
             settingsDialog = base.settingsDialog,
-            fullSyncInProgress = (base.syncState as? SyncState.Syncing)?.full == true,
+            fullSyncInProgress = (base.syncState as? SyncState.Syncing)?.type == SyncType.FULL,
             prefetchHdImages = base.settings.prefetchHdImages,
             prefetchImagesState = base.imagesState,
             privateFolderEnabled = privateFolder.enabled,
@@ -217,7 +216,7 @@ class SettingsViewModel(
 
     private suspend fun setLanguageValue(value: String?) {
         settingsDataStore.setDataLanguage(value?.let { Language.fromCode(it) })
-        updateLanguageUseCase()
+        syncCatalogUseCase(type = SyncType.LANGUAGE_CHANGE)
         hideDialog()
     }
 
@@ -281,7 +280,7 @@ class SettingsViewModel(
     }
 
     private fun proceedFullSync() {
-        syncCatalogUseCase(onlyNew = false)
+        syncCatalogUseCase(type = SyncType.FULL)
         showSettingsDialog(null)
     }
 

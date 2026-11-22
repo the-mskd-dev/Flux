@@ -1,0 +1,43 @@
+{
+  "id": 990002,
+  "translations": [
+    {
+      "iso_639_1": "es",
+      "iso_3166_1": "ES",
+      "name": "Español",
+      "english_name": "Spanish",
+      "data": {
+        "title": "Cuento Olvidado",
+        "overview": ""
+      }
+    },
+    {
+      "iso_639_1": "it",
+      "iso_3166_1": "IT",
+      "name": "Italiano",
+      "english_name": "Italian",
+      "data": {
+        "title": "",
+        "overview": "Una storia dimenticata."
+      }
+    },
+    {
+      "iso_639_1": "de",
+      "iso_3166_1": "DE",
+      "name": "Deutsch",
+      "english_name": "German",
+      "data": {
+        "title": "Vergessene Geschichte"
+      }
+    },
+    {
+      "iso_639_1": "pt",
+      "iso_3166_1": "PT",
+      "name": "Português",
+      "english_name": "Portuguese",
+      "data": {
+        "overview": "Um conto esquecido."
+      }
+    }
+  ]
+}

@@ -11,6 +11,7 @@ import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtwo
 import com.mskd.flux.features.artwork.fake.FakeObserveArtworkUseCase
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.model.SyncState
+import com.mskd.flux.features.catalog.domain.model.SyncType
 import com.mskd.flux.features.identification.presentation.IdentificationAvailability
 import com.mskd.flux.features.people.domain.usecase.GetPeopleUseCase
 import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
@@ -324,7 +325,7 @@ class ShowViewModelTest : FunSpec({
         }
 
         test("disabled during a Sync, enabled again once it ends") {
-            syncState.value = SyncState.Syncing(full = false)
+            syncState.value = SyncState.Syncing(type = SyncType.LIGHT)
             updateVm()
             viewModel.uiState.test {
                 (awaitItem().state as State.Content).content.identification shouldBe IdentificationAvailability.DISABLED
@@ -334,7 +335,7 @@ class ShowViewModelTest : FunSpec({
         }
 
         test("the dialog opens only when the option is enabled") {
-            syncState.value = SyncState.Syncing(full = false)
+            syncState.value = SyncState.Syncing(type = SyncType.LIGHT)
             updateVm()
             viewModel.uiState.test {
                 awaitItem()

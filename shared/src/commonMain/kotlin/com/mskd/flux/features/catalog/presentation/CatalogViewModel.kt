@@ -14,6 +14,7 @@ import com.mskd.flux.features.catalog.domain.datastore.CatalogDataStore
 import com.mskd.flux.features.catalog.domain.model.CatalogPreferences
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.domain.model.CatalogViewMode
+import com.mskd.flux.features.catalog.domain.model.SyncType
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.catalog.presentation.CatalogEvent.NavigateToHowTo
@@ -115,7 +116,7 @@ class CatalogViewModel(
         _showMessageDialog,
     ) { (artworks, genres), syncState, preferences, (showSortingSheet, showViewModeSheet, showPlayStorePromo), showMessageDialog  ->
 
-        if (syncState is SyncState.Syncing && syncState.full) {
+        if (syncState is SyncState.Syncing && syncState.type == SyncType.FULL) {
 
             CatalogUiState(
                 state = CatalogState.Loading(syncState = syncState),
@@ -232,7 +233,7 @@ class CatalogViewModel(
             Trace.info("CatalogViewModel", "Full sync requested")
         }
 
-        syncCatalogUseCase(onlyNew = !fullSyncNeeded)
+        syncCatalogUseCase(type = if (fullSyncNeeded) SyncType.FULL else SyncType.LIGHT)
 
     }
 

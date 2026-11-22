@@ -5,6 +5,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.mskd.flux.core.database.data.FluxDatabase
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
+import com.mskd.flux.core.database.domain.repository.DetailsRepository
 import com.mskd.flux.core.database.moduleDatabase
 import com.mskd.flux.core.datastore.InMemoryPreferencesDataStore
 import com.mskd.flux.core.datastore.data.UserDataStoreImpl
@@ -18,9 +19,9 @@ import com.mskd.flux.core.network.tmdb.data.moduleTmdb
 import com.mskd.flux.core.network.tmdb.data.tmdbHttpClient
 import com.mskd.flux.di.Qualifiers
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
+import com.mskd.flux.features.catalog.domain.model.SyncType
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
-import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
 import com.mskd.flux.features.catalog.fake.FakeCatalogSyncCoordinator
 import com.mskd.flux.features.catalog.moduleCatalog
 import com.mskd.flux.features.files.domain.datasource.FilesDataSource
@@ -138,10 +139,10 @@ internal class SyncHarness(tmdbToken: String = "test-token", tmdbMaxRequests: In
 
     private val useCase: SyncCatalogUseCase = koin.get()
 
-    private val updateLanguageUseCase: UpdateLanguageUseCase = koin.get()
-
     /** The Catalog, as persisted in the database. */
     val catalog: DatabaseRepository = koin.get()
+
+    val details: DetailsRepository = koin.get()
 
     val people: PeopleRepository = koin.get()
 
@@ -190,6 +191,12 @@ internal class SyncHarness(tmdbToken: String = "test-token", tmdbMaxRequests: In
         awaitIdle()
     }
 
+    /** Runs a Language change Sync and waits for its end. */
+    suspend fun languageChangeSync() {
+        requestLanguageChangeSync()
+        awaitIdle()
+    }
+
     /** Changes the data language like the Settings do, then waits for the Catalog to be updated. */
     suspend fun changeDataLanguage(language: Language) {
         requestDataLanguageChange(language)
@@ -199,15 +206,17 @@ internal class SyncHarness(tmdbToken: String = "test-token", tmdbMaxRequests: In
     /** Changes the data language like the Settings do, without waiting for the Catalog to be updated. */
     suspend fun requestDataLanguageChange(language: Language) {
         settings.setDataLanguage(language)
-        updateLanguageUseCase()
+        requestLanguageChangeSync()
     }
 
-    fun requestLightSync() = useCase(onlyNew = true)
+    fun requestLightSync() = useCase(type = SyncType.LIGHT)
 
-    fun requestFullSync() = useCase(onlyNew = false)
+    fun requestFullSync() = useCase(type = SyncType.FULL)
+
+    fun requestLanguageChangeSync() = useCase(type = SyncType.LANGUAGE_CHANGE)
 
     /** Waits for the Sync to end, along with the background work it started. */
-    suspend fun awaitIdle() = withTimeout(10.seconds) {
+    suspend fun awaitIdle() = withTimeout(20.seconds) {
         useCase.state.first { it is SyncState.Idle }
         while (true) {
             val running = scope.coroutineContext.job.children.filter { it.isActive }.toList()

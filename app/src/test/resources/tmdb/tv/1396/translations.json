@@ -20,6 +20,16 @@
         "name": "Breaking Bad",
         "overview": "Walter White, a chemistry teacher, turns to manufacturing methamphetamine."
       }
+    },
+    {
+      "iso_639_1": "fr",
+      "iso_3166_1": "FR",
+      "name": "Français",
+      "english_name": "French",
+      "data": {
+        "name": "Breaking Bad",
+        "overview": "Walter White, professeur de chimie, se met à fabriquer de la méthamphétamine."
+      }
     }
   ]
 }

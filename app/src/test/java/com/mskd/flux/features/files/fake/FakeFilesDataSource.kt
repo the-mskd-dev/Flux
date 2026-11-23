@@ -2,7 +2,9 @@ package com.mskd.flux.features.files.fake
 
 import com.mskd.flux.core.model.files.UserFile
 import com.mskd.flux.features.files.domain.datasource.FilesDataSource
-import com.mskd.flux.mockups.FilesMockups
+import com.mskd.flux.features.files.domain.model.ExternalSubtitle
+import com.mskd.flux.features.files.domain.model.ExternalSubtitleMatcher
+import com.mskd.flux.features.files.domain.model.SubtitleCandidate
 
 /**
  * In-memory Source: owns the files whose path starts with [root].
@@ -12,6 +14,7 @@ internal class FakeFilesDataSource(
     var availableFiles: List<UserFile>,
     var available: Boolean = true,
     private val root: String = "",
+    var subtitleCandidates: List<SubtitleCandidate> = emptyList(),
 ) : FilesDataSource {
 
     override suspend fun isAvailable(): Boolean = available
@@ -22,8 +25,12 @@ internal class FakeFilesDataSource(
         return if (available) availableFiles else emptyList()
     }
 
-    override suspend fun getSubtitlesFor(file: UserFile): String? {
-        return FilesMockups.subtitles.find { it.equals(file.name, ignoreCase = true) }
+    override suspend fun getSubtitlesFor(file: UserFile): List<ExternalSubtitle> {
+        if (!contains(file)) return emptyList()
+        return ExternalSubtitleMatcher.matchAll(
+            userFileName = file.name,
+            candidates = subtitleCandidates,
+        )
     }
 
 }

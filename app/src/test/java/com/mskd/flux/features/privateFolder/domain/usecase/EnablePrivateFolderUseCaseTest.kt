@@ -3,7 +3,7 @@ package com.mskd.flux.features.privateFolder.domain.usecase
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.features.privateFolder.domain.datastore.PrivateFolderDataStore
 import com.mskd.flux.features.privateFolder.domain.usecase.enablePrivateFolder.EnablePrivateFolderUseCase
-import com.mskd.flux.features.privateFolder.domain.usecase.markNsfwArtworksPrivate.MarkNsfwArtworksPrivateUseCase
+import com.mskd.flux.features.progress.domain.ProgressTracker
 import io.kotest.core.spec.style.FunSpec
 import io.mockk.coVerify
 import io.mockk.every
@@ -15,7 +15,7 @@ class EnablePrivateFolderUseCaseTest : FunSpec({
     fluxExtensions()
 
     lateinit var privateFolderDataStore: PrivateFolderDataStore
-    lateinit var markNsfwArtworksPrivate: MarkNsfwArtworksPrivateUseCase
+    lateinit var progressTracker: ProgressTracker
     lateinit var useCase: EnablePrivateFolderUseCase
 
     val privateFolderFlow = MutableStateFlow(PrivateFolderDataStore.State())
@@ -24,10 +24,10 @@ class EnablePrivateFolderUseCaseTest : FunSpec({
         privateFolderDataStore = mockk(relaxed = true) {
             every { flow } returns privateFolderFlow
         }
-        markNsfwArtworksPrivate = mockk(relaxed = true)
+        progressTracker = mockk(relaxed = true)
         useCase = EnablePrivateFolderUseCase(
             privateFolderDataStore = privateFolderDataStore,
-            markNsfwArtworksPrivate = markNsfwArtworksPrivate
+            progressTracker = progressTracker
         )
     }
 
@@ -52,7 +52,7 @@ class EnablePrivateFolderUseCaseTest : FunSpec({
         useCase(pin = "0000")
 
         // Then
-        coVerify(exactly = 1) { markNsfwArtworksPrivate() }
+        coVerify(exactly = 1) { progressTracker.markNsfwArtworksPrivate() }
 
     }
 
@@ -63,7 +63,7 @@ class EnablePrivateFolderUseCaseTest : FunSpec({
         useCase(pin = "0000")
 
         // Then
-        coVerify(exactly = 0) { markNsfwArtworksPrivate() }
+        coVerify(exactly = 0) { progressTracker.markNsfwArtworksPrivate() }
 
     }
 

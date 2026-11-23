@@ -11,9 +11,10 @@ import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtwo
 import com.mskd.flux.features.artwork.fake.FakeObserveArtworkUseCase
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.model.SyncState
+import com.mskd.flux.features.catalog.domain.model.SyncType
 import com.mskd.flux.features.identification.presentation.IdentificationAvailability
 import com.mskd.flux.features.people.domain.usecase.GetPeopleUseCase
-import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
+import com.mskd.flux.features.progress.domain.ProgressTracker
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.PeopleMockup
@@ -39,7 +40,7 @@ class ShowViewModelTest : FunSpec({
     lateinit var viewModel: ShowViewModel
     lateinit var observeArtworkUseCase: ObserveArtworkUseCase
     lateinit var getPeopleUseCase: GetPeopleUseCase
-    lateinit var resetProgress: ResetProgressUseCase
+    lateinit var progressTracker: ProgressTracker
     lateinit var urlLauncher: UrlLauncher
     lateinit var tokenDataStore: TokenDataStore
     lateinit var token: MutableStateFlow<String>
@@ -51,7 +52,7 @@ class ShowViewModelTest : FunSpec({
             coEvery { tokenIsAvailable() } returns true
             every { flow } returns token
         }
-        resetProgress = mockk(relaxed = true)
+        progressTracker = mockk(relaxed = true)
         urlLauncher = mockk(relaxed = true)
 
         viewModel = ShowViewModel(
@@ -60,7 +61,7 @@ class ShowViewModelTest : FunSpec({
             getPeopleUseCase = getPeopleUseCase,
             tokenDataStore = tokenDataStore,
             catalogSyncCoordinator = mockk<CatalogSyncCoordinator> { every { state } returns syncState },
-            resetProgress = resetProgress,
+            progressTracker = progressTracker,
             urlLauncher = urlLauncher
         )
 
@@ -198,7 +199,7 @@ class ShowViewModelTest : FunSpec({
             val content = (awaitItem().state as State.Content).content
             content.dialog shouldBe null
 
-            coVerify { resetProgress(artwork = MediaMockups.showArtwork, season = null) }
+            coVerify { progressTracker.resetProgress(artwork = MediaMockups.showArtwork, season = null) }
         }
     }
 
@@ -249,7 +250,7 @@ class ShowViewModelTest : FunSpec({
             getPeopleUseCase = getPeopleUseCase,
             tokenDataStore = tokenDataStore,
             catalogSyncCoordinator = mockk<CatalogSyncCoordinator> { every { state } returns syncState },
-            resetProgress = resetProgress,
+            progressTracker = progressTracker,
             urlLauncher = urlLauncher
         )
 
@@ -267,7 +268,7 @@ class ShowViewModelTest : FunSpec({
             getPeopleUseCase = getPeopleUseCase,
             tokenDataStore = tokenDataStore,
             catalogSyncCoordinator = mockk<CatalogSyncCoordinator> { every { state } returns syncState },
-            resetProgress = resetProgress,
+            progressTracker = progressTracker,
             urlLauncher = urlLauncher
         )
 
@@ -324,7 +325,7 @@ class ShowViewModelTest : FunSpec({
         }
 
         test("disabled during a Sync, enabled again once it ends") {
-            syncState.value = SyncState.Syncing(full = false)
+            syncState.value = SyncState.Syncing(type = SyncType.LIGHT)
             updateVm()
             viewModel.uiState.test {
                 (awaitItem().state as State.Content).content.identification shouldBe IdentificationAvailability.DISABLED
@@ -334,7 +335,7 @@ class ShowViewModelTest : FunSpec({
         }
 
         test("the dialog opens only when the option is enabled") {
-            syncState.value = SyncState.Syncing(full = false)
+            syncState.value = SyncState.Syncing(type = SyncType.LIGHT)
             updateVm()
             viewModel.uiState.test {
                 awaitItem()

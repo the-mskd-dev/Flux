@@ -4,13 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.FullArtwork
-import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.catalog.domain.model.SyncState
-import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
-import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
+import com.mskd.flux.features.progress.domain.ProgressTracker
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -22,7 +20,7 @@ import kotlinx.coroutines.launch
 
 /**
  * Behaviour shared by the Artwork pages (Movie page, Season page, Show page): observing the Artwork,
- * the token / sync status used by the Manual identification of the Movie and Show pages, reset of progression, external player result,
+ * the token / sync status used by the Manual identification of the Movie and Show pages, reset of progression,
  * and the shape of the intent dispatching.
  *
  * A page only overrides how its content is mapped ([uiState]) and how its own intents are handled ([onIntent]).
@@ -32,8 +30,7 @@ abstract class ArtworkViewModel<UiState, Intent, Event>(
     observeArtworkUseCase: ObserveArtworkUseCase,
     protected val tokenDataStore: TokenDataStore,
     catalogSyncCoordinator: CatalogSyncCoordinator,
-    private val resetProgressUseCase: ResetProgressUseCase,
-    private val recordPlaybackResult: SaveProgressUseCase? = null,
+    protected val progressTracker: ProgressTracker,
 ) : ViewModel() {
 
     private val _event = MutableSharedFlow<Event>()
@@ -57,12 +54,7 @@ abstract class ArtworkViewModel<UiState, Intent, Event>(
     protected suspend fun emit(event: Event) = _event.emit(event)
 
     protected suspend fun resetProgress(artwork: Artwork, season: Int?) {
-        resetProgressUseCase(artwork = artwork, season = season)
-    }
-
-    protected suspend fun onExternalPlayerResult(media: Media?, progress: Long) {
-        val recorder = recordPlaybackResult ?: return
-        media?.let { recorder(media = it, progress = progress) }
+        progressTracker.resetProgress(artwork = artwork, season = season)
     }
 
 }

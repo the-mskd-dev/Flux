@@ -10,7 +10,7 @@ import com.mskd.flux.features.artwork.presentation.ArtworkViewModel
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
 import com.mskd.flux.features.identification.presentation.IdentificationAvailability
 import com.mskd.flux.features.people.domain.usecase.GetPeopleUseCase
-import com.mskd.flux.features.progress.domain.usecase.ResetProgressUseCase
+import com.mskd.flux.features.progress.domain.ProgressTracker
 import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.system.UrlLauncher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,13 +27,13 @@ class ShowViewModel(
     getPeopleUseCase: GetPeopleUseCase,
     tokenDataStore: TokenDataStore,
     catalogSyncCoordinator: CatalogSyncCoordinator,
-    resetProgress: ResetProgressUseCase,
+    progressTracker: ProgressTracker,
 ) : ArtworkViewModel<ShowUiState, ShowIntent, ShowEvent>(
     artworkId = artworkId,
     observeArtworkUseCase = observeArtworkUseCase,
     tokenDataStore = tokenDataStore,
     catalogSyncCoordinator = catalogSyncCoordinator,
-    resetProgressUseCase = resetProgress,
+    progressTracker = progressTracker,
 ) {
 
     //region Flow

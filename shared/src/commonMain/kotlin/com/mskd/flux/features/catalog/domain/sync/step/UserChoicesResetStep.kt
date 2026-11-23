@@ -1,6 +1,7 @@
 package com.mskd.flux.features.catalog.domain.sync.step
 
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
+import com.mskd.flux.features.catalog.domain.model.SyncType
 import com.mskd.flux.features.catalog.domain.sync.SyncContext
 import com.mskd.flux.features.catalog.domain.sync.SyncStep
 
@@ -12,7 +13,7 @@ import com.mskd.flux.features.catalog.domain.sync.SyncStep
  */
 class UserChoicesResetStep(private val database: DatabaseRepository) : SyncStep {
 
-    override fun isEnabled(context: SyncContext) = context.full
+    override val syncTypes = setOf(SyncType.FULL)
 
     override suspend fun units(context: SyncContext) = 1
 

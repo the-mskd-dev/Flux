@@ -71,7 +71,6 @@ import com.mskd.flux.ui.blurForeground
 import com.mskd.flux.ui.components.LoadingScreen
 import com.mskd.flux.ui.dimensions.rememberScreenDimensions
 import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.utils.rememberExternalPlayerAction
 import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -86,11 +85,6 @@ fun CatalogScreen(
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    val launchExternalPlayer = rememberExternalPlayerAction(
-        onProgressResult = { progress -> viewModel.handleIntent(CatalogIntent.OnExternalPlayerResult(progress = progress)) },
-        onFallbackToInternal = { media -> viewModel.handleIntent(CatalogIntent.PlayMedia(media = media, forceInternal = true)) }
-    )
-
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
             when (event) {
@@ -104,12 +98,7 @@ fun CatalogScreen(
                 CatalogEvent.NavigateToSources -> navigate(Route.Sources(fromSetup = false))
                 CatalogEvent.NavigateToPrivateFolder -> navigate(Route.PrivateFolder)
 
-                is CatalogEvent.PlayMedia -> {
-                    if (event.externalPlayer)
-                        launchExternalPlayer(event.media)
-                    else
-                        navigate(Player(params = PlayerParams.fromMedia(event.media)))
-                }
+                is CatalogEvent.OpenInternalPlayer -> navigate(Player(params = PlayerParams.fromMedia(event.media)))
             }
         }
     }

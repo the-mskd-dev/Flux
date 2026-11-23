@@ -43,18 +43,18 @@ Each feature must consist of 3 distinct files:
 
 ### Universal Rules
 
-1. **KMP Isolation Rule 🚨**:
-   - When implementing or refactoring the Domain layer (UseCases, Models) or Data layer (Repositories, Data Sources), you are **strictly forbidden from using any** `android.*` **or** `androidx.*` **imports** (such as `Context`, `Bundle`, `Intent`, or `Log`).
-     - You MUST write this code in pure Kotlin as if it were already located in the `commonMain` module. If platform-specific Android APIs are absolutely required, define a pure Kotlin interface in the domain layer and implement it in the Android application module, or use the `expect`/`actual` pattern.
-2. **CMP Isolation Rule 🚨**:
-   - When implementing UI in the shared:commonMain package, you should use Compose Multiplatform only. Composables with `androidx` packages are forbidden.
-3. **Languages 🚨**:
-   - In the whole code, specs, tickets, GLOSSARY.md, you should use English only. Other languages are authorized only in strings.xml files. 
+1. **KMP target**:
+   - When implementing or refactoring, you should think with a "KMP logical": you should think about future platforms implementation (through architecture, expect/actual, interfaces, libraries...).
+2. **KMP Isolation Rule 🚨**:
+   - When implementing or refactoring the Domain layer (UseCases, Models) or Data layer (Repositories, Data Sources), inside `commonMain`, you are **strictly forbidden from using any** `android.*` **imports** (such as `Context`, `Bundle`, `Intent`, or `Log`). Each dependency should be KMP compatible.
+   - You MUST write this code in pure Kotlin as if it were already located in the `commonMain` module. If platform-specific Android APIs are absolutely required, define a pure Kotlin interface in the domain layer and implement it in the Android application module, or use the `expect`/`actual` pattern.
+3. **CMP Isolation Rule 🚨**:
+   - When implementing UI in the shared:commonMain package, you should use Compose Multiplatform only. 
+4. **Languages 🚨**:
    - In `strings.xml` with `shared/src/commonMain/composeResources`, don't escape "'" by a "\". It's not necessary in KMP/CMP. i.e: don't write "doesn\t", but "doesn't" instead.
 
 ### Context & File scanning
 
 - Always strictly respect the exclusion rules defined in `.aiignore` and `.gitignore`.
-- Never read, index, or search inside ignored directories (e.g., `build/`, `.gradle/`).
-- Always strictly respect instructions in `.clinerules`.
+- Never read, index, or search inside ignored directories (e.g., `build/`, `.gradle/`), except `.scratch`.
 

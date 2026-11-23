@@ -7,7 +7,7 @@ import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.privateFolder.domain.datastore.PrivateFolderDataStore
-import com.mskd.flux.features.privateFolder.domain.usecase.setArtworkPrivacy.SetArtworkPrivacyUseCase
+import com.mskd.flux.features.progress.domain.ProgressTracker
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 class PrivateFolderViewModel(
     private val database: DatabaseRepository,
     private val privateFolderDataStore: PrivateFolderDataStore,
-    private val setArtworkPrivacy: SetArtworkPrivacyUseCase
+    private val progressTracker: ProgressTracker
 ) : ViewModel() {
 
     //region Variables
@@ -100,7 +100,7 @@ class PrivateFolderViewModel(
     }
 
     private suspend fun removeFromPrivateFolder(artwork: Artwork) {
-        setArtworkPrivacy(artworkId = artwork.id, isPrivate = false)
+        progressTracker.setArtworkPrivacy(artworkId = artwork.id, isPrivate = false)
     }
 
     //endregion

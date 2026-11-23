@@ -65,7 +65,6 @@ sealed interface SeasonIntent {
     data object MarkPreviousEpisodesAsWatched : SeasonIntent
 
     // Other
-    data class OnExternalPlayerResult(val progress: Long) : SeasonIntent
     data class ExpandEpisodeDescription(val episode: Episode) : SeasonIntent
     data object CollapseEpisodeDescription : SeasonIntent
     data class ToggleEpisodeSpoiler(val episode: Episode) : SeasonIntent
@@ -74,6 +73,6 @@ sealed interface SeasonIntent {
 
 sealed interface SeasonEvent {
     data object BackToPreviousScreen : SeasonEvent
-    data class PlayMedia(val media: Media, val externalPlayer: Boolean) : SeasonEvent
+    data class OpenInternalPlayer(val media: Media) : SeasonEvent
     data class NavigateToGallery(val artworkId: Long, val contentType: ContentType) : SeasonEvent
 }

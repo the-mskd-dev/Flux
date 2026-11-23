@@ -281,4 +281,19 @@ class SyncLogoBackfillBehaviourTest : FunSpec({
 
     }
 
+    test("an Artwork with a custom Logo is not searched during backfill") {
+
+        // Given
+        oldCatalog("Inception (2010).mkv")
+        harness.catalog.setArtworkCustomLogo(artworkId = 27205L, path = "/custom-logo.png")
+
+        // When
+        harness.lightSync()
+
+        // Then
+        logoOf("Inception") shouldBe null
+        imagesCallCount() shouldBe 0
+
+    }
+
 })

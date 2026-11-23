@@ -8,9 +8,8 @@ import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
-import com.mskd.flux.features.player.domain.model.PlaybackAction
-import com.mskd.flux.features.player.domain.usecase.ResolvePlaybackActionUseCase
-import com.mskd.flux.features.progress.domain.usecase.SaveProgressUseCase
+import com.mskd.flux.features.player.domain.playback.PlaybackLaunch
+import com.mskd.flux.features.player.domain.playback.PlaybackOutcome
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
 import com.mskd.flux.system.FilesLauncher
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -27,15 +26,8 @@ class UnknownViewModel(
     private val filesLauncher: FilesLauncher,
     observeArtworkUseCase: ObserveArtworkUseCase,
     settingsDataStore: SettingsDataStore,
-    private val resolvePlaybackAction: ResolvePlaybackActionUseCase,
-    private val recordPlaybackResult: SaveProgressUseCase
+    private val playbackLaunch: PlaybackLaunch,
 ) : ViewModel() {
-
-    //region Variables
-
-    private var selectedMedia: Media? = null
-
-    //endregion
 
     //region Flow
 
@@ -76,7 +68,6 @@ class UnknownViewModel(
             is UnknownIntent.OpenFileExplorer -> filesLauncher.open(file = intent.media.file)
             UnknownIntent.OnBackTap -> _event.emit(UnknownEvent.BackToPreviousScreen)
             UnknownIntent.OnInfoTap -> _event.emit(UnknownEvent.NavigateToHowToScreen)
-            is UnknownIntent.OnExternalPlayerResult -> onExternalPlayerResult(progress = intent.progress)
             is UnknownIntent.DoSearch -> doSearch(query = intent.query)
         }
     }
@@ -86,22 +77,9 @@ class UnknownViewModel(
     //region Private Methods
 
     private suspend fun playMedia(media: Media, forceInternal: Boolean) {
-
-        selectedMedia = media
-
-        when (val action = resolvePlaybackAction(media = media, forceInternal = forceInternal)) {
-            is PlaybackAction.OpenPlayer -> _event.emit(UnknownEvent.PlayMedia(
-                media = action.media,
-                externalPlayer = action.externalPlayer,
-            ))
-            PlaybackAction.Unavailable -> Unit
-        }
-    }
-
-    private suspend fun onExternalPlayerResult(progress: Long) {
-        selectedMedia?.let {
-            recordPlaybackResult(media = it, progress = progress)
-            selectedMedia = null
+        when (val outcome = playbackLaunch.play(media = media, forceInternal = forceInternal)) {
+            is PlaybackOutcome.OpenInternalPlayer -> _event.emit(UnknownEvent.OpenInternalPlayer(media = outcome.media))
+            PlaybackOutcome.HandedToExternalPlayer, PlaybackOutcome.Unavailable -> Unit
         }
     }
 

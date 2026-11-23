@@ -16,11 +16,8 @@ val moduleSeason = module {
             tokenDataStore = get(),
             catalogSyncCoordinator = get(),
             observeArtworkUseCase = get(),
-            changeMediaStatus = get(),
-            markPreviousAsWatched = get(),
-            resetProgress = get(),
-            resolvePlaybackAction = get(),
-            recordPlaybackResult = get(),
+            progressTracker = get(),
+            playbackLaunch = get(),
         )
     }
 

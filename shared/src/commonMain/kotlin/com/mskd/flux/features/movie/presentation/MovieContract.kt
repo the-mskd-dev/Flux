@@ -50,14 +50,11 @@ sealed interface MovieIntent {
     // Status
     data object ResetProgress : MovieIntent
     data class ChangeWatchStatus(val media: Media) : MovieIntent
-
-    // Other
-    data class OnExternalPlayerResult(val progress: Long) : MovieIntent
 }
 
 sealed interface MovieEvent {
     data object BackToPreviousScreen : MovieEvent
-    data class PlayMedia(val media: Media, val externalPlayer: Boolean) : MovieEvent
+    data class OpenInternalPlayer(val media: Media) : MovieEvent
     data class NavigateToPerson(val person: Person) : MovieEvent
     data class NavigateToGallery(val artworkId: Long, val contentType: ContentType) : MovieEvent
     /**

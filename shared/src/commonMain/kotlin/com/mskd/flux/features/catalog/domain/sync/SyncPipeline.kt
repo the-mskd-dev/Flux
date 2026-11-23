@@ -3,8 +3,8 @@ package com.mskd.flux.features.catalog.domain.sync
 import com.mskd.flux.features.catalog.domain.sync.step.ScanStep
 
 /**
- * Runs the Étapes de synchro in order. As soon as the [scanStep] is done, every other step declares its estimated
- * work, so that the Progression de synchro covers the whole Synchro.
+ * Runs the enabled Sync steps in order. When [scanStep] runs, it finishes before every remaining Sync step
+ * declares its estimated work, so that Sync progress covers the whole Sync.
  */
 class SyncPipeline(
     private val scanStep: ScanStep,
@@ -13,14 +13,20 @@ class SyncPipeline(
 
     suspend fun run(context: SyncContext) {
 
-        context.progress.declare(scanStep.units(context))
-        scanStep.run(context)
+        val scanUnits = if (context.type in scanStep.syncTypes) {
+            scanStep.units(context).also { units ->
+                context.progress.declare(units)
+                scanStep.run(context)
+            }
+        } else {
+            0
+        }
 
-        val enabled = steps.filter { it.isEnabled(context) }
+        val enabled = steps.filter { context.type in it.syncTypes }
         enabled.forEach { context.progress.declare(it.units(context)) }
 
-        // Completed only now: the progress must not reach the end of the declared work before every step declared its own
-        context.progress.complete(scanStep.units(context))
+        // Completed only now: Sync progress must not reach the end of the declared work before every Sync step declared its own
+        if (scanUnits > 0) context.progress.complete(scanUnits)
 
         enabled.forEach { it.run(context) }
 

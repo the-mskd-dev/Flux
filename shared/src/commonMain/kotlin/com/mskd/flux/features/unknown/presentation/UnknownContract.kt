@@ -22,11 +22,10 @@ sealed interface UnknownIntent {
     object OnInfoTap: UnknownIntent
     data class OpenFileExplorer(val media: Media): UnknownIntent
     data class DoSearch(val query: String) : UnknownIntent
-    data class OnExternalPlayerResult(val progress: Long) : UnknownIntent
 }
 
 sealed interface UnknownEvent {
     object BackToPreviousScreen : UnknownEvent
     object NavigateToHowToScreen : UnknownEvent
-    data class PlayMedia(val media: Media, val externalPlayer: Boolean) : UnknownEvent
+    data class OpenInternalPlayer(val media: Media) : UnknownEvent
 }

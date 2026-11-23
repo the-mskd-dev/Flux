@@ -7,10 +7,9 @@ import com.mskd.flux.core.model.core.Flavor
 import com.mskd.flux.core.model.core.FluxOptionsDialogItem
 import com.mskd.flux.core.model.core.FluxOptionsDialogState
 import com.mskd.flux.core.model.language.Language
+import com.mskd.flux.features.catalog.domain.model.SyncType
 import com.mskd.flux.features.catalog.domain.model.SyncState
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
-import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
-import com.mskd.flux.features.images.domain.ImagesPrefetchManager
 import com.mskd.flux.features.privateFolder.domain.datastore.PrivateFolderDataStore
 import com.mskd.flux.features.privateFolder.domain.usecase.disablePrivateFolder.DisablePrivateFolderUseCase
 import com.mskd.flux.features.privateFolder.domain.usecase.enablePrivateFolder.EnablePrivateFolderUseCase
@@ -40,11 +39,9 @@ class SettingsViewModel(
     private val appInfo: AppInfo,
     private val settingsDataStore: SettingsDataStore,
     private val privateFolderDataStore: PrivateFolderDataStore,
-    private val imagesPrefetchManager: ImagesPrefetchManager,
     private val emailLauncher: EmailLauncher,
     private val urlLauncher: UrlLauncher,
     private val syncCatalogUseCase: SyncCatalogUseCase,
-    private val updateLanguageUseCase: UpdateLanguageUseCase,
     private val enablePrivateFolderUseCase: EnablePrivateFolderUseCase,
     private val disablePrivateFolderUseCase: DisablePrivateFolderUseCase,
     private val setIncludeNsfwUseCase: SetIncludeNsfwUseCase,
@@ -62,15 +59,13 @@ class SettingsViewModel(
         settingsDataStore.flow,
         _optionsDialogState,
         _settingsDialogState,
-        syncCatalogUseCase.state,
-        imagesPrefetchManager.state
-    ) { settings, dialog, settingsDialog, catalog, images ->
+        syncCatalogUseCase.state
+    ) { settings, dialog, settingsDialog, catalog ->
         SettingsBaseState(
             settings = settings,
             optionsDialog = dialog,
             settingsDialog = settingsDialog,
-            syncState = catalog,
-            imagesState = images
+            syncState = catalog
         )
     }
 
@@ -101,9 +96,7 @@ class SettingsViewModel(
             autoKeyboard = base.settings.autoKeyboard,
             optionsDialog = base.optionsDialog,
             settingsDialog = base.settingsDialog,
-            fullSyncInProgress = (base.syncState as? SyncState.Syncing)?.full == true,
-            prefetchHdImages = base.settings.prefetchHdImages,
-            prefetchImagesState = base.imagesState,
+            fullSyncInProgress = (base.syncState as? SyncState.Syncing)?.type == SyncType.FULL,
             privateFolderEnabled = privateFolder.enabled,
             privateFolderIncludeNsfw = privateFolder.includeNsfw,
             privateFolderPinDialog = privateFolder.pinDialog,
@@ -121,8 +114,7 @@ class SettingsViewModel(
         val settings: SettingsDataStore.State,
         val optionsDialog: FluxOptionsDialogState<*, SettingsIntent>?,
         val settingsDialog: SettingsDialog?,
-        val syncState: SyncState,
-        val imagesState: ImagesPrefetchManager.State
+        val syncState: SyncState
     )
 
     private data class PrivateFolderSlice(
@@ -167,7 +159,6 @@ class SettingsViewModel(
             is SettingsIntent.OnAutoKeyboardCheck -> onAutoKeyboardCheck(value = intent.checked)
             is SettingsIntent.OnExternalPlayerCheck -> onExternalPlayerCheck(value = intent.checked)
             is SettingsIntent.OnEnablePipCheck -> onEnablePipCheck(value = intent.checked)
-            is SettingsIntent.OnPrefetchHdImagesCheck -> onPrefetchImagesCheck(value = intent.checked)
             is SettingsIntent.OnBlurSpoilersCheck -> settingsDataStore.setBlurSpoilers(intent.checked)
             is SettingsIntent.OpenUrl -> urlLauncher.open(url = intent.url)
             SettingsIntent.SendEmail -> emailLauncher.sendEmail()
@@ -217,7 +208,7 @@ class SettingsViewModel(
 
     private suspend fun setLanguageValue(value: String?) {
         settingsDataStore.setDataLanguage(value?.let { Language.fromCode(it) })
-        updateLanguageUseCase()
+        syncCatalogUseCase(type = SyncType.LANGUAGE_CHANGE)
         hideDialog()
     }
 
@@ -281,16 +272,8 @@ class SettingsViewModel(
     }
 
     private fun proceedFullSync() {
-        syncCatalogUseCase(onlyNew = false)
+        syncCatalogUseCase(type = SyncType.FULL)
         showSettingsDialog(null)
-    }
-
-    private suspend fun onPrefetchImagesCheck(value: Boolean) {
-        settingsDataStore.setPrefetchHdImages(value)
-
-        if (value)
-            imagesPrefetchManager.prefetchImages()
-
     }
 
     private fun showSettingsDialog(dialog: SettingsDialog?) {

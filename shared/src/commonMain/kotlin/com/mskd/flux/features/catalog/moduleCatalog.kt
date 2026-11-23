@@ -16,11 +16,12 @@ import com.mskd.flux.features.catalog.domain.sync.step.GenresStep
 import com.mskd.flux.features.catalog.domain.sync.step.LogosStep
 import com.mskd.flux.features.catalog.domain.sync.step.MissingFilesStep
 import com.mskd.flux.features.catalog.domain.sync.step.NsfwPrivateStep
+import com.mskd.flux.features.catalog.domain.sync.step.PrefetchImagesStep
 import com.mskd.flux.features.catalog.domain.sync.step.ScanStep
+import com.mskd.flux.features.catalog.domain.sync.step.TranslationStep
 import com.mskd.flux.features.catalog.domain.sync.step.UserChoicesResetStep
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.catalog.domain.usecase.syncGenres.SyncGenresUseCase
-import com.mskd.flux.features.catalog.domain.usecase.updateLanguage.UpdateLanguageUseCase
 import com.mskd.flux.features.catalog.presentation.CatalogViewModel
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
@@ -32,9 +33,11 @@ val moduleCatalog = module {
     singleOf(::MissingFilesStep)
     singleOf(::GenresStep)
     singleOf(::UserChoicesResetStep)
+    singleOf(::TranslationStep)
     singleOf(::NsfwPrivateStep)
     singleOf(::LogosStep)
     singleOf(::FinalizationStep)
+    singleOf(::PrefetchImagesStep)
 
     single {
         CatalogStep(
@@ -56,9 +59,11 @@ val moduleCatalog = module {
                 get<GenresStep>(),
                 get<UserChoicesResetStep>(),
                 get<CatalogStep>(),
+                get<TranslationStep>(),
                 get<LogosStep>(),
                 get<NsfwPrivateStep>(),
                 get<FinalizationStep>(),
+                get<PrefetchImagesStep>(),
             )
         )
     }
@@ -69,17 +74,6 @@ val moduleCatalog = module {
 
     singleOf(::SyncCatalogUseCase)
     singleOf(::SyncGenresUseCase)
-
-    single<UpdateLanguageUseCase> {
-        UpdateLanguageUseCase(
-            api = get(),
-            database = get(),
-            settings = get(),
-            coordinator = get(),
-            syncGenresUseCase = get(),
-            imagesPrefetchManager = get(),
-        )
-    }
 
     single<CatalogDataStore> {
         CatalogDataStoreImpl(

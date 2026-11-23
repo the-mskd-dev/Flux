@@ -2,8 +2,8 @@ package com.mskd.flux.features.privateFolder.domain.usecase
 
 import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.features.privateFolder.domain.datastore.PrivateFolderDataStore
-import com.mskd.flux.features.privateFolder.domain.usecase.markNsfwArtworksPrivate.MarkNsfwArtworksPrivateUseCase
 import com.mskd.flux.features.privateFolder.domain.usecase.setIncludeNsfw.SetIncludeNsfwUseCase
+import com.mskd.flux.features.progress.domain.ProgressTracker
 import io.kotest.core.spec.style.FunSpec
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -13,15 +13,15 @@ class SetIncludeNsfwUseCaseTest : FunSpec({
     fluxExtensions()
 
     lateinit var privateFolderDataStore: PrivateFolderDataStore
-    lateinit var markNsfwArtworksPrivate: MarkNsfwArtworksPrivateUseCase
+    lateinit var progressTracker: ProgressTracker
     lateinit var useCase: SetIncludeNsfwUseCase
 
     beforeTest {
         privateFolderDataStore = mockk(relaxed = true)
-        markNsfwArtworksPrivate = mockk(relaxed = true)
+        progressTracker = mockk(relaxed = true)
         useCase = SetIncludeNsfwUseCase(
             privateFolderDataStore = privateFolderDataStore,
-            markNsfwArtworksPrivate = markNsfwArtworksPrivate
+            progressTracker = progressTracker
         )
     }
 
@@ -44,7 +44,7 @@ class SetIncludeNsfwUseCaseTest : FunSpec({
         useCase(includeNsfw = true)
 
         // Then
-        coVerify(exactly = 1) { markNsfwArtworksPrivate() }
+        coVerify(exactly = 1) { progressTracker.markNsfwArtworksPrivate() }
 
     }
 
@@ -54,7 +54,7 @@ class SetIncludeNsfwUseCaseTest : FunSpec({
         useCase(includeNsfw = false)
 
         // Then
-        coVerify(exactly = 0) { markNsfwArtworksPrivate() }
+        coVerify(exactly = 0) { progressTracker.markNsfwArtworksPrivate() }
 
     }
 

@@ -10,6 +10,8 @@ import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.core.model.language.Language
 import com.mskd.flux.core.network.tmdb.data.TMDB_MAX_REQUESTS
 import com.mskd.flux.features.catalog.domain.model.SyncState
+import com.mskd.flux.features.catalog.domain.model.SyncType
+import com.mskd.flux.features.history.data.model.HistoryEntity
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.ints.shouldBeGreaterThan
@@ -203,7 +205,7 @@ class SyncCatalogBehaviourTest : FunSpec({
 
         // Then
         harness.states.first() shouldBe SyncState.Idle()
-        harness.states.filterIsInstance<SyncState.Syncing>().map { it.full }.distinct() shouldBe listOf(false)
+        harness.states.filterIsInstance<SyncState.Syncing>().map { it.type }.distinct() shouldBe listOf(SyncType.LIGHT)
         harness.states.last() shouldBe SyncState.Idle()
 
     }
@@ -221,7 +223,7 @@ class SyncCatalogBehaviourTest : FunSpec({
         harness.awaitIdle()
 
         // Then
-        harness.states.filterIsInstance<SyncState.Syncing>().map { it.full }.distinct() shouldBe listOf(true)
+        harness.states.filterIsInstance<SyncState.Syncing>().map { it.type }.distinct() shouldBe listOf(SyncType.FULL)
         harness.tmdb.callCount("genre/movie/list") shouldBe 1
         harness.catalog.getMedias().map { it.title } shouldContainExactlyInAnyOrder listOf("Inception")
 
@@ -240,7 +242,7 @@ class SyncCatalogBehaviourTest : FunSpec({
         harness.awaitIdle()
 
         // Then
-        harness.states.filterIsInstance<SyncState.Syncing>().map { it.full }.distinct() shouldBe listOf(false, true)
+        harness.states.filterIsInstance<SyncState.Syncing>().map { it.type }.distinct() shouldBe listOf(SyncType.LIGHT, SyncType.FULL)
         harness.tmdb.callCount("genre/movie/list") shouldBe 1
         // The cancelled light sync never got further than its search
         harness.tmdb.callCount("movie/{id}") shouldBe 1
@@ -348,6 +350,36 @@ class SyncCatalogBehaviourTest : FunSpec({
             "Inception" to false,
             "Forbidden Film" to true,
         )
+
+    }
+
+    test("NSFW Artworks marked private by a Sync are removed from History") {
+
+        // Given
+        harness.deviceStorage.availableFiles = listOf(
+            harness.deviceFile("Inception (2010).mkv"),
+            harness.deviceFile("Forbidden Film (2020).mkv"),
+        )
+        harness.lightSync()
+
+        val medias = harness.catalog.getMedias()
+        val inception = medias.first { it.title == "Inception" }
+        val forbidden = medias.first { it.title == "Forbidden Film" }
+        harness.history.upsert(HistoryEntity(artworkId = inception.artworkId, mediaId = inception.mediaId, timestamp = 1_000L))
+        harness.history.upsert(HistoryEntity(artworkId = forbidden.artworkId, mediaId = forbidden.mediaId, timestamp = 2_000L))
+
+        harness.privateFolder.setEnabled(true)
+        harness.privateFolder.setIncludeNsfw(true)
+
+        // When
+        harness.lightSync()
+
+        // Then
+        harness.catalog.getArtworks(includePrivates = true).associate { it.title to it.isPrivate } shouldBe mapOf(
+            "Inception" to false,
+            "Forbidden Film" to true,
+        )
+        harness.history.getAll().map { it.artworkId } shouldBe listOf(inception.artworkId)
 
     }
 

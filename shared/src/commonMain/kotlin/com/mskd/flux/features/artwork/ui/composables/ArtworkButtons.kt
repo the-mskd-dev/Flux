@@ -25,7 +25,7 @@ import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.ui.FluxPreview
-import com.mskd.flux.ui.components.FluxTextButton
+import com.mskd.flux.ui.components.buttons.FluxTextButton
 import com.mskd.flux.ui.components.ProgressStatusBar
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
@@ -45,7 +45,6 @@ import flux.shared.generated.resources.rewatch
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun ArtworkButtons(
     modifier: Modifier = Modifier,

@@ -30,7 +30,6 @@ import com.mskd.flux.ui.dimensions.rememberScreenDimensions
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxUI
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun CatalogCategory(
     name: String? = null,

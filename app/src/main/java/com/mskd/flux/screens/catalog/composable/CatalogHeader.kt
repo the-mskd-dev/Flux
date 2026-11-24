@@ -26,7 +26,6 @@ import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_flux
 import org.jetbrains.compose.resources.painterResource
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun CatalogHeader(
     modifier: Modifier = Modifier,

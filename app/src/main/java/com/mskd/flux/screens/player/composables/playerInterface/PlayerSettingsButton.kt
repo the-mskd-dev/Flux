@@ -7,13 +7,13 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.mskd.flux.features.player.presentation.PlayerIntent
 import com.mskd.flux.features.player.presentation.SettingsSheet
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun PlayerSettingsButton(
     modifier: Modifier,
@@ -25,7 +25,7 @@ fun PlayerSettingsButton(
         modifier = modifier.statusBarsPadding(),
         enabled = enabled,
         colors = IconButtonDefaults.iconButtonColors(
-            contentColor = Color.White
+            containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f)
         ),
         onClick = {
             sendIntent(PlayerIntent.ShowSettings(sheet = SettingsSheet.Settings))

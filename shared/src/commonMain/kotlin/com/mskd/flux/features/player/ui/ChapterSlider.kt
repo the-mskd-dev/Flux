@@ -41,7 +41,6 @@ private val ChapterGap = 4.dp
  * are proportional to the Chapter durations). With fewer than 2 Chapters the track is continuous.
  * While [isScrubbing], a bubble above the thumb shows the time and the Chapter name under it.
  */
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun ChapterSlider(
     modifier: Modifier = Modifier,

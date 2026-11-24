@@ -19,7 +19,6 @@ import flux.shared.generated.resources.setup_sources_default_desc
 import flux.shared.generated.resources.setup_sources_default_title
 import org.jetbrains.compose.resources.stringResource
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SetupSourcesItem(
     title: String,

@@ -34,7 +34,6 @@ import flux.shared.generated.resources.ic_rewind_5
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun PlayerControlButtons(
     modifier: Modifier,
@@ -44,7 +43,7 @@ fun PlayerControlButtons(
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
-    val (rewind, forward) = rewindAndForward
+    val [rewind, forward] = rewindAndForward
 
     val rewindInteraction = remember { MutableInteractionSource() }
     val playInteraction = remember { MutableInteractionSource() }

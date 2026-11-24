@@ -13,6 +13,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,7 +49,18 @@ fun PlayerTopBar(
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-        Box(
+        IconButton(
+            onClick = onBackTap,
+            colors = IconButtonDefaults.iconButtonColors(
+                containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f)
+            )
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                contentDescription = "back button"
+            )
+        }
+        /*Box(
             modifier = Modifier
                 .clickable(enabled = enabled) { onBackTap() }
                 .size(50.dp)
@@ -61,7 +75,7 @@ fun PlayerTopBar(
                 contentDescription = "back button"
             )
 
-        }
+        }*/
 
         Column(
             modifier = Modifier.weight(1f),

@@ -1,4 +1,4 @@
-package com.mskd.flux.ui.components
+package com.mskd.flux.ui.components.buttons
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -32,7 +32,6 @@ import flux.shared.generated.resources.read_more
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun FluxTextButton(
     text: String,
@@ -55,7 +54,6 @@ fun FluxTextButton(
 
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun FluxIconButton(
     modifier: Modifier = Modifier,

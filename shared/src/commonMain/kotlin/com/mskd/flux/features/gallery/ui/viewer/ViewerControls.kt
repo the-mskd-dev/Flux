@@ -80,7 +80,6 @@ fun BoxScope.ViewerControls(
     }
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun UseImageSplitButton(
     imageType: GalleryImageType,

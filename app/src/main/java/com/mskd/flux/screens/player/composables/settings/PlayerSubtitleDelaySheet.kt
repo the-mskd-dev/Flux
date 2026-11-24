@@ -54,7 +54,6 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 /** Shifts the subtitles of the current Media in steps; the delay is never kept past this Media. */
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun PlayerSubtitleDelaySheet(
     delayMs: Long,
@@ -124,7 +123,6 @@ fun PlayerSubtitleDelaySheet(
  * Expressive step button: the shape morphs on press (from the button's own shapes), and the button
  * squishes slightly under the finger, then bounces back on release.
  */
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun StepButton(
     icon: Painter,

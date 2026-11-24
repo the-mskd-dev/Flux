@@ -76,7 +76,6 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun SourcesScreen(
     navigate: (Route) -> Unit,
@@ -155,7 +154,6 @@ fun SourcesScreen(
 
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SourcesScreenContent(
     content: SourcesContent,

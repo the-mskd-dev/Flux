@@ -45,7 +45,8 @@ fun PlayerTopBar(
     Row(
         modifier = modifier
             .statusBarsPadding()
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .padding(horizontal = FluxUI.Space.medium),
         horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -59,10 +60,9 @@ fun PlayerTopBar(
         Column(
             modifier = Modifier.weight(1f),
             horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
         ) {
 
-            Text.Content.Body(
+            Text.Content.Title(
                 text = media.title,
                 color = Color.White
             )
@@ -75,7 +75,7 @@ fun PlayerTopBar(
                 Text.Card.Label(
                     modifier = Modifier.fillMaxWidth(),
                     text = "$season, $number",
-                    color = Color.White,
+                    color = Color.White.copy(alpha = .7f),
                     maxLines = 1,
                     textAlign = TextAlign.Start,
                     overflow = TextOverflow.Ellipsis

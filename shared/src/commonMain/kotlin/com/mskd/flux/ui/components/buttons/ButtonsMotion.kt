@@ -1,4 +1,4 @@
-package com.mskd.flux.screens.player.composables.playerInterface
+package com.mskd.flux.ui.components.buttons
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.spring
@@ -19,8 +19,9 @@ import kotlin.math.sin
 import kotlin.math.sqrt
 
 /** Press feedback of the player controls: a little more bounce and a slower return than the default press. */
-internal const val PRESS_DAMPING = 0.35f
-internal const val PRESS_STIFFNESS = 800f
+const val PRESS_DAMPING = 0.35f
+const val PRESS_STIFFNESS = 800f
+const val PRESS_SCALE = .85f
 
 /** A press must last this long to count as "held": a quick tap never leans the neighbors. */
 private const val HOLD_DELAY_MS = 60L
@@ -42,7 +43,7 @@ private const val NEIGHBOR_STIFFNESS = 450f
 private const val SCALE_VISIBILITY_THRESHOLD = 0.001f
 
 /** The three player controls, in the order they are laid out from left to right. */
-internal enum class ControlButton {
+enum class ControlButton {
     REWIND, PLAY, FORWARD;
 
     /**
@@ -59,7 +60,7 @@ internal enum class ControlButton {
  * Horizontal offset [button] takes while the [held] buttons are pressed: it leans [pullDp] towards each held direct
  * neighbor. A held button stays under the finger, and pulls from both sides cancel out.
  */
-internal fun computeNetHoldPullDp(button: ControlButton, held: Set<ControlButton>, pullDp: Float): Float {
+fun computeNetHoldPullDp(button: ControlButton, held: Set<ControlButton>, pullDp: Float): Float {
     if (button in held) return 0f
     return held.sumOf { heldButton ->
         val awayFromHeld = heldButton.directNeighbors().firstOrNull { it.first == button }?.second ?: 0f
@@ -71,7 +72,7 @@ internal fun computeNetHoldPullDp(button: ControlButton, held: Set<ControlButton
  * Initial velocity that makes an under-damped spring (mass 1) starting at rest reach [peak] at its first extreme.
  * From x(t) = v0 / wd * e^(-z*w*t) * sin(wd*t), whose first extreme is at tan(wd*t) = wd / (z*w).
  */
-internal fun springImpulseVelocity(peak: Float, dampingRatio: Float, stiffness: Float): Float {
+fun springImpulseVelocity(peak: Float, dampingRatio: Float, stiffness: Float): Float {
     val w = sqrt(stiffness)
     val decay = dampingRatio * w
     val wd = w * sqrt(1f - dampingRatio * dampingRatio)
@@ -80,7 +81,7 @@ internal fun springImpulseVelocity(peak: Float, dampingRatio: Float, stiffness: 
 }
 
 /** Motion a neighbor receives when another button is pressed. Read only during the draw phase. */
-internal class ButtonMotionState {
+class ButtonMotionState {
     val offsetDp = Animatable(0f)
     val scaleDelta = Animatable(0f)
 }
@@ -89,7 +90,7 @@ internal class ButtonMotionState {
  * Turns the press interactions of the three buttons into the neighbors' motion: a gentle lean towards a held button,
  * then an elastic outward push with a small scale bounce when it is released.
  */
-internal class ControlButtonsMotion(
+class ControlButtonsMotion(
     private val scope: CoroutineScope,
     private val states: Map<ControlButton, ButtonMotionState>
 ) {
@@ -163,7 +164,7 @@ internal class ControlButtonsMotion(
  * Applies the appearance slide ([slideSign] is the side the button hides towards, `0f` for none) and the neighbors'
  * [state] in the draw phase only, so no frame of the animation recomposes.
  */
-internal fun Modifier.playerControlMotion(
+fun Modifier.playerControlMotion(
     slideSign: Float,
     slide: () -> Float,
     state: ButtonMotionState

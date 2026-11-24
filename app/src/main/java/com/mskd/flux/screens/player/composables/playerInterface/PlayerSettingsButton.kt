@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.mskd.flux.features.player.presentation.PlayerIntent
 import com.mskd.flux.features.player.presentation.SettingsSheet
+import com.mskd.flux.ui.components.buttons.SmallButton
 
 @Composable
 fun PlayerSettingsButton(
@@ -21,22 +22,12 @@ fun PlayerSettingsButton(
     sendIntent: (PlayerIntent) -> Unit
 ) {
 
-    IconButton(
+    SmallButton(
         modifier = modifier.statusBarsPadding(),
+        onClick = { sendIntent(PlayerIntent.ShowSettings(sheet = SettingsSheet.Settings)) },
         enabled = enabled,
-        colors = IconButtonDefaults.iconButtonColors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f)
-        ),
-        onClick = {
-            sendIntent(PlayerIntent.ShowSettings(sheet = SettingsSheet.Settings))
-        }
-    ) {
-
-        Icon(
-            imageVector = Icons.Default.Settings,
-            contentDescription = "Player settings"
-        )
-
-    }
+        imageVector = Icons.Default.Settings,
+        contentDescription = "Player settings"
+    )
 
 }

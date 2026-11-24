@@ -5,7 +5,6 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -19,6 +18,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.foundation.shape.CircleShape
 import com.mskd.flux.features.player.presentation.PlayerIntent
 import com.mskd.flux.ui.FluxPreview
+import com.mskd.flux.ui.components.buttons.ButtonMotionState
+import com.mskd.flux.ui.components.buttons.ControlButton
+import com.mskd.flux.ui.components.buttons.ControlButtonsMotion
+import com.mskd.flux.ui.components.buttons.PRESS_DAMPING
+import com.mskd.flux.ui.components.buttons.PRESS_STIFFNESS
+import com.mskd.flux.ui.components.buttons.playerControlMotion
 import com.mskd.flux.ui.global.expressivePressScale
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
@@ -67,7 +72,8 @@ fun PlayerControlButtons(
 
         MediumFloatingActionButton(
             modifier = Modifier
-                .playerControlMotion(slideSign = 1f, slide = slide, state = motionStates.getValue(ControlButton.REWIND))
+                .playerControlMotion(slideSign = 1f, slide = slide, state = motionStates.getValue(
+                    ControlButton.REWIND))
                 .expressivePressScale(rewindInteraction, dampingRatio = PRESS_DAMPING, stiffness = PRESS_STIFFNESS),
             interactionSource = rewindInteraction,
             onClick = { sendIntent(PlayerIntent.OnFastRewind) },
@@ -88,7 +94,8 @@ fun PlayerControlButtons(
 
         LargeExtendedFloatingActionButton(
             modifier = Modifier
-                .playerControlMotion(slideSign = 0f, slide = slide, state = motionStates.getValue(ControlButton.PLAY))
+                .playerControlMotion(slideSign = 0f, slide = slide, state = motionStates.getValue(
+                    ControlButton.PLAY))
                 .expressivePressScale(playInteraction, dampingRatio = PRESS_DAMPING, stiffness = PRESS_STIFFNESS),
             interactionSource = playInteraction,
             onClick = { sendIntent(PlayerIntent.TogglePlayButton) },
@@ -103,7 +110,8 @@ fun PlayerControlButtons(
 
         MediumFloatingActionButton(
             modifier = Modifier
-                .playerControlMotion(slideSign = -1f, slide = slide, state = motionStates.getValue(ControlButton.FORWARD))
+                .playerControlMotion(slideSign = -1f, slide = slide, state = motionStates.getValue(
+                    ControlButton.FORWARD))
                 .expressivePressScale(forwardInteraction, dampingRatio = PRESS_DAMPING, stiffness = PRESS_STIFFNESS),
             interactionSource = forwardInteraction,
             onClick = { sendIntent(PlayerIntent.OnFastForward) },

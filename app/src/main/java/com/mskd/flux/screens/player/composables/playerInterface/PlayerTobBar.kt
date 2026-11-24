@@ -26,6 +26,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Media
+import com.mskd.flux.ui.components.buttons.SmallButton
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
@@ -49,33 +50,11 @@ fun PlayerTopBar(
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-        IconButton(
+        SmallButton(
             onClick = onBackTap,
-            colors = IconButtonDefaults.iconButtonColors(
-                containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f)
-            )
-        ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                contentDescription = "back button"
-            )
-        }
-        /*Box(
-            modifier = Modifier
-                .clickable(enabled = enabled) { onBackTap() }
-                .size(50.dp)
-                .clip(shape = CircleShape)
-                .padding(FluxUI.Space.extraSmall),
-            contentAlignment = Alignment.Center
-        ) {
-
-            Icon(
-                imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                tint = Color.White,
-                contentDescription = "back button"
-            )
-
-        }*/
+            imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+            contentDescription = "back button"
+        )
 
         Column(
             modifier = Modifier.weight(1f),

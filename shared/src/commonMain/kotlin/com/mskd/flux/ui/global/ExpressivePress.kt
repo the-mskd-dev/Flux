@@ -7,8 +7,12 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
+import com.mskd.flux.ui.components.buttons.PRESS_DAMPING
+import com.mskd.flux.ui.components.buttons.PRESS_SCALE
+import com.mskd.flux.ui.components.buttons.PRESS_STIFFNESS
 
 /**
  * Material 3 Expressive press feedback: the element squishes under the finger and bounces back on release.
@@ -17,10 +21,10 @@ import androidx.compose.ui.graphics.graphicsLayer
  */
 @Composable
 fun Modifier.expressivePressScale(
-    interactionSource: MutableInteractionSource,
-    pressedScale: Float = 0.85f,
-    dampingRatio: Float = Spring.DampingRatioMediumBouncy,
-    stiffness: Float = Spring.StiffnessMedium
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    pressedScale: Float = PRESS_SCALE,
+    dampingRatio: Float = PRESS_DAMPING,
+    stiffness: Float = PRESS_STIFFNESS
 ): Modifier {
 
     val isPressed by interactionSource.collectIsPressedAsState()

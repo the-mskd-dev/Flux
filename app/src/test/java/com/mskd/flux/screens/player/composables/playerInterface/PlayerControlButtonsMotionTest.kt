@@ -1,5 +1,8 @@
 package com.mskd.flux.screens.player.composables.playerInterface
 
+import com.mskd.flux.ui.components.buttons.ControlButton
+import com.mskd.flux.ui.components.buttons.computeNetHoldPullDp
+import com.mskd.flux.ui.components.buttons.springImpulseVelocity
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.floats.plusOrMinus
 import io.kotest.matchers.floats.shouldBeLessThan
@@ -13,15 +16,39 @@ class PlayerControlButtonsMotionTest : FunSpec({
     }
 
     test("a held button pulls its direct neighbors towards it") {
-        computeNetHoldPullDp(ControlButton.PLAY, held = setOf(ControlButton.REWIND), pullDp = 2.5f) shouldBe -2.5f
-        computeNetHoldPullDp(ControlButton.PLAY, held = setOf(ControlButton.FORWARD), pullDp = 2.5f) shouldBe 2.5f
-        computeNetHoldPullDp(ControlButton.REWIND, held = setOf(ControlButton.PLAY), pullDp = 2.5f) shouldBe 2.5f
-        computeNetHoldPullDp(ControlButton.FORWARD, held = setOf(ControlButton.PLAY), pullDp = 2.5f) shouldBe -2.5f
+        computeNetHoldPullDp(
+            ControlButton.PLAY,
+            held = setOf(ControlButton.REWIND),
+            pullDp = 2.5f
+        ) shouldBe -2.5f
+        computeNetHoldPullDp(
+            ControlButton.PLAY,
+            held = setOf(ControlButton.FORWARD),
+            pullDp = 2.5f
+        ) shouldBe 2.5f
+        computeNetHoldPullDp(
+            ControlButton.REWIND,
+            held = setOf(ControlButton.PLAY),
+            pullDp = 2.5f
+        ) shouldBe 2.5f
+        computeNetHoldPullDp(
+            ControlButton.FORWARD,
+            held = setOf(ControlButton.PLAY),
+            pullDp = 2.5f
+        ) shouldBe -2.5f
     }
 
     test("a button is not pulled by itself nor by a button that is not next to it") {
-        computeNetHoldPullDp(ControlButton.PLAY, held = setOf(ControlButton.PLAY), pullDp = 2.5f) shouldBe 0f
-        computeNetHoldPullDp(ControlButton.REWIND, held = setOf(ControlButton.FORWARD), pullDp = 2.5f) shouldBe 0f
+        computeNetHoldPullDp(
+            ControlButton.PLAY,
+            held = setOf(ControlButton.PLAY),
+            pullDp = 2.5f
+        ) shouldBe 0f
+        computeNetHoldPullDp(
+            ControlButton.REWIND,
+            held = setOf(ControlButton.FORWARD),
+            pullDp = 2.5f
+        ) shouldBe 0f
     }
 
     test("play is not pulled when rewind and forward are held together") {

@@ -127,7 +127,10 @@ internal class ControlButtonsMotion(
     private fun applyHoldPull() {
         states.forEach { (button, state) ->
             val target = computeNetHoldPullDp(button, held, HOLD_PULL_DP)
-            scope.launch { state.offsetDp.animateTo(target, neighborSpring()) }
+            // Leave untouched buttons alone: restarting their spring would cut a rebound still in flight.
+            if (target != state.offsetDp.targetValue) {
+                scope.launch { state.offsetDp.animateTo(target, neighborSpring()) }
+            }
         }
     }
 
@@ -137,14 +140,17 @@ internal class ControlButtonsMotion(
             state.offsetDp.animateTo(
                 targetValue = 0f,
                 animationSpec = neighborSpring(),
-                initialVelocity = direction * springImpulseVelocity(REBOUND_OFFSET_PEAK_DP, NEIGHBOR_DAMPING, NEIGHBOR_STIFFNESS)
+                // Added to the current velocity, so a bounce already in flight is not cut dead by a new tap.
+                initialVelocity = state.offsetDp.velocity +
+                    direction * springImpulseVelocity(REBOUND_OFFSET_PEAK_DP, NEIGHBOR_DAMPING, NEIGHBOR_STIFFNESS)
             )
         }
         scope.launch {
             state.scaleDelta.animateTo(
                 targetValue = 0f,
                 animationSpec = neighborSpring(SCALE_VISIBILITY_THRESHOLD),
-                initialVelocity = springImpulseVelocity(REBOUND_SCALE_PEAK, NEIGHBOR_DAMPING, NEIGHBOR_STIFFNESS)
+                initialVelocity = state.scaleDelta.velocity +
+                    springImpulseVelocity(REBOUND_SCALE_PEAK, NEIGHBOR_DAMPING, NEIGHBOR_STIFFNESS)
             )
         }
     }

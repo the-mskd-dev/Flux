@@ -7,6 +7,7 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.LinearWavyProgressIndicator
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.SliderState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -59,15 +60,22 @@ fun ChapterSlider(
 
     val boundaries = remember(chapters, duration) { chapters.boundaryFractions(duration) }
     var width by remember { mutableIntStateOf(0) }
+    val valueRange = 0f..duration.toFloat().coerceAtLeast(0f)
+    val sliderState = remember(valueRange) {
+        SliderState(
+            value = value(),
+            trackRange = valueRange
+        )
+    }
+    sliderState.value = value()
 
     Box(modifier = modifier.onSizeChanged { width = it.width }) {
 
         Slider(
             modifier = Modifier.fillMaxWidth(),
-            value = value(),
+            state = sliderState,
             enabled = enabled,
             onValueChange = onValueChange,
-            valueRange = 0f..duration.toFloat().coerceAtLeast(0f),
             onValueChangeFinished = onValueChangeFinished,
             interactionSource = interactionSource,
             track = { sliderState ->

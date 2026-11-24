@@ -7,8 +7,9 @@ description: Update dependency versions in libs.versions.toml for the Android/KM
 
 ## 1. Find new versions
 
-- Look up the latest versions on Maven Central, Google Maven and the Gradle Plugin Portal.
-- Read the changelog or release notes of each library that has a new version.
+- If your environment supports subagents, delegate this research. Launch several in parallel, one per family of libraries (AndroidX, Compose, Kotlin tooling, Ktor, etc.). Use the fastest and cheapest model available for them, and give each one the instructions from `references/researcher.md` as its prompt.
+- If subagents are not available, follow `references/researcher.md` yourself, library by library.
+- Verify any major upgrade yourself before applying it.
 
 ## 2. Version policy
 

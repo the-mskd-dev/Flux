@@ -7,9 +7,11 @@ description: Update dependency versions in libs.versions.toml for the Android/KM
 
 ## 1. Find new versions
 
-- If your environment supports subagents, delegate this research. Launch several in parallel, one per family of libraries (AndroidX, Compose, Kotlin tooling, Ktor, etc.). Use the fastest and cheapest model available for them, and give each one the instructions from `references/researcher.md` as its prompt.
-- If subagents are not available, follow `references/researcher.md` yourself, library by library.
-- Verify any major upgrade yourself before applying it.
+If your environment supports subagents, delegate this research. Launch several in parallel, one per family of libraries (AndroidX, Compose, Kotlin tooling, Ktor, etc.). Use the fastest and cheapest model available for them, and give each one the instructions from `references/researcher.md` as its prompt.
+
+If subagents are not available, follow `references/researcher.md` yourself, library by library.
+
+Verify any major upgrade yourself before applying it.
 
 ## 2. Version policy
 
@@ -25,13 +27,20 @@ Update in groups, so that a failure can be traced to a specific group. Verify (s
 1. Tightly coupled tools first: Kotlin, KSP, Compose compiler, Android Gradle Plugin, Gradle wrapper.
 2. Then the remaining libraries, grouped by family (AndroidX, Compose, Ktor, etc.).
 
+## 3b. Scan for impacted code
+
+For each updated library with breaking or deprecated APIs listed in the research results, search the codebase for usages of those APIs. If subagents are available, delegate this to a cheap, read-only one using `references/usage-scanner.md` as its prompt. Use the results to know which files to fix in step 4.
+
 ## 4. Verify
 
 After each group, run:
 
-- `./gradlew :app:buildFossDebug`
-- `./gradlew :app:testFossDebugUnitTest`
+- `./gradlew build`
+- `./gradlew test`
+- `./gradlew lint`
 - The compile tasks of every KMP target used by the project (Android, iOS, desktop, etc.).
+
+You may delegate running these tasks to a cheap subagent, but it must return success or failure and the relevant error excerpts verbatim, with file and line. Do not accept paraphrased errors. Do not run builds in parallel on the same checkout.
 
 If something fails:
 
@@ -52,6 +61,8 @@ Then add:
 Keep it concise: this report becomes the pull request description.
 
 ## 6. Commit, push and pull request
+
+Once the report is final, you may delegate the commands of this step to a cheap subagent, giving it the report and these instructions.
 
 1. Never push to `main`. If you are on `main`, create a new branch first.
 2. Commit with the message `[LIB] Update libraries`, then push.

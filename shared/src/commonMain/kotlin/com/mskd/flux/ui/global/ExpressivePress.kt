@@ -25,7 +25,8 @@ fun Modifier.expressivePressScale(
 
     val isPressed by interactionSource.collectIsPressedAsState()
 
-    val scale by animateFloatAsState(
+    // Read in the draw phase only, so the animation does not recompose the caller on every frame.
+    val scale = animateFloatAsState(
         targetValue = if (isPressed) pressedScale else 1f,
         animationSpec = spring(
             dampingRatio = dampingRatio,
@@ -35,8 +36,8 @@ fun Modifier.expressivePressScale(
     )
 
     return graphicsLayer {
-        scaleX = scale
-        scaleY = scale
+        scaleX = scale.value
+        scaleY = scale.value
     }
 
 }

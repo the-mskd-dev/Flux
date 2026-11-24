@@ -35,9 +35,8 @@ For each updated library with breaking or deprecated APIs listed in the research
 
 After each group, run:
 
-- `./gradlew build`
-- `./gradlew test`
-- `./gradlew lint`
+- `./gradlew :app:buildFossDebugUnitTest`
+- `./gradlew :app:testFossDebugUnitTest`
 - The compile tasks of every KMP target used by the project (Android, iOS, desktop, etc.).
 
 You may delegate running these tasks to a cheap subagent, but it must return success or failure and the relevant error excerpts verbatim, with file and line. Do not accept paraphrased errors. Do not run builds in parallel on the same checkout.
@@ -49,9 +48,12 @@ If something fails:
 
 ## 5. Report
 
-Use this format, one line per updated library:
+Use these sections for each updated library:
 
-`library: old → new | notable changes | impact | code changes required`
+- `library: old → new`
+- `notable changes`
+- `impact`
+- `code changes required`
 
 Then add:
 

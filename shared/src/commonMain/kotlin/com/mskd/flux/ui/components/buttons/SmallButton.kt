@@ -22,7 +22,7 @@ fun SmallButton(
 ) {
 
     IconButton(
-        modifier = modifier.expressivePressScale(),
+        modifier = modifier.expressivePress(enabled = enabled),
         onClick = onClick,
         enabled = enabled,
         colors = IconButtonDefaults.iconButtonColors(
@@ -50,7 +50,7 @@ fun SmallButton(
 ) {
 
     IconButton(
-        modifier = modifier.expressivePressScale(),
+        modifier = modifier.expressivePress(enabled = enabled),
         onClick = onClick,
         enabled = enabled,
         colors = IconButtonDefaults.iconButtonColors(

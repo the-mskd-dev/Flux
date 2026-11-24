@@ -1,30 +1,22 @@
 package com.mskd.flux.screens.player.composables.playerInterface
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.LargeExtendedFloatingActionButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumFloatingActionButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.graphics.graphicsLayer
 import com.mskd.flux.features.player.presentation.PlayerIntent
 import com.mskd.flux.ui.FluxPreview
-import com.mskd.flux.ui.components.buttons.ButtonMotionState
-import com.mskd.flux.ui.components.buttons.ControlButton
-import com.mskd.flux.ui.components.buttons.ControlButtonsMotion
-import com.mskd.flux.ui.components.buttons.PRESS_DAMPING
-import com.mskd.flux.ui.components.buttons.PRESS_STIFFNESS
-import com.mskd.flux.ui.components.buttons.playerControlMotion
-import com.mskd.flux.ui.components.buttons.expressivePressScale
+import com.mskd.flux.ui.components.ExpressiveRow
+import com.mskd.flux.ui.components.buttons.expressivePress
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
@@ -36,7 +28,6 @@ import flux.shared.generated.resources.ic_play
 import flux.shared.generated.resources.ic_rewind_10
 import flux.shared.generated.resources.ic_rewind_30
 import flux.shared.generated.resources.ic_rewind_5
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -50,21 +41,7 @@ fun PlayerControlButtons(
 
     val [rewind, forward] = rewindAndForward
 
-    val rewindInteraction = remember { MutableInteractionSource() }
-    val playInteraction = remember { MutableInteractionSource() }
-    val forwardInteraction = remember { MutableInteractionSource() }
-
-    val motionStates = remember { ControlButton.entries.associateWith { ButtonMotionState() } }
-
-    // A press on one button makes its direct neighbors bounce too.
-    LaunchedEffect(motionStates) {
-        val motion = ControlButtonsMotion(scope = this, states = motionStates)
-        launch { motion.collect(ControlButton.REWIND, rewindInteraction) }
-        launch { motion.collect(ControlButton.PLAY, playInteraction) }
-        launch { motion.collect(ControlButton.FORWARD, forwardInteraction) }
-    }
-
-    Row(
+    ExpressiveRow(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.medium),
         verticalAlignment = Alignment.CenterVertically
@@ -72,10 +49,10 @@ fun PlayerControlButtons(
 
         MediumFloatingActionButton(
             modifier = Modifier
-                .playerControlMotion(slideSign = 1f, slide = slide, state = motionStates.getValue(
-                    ControlButton.REWIND))
-                .expressivePressScale(rewindInteraction, dampingRatio = PRESS_DAMPING, stiffness = PRESS_STIFFNESS),
-            interactionSource = rewindInteraction,
+                .playerControlSlide(slideSign = 1f, slide = slide)
+                .expressiveTag("rewind")
+                .expressiveSideBounce(rightTag = "play")
+                .expressivePress(),
             onClick = { sendIntent(PlayerIntent.OnFastRewind) },
             shape = CircleShape,
             containerColor = MaterialTheme.colorScheme.tertiaryContainer
@@ -94,10 +71,9 @@ fun PlayerControlButtons(
 
         LargeExtendedFloatingActionButton(
             modifier = Modifier
-                .playerControlMotion(slideSign = 0f, slide = slide, state = motionStates.getValue(
-                    ControlButton.PLAY))
-                .expressivePressScale(playInteraction, dampingRatio = PRESS_DAMPING, stiffness = PRESS_STIFFNESS),
-            interactionSource = playInteraction,
+                .expressiveTag("play")
+                .expressiveSideBounce(leftTag = "rewind", rightTag = "forward")
+                .expressivePress(),
             onClick = { sendIntent(PlayerIntent.TogglePlayButton) },
             shape = FloatingActionButtonDefaults.largeExtendedFabShape
         ) {
@@ -110,10 +86,10 @@ fun PlayerControlButtons(
 
         MediumFloatingActionButton(
             modifier = Modifier
-                .playerControlMotion(slideSign = -1f, slide = slide, state = motionStates.getValue(
-                    ControlButton.FORWARD))
-                .expressivePressScale(forwardInteraction, dampingRatio = PRESS_DAMPING, stiffness = PRESS_STIFFNESS),
-            interactionSource = forwardInteraction,
+                .playerControlSlide(slideSign = -1f, slide = slide)
+                .expressiveTag("forward")
+                .expressiveSideBounce(leftTag = "play")
+                .expressivePress(),
             onClick = { sendIntent(PlayerIntent.OnFastForward) },
             shape = CircleShape,
             containerColor = MaterialTheme.colorScheme.tertiaryContainer
@@ -133,6 +109,9 @@ fun PlayerControlButtons(
     }
 
 }
+
+private fun Modifier.playerControlSlide(slideSign: Float, slide: () -> Float): Modifier =
+    graphicsLayer { translationX = slideSign * size.width * (1f - slide()) }
 
 @FluxPreview
 @Composable

@@ -27,6 +27,7 @@ import com.mskd.flux.features.player.presentation.PlayerIntent
 import com.mskd.flux.features.player.presentation.SettingsSheet
 import com.mskd.flux.features.player.ui.PlayerSheetTopBar
 import com.mskd.flux.ui.FluxPreview
+import com.mskd.flux.ui.global.BackGesture
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
@@ -45,6 +46,10 @@ fun PlayerPlaybackSpeedSheet(
         modifier = Modifier.clip(AlertDialogDefaults.shape),
         onDismissRequest = { sendIntent(PlayerIntent.ShowSettings(sheet = null)) },
     ) {
+
+        BackGesture {
+            sendIntent(PlayerIntent.ShowSettings(sheet = SettingsSheet.Settings))
+        }
 
         Surface(
             modifier = Modifier.wrapContentWidth().wrapContentHeight(),

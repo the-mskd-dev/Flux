@@ -24,7 +24,7 @@ import com.mskd.flux.ui.components.buttons.ControlButtonsMotion
 import com.mskd.flux.ui.components.buttons.PRESS_DAMPING
 import com.mskd.flux.ui.components.buttons.PRESS_STIFFNESS
 import com.mskd.flux.ui.components.buttons.playerControlMotion
-import com.mskd.flux.ui.global.expressivePressScale
+import com.mskd.flux.ui.components.buttons.expressivePressScale
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res

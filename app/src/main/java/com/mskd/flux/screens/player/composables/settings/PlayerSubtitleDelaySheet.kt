@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.BasicAlertDialog
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
@@ -39,7 +38,7 @@ import com.mskd.flux.features.player.presentation.SettingsSheet
 import com.mskd.flux.features.player.ui.PlayerSheetTopBar
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.global.BackGesture
-import com.mskd.flux.ui.global.expressivePressScale
+import com.mskd.flux.ui.components.buttons.expressivePressScale
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI

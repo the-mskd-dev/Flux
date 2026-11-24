@@ -1,6 +1,5 @@
-package com.mskd.flux.ui.global
+package com.mskd.flux.ui.components.buttons
 
-import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -10,9 +9,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
-import com.mskd.flux.ui.components.buttons.PRESS_DAMPING
-import com.mskd.flux.ui.components.buttons.PRESS_SCALE
-import com.mskd.flux.ui.components.buttons.PRESS_STIFFNESS
 
 /**
  * Material 3 Expressive press feedback: the element squishes under the finger and bounces back on release.

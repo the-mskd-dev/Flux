@@ -20,7 +20,7 @@ import com.mskd.flux.ui.components.FluxScaffold
 import com.mskd.flux.ui.scaffoldPadding
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.Design
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.how_to_name_files
 import flux.shared.generated.resources.how_to_name_files_desc
@@ -48,15 +48,15 @@ fun HowToScreen(onBack: () -> Unit) {
                 .consumeWindowInsets(innerPadding)
                 .verticalScroll(rememberScrollState())
                 .scaffoldPadding(innerPadding),
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large),
+            verticalArrangement = Arrangement.spacedBy(Design.Space.large),
             horizontalAlignment = Alignment.Start
         ) {
 
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = FluxUI.Space.medium),
-                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large),
+                    .padding(horizontal = Design.Space.medium),
+                verticalArrangement = Arrangement.spacedBy(Design.Space.large),
                 horizontalAlignment = Alignment.Start
             ) {
 
@@ -77,17 +77,17 @@ fun HowToNameFiles() {
 
     Column(
         modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large),
+        verticalArrangement = Arrangement.spacedBy(Design.Space.large),
         horizontalAlignment = Alignment.Start
     ) {
 
         Column(
             modifier = Modifier
-                .clip(FluxUI.shapes.corners)
+                .clip(Design.shapes.corners)
                 .background(MaterialTheme.colorScheme.surfaceContainer)
                 .fillMaxWidth()
-                .padding(all = FluxUI.Space.medium),
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
+                .padding(all = Design.Space.medium),
+            verticalArrangement = Arrangement.spacedBy(Design.Space.medium)
         ) {
 
             Text.Content.Title(text = stringResource(Res.string.movies))
@@ -95,7 +95,7 @@ fun HowToNameFiles() {
 
             Column(
                 modifier = Modifier.alpha(.7f),
-                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall)
+                verticalArrangement = Arrangement.spacedBy(Design.Space.extraSmall)
             ) {
 
                 val movies = stringArrayResource(Res.array.movies_naming)
@@ -110,11 +110,11 @@ fun HowToNameFiles() {
 
         Column(
             modifier = Modifier
-                .clip(FluxUI.shapes.corners)
+                .clip(Design.shapes.corners)
                 .background(MaterialTheme.colorScheme.surfaceContainer)
                 .fillMaxWidth()
-                .padding(all = FluxUI.Space.medium),
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
+                .padding(all = Design.Space.medium),
+            verticalArrangement = Arrangement.spacedBy(Design.Space.medium)
         ) {
 
             Text.Content.Title(text = stringResource(Res.string.shows))
@@ -122,7 +122,7 @@ fun HowToNameFiles() {
 
             Column(
                 modifier = Modifier.alpha(.7f),
-                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall)
+                verticalArrangement = Arrangement.spacedBy(Design.Space.extraSmall)
             ) {
 
                 val shows = stringArrayResource(Res.array.shows_naming)

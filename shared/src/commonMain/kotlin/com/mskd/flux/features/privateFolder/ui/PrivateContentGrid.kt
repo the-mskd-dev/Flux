@@ -31,7 +31,7 @@ import com.mskd.flux.ui.modal.menu.FluxPopUpMenu
 import com.mskd.flux.ui.modal.menu.FluxPopUpMenuItem
 import com.mskd.flux.ui.plus
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.Design
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_delete
 import flux.shared.generated.resources.remove_from_private_folder
@@ -47,7 +47,7 @@ fun PrivateContentGrid(
 ) {
 
     val screenDimensions = rememberScreenDimensions()
-    val columns = if (screenDimensions.isLarge) 5 else FluxUI.itemsPerRow.artworks
+    val columns = if (screenDimensions.isLarge) 5 else Design.itemsPerRow.artworks
 
     LazyVerticalGrid(
         modifier = Modifier
@@ -55,11 +55,11 @@ fun PrivateContentGrid(
             .background(MaterialTheme.colorScheme.background)
             .consumeWindowInsets(innerPadding),
         columns = GridCells.Fixed(columns),
-        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
-        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
+        verticalArrangement = Arrangement.spacedBy(Design.Space.small),
+        horizontalArrangement = Arrangement.spacedBy(Design.Space.small),
         contentPadding = innerPadding.plus(
-            top = FluxUI.Space.medium,
-            horizontal = FluxUI.Space.medium,
+            top = Design.Space.medium,
+            horizontal = Design.Space.medium,
         )
     ) {
 
@@ -91,7 +91,7 @@ fun PrivateArtworkItem(
         MediaItem(
             modifier = Modifier
                 .fillMaxWidth()
-                .aspectRatio(FluxUI.Dimension.itemRatio),
+                .aspectRatio(Design.Dimension.itemRatio),
             path = artwork.shownPosterPath,
             onClick = { rgb -> sendIntent(PrivateFolderIntent.OnArtworkTap(artwork = artwork, rgb = rgb)) },
             onLongClick = { menuExpanded = true },

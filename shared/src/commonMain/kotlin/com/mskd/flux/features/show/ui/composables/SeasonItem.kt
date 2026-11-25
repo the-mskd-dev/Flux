@@ -35,7 +35,7 @@ import com.mskd.flux.ui.image.FluxImage
 import com.mskd.flux.ui.image.seedRgb
 import com.mskd.flux.ui.image.toComposeImageBitmap
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.Design
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.episodes_count
 import flux.shared.generated.resources.season
@@ -63,13 +63,13 @@ fun SeasonItem(
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .aspectRatio(FluxUI.Dimension.itemRatio)
+                .aspectRatio(Design.Dimension.itemRatio)
                 .combinedClickable(
                     onClick = { onClick(seedRgb) },
                     onLongClick = { onLongPress() }
                 ),
-            shape = FluxUI.shapes.corners,
-            shadowElevation = FluxUI.Elevation.itemShadow
+            shape = Design.shapes.corners,
+            shadowElevation = Design.Elevation.itemShadow
         ) {
 
             Box(
@@ -107,7 +107,7 @@ fun SeasonItem(
         }
 
         Column(
-            modifier = Modifier.padding(horizontal = FluxUI.Space.small, vertical = FluxUI.Space.small),
+            modifier = Modifier.padding(horizontal = Design.Space.small, vertical = Design.Space.small),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
@@ -143,7 +143,7 @@ fun SeasonItem_Preview() {
     FluxThemePreview {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
+            horizontalArrangement = Arrangement.spacedBy(Design.Space.medium)
         ) {
 
             (1..3).forEach { _ ->

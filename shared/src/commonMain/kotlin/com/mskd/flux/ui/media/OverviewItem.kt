@@ -27,8 +27,8 @@ import com.mskd.flux.ui.components.buttons.ReadMoreButton
 import com.mskd.flux.ui.media.episode.spoilerToggle
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.ui.theme.LocalUiShapes
+import com.mskd.flux.ui.Design
+import com.mskd.flux.ui.LocalUiShapes
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.episode
 import flux.shared.generated.resources.season
@@ -59,7 +59,7 @@ fun OverviewItem(
         modifier = modifier.fillMaxWidth(),
         color = MaterialTheme.colorScheme.surfaceContainer,
         shape = LocalUiShapes.current.corners,
-        shadowElevation = FluxUI.Elevation.itemShadow,
+        shadowElevation = Design.Elevation.itemShadow,
     ) {
 
         Column(
@@ -73,13 +73,13 @@ fun OverviewItem(
                         )
                     ) else Modifier
                 )
-                .padding(all = FluxUI.Space.medium),
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
+                .padding(all = Design.Space.medium),
+            verticalArrangement = Arrangement.spacedBy(Design.Space.small)
         ) {
 
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall)
+                verticalArrangement = Arrangement.spacedBy(Design.Space.extraSmall)
             ) {
 
                 topDetails()
@@ -137,7 +137,7 @@ fun OverviewItem(
 @Composable
 fun EpisodesDetails(episode: Episode) {
 
-    Row(horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)) {
+    Row(horizontalArrangement = Arrangement.spacedBy(Design.Space.medium)) {
         Text.Content.Label(
             text = stringResource(Res.string.season, episode.season).uppercase(),
             color = MaterialTheme.colorScheme.primary,

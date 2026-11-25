@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.screens.catalog.composable.CatalogArtworkItem
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.Design
 
 fun LazyGridScope.catalogViewModeGrid(
     artworks: List<Artwork>,
@@ -22,7 +22,7 @@ fun LazyGridScope.catalogViewModeGrid(
             modifier = Modifier
                 .animateItem()
                 .fillMaxWidth()
-                .aspectRatio(FluxUI.Dimension.itemRatio),
+                .aspectRatio(Design.Dimension.itemRatio),
             artwork = artwork,
             privateFolderEnabled = privateFolderEnabled,
             sendIntent = sendIntent

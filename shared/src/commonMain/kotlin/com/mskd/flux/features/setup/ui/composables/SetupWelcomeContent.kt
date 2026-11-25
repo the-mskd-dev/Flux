@@ -14,7 +14,7 @@ import androidx.compose.ui.text.style.TextAlign
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.Design
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.welcome
 import flux.shared.generated.resources.welcome_description
@@ -32,7 +32,7 @@ fun SetupWelcomeContent() {
 
         Column(
             modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large)
+            verticalArrangement = Arrangement.spacedBy(Design.Space.large)
         ) {
 
             Text.MainTitle(
@@ -49,7 +49,7 @@ fun SetupWelcomeContent() {
 
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
+                verticalArrangement = Arrangement.spacedBy(Design.Space.small)
             ) {
 
                 val features = stringArrayResource(Res.array.welcome_features)
@@ -62,7 +62,7 @@ fun SetupWelcomeContent() {
                 features.forEachIndexed { index, feature ->
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
+                        horizontalArrangement = Arrangement.spacedBy(Design.Space.small)
                     ) {
                         Text.Content.Body(
                             text = featuresIcons.getOrNull(index) ?: "✨",

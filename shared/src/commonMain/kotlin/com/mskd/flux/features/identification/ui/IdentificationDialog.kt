@@ -17,7 +17,7 @@ import com.mskd.flux.features.identification.ui.composables.IdentificationResult
 import com.mskd.flux.features.identification.ui.composables.IdentificationSearchField
 import com.mskd.flux.ui.modal.dialog.FluxDialog
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.Design
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.identification_failed
 import flux.shared.generated.resources.identification_select_data
@@ -66,7 +66,7 @@ private fun IdentificationDialogContent(
     sendIntent: (IdentificationIntent) -> Unit,
 ) {
 
-    Column(verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)) {
+    Column(verticalArrangement = Arrangement.spacedBy(Design.Space.medium)) {
 
         IdentificationSearchField(
             query = uiState.query,

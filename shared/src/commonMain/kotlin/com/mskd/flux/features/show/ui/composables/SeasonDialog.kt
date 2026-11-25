@@ -16,7 +16,7 @@ import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.modal.dialog.FluxDialog
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.Design
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.close
 import flux.shared.generated.resources.no_summary
@@ -38,8 +38,8 @@ fun SeasonDialog(
         Column(
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
-                .padding(all = FluxUI.Space.medium),
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
+                .padding(all = Design.Space.medium),
+            verticalArrangement = Arrangement.spacedBy(Design.Space.medium)
         ) {
 
             Text.Content.Body(

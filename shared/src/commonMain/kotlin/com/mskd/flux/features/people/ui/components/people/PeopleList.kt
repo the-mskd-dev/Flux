@@ -23,7 +23,7 @@ import com.mskd.flux.ui.bleedHorizontal
 import com.mskd.flux.ui.dimensions.itemWidthFor
 import com.mskd.flux.ui.image.rememberIconPlaceholderPainter
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.Design
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.cast
 import flux.shared.generated.resources.ic_person
@@ -36,12 +36,12 @@ fun PeopleList(
 ) {
 
     val placeholder = rememberIconPlaceholderPainter(icon = Res.drawable.ic_person)
-    var itemWidth by remember { mutableStateOf(FluxUI.Dimension.itemWidth) }
+    var itemWidth by remember { mutableStateOf(Design.Dimension.itemWidth) }
     val density = LocalDensity.current
 
     Column(
         modifier = Modifier,
-        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium),
+        verticalArrangement = Arrangement.spacedBy(Design.Space.medium),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
@@ -63,9 +63,9 @@ fun PeopleList(
                     }
                 }
                 .bleedHorizontal(),
-            horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
+            horizontalArrangement = Arrangement.spacedBy(Design.Space.small),
             verticalAlignment = Alignment.Top,
-            contentPadding = PaddingValues(horizontal = FluxUI.Space.medium)
+            contentPadding = PaddingValues(horizontal = Design.Space.medium)
         ) {
 
             items(items = people, key = { it.creditId }) { person ->
@@ -73,7 +73,7 @@ fun PeopleList(
                 PeopleItem(
                     modifier = Modifier
                         .width(itemWidth)
-                        .widthIn(max = FluxUI.Dimension.itemWidth),
+                        .widthIn(max = Design.Dimension.itemWidth),
                     person = person,
                     placeholder = placeholder,
                     onClick = { onClick(person) }

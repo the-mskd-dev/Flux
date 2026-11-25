@@ -32,7 +32,7 @@ import com.mskd.flux.features.player.presentation.SeekOverlay
 import com.mskd.flux.ui.LandscapePreview
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.Design
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_forward
 import flux.shared.generated.resources.ic_rewind
@@ -78,8 +78,8 @@ fun PlayerSeekOverlay(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(overlayLeftBackground)
-                    .padding(horizontal = FluxUI.Space.large),
-                horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.medium, Alignment.CenterHorizontally),
+                    .padding(horizontal = Design.Space.large),
+                horizontalArrangement = Arrangement.spacedBy(Design.Space.medium, Alignment.CenterHorizontally),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 PlayerSeekOverlayIcon(
@@ -108,8 +108,8 @@ fun PlayerSeekOverlay(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(overlayRightBackground)
-                    .padding(horizontal = FluxUI.Space.large),
-                horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.medium, Alignment.CenterHorizontally),
+                    .padding(horizontal = Design.Space.large),
+                horizontalArrangement = Arrangement.spacedBy(Design.Space.medium, Alignment.CenterHorizontally),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 PlayerSeekOverlayText(amount = overlay?.amount?.let { "+$it" })
@@ -172,7 +172,7 @@ fun PlayerSeekOverlayText(amount: String?) {
         targetState = amount,
         label = "SeekOverlayText change"
     ) { text ->
-        Box(modifier = Modifier.padding(all = FluxUI.Space.small)) {
+        Box(modifier = Modifier.padding(all = Design.Space.small)) {
             Text.Content.Body(
                 text = text,
                 color = Color.White,

@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.Constraints
 import com.mskd.flux.features.player.domain.model.CueAnchor
 import com.mskd.flux.features.player.domain.model.SubtitleCue
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.Design
 import kotlin.math.roundToInt
 
 /** Vertical position of an explicitly positioned cue when only horizontal placement is provided. */
@@ -98,12 +98,12 @@ fun PlayerSubtitles(
                 contentAlignment = Alignment.BottomCenter,
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = FluxUI.Space.large)
-                    .padding(bottom = FluxUI.Space.large),
+                    .padding(horizontal = Design.Space.large)
+                    .padding(bottom = Design.Space.large),
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall),
+                    verticalArrangement = Arrangement.spacedBy(Design.Space.extraSmall),
                 ) {
                     layers.bottomText.forEach { cue ->
                         CuePill(
@@ -214,7 +214,7 @@ private fun CuePill(cue: SubtitleCue, smallText: Boolean, modifier: Modifier = M
         modifier = modifier
             .clip(shape = MaterialTheme.shapes.extraSmall)
             .background(color = Color.Black.copy(.5f))
-            .padding(horizontal = FluxUI.Space.small, vertical = FluxUI.Space.extraSmall),
+            .padding(horizontal = Design.Space.small, vertical = Design.Space.extraSmall),
         text = annotatedText,
         color = Color.White,
         textAlign = TextAlign.Center,

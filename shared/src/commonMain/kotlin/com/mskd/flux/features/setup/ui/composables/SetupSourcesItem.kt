@@ -12,7 +12,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.Design
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.setup_sources_default_desc
 import flux.shared.generated.resources.setup_sources_default_title
@@ -49,7 +49,7 @@ fun SetupSourcesItem_Selected_Preview() {
         Box(
             modifier = Modifier
                 .background(color = MaterialTheme.colorScheme.background)
-                .padding(all = FluxUI.Space.medium)
+                .padding(all = Design.Space.medium)
             ,
             contentAlignment = Alignment.Center
         ) {
@@ -70,7 +70,7 @@ fun SetupSourcesItem_Unselected_Preview() {
         Box(
             modifier = Modifier
                 .background(color = MaterialTheme.colorScheme.surfaceContainer)
-                .padding(all = FluxUI.Space.medium)
+                .padding(all = Design.Space.medium)
             ,
             contentAlignment = Alignment.Center
         ) {

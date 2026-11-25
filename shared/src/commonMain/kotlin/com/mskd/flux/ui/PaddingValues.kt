@@ -10,12 +10,11 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import com.mskd.flux.ui.theme.FluxUI
 
 @Composable
 fun PaddingValues.plus(
     top: Dp = 0.dp,
-    bottom: Dp = FluxUI.Space.large,
+    bottom: Dp = Design.Space.large,
     horizontal: Dp = 0.dp,
     start: Dp = horizontal,
     end: Dp = horizontal,
@@ -34,7 +33,7 @@ fun PaddingValues.plus(
 fun Modifier.scaffoldPadding(
     innerPadding: PaddingValues,
     top: Dp = 0.dp,
-    bottom: Dp = FluxUI.Space.large,
+    bottom: Dp = Design.Space.large,
     horizontal: Dp = 0.dp,
     start: Dp = horizontal,
     end: Dp = horizontal,

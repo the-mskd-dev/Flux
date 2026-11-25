@@ -10,7 +10,7 @@ import com.mskd.flux.ui.media.EpisodesDetails
 import com.mskd.flux.ui.media.MediaDetailsHorizontal
 import com.mskd.flux.ui.media.OverviewItem
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.Design
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.no_summary
 import flux.shared.generated.resources.summary
@@ -32,7 +32,7 @@ fun ArtworkOverview(
     if (overview is ArtworkOverviewContent.ShowOverview) {
         ArtworkOverviewItem(overview, modifier, isSpoiler, isBlurred, onToggleSpoiler)
     } else {
-        Card(modifier = modifier, shape = FluxUI.shapes.corners) {
+        Card(modifier = modifier, shape = Design.shapes.corners) {
             ArtworkOverviewItem(overview, Modifier, isSpoiler, isBlurred, onToggleSpoiler)
         }
     }

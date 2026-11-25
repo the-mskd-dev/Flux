@@ -17,7 +17,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.features.search.presentation.SearchIntent
 import com.mskd.flux.ui.components.FluxFilterChip
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.Design
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.genres
 import flux.shared.generated.resources.movies
@@ -54,7 +54,7 @@ fun SearchFilters(
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
+        horizontalArrangement = Arrangement.spacedBy(Design.Space.small)
     ) {
 
         FluxFilterChip(

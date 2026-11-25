@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.Design
 
 @Composable
 fun FixedChip(
@@ -26,7 +26,7 @@ fun FixedChip(
             .clip(MaterialTheme.shapes.small)
             .height(32.dp)
             .background(backgroundColor)
-            .padding(horizontal = FluxUI.Space.medium),
+            .padding(horizontal = Design.Space.medium),
         contentAlignment = Alignment.Center
     ) {
         Text.Button.Chip(
@@ -39,7 +39,7 @@ fun FixedChip(
 @Preview
 @Composable
 fun FixedChip_Preview() {
-    Box(modifier = Modifier.padding(all = FluxUI.Space.large)) {
+    Box(modifier = Modifier.padding(all = Design.Space.large)) {
         FixedChip(text = "FixedChip")
     }
 }

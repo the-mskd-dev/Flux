@@ -29,7 +29,7 @@ import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.ui.dimensions.itemWidthFor
 import com.mskd.flux.ui.dimensions.rememberScreenDimensions
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.Design
 
 @Composable
 fun CatalogCategory(
@@ -37,8 +37,8 @@ fun CatalogCategory(
     artworks: List<Artwork>,
     sortingOption: CatalogSortingMode,
     privateFolderEnabled: Boolean,
-    startPadding: Dp = FluxUI.Space.medium,
-    endPadding: Dp = FluxUI.Space.medium,
+    startPadding: Dp = Design.Space.medium,
+    endPadding: Dp = Design.Space.medium,
     onCategoryTap: () -> Unit,
     sendIntent: (CatalogIntent) -> Unit,
 ) {
@@ -48,8 +48,8 @@ fun CatalogCategory(
 
     val listState = rememberLazyListState()
     val screenDimensions = rememberScreenDimensions()
-    val columns = if (screenDimensions.isLarge) 5 else FluxUI.itemsPerRow.artworks
-    var itemWidth by remember { mutableStateOf(FluxUI.Dimension.itemWidth) }
+    val columns = if (screenDimensions.isLarge) 5 else Design.itemsPerRow.artworks
+    var itemWidth by remember { mutableStateOf(Design.Dimension.itemWidth) }
     val density = LocalDensity.current
 
     LaunchedEffect(sortingOption) {
@@ -61,14 +61,14 @@ fun CatalogCategory(
             .fillMaxWidth()
             .onSizeChanged { size ->
                 with(density) {
-                    val usableWidth = (size.width.toDp() - (startPadding - FluxUI.Space.medium) - (endPadding - FluxUI.Space.medium)).coerceAtLeast(0.dp)
+                    val usableWidth = (size.width.toDp() - (startPadding - Design.Space.medium) - (endPadding - Design.Space.medium)).coerceAtLeast(0.dp)
                     itemWidth = itemWidthFor(
                         screenWidthDp = usableWidth,
                         columns = columns
                     )
                 }
             },
-        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
+        verticalArrangement = Arrangement.spacedBy(Design.Space.medium)
     ) {
 
         Text.Content.Title(
@@ -84,7 +84,7 @@ fun CatalogCategory(
             modifier = Modifier.fillMaxWidth(),
             state = listState,
             contentPadding = PaddingValues(start = startPadding, end = endPadding),
-            horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
+            horizontalArrangement = Arrangement.spacedBy(Design.Space.small)
         ) {
 
             items(artworks, key = { it.id }) {
@@ -93,7 +93,7 @@ fun CatalogCategory(
                     modifier = Modifier
                         .animateItem()
                         .width(itemWidth)
-                        .aspectRatio(FluxUI.Dimension.itemRatio),
+                        .aspectRatio(Design.Dimension.itemRatio),
                     artwork = it,
                     privateFolderEnabled = privateFolderEnabled,
                     sendIntent = sendIntent

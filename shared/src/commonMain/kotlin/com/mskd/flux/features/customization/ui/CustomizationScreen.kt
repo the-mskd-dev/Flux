@@ -30,7 +30,7 @@ import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.components.FluxOptionsDialog
 import com.mskd.flux.ui.components.FluxScaffold
 import com.mskd.flux.ui.scaffoldPadding
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.Design
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.customization
 import org.jetbrains.compose.resources.stringResource
@@ -114,7 +114,7 @@ fun CustomizationContent(
                 .consumeWindowInsets(innerPadding)
                 .verticalScroll(rememberScrollState())
                 .scaffoldPadding(innerPadding),
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium),
+            verticalArrangement = Arrangement.spacedBy(Design.Space.medium),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 

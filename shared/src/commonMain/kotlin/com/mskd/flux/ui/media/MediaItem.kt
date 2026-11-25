@@ -15,15 +15,15 @@ import com.mskd.flux.ui.combinedClickableWithBounce
 import com.mskd.flux.ui.image.FluxImage
 import com.mskd.flux.ui.image.seedRgb
 import com.mskd.flux.ui.image.toComposeImageBitmap
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.Design
 import kotlinx.coroutines.launch
 
 @Composable
 fun MediaItem(
     modifier: Modifier,
     path: String,
-    ratio: Float = FluxUI.Dimension.itemRatio,
-    shape: Shape = FluxUI.shapes.corners,
+    ratio: Float = Design.Dimension.itemRatio,
+    shape: Shape = Design.shapes.corners,
     onClick: (Int?) -> Unit,
     onLongClick: (() -> Unit)? = null,
     description: String
@@ -40,7 +40,7 @@ fun MediaItem(
                 onLongClick = onLongClick
             ),
         shape = shape,
-        shadowElevation = FluxUI.Elevation.itemShadow
+        shadowElevation = Design.Elevation.itemShadow
     ) {
 
         FluxImage(

@@ -16,22 +16,22 @@ import com.mskd.flux.core.model.artwork.Genre
 import com.mskd.flux.mockups.DetailsMockup
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.Design
 
 @Composable
 fun GenresTags(genres: List<Genre>) {
 
     FlowRow(
         itemVerticalAlignment = Alignment.CenterVertically,
-        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall),
-        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall)
+        verticalArrangement = Arrangement.spacedBy(Design.Space.extraSmall),
+        horizontalArrangement = Arrangement.spacedBy(Design.Space.extraSmall)
     ) {
         genres.forEach { genre ->
             Text.Card.Label(
                 modifier = Modifier
                     .clip(RoundedCornerShape(4.dp))
                     .background(color = MaterialTheme.colorScheme.tertiaryContainer)
-                    .padding(vertical = FluxUI.Space.extraSmall, horizontal = FluxUI.Space.small),
+                    .padding(vertical = Design.Space.extraSmall, horizontal = Design.Space.small),
                 text = genre.name,
                 color = MaterialTheme.colorScheme.onTertiaryContainer
             )

@@ -23,7 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.Design
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_arrow_down
 import flux.shared.generated.resources.read_less
@@ -102,8 +102,8 @@ fun ReadMoreButton_Preview() {
     Column(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.background)
-            .padding(FluxUI.Space.large),
-        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large)
+            .padding(Design.Space.large),
+        verticalArrangement = Arrangement.spacedBy(Design.Space.large)
     ) {
         ReadMoreButton(
             onClick = {  },

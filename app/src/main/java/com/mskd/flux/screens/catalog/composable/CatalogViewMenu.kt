@@ -15,7 +15,7 @@ import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.expressive.ExpressiveRow
 import com.mskd.flux.ui.expressive.expressivePress
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.Design
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_sort
 import flux.shared.generated.resources.sort
@@ -32,7 +32,7 @@ fun CatalogViewMenu(
 
     ExpressiveRow(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall, Alignment.End),
+        horizontalArrangement = Arrangement.spacedBy(Design.Space.extraSmall, Alignment.End),
     ) {
 
         val [sortRef, viewRef] = createRefs()

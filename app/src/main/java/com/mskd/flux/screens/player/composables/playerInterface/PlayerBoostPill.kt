@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import com.mskd.flux.screens.player.composables.settings.formatSpeed
 import com.mskd.flux.ui.LandscapePreview
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.Design
 import com.mskd.flux.utils.Constants
 
 /** The "2x" pill shown at the top while the Boost speed is active, in the Ambient overlay style. */
@@ -50,7 +50,7 @@ fun PlayerBoostPill(
             modifier = Modifier
                 // Top only: the status bar is hidden in the player, and side cutout insets (landscape) would off-center the pill.
                 .windowInsetsPadding(WindowInsets.displayCutout.only(WindowInsetsSides.Top))
-                .padding(top = FluxUI.Space.medium)
+                .padding(top = Design.Space.medium)
                 .size(size = 48.dp)
                 .clip(shape = CircleShape)
                 .background(color = Color.Black.copy(alpha = .5f)),

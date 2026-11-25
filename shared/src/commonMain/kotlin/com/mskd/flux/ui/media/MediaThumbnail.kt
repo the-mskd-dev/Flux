@@ -14,7 +14,7 @@ import com.mskd.flux.ui.components.ProgressStatusBar
 import com.mskd.flux.ui.components.ProgressStatusChip
 import com.mskd.flux.ui.grayScale
 import com.mskd.flux.ui.image.FluxImage
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.Design
 
 @Composable
 fun MediaThumbnail(
@@ -28,7 +28,7 @@ fun MediaThumbnail(
     }
 
     Box(
-        modifier = modifier.aspectRatio(FluxUI.Ratio.landscape),
+        modifier = modifier.aspectRatio(Design.Ratio.landscape),
         contentAlignment = Alignment.BottomCenter,
         content = {
 

@@ -41,7 +41,7 @@ import com.mskd.flux.navigation.domain.navigateToTab
 import com.mskd.flux.navigation.domain.popScreen
 import com.mskd.flux.navigation.ui.navigationBar.FluxNavigationBar
 import com.mskd.flux.report.CrashLogger
-import com.mskd.flux.ui.theme.LocalBottomBarPadding
+import com.mskd.flux.ui.LocalBottomBarPadding
 import com.mskd.flux.ui.theme.LocalSystemBarsAppearance
 import com.mskd.flux.ui.theme.createColorScheme
 import org.koin.compose.koinInject

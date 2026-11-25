@@ -35,7 +35,7 @@ import com.mskd.flux.ui.blurBackground
 import com.mskd.flux.ui.blurForeground
 import com.mskd.flux.ui.global.animateAlphaState
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.Design
 import dev.chrisbanes.haze.rememberHazeState
 
 val fluxSafeSystemInsets: WindowInsets
@@ -114,7 +114,7 @@ fun FluxTopAppBar(
 
             Text.TopBar.Title(
                 modifier = Modifier
-                    .padding(vertical = FluxUI.Space.extraSmall)
+                    .padding(vertical = Design.Space.extraSmall)
                     .graphicsLayer(titleGraphicsLayer),
                 text = title
             )

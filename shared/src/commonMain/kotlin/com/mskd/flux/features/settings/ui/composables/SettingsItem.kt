@@ -16,7 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.Design
 import com.mskd.flux.utils.extensions.uppercaseFirstLetter
 
 @Composable
@@ -78,7 +78,7 @@ fun SettingIcon(
         modifier = Modifier
             .clip(CircleShape)
             .background(backgroundColor)
-            .padding(all = FluxUI.Space.small),
+            .padding(all = Design.Space.small),
         painter = painter,
         tint = iconColor,
         contentDescription = contentDescription

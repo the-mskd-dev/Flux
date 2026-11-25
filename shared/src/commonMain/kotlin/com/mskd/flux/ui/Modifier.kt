@@ -36,7 +36,6 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.mskd.flux.ui.theme.FluxUI
 import dev.chrisbanes.haze.HazeInput
 import dev.chrisbanes.haze.HazePerformanceMode
 import dev.chrisbanes.haze.HazeProgressive
@@ -240,7 +239,7 @@ fun Modifier.combinedClickableWithBounce(
 fun Modifier.groupedShape(
     index: Int,
     lastIndex: Int,
-    cornerRadius: Dp = FluxUI.shapes.listItem
+    cornerRadius: Dp = Design.shapes.listItem
 ): Modifier {
     val shape = when {
         lastIndex == 0 -> RoundedCornerShape(size = cornerRadius)
@@ -251,7 +250,7 @@ fun Modifier.groupedShape(
     return this.clip(shape)
 }
 
-fun Modifier.bleedHorizontal(amount: Dp = FluxUI.Space.medium) =
+fun Modifier.bleedHorizontal(amount: Dp = Design.Space.medium) =
     bleedHorizontal(start = amount, end = amount)
 
 fun Modifier.bleedHorizontal(

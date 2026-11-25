@@ -37,7 +37,7 @@ import com.mskd.flux.features.sources.domain.model.name
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.groupedShape
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.Design
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_error
 import kotlinx.coroutines.launch
@@ -65,7 +65,7 @@ fun LazyItemScope.CustomSourceItem(
     }
 
     val cornersAnimation by animateDpAsState(
-        if (isSwiping) FluxUI.shapes.listItem else 0.dp
+        if (isSwiping) Design.shapes.listItem else 0.dp
     )
 
     LaunchedEffect(folder.path) {
@@ -86,7 +86,7 @@ fun LazyItemScope.CustomSourceItem(
         content = {
             ListItem(
                 modifier = Modifier
-                    .padding(horizontal = FluxUI.Space.medium)
+                    .padding(horizontal = Design.Space.medium)
                     .groupedShape(index = index, lastIndex = lastIndex)
                     .clip(RoundedCornerShape(cornersAnimation)),
                 colors = ListItemDefaults.colors(
@@ -126,7 +126,7 @@ fun LazyItemScope.CustomSourceItem(
                         imageVector = Icons.Default.Delete,
                         contentDescription = "Remove item",
                         modifier = Modifier
-                            .padding(horizontal = FluxUI.Space.medium)
+                            .padding(horizontal = Design.Space.medium)
                             .groupedShape(index = index, lastIndex = lastIndex)
                             .clip(RoundedCornerShape(cornersAnimation))
                             .fillMaxSize()
@@ -149,9 +149,9 @@ fun CustomSourceItem_Preview() {
     FluxThemePreview {
         LazyColumn(
             modifier = Modifier
-                .padding(FluxUI.Space.medium)
-                .clip(FluxUI.shapes.corners),
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall)
+                .padding(Design.Space.medium)
+                .clip(Design.shapes.corners),
+            verticalArrangement = Arrangement.spacedBy(Design.Space.extraSmall)
         ) {
 
             item {

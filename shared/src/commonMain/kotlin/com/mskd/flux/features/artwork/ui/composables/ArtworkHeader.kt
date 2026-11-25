@@ -17,7 +17,7 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.bleedHorizontal
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.Design
 
 /**
  * Header of an Artwork page in the regular layout: the Artwork image across the whole screen width,
@@ -34,7 +34,7 @@ fun ArtworkHeader(
     showTitle: Boolean,
     pageType: ArtworkPageType,
     isImageBlurred: Boolean = false,
-    titleHorizontalMargin: Dp = FluxUI.Space.medium,
+    titleHorizontalMargin: Dp = Design.Space.medium,
     onImageClick: () -> Unit,
     buttons: (@Composable (Modifier) -> Unit)? = null,
 ) {
@@ -55,7 +55,7 @@ fun ArtworkHeader(
                     end.linkTo(parent.end)
                     width = Dimension.fillToConstraints
                 }
-                .aspectRatio(FluxUI.Ratio.rectangle),
+                .aspectRatio(Design.Ratio.rectangle),
             fullArtwork = fullArtwork,
             currentMedia = currentMedia,
             isBlurred = isImageBlurred,
@@ -78,8 +78,8 @@ fun ArtworkHeader(
 
         buttons?.invoke(
             Modifier.constrainAs(buttonsRef) {
-                if (showTitle) top.linkTo(text.bottom, FluxUI.Space.large)
-                else top.linkTo(image.bottom, FluxUI.Space.large)
+                if (showTitle) top.linkTo(text.bottom, Design.Space.large)
+                else top.linkTo(image.bottom, Design.Space.large)
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
             }

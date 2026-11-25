@@ -23,7 +23,7 @@ import com.mskd.flux.mockups.PeopleMockup
 import com.mskd.flux.ui.PortraitPreview
 import com.mskd.flux.ui.plus
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.Design
 import kotlinx.collections.immutable.toImmutableList
 
 @Composable
@@ -39,7 +39,7 @@ fun MovieContentRegular(
             .consumeWindowInsets(scaffoldInnerPadding),
         contentPadding = scaffoldInnerPadding.plus(
             includeTop = false,
-            horizontal = FluxUI.Space.medium,
+            horizontal = Design.Space.medium,
         ),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -54,7 +54,7 @@ fun MovieContentRegular(
                 pageType = ArtworkPageType.MOVIE,
                 isImageBlurred = false,
                 // The content is already inset by the page padding
-                titleHorizontalMargin = FluxUI.Space.medium * 2,
+                titleHorizontalMargin = Design.Space.medium * 2,
                 onImageClick = { sendIntent(MovieIntent.OnArtworkImageClick) },
                 buttons = { modifier ->
                     ArtworkButtons(
@@ -69,7 +69,7 @@ fun MovieContentRegular(
         }
 
         item {
-            Spacer(modifier = Modifier.height(FluxUI.Space.large))
+            Spacer(modifier = Modifier.height(Design.Space.large))
         }
 
         item {
@@ -83,7 +83,7 @@ fun MovieContentRegular(
         }
 
         item {
-            Spacer(modifier = Modifier.height(FluxUI.Space.large))
+            Spacer(modifier = Modifier.height(Design.Space.large))
         }
 
         if (content.people.isNotEmpty()) {

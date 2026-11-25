@@ -26,8 +26,8 @@ import com.mskd.flux.ui.bleedHorizontal
 import com.mskd.flux.ui.dimensions.itemWidthFor
 import com.mskd.flux.ui.media.MediaItem
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.ui.theme.LocalUiShapes
+import com.mskd.flux.ui.Design
+import com.mskd.flux.ui.LocalUiShapes
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.also_in
 import org.jetbrains.compose.resources.stringResource
@@ -38,19 +38,19 @@ fun PersonArtworks(
     sendIntent: (PeopleIntent) -> Unit
 ) {
 
-    var itemWidth by remember { mutableStateOf(FluxUI.Dimension.itemWidth) }
+    var itemWidth by remember { mutableStateOf(Design.Dimension.itemWidth) }
     val density = LocalDensity.current
 
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = LocalUiShapes.current.corners,
-        shadowElevation = FluxUI.Elevation.itemShadow,
+        shadowElevation = Design.Elevation.itemShadow,
         color = MaterialTheme.colorScheme.secondaryContainer,
     ) {
 
         Column(
-            modifier = Modifier.padding(all = FluxUI.Space.medium),
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
+            modifier = Modifier.padding(all = Design.Space.medium),
+            verticalArrangement = Arrangement.spacedBy(Design.Space.small),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
@@ -72,9 +72,9 @@ fun PersonArtworks(
                         }
                     }
                     .bleedHorizontal(),
-                horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
+                horizontalArrangement = Arrangement.spacedBy(Design.Space.small),
                 verticalAlignment = Alignment.Top,
-                contentPadding = PaddingValues(horizontal = FluxUI.Space.medium)
+                contentPadding = PaddingValues(horizontal = Design.Space.medium)
             ) {
 
                 items(items = artworks, key = { it.id }) { artwork ->
@@ -82,7 +82,7 @@ fun PersonArtworks(
                     MediaItem(
                         modifier = Modifier
                             .width(itemWidth)
-                            .widthIn(max = FluxUI.Dimension.itemWidth),
+                            .widthIn(max = Design.Dimension.itemWidth),
                         path = artwork.imagePath,
                         description = artwork.title,
                         onClick = { rgb -> sendIntent(PeopleIntent.OnArtworkClick(artwork = artwork, rgb = rgb)) }

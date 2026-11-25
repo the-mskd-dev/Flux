@@ -24,7 +24,7 @@ import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.modal.edgeToEdgeDialogProperties
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.Design
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.audio_codec
 import flux.shared.generated.resources.bitrate
@@ -49,7 +49,7 @@ fun PlayerMediaInfoSheet(
     BasicAlertDialog(
         modifier = Modifier
             .safeDrawingPadding()
-            .padding(vertical = FluxUI.Space.large)
+            .padding(vertical = Design.Space.large)
             .clip(AlertDialogDefaults.shape),
         properties = edgeToEdgeDialogProperties(),
         onDismissRequest = onBack,
@@ -130,8 +130,8 @@ private fun MediaInfoRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(all = FluxUI.Space.medium),
-        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
+            .padding(all = Design.Space.medium),
+        horizontalArrangement = Arrangement.spacedBy(Design.Space.small),
         verticalAlignment = Alignment.CenterVertically
     ) {
 

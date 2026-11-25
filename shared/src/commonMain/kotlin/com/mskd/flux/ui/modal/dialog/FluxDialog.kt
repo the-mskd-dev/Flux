@@ -37,7 +37,7 @@ import com.mskd.flux.ui.modal.ModalEntry
 import com.mskd.flux.ui.modal.ModalHostState
 import com.mskd.flux.ui.modal.scrim.ScrimBackground
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.Design
 import dev.chrisbanes.haze.HazeState
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.cancel
@@ -75,7 +75,7 @@ fun FluxDialogHost(
             modifier = Modifier
                 .align(Alignment.Center)
                 .safeDrawingPadding()
-                .padding(horizontal = FluxUI.Space.large, vertical = FluxUI.Space.medium)
+                .padding(horizontal = Design.Space.large, vertical = Design.Space.medium)
             ,
             enter = scaleIn(
                 animationSpec = spring(
@@ -99,13 +99,13 @@ fun FluxDialogHost(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(MaterialTheme.colorScheme.surfaceContainer)
-                        .padding(horizontal = FluxUI.Space.large),
+                        .padding(horizontal = Design.Space.large),
                 ) {
 
                     Text.Content.Title(
                         modifier = Modifier.padding(
-                            top = FluxUI.Space.large,
-                            bottom = FluxUI.Space.medium
+                            top = Design.Space.large,
+                            bottom = Design.Space.medium
                         ),
                         text = entry?.title,
                     )
@@ -116,9 +116,9 @@ fun FluxDialogHost(
 
                     Row(
                         modifier = Modifier
-                            .padding(vertical = FluxUI.Space.large)
+                            .padding(vertical = Design.Space.large)
                             .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small, Alignment.End),
+                        horizontalArrangement = Arrangement.spacedBy(Design.Space.small, Alignment.End),
                     ) {
 
                         entry?.let {

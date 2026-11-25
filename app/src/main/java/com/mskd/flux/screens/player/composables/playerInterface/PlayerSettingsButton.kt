@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import com.mskd.flux.features.player.presentation.PlayerIntent
 import com.mskd.flux.features.player.presentation.SettingsSheet
 import com.mskd.flux.ui.components.buttons.SmallButton
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.Design
 
 @Composable
 fun PlayerSettingsButton(
@@ -27,7 +27,7 @@ fun PlayerSettingsButton(
     SmallButton(
         modifier = modifier
             .windowInsetsPadding(WindowInsets.systemBars.union(WindowInsets.displayCutout).only(WindowInsetsSides.Top + WindowInsetsSides.End))
-            .padding(horizontal = FluxUI.Space.medium),
+            .padding(horizontal = Design.Space.medium),
         onClick = { sendIntent(PlayerIntent.ShowSettings(sheet = SettingsSheet.Settings)) },
         enabled = enabled,
         imageVector = Icons.Default.Settings,

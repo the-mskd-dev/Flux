@@ -43,7 +43,7 @@ import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.fillMaxWidthWithLimit
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.Design
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_flux
 import flux.shared.generated.resources.next
@@ -113,9 +113,9 @@ fun SetupScreenContent(
                 .verticalScroll(rememberScrollState())
                 .windowInsetsPadding(WindowInsets.systemBars.union(WindowInsets.displayCutout))
                 .padding(
-                    start = FluxUI.Space.medium,
-                    end = FluxUI.Space.medium,
-                    top = FluxUI.Space.medium,
+                    start = Design.Space.medium,
+                    end = Design.Space.medium,
+                    top = Design.Space.medium,
                     bottom = 88.dp
                 ),
         ) {
@@ -140,7 +140,7 @@ fun SetupScreenContent(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .windowInsetsPadding(WindowInsets.systemBars.union(WindowInsets.displayCutout).only(WindowInsetsSides.Bottom + WindowInsetsSides.End))
-                .padding(all = FluxUI.Space.medium)
+                .padding(all = Design.Space.medium)
             ,
             onClick = { sendIntent(SetupIntent.OnNextButton) }
         ) {

@@ -13,7 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.Design
 
 /**
  * Top bar of the player settings sheets: a back button, then the title on the left, followed by a divider.
@@ -28,9 +28,9 @@ fun PlayerSheetTopBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = FluxUI.Space.small, end = FluxUI.Space.medium, top = FluxUI.Space.small, bottom = FluxUI.Space.small),
+            .padding(start = Design.Space.small, end = Design.Space.medium, top = Design.Space.small, bottom = Design.Space.small),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
+        horizontalArrangement = Arrangement.spacedBy(Design.Space.small)
     ) {
 
         IconButton(onClick = onBack) {

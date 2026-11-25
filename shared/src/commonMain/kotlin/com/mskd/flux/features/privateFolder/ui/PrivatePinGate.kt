@@ -22,7 +22,7 @@ import com.mskd.flux.features.privateFolder.ui.composables.PinTextField
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.Design
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_lock
 import flux.shared.generated.resources.pin_gate_title
@@ -42,7 +42,7 @@ fun PrivatePinGate(
             .fillMaxSize()
             .imePadding()
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = FluxUI.Space.medium, vertical = FluxUI.Space.medium),
+            .padding(horizontal = Design.Space.medium, vertical = Design.Space.medium),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -54,14 +54,14 @@ fun PrivatePinGate(
             tint = MaterialTheme.colorScheme.onBackground
         )
 
-        Spacer(modifier = Modifier.height(FluxUI.Space.large))
+        Spacer(modifier = Modifier.height(Design.Space.large))
 
         Text.Content.Body(
             text = stringResource(Res.string.pin_gate_title),
             color = MaterialTheme.colorScheme.onBackground
         )
 
-        Spacer(modifier = Modifier.height(FluxUI.Space.medium))
+        Spacer(modifier = Modifier.height(Design.Space.medium))
 
         PinTextField(
             isError = isError,

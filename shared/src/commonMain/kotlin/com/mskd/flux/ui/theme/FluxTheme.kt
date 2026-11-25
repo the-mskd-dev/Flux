@@ -11,6 +11,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.features.connectivity.domain.LocalConnectivity
 import com.mskd.flux.features.customization.domain.datastore.CustomizationDataStore
+import com.mskd.flux.ui.Design
+import com.mskd.flux.ui.LocalUiEpisodes
+import com.mskd.flux.ui.LocalUiGlobal
+import com.mskd.flux.ui.LocalUiItemsPerRow
+import com.mskd.flux.ui.LocalUiPlayer
+import com.mskd.flux.ui.LocalUiShapes
 import com.mskd.flux.ui.blurBackground
 import com.mskd.flux.ui.modal.LocalModalHost
 import com.mskd.flux.ui.modal.ModalHostState
@@ -40,21 +46,21 @@ fun FluxTheme(
 
     CompositionLocalProvider(
         LocalConnectivity provides isOnline,
-        LocalUiShapes provides FluxUI.Shapes(
+        LocalUiShapes provides Design.Shapes(
             corners = RoundedCornerShape(customization.itemsCorners.dp),
         ),
-        LocalUiGlobal provides FluxUI.Global(
+        LocalUiGlobal provides Design.Global(
             oldBlurredHeader = customization.oldBlurredHeader,
             navigationStyle = customization.navigationStyle
         ),
-        LocalUiItemsPerRow provides FluxUI.ItemsPerRow(
+        LocalUiItemsPerRow provides Design.ItemsPerRow(
             artworks = customization.itemsPerRow,
             seasons = customization.seasonsPerRow
         ),
-        LocalUiEpisodes provides FluxUI.Episodes(
+        LocalUiEpisodes provides Design.Episodes(
             large = customization.largeEpisodeImage
         ),
-        LocalUiPlayer provides FluxUI.Player(
+        LocalUiPlayer provides Design.Player(
             waveProgress = customization.waveProgress
         ),
         LocalEmphasizedTypography provides fluxEmphasizedTypography(),

@@ -20,15 +20,15 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.screens.catalog.composable.CatalogCategory
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.bleedHorizontal
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.Design
 
 fun LazyGridScope.catalogViewModeGenre(
     artworks: List<Artwork>,
     genres: List<Genre>,
     sortingMode: CatalogSortingMode,
     privateFolderEnabled: Boolean,
-    startPadding: Dp = FluxUI.Space.medium,
-    endPadding: Dp = FluxUI.Space.medium,
+    startPadding: Dp = Design.Space.medium,
+    endPadding: Dp = Design.Space.medium,
     sendIntent: (CatalogIntent) -> Unit
 ) {
 
@@ -38,7 +38,7 @@ fun LazyGridScope.catalogViewModeGenre(
             modifier = Modifier
                 .animateItem()
                 .bleedHorizontal(start = startPadding, end = endPadding),
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large)
+            verticalArrangement = Arrangement.spacedBy(Design.Space.large)
         ) {
 
             val categories = remember(artworks, genres) {

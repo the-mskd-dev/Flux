@@ -66,7 +66,7 @@ import com.mskd.flux.ui.dimensions.rememberScreenDimensions
 import com.mskd.flux.ui.image.Image
 import com.mskd.flux.ui.plus
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.Design
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.gallery_empty
 import flux.shared.generated.resources.oups_an_error_occured
@@ -123,7 +123,7 @@ fun GalleryScreenContent(
                     contentAlignment = Alignment.Center
                 ) {
                     GalleryFilters(
-                        modifier = Modifier.align(Alignment.TopEnd).fillMaxWidth().padding(horizontal = FluxUI.Space.medium, vertical = FluxUI.Space.small),
+                        modifier = Modifier.align(Alignment.TopEnd).fillMaxWidth().padding(horizontal = Design.Space.medium, vertical = Design.Space.small),
                         sendIntent = sendIntent
                     )
                     Text.Content.Title(
@@ -142,12 +142,12 @@ fun GalleryScreenContent(
                     .consumeWindowInsets(innerPadding),
                 columns = StaggeredGridCells.Fixed(columns),
                 contentPadding = innerPadding.plus(
-                    top = FluxUI.Space.small,
-                    bottom = FluxUI.Space.medium,
-                    horizontal = FluxUI.Space.medium,
+                    top = Design.Space.small,
+                    bottom = Design.Space.medium,
+                    horizontal = Design.Space.medium,
                 ),
-                horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
-                verticalItemSpacing = FluxUI.Space.small,
+                horizontalArrangement = Arrangement.spacedBy(Design.Space.small),
+                verticalItemSpacing = Design.Space.small,
             ) {
 
                 item(span = StaggeredGridItemSpan.FullLine) {
@@ -186,7 +186,7 @@ fun GalleryScreenContent(
                             .fillMaxWidth()
                             .onGloballyPositioned { thumbnailBounds[key] = Rect(it.positionInRoot(), it.size.toSize()) }
                             .alpha(if (key == viewedKey) 0f else 1f)
-                            .clip(FluxUI.shapes.corners)
+                            .clip(Design.shapes.corners)
                             // Transparent Logos stay visible on a neutral background
                             .then(
                                 if (image.type == GalleryImageType.LOGO) Modifier.background(MaterialTheme.colorScheme.surfaceVariant)
@@ -240,7 +240,7 @@ fun GalleryScreenContent(
                         viewerReturnedToThumbnail = true
                         sendIntent(GalleryIntent.OnViewerClose)
                     },
-                    thumbnailShape = FluxUI.shapes.corners,
+                    thumbnailShape = Design.shapes.corners,
                     thumbnailBounds = { thumbnailBounds[it.key()] },
                 )
             }

@@ -53,7 +53,7 @@ import com.mskd.flux.ui.components.LoadingScreen
 import com.mskd.flux.ui.media.episode.EpisodeItem
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.Design
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_help
 import flux.shared.generated.resources.no_item
@@ -150,8 +150,8 @@ fun UnknownScreenContent(
                 .consumeWindowInsets(innerPadding)
                 .imePadding()
                 .padding(
-                    start = innerPadding.calculateStartPadding(layoutDirection) + FluxUI.Space.medium,
-                    end = innerPadding.calculateEndPadding(layoutDirection) + FluxUI.Space.medium
+                    start = innerPadding.calculateStartPadding(layoutDirection) + Design.Space.medium,
+                    end = innerPadding.calculateEndPadding(layoutDirection) + Design.Space.medium
                 ),
         ) {
 
@@ -160,15 +160,15 @@ fun UnknownScreenContent(
             FluxSearchField(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = FluxUI.Space.large),
+                    .padding(bottom = Design.Space.large),
                 value = searchQuery,
                 onValueChange = { sendIntent(UnknownIntent.DoSearch(it)) },
             )
 
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
-                contentPadding = PaddingValues(bottom = innerPadding.calculateBottomPadding() + FluxUI.Space.large),
+                verticalArrangement = Arrangement.spacedBy(Design.Space.small),
+                contentPadding = PaddingValues(bottom = innerPadding.calculateBottomPadding() + Design.Space.large),
                 state = lazyColumnState
             ) {
 

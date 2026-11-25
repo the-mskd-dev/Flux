@@ -29,7 +29,7 @@ import com.mskd.flux.ui.grayScale
 import com.mskd.flux.ui.media.MediaDetailsVertical
 import com.mskd.flux.ui.media.MediaThumbnail
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.Design
 
 @Composable
 fun EpisodeItemSmall(
@@ -53,7 +53,7 @@ fun EpisodeItemSmall(
 
     Column(
         modifier = modifier
-            .clip(FluxUI.shapes.corners)
+            .clip(Design.shapes.corners)
             .let { if (episode.isAvailable) it else it.grayScale() }
             .background(bgColor)
             .combinedClickable(
@@ -69,13 +69,13 @@ fun EpisodeItemSmall(
                 ) else Modifier
             )
             .fillMaxWidth()
-            .padding(FluxUI.Space.medium),
-        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
+            .padding(Design.Space.medium),
+        verticalArrangement = Arrangement.spacedBy(Design.Space.small),
     ) {
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
+            horizontalArrangement = Arrangement.spacedBy(Design.Space.small)
         ) {
 
             MediaThumbnail(
@@ -88,7 +88,7 @@ fun EpisodeItemSmall(
 
             Column(
                 modifier = Modifier.weight(.6f),
-                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall),
+                verticalArrangement = Arrangement.spacedBy(Design.Space.extraSmall),
                 horizontalAlignment = Alignment.Start
             ) {
 

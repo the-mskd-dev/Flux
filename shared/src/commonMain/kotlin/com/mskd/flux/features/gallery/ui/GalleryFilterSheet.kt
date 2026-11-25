@@ -19,7 +19,7 @@ import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.modal.bottomSheet.BottomSheetCheckBoxItem
 import com.mskd.flux.ui.modal.bottomSheet.FluxBottomSheet
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.Design
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.clear
 import flux.shared.generated.resources.gallery_filter_language
@@ -55,7 +55,7 @@ fun GalleryFilterSheet(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = FluxUI.Space.medium),
+                .padding(horizontal = Design.Space.medium),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -82,7 +82,7 @@ fun GalleryFilterSheet(
         if (languages.isNotEmpty()) {
 
             Text.List.Title(
-                modifier = Modifier.padding(horizontal = FluxUI.Space.medium, vertical = FluxUI.Space.small),
+                modifier = Modifier.padding(horizontal = Design.Space.medium, vertical = Design.Space.small),
                 text = stringResource(Res.string.gallery_filter_language)
             )
 

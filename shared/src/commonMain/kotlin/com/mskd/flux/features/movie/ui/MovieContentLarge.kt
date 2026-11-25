@@ -25,7 +25,7 @@ import com.mskd.flux.mockups.PeopleMockup
 import com.mskd.flux.ui.LandscapePreview
 import com.mskd.flux.ui.plus
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.Design
 import kotlinx.collections.immutable.toImmutableList
 
 @Composable
@@ -60,7 +60,7 @@ fun MovieContentLarge(
             horizontalAlignment = Alignment.CenterHorizontally,
             contentPadding = scaffoldInnerPadding.plus(
                 includeStart = false,
-                horizontal = FluxUI.Space.medium,
+                horizontal = Design.Space.medium,
             )
         ) {
 
@@ -72,7 +72,7 @@ fun MovieContentLarge(
             }
 
             item {
-                Spacer(modifier = Modifier.height(FluxUI.Space.large))
+                Spacer(modifier = Modifier.height(Design.Space.large))
             }
 
             item {
@@ -84,7 +84,7 @@ fun MovieContentLarge(
             }
 
             item {
-                Spacer(modifier = Modifier.height(FluxUI.Space.large))
+                Spacer(modifier = Modifier.height(Design.Space.large))
             }
 
             item {
@@ -98,7 +98,7 @@ fun MovieContentLarge(
             }
 
             item {
-                Spacer(modifier = Modifier.height(FluxUI.Space.large))
+                Spacer(modifier = Modifier.height(Design.Space.large))
             }
 
             if (content.people.isNotEmpty()) {

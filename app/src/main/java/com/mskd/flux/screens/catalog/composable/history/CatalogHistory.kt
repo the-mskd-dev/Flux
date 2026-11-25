@@ -42,8 +42,8 @@ import com.mskd.flux.ui.components.ProgressStatusBar
 import com.mskd.flux.ui.fillMaxWidthWithLimit
 import com.mskd.flux.ui.image.FluxImage
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.ui.theme.LocalUiShapes
+import com.mskd.flux.ui.Design
+import com.mskd.flux.ui.LocalUiShapes
 import com.mskd.flux.utils.extensions.minToMs
 import com.mskd.flux.utils.extensions.timeDescription
 import flux.shared.generated.resources.Res
@@ -55,8 +55,8 @@ import org.jetbrains.compose.resources.stringResource
 fun CatalogHistory(
     modifier: Modifier = Modifier,
     entries: List<HistoryEntry>,
-    startPadding: Dp = FluxUI.Space.medium,
-    endPadding: Dp = FluxUI.Space.medium,
+    startPadding: Dp = Design.Space.medium,
+    endPadding: Dp = Design.Space.medium,
     sendIntent: (CatalogIntent) -> Unit
 ) {
 
@@ -69,7 +69,7 @@ fun CatalogHistory(
 
         Column(
             modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
+            verticalArrangement = Arrangement.spacedBy(Design.Space.medium)
         ) {
 
             Text.Content.Title(
@@ -82,7 +82,7 @@ fun CatalogHistory(
 
             LazyRow(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
+                horizontalArrangement = Arrangement.spacedBy(Design.Space.small),
                 contentPadding = PaddingValues(start = startPadding, end = endPadding)
             ) {
 
@@ -119,7 +119,7 @@ fun CatalogHistoryItem(
         modifier = modifier.fillMaxWidthWithLimit(fraction = .8f, max = 450.dp),
         shape = shape,
         onClick = { sendIntent(CatalogIntent.PlayMedia(media = media)) },
-        shadowElevation = FluxUI.Elevation.itemShadow,
+        shadowElevation = Design.Elevation.itemShadow,
         color = MaterialTheme.colorScheme.surfaceContainerLow
     ) {
 
@@ -127,15 +127,15 @@ fun CatalogHistoryItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
-                .padding(all = FluxUI.Space.small),
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
+                .padding(all = Design.Space.small),
+            verticalArrangement = Arrangement.spacedBy(Design.Space.small)
         ) {
 
             Box(
                 modifier = Modifier
                     .clip(shape)
                     .fillMaxWidth()
-                    .aspectRatio(FluxUI.Ratio.landscape),
+                    .aspectRatio(Design.Ratio.landscape),
                 contentAlignment = Alignment.BottomCenter
             ) {
 
@@ -157,13 +157,13 @@ fun CatalogHistoryItem(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = FluxUI.Space.small),
+                    .padding(horizontal = Design.Space.small),
                 verticalAlignment = Alignment.CenterVertically
             ) {
 
                 Column(
                     modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall),
+                    verticalArrangement = Arrangement.spacedBy(Design.Space.extraSmall),
                 ) {
 
                     Text.Card.Title(

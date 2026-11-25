@@ -44,7 +44,7 @@ import com.mskd.flux.ui.modal.ModalEntry
 import com.mskd.flux.ui.modal.ModalHostState
 import com.mskd.flux.ui.modal.scrim.ScrimBackground
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.Design
 import dev.chrisbanes.haze.HazeState
 
 
@@ -108,13 +108,13 @@ fun FluxBottomSheetHost(
                         .fillMaxWidth()
                         .heightIn(max = maxSheetHeight)
                         .background(MaterialTheme.colorScheme.surfaceContainer),
-                    verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
+                    verticalArrangement = Arrangement.spacedBy(Design.Space.small)
                 ) {
 
                     Text.List.Title(
                         modifier = Modifier
-                            .padding(top = FluxUI.Space.medium)
-                            .padding(horizontal = FluxUI.Space.medium),
+                            .padding(top = Design.Space.medium)
+                            .padding(horizontal = Design.Space.medium),
                         text = entry?.title,
                     )
 
@@ -122,7 +122,7 @@ fun FluxBottomSheetHost(
                         modifier = Modifier
                             .weight(1f, fill = false)
                             .verticalScroll(rememberScrollState()),
-                        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
+                        verticalArrangement = Arrangement.spacedBy(Design.Space.small)
                     ) {
 
                         entry?.content(this)
@@ -130,7 +130,7 @@ fun FluxBottomSheetHost(
                         Spacer(
                             modifier = Modifier
                                 .windowInsetsPadding(WindowInsets.navigationBars.only(WindowInsetsSides.Bottom))
-                                .padding(vertical = FluxUI.Space.medium)
+                                .padding(vertical = Design.Space.medium)
                         )
                     }
 

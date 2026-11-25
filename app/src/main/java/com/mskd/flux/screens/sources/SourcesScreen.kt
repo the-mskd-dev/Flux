@@ -60,7 +60,7 @@ import com.mskd.flux.ui.components.rememberSafFolderPicker
 import com.mskd.flux.ui.global.BackGesture
 import com.mskd.flux.ui.plus
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.Design
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.add_source
 import flux.shared.generated.resources.folder_deleted
@@ -201,15 +201,15 @@ fun SourcesScreenContent(
                 .background(MaterialTheme.colorScheme.background)
                 .consumeWindowInsets(innerPadding),
             contentPadding = innerPadding.plus(
-                bottom = if (content.fromSetup) 88.dp else FluxUI.Space.large
+                bottom = if (content.fromSetup) 88.dp else Design.Space.large
             ),
         ) {
 
             item {
                 Text.Annotated(
                     modifier = Modifier
-                        .padding(bottom = FluxUI.Space.small)
-                        .padding(horizontal = FluxUI.Space.medium.times(2))
+                        .padding(bottom = Design.Space.small)
+                        .padding(horizontal = Design.Space.medium.times(2))
                     ,
                     text = sourcesAnnotatedString(Res.string.system_folders_toggle_desc),
                     style = MaterialTheme.typography.bodySmall
@@ -219,7 +219,7 @@ fun SourcesScreenContent(
             item {
                 ListItem(
                     modifier = Modifier
-                        .padding(horizontal = FluxUI.Space.medium)
+                        .padding(horizontal = Design.Space.medium)
                         .clip(CircleShape)
                         .fillMaxWidth(),
                     colors = ListItemDefaults.colors(
@@ -248,9 +248,9 @@ fun SourcesScreenContent(
                 ) {
                     Column(
                         modifier = Modifier
-                            .padding(all = FluxUI.Space.medium)
-                            .clip(RoundedCornerShape(FluxUI.shapes.listItem)),
-                        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.listItem)
+                            .padding(all = Design.Space.medium)
+                            .clip(RoundedCornerShape(Design.shapes.listItem)),
+                        verticalArrangement = Arrangement.spacedBy(Design.Space.listItem)
                     ) {
 
                         SystemSourceItem(name = Environment.DIRECTORY_MOVIES)
@@ -262,13 +262,13 @@ fun SourcesScreenContent(
             item {
                 TextButton(
                     modifier = Modifier
-                        .padding(top = FluxUI.Space.medium)
-                        .padding(horizontal = FluxUI.Space.medium),
+                        .padding(top = Design.Space.medium)
+                        .padding(horizontal = Design.Space.medium),
                     onClick = { sendIntent(SourcesIntent.OpenFolderSelection) }
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall)
+                        horizontalArrangement = Arrangement.spacedBy(Design.Space.extraSmall)
                     ) {
                         Icon(painter = painterResource(Res.drawable.ic_add), contentDescription = "")
                         Text.List.Section(text = stringResource(Res.string.add_source))
@@ -294,7 +294,7 @@ fun SourcesScreenContent(
                 )
 
                 if (index != folders.lastIndex)
-                    Spacer(Modifier.height(FluxUI.Space.listItem))
+                    Spacer(Modifier.height(Design.Space.listItem))
 
             }
 

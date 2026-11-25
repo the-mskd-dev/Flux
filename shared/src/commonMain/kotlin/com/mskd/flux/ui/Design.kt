@@ -1,4 +1,4 @@
-package com.mskd.flux.ui.theme
+package com.mskd.flux.ui
 
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.features.customization.domain.model.NavigationStyle
 
-object FluxUI {
+object Design {
 
     val shapes: Shapes @Composable get() = LocalUiShapes.current
     val global: Global @Composable get() = LocalUiGlobal.current
@@ -24,7 +24,7 @@ object FluxUI {
 
     object Dimension {
         val itemWidth = 200.dp
-        val itemRatio = 2f/3f
+        const val itemRatio = 2f/3f
     }
 
     object Ratio {
@@ -57,12 +57,6 @@ object FluxUI {
 
     }
 
-    object Grid {
-        val startPadding = PaddingValues(start = Space.medium)
-        val lastPadding = PaddingValues(end = Space.medium)
-        val middlePadding = PaddingValues(horizontal = Space.small)
-    }
-
     object Elevation {
         val itemShadow = 1.dp
         val navigationBar = 2.dp
@@ -93,9 +87,9 @@ object FluxUI {
 
 }
 
-val LocalUiShapes = compositionLocalOf { FluxUI.Shapes() }
-val LocalUiGlobal = compositionLocalOf { FluxUI.Global() }
-val LocalUiItemsPerRow = compositionLocalOf { FluxUI.ItemsPerRow() }
-val LocalUiEpisodes = compositionLocalOf { FluxUI.Episodes() }
-val LocalUiPlayer = compositionLocalOf { FluxUI.Player() }
+val LocalUiShapes = compositionLocalOf { Design.Shapes() }
+val LocalUiGlobal = compositionLocalOf { Design.Global() }
+val LocalUiItemsPerRow = compositionLocalOf { Design.ItemsPerRow() }
+val LocalUiEpisodes = compositionLocalOf { Design.Episodes() }
+val LocalUiPlayer = compositionLocalOf { Design.Player() }
 val LocalBottomBarPadding = compositionLocalOf { 0.dp }

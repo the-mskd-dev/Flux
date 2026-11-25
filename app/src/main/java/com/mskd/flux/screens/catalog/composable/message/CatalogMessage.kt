@@ -24,7 +24,7 @@ import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.fillMaxWidthWithLimit
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.Design
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.catalog_message
 import flux.shared.generated.resources.ic_close
@@ -44,9 +44,9 @@ fun CatalogMessage(
             .fillMaxWidthWithLimit()
             .clip(RoundedCornerShape(8.dp))
             .background(MaterialTheme.colorScheme.tertiary)
-            .padding(vertical = FluxUI.Space.small, horizontal = FluxUI.Space.medium),
+            .padding(vertical = Design.Space.small, horizontal = Design.Space.medium),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall)
+        horizontalArrangement = Arrangement.spacedBy(Design.Space.extraSmall)
     ) {
 
         val text = buildAnnotatedString {

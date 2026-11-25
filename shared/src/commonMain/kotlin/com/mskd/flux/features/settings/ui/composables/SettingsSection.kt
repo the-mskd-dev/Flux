@@ -52,8 +52,6 @@ import flux.shared.generated.resources.ic_pip
 import flux.shared.generated.resources.ic_player
 import flux.shared.generated.resources.ic_playstore
 import flux.shared.generated.resources.ic_social_media
-import flux.shared.generated.resources.play_store
-import flux.shared.generated.resources.play_store_desc
 import flux.shared.generated.resources.ic_sources
 import flux.shared.generated.resources.ic_sync
 import flux.shared.generated.resources.ic_version
@@ -61,6 +59,8 @@ import flux.shared.generated.resources.ic_visibility
 import flux.shared.generated.resources.information_language
 import flux.shared.generated.resources.make_a_donation
 import flux.shared.generated.resources.picture_in_picture
+import flux.shared.generated.resources.play_store
+import flux.shared.generated.resources.play_store_desc
 import flux.shared.generated.resources.private_folder
 import flux.shared.generated.resources.private_folder_desc
 import flux.shared.generated.resources.private_folder_include_nsfw

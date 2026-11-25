@@ -35,8 +35,8 @@ import com.mskd.flux.features.player.presentation.PlayerIntent
 import com.mskd.flux.features.player.presentation.SettingsSheet
 import com.mskd.flux.features.player.ui.PlayerSheetTopBar
 import com.mskd.flux.ui.FluxPreview
-import com.mskd.flux.ui.global.BackGesture
 import com.mskd.flux.ui.components.buttons.expressivePress
+import com.mskd.flux.ui.global.BackGesture
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI

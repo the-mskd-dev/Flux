@@ -1,24 +1,23 @@
 package com.mskd.flux
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import android.content.Intent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.lifecycle.lifecycleScope
-import com.mskd.flux.external.AndroidExternalPlayerAdapter
-import com.mskd.flux.external.ExternalPlayerResult
-import com.mskd.flux.features.player.domain.model.PlayerParams
-import com.mskd.flux.features.player.domain.playback.PlaybackLaunch
-import kotlinx.coroutines.launch
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.lifecycleScope
 import com.mskd.flux.app.AppViewModel
+import com.mskd.flux.external.AndroidExternalPlayerAdapter
+import com.mskd.flux.external.ExternalPlayerResult
 import com.mskd.flux.features.connectivity.domain.ConnectivityRepository
+import com.mskd.flux.features.player.domain.model.PlayerParams
+import com.mskd.flux.features.player.domain.playback.PlaybackLaunch
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.navigation.domain.identifiedDestination
 import com.mskd.flux.navigation.ui.FluxNavigation
@@ -33,6 +32,7 @@ import com.mskd.flux.system.rememberNotificationsPermission
 import com.mskd.flux.system.rememberStoragePermission
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.createColorScheme
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
 class MainActivity : ComponentActivity() {

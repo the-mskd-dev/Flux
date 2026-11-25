@@ -8,7 +8,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,13 +20,11 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.BasicAlertDialog
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,8 +35,8 @@ import com.mskd.flux.features.player.presentation.PlayerIntent
 import com.mskd.flux.features.player.presentation.SettingsSheet
 import com.mskd.flux.features.player.ui.PlayerSheetTopBar
 import com.mskd.flux.ui.FluxPreview
+import com.mskd.flux.ui.expressive.expressivePress
 import com.mskd.flux.ui.global.BackGesture
-import com.mskd.flux.ui.global.expressivePressScale
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
@@ -54,7 +51,6 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 /** Shifts the subtitles of the current Media in steps; the delay is never kept past this Media. */
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun PlayerSubtitleDelaySheet(
     delayMs: Long,
@@ -124,7 +120,6 @@ fun PlayerSubtitleDelaySheet(
  * Expressive step button: the shape morphs on press (from the button's own shapes), and the button
  * squishes slightly under the finger, then bounces back on release.
  */
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun StepButton(
     icon: Painter,
@@ -132,16 +127,13 @@ private fun StepButton(
     onClick: () -> Unit
 ) {
 
-    val interactionSource = remember { MutableInteractionSource() }
-
     FilledIconButton(
         onClick = onClick,
-        interactionSource = interactionSource,
         shapes = IconButtonDefaults.shapes(),
         modifier = Modifier
             // requiredSize: the Row must not squeeze one button into an oval when the dialog is narrow
             .requiredSize(64.dp)
-            .expressivePressScale(interactionSource)
+            .expressivePress()
     ) {
         Icon(
             painter = icon,

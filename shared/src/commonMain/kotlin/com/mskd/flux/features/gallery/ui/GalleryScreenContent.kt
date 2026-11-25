@@ -55,7 +55,7 @@ import com.mskd.flux.features.gallery.ui.viewer.GalleryViewer
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.components.FluxScaffold
-import com.mskd.flux.ui.components.FluxTextButton
+import com.mskd.flux.ui.components.buttons.FluxTextButton
 import com.mskd.flux.ui.dimensions.rememberScreenDimensions
 import com.mskd.flux.ui.image.Image
 import com.mskd.flux.ui.text.Text

@@ -3,7 +3,6 @@ package com.mskd.flux.features.setup.ui.composables
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -19,7 +18,6 @@ import flux.shared.generated.resources.setup_sources_default_desc
 import flux.shared.generated.resources.setup_sources_default_title
 import org.jetbrains.compose.resources.stringResource
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SetupSourcesItem(
     title: String,

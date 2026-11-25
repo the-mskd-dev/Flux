@@ -3,7 +3,6 @@ package com.mskd.flux.features.player.ui
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.LinearWavyProgressIndicator
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
@@ -41,7 +40,6 @@ private val ChapterGap = 4.dp
  * are proportional to the Chapter durations). With fewer than 2 Chapters the track is continuous.
  * While [isScrubbing], a bubble above the thumb shows the time and the Chapter name under it.
  */
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun ChapterSlider(
     modifier: Modifier = Modifier,

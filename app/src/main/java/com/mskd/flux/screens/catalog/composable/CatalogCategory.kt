@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,7 +29,6 @@ import com.mskd.flux.ui.dimensions.rememberScreenDimensions
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxUI
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun CatalogCategory(
     name: String? = null,

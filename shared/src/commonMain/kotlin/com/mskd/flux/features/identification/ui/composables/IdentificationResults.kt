@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.identification.presentation.IdentificationCandidate
-import com.mskd.flux.ui.components.FluxTextButton
+import com.mskd.flux.ui.components.buttons.FluxTextButton
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res

@@ -23,7 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.ui.blurText
-import com.mskd.flux.ui.components.ReadMoreButton
+import com.mskd.flux.ui.components.buttons.ReadMoreButton
 import com.mskd.flux.ui.media.episode.spoilerToggle
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme

@@ -14,6 +14,8 @@ import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.domain.model.CatalogViewMode
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.ui.FluxThemePreview
+import com.mskd.flux.ui.components.ExpressiveRow
+import com.mskd.flux.ui.components.buttons.expressivePress
 import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_sort
@@ -29,12 +31,17 @@ fun CatalogViewMenu(
     sendIntent: (CatalogIntent) -> Unit
 ) {
 
-    Row(
+    ExpressiveRow(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall, Alignment.End),
     ) {
 
+        val [sortRef, viewRef] = createRefs()
+
         FilledTonalButton(
+            modifier = Modifier
+                .expressiveSideBounce(ref = sortRef, right = viewRef)
+                .expressivePress(),
             onClick = { sendIntent(CatalogIntent.ShowSortingModes(show = true)) },
         ) {
             Icon(
@@ -44,6 +51,9 @@ fun CatalogViewMenu(
         }
 
         FilledTonalButton(
+            modifier = Modifier
+                .expressiveSideBounce(ref = viewRef, left = sortRef)
+                .expressivePress(),
             onClick = { sendIntent(CatalogIntent.ShowViewModes(show = true)) },
         ) {
             AnimatedContent(

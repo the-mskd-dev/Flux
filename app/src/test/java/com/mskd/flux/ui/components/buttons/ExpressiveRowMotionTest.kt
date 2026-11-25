@@ -1,6 +1,7 @@
 package com.mskd.flux.ui.components.buttons
 
 import androidx.compose.runtime.MonotonicFrameClock
+import com.mskd.flux.ui.components.ExpressiveRef
 import com.mskd.flux.ui.components.ExpressiveRowMotion
 import com.mskd.flux.ui.components.SideBounceNeighbors
 import com.mskd.flux.ui.components.computeNetHoldPullDp
@@ -19,75 +20,52 @@ import kotlinx.coroutines.test.runCurrent
 @OptIn(ExperimentalCoroutinesApi::class)
 class ExpressiveRowMotionTest : FunSpec({
 
-    test("SideBounceNeighbors maps leftTag to -1f and rightTag to 1f") {
-        SideBounceNeighbors(leftTag = "rewind", rightTag = "forward").entries() shouldBe listOf(
-            "rewind" to -1f,
-            "forward" to 1f
+    test("SideBounceNeighbors maps left to -1f and right to 1f") {
+        val rewind = ExpressiveRef()
+        val play = ExpressiveRef()
+        val forward = ExpressiveRef()
+
+        SideBounceNeighbors(left = rewind, right = forward).entries() shouldBe listOf(
+            rewind to -1f,
+            forward to 1f
         )
-        SideBounceNeighbors(rightTag = "play").entries() shouldBe listOf("play" to 1f)
-        SideBounceNeighbors(leftTag = "play").entries() shouldBe listOf("play" to -1f)
+        SideBounceNeighbors(right = play).entries() shouldBe listOf(play to 1f)
+        SideBounceNeighbors(left = play).entries() shouldBe listOf(play to -1f)
         SideBounceNeighbors().entries() shouldBe emptyList()
     }
 
     test("a held source pulls its left neighbor right (+dp) and right neighbor left (-dp)") {
-        val rewindHeld = listOf(SideBounceNeighbors(rightTag = "play"))
-        computeNetHoldPullDp(
-            "play",
-            heldTags = emptySet(),
-            heldSources = rewindHeld,
-            pullDp = 2.5f
-        ) shouldBe -2.5f
+        val rewind = ExpressiveRef()
+        val play = ExpressiveRef()
+        val forward = ExpressiveRef()
 
-        val forwardHeld = listOf(SideBounceNeighbors(leftTag = "play"))
-        computeNetHoldPullDp(
-            "play",
-            heldTags = emptySet(),
-            heldSources = forwardHeld,
-            pullDp = 2.5f
-        ) shouldBe 2.5f
+        val rewindHeld = listOf(SideBounceNeighbors(right = play))
+        computeNetHoldPullDp(play, heldRefs = emptySet(), heldSources = rewindHeld, pullDp = 2.5f) shouldBe -2.5f
 
-        val playHeld = listOf(SideBounceNeighbors(leftTag = "rewind", rightTag = "forward"))
-        computeNetHoldPullDp(
-            "rewind",
-            heldTags = emptySet(),
-            heldSources = playHeld,
-            pullDp = 2.5f
-        ) shouldBe 2.5f
-        computeNetHoldPullDp(
-            "forward",
-            heldTags = emptySet(),
-            heldSources = playHeld,
-            pullDp = 2.5f
-        ) shouldBe -2.5f
+        val forwardHeld = listOf(SideBounceNeighbors(left = play))
+        computeNetHoldPullDp(play, heldRefs = emptySet(), heldSources = forwardHeld, pullDp = 2.5f) shouldBe 2.5f
+
+        val playHeld = listOf(SideBounceNeighbors(left = rewind, right = forward))
+        computeNetHoldPullDp(rewind, heldRefs = emptySet(), heldSources = playHeld, pullDp = 2.5f) shouldBe 2.5f
+        computeNetHoldPullDp(forward, heldRefs = emptySet(), heldSources = playHeld, pullDp = 2.5f) shouldBe -2.5f
     }
 
     test("an element is not pulled by unrelated sources or when it is itself held") {
-        val rewindHeld = listOf(SideBounceNeighbors(rightTag = "play"))
-        computeNetHoldPullDp(
-            "forward",
-            heldTags = emptySet(),
-            heldSources = rewindHeld,
-            pullDp = 2.5f
-        ) shouldBe 0f
-        computeNetHoldPullDp(
-            "play",
-            heldTags = setOf("play"),
-            heldSources = rewindHeld,
-            pullDp = 2.5f
-        ) shouldBe 0f
+        val play = ExpressiveRef()
+        val forward = ExpressiveRef()
+
+        val rewindHeld = listOf(SideBounceNeighbors(right = play))
+        computeNetHoldPullDp(forward, heldRefs = emptySet(), heldSources = rewindHeld, pullDp = 2.5f) shouldBe 0f
+        computeNetHoldPullDp(play, heldRefs = setOf(play), heldSources = rewindHeld, pullDp = 2.5f) shouldBe 0f
     }
 
     test("opposite pulls from both neighbors cancel out") {
+        val play = ExpressiveRef()
         val bothSidesHeld = listOf(
-            SideBounceNeighbors(rightTag = "play"),
-            SideBounceNeighbors(leftTag = "play")
+            SideBounceNeighbors(right = play),
+            SideBounceNeighbors(left = play)
         )
-        computeNetHoldPullDp(
-            "play",
-            heldTags = emptySet(),
-            heldSources = bothSidesHeld,
-            pullDp = 2.5f
-        ) shouldBe 0f
+        computeNetHoldPullDp(play, heldRefs = emptySet(), heldSources = bothSidesHeld, pullDp = 2.5f) shouldBe 0f
     }
 
     // Independent check: integrate the spring step by step and read the extreme it reaches from rest.
@@ -118,12 +96,14 @@ class ExpressiveRowMotionTest : FunSpec({
 
     test("quick tap skips hold pull and triggers rebound after propagation delay") {
         withMotionScope { motion ->
-            motion.retainTag("rewind")
-            val playState = motion.stateFor("play")
-            motion.retainTag("play")
+            val rewind = ExpressiveRef()
+            val play = ExpressiveRef()
+            motion.retainRef(rewind)
+            val playState = motion.stateFor(play)
+            motion.retainRef(play)
 
             val source = Any()
-            motion.onSourcePress(source, SideBounceNeighbors(rightTag = "play"))
+            motion.onSourcePress(source, SideBounceNeighbors(right = play))
             advanceTimeBy(30)
             runCurrent()
             playState.offsetDp.targetValue shouldBe 0f
@@ -138,14 +118,15 @@ class ExpressiveRowMotionTest : FunSpec({
 
     test("hold pulls neighbor and cancel returns without rebound impulse") {
         withMotionScope { motion ->
-            val playState = motion.stateFor("play")
-            motion.retainTag("play")
+            val play = ExpressiveRef()
+            val playState = motion.stateFor(play)
+            motion.retainRef(play)
 
             val source = Any()
-            motion.onSourcePress(source, SideBounceNeighbors(rightTag = "play"))
+            motion.onSourcePress(source, SideBounceNeighbors(right = play))
             advanceTimeBy(80)
             runCurrent()
-            playState.offsetDp.targetValue shouldBe -2.5f
+            playState.offsetDp.targetValue shouldBe -1.5f
 
             motion.onSourceCancel(source)
             advanceTimeBy(60)
@@ -156,35 +137,36 @@ class ExpressiveRowMotionTest : FunSpec({
         }
     }
 
-    test("multi-touch self-protection resets hold pull while tagged element is pressed") {
+    test("multi-touch self-protection resets hold pull while referenced element is pressed") {
         withMotionScope { motion ->
-            val playState = motion.stateFor("play")
-            motion.retainTag("play")
+            val play = ExpressiveRef()
+            val playState = motion.stateFor(play)
+            motion.retainRef(play)
 
             val source = Any()
-            motion.onSourcePress(source, SideBounceNeighbors(rightTag = "play"))
+            motion.onSourcePress(source, SideBounceNeighbors(right = play))
             advanceTimeBy(80)
             runCurrent()
-            playState.offsetDp.targetValue shouldBe -2.5f
+            playState.offsetDp.targetValue shouldBe -1.5f
 
-            motion.onTagPress("play")
+            motion.onRefPress(play)
             runCurrent()
             playState.offsetDp.targetValue shouldBe 0f
 
-            motion.onTagRelease("play")
+            motion.onRefRelease(play)
             runCurrent()
-            playState.offsetDp.targetValue shouldBe -2.5f
+            playState.offsetDp.targetValue shouldBe -1.5f
 
             motion.onSourceCancel(source)
         }
     }
 
-    test("releasing a source targeting an unregistered tag does not throw") {
+    test("releasing a source targeting an unregistered ref does not throw") {
         withMotionScope { motion ->
+            val missingLeft = ExpressiveRef()
+            val missingRight = ExpressiveRef()
             val source = Any()
-            motion.onSourcePress(source,
-                SideBounceNeighbors(leftTag = "missing-left", rightTag = "missing-right")
-            )
+            motion.onSourcePress(source, SideBounceNeighbors(left = missingLeft, right = missingRight))
             motion.onSourceRelease(source)
             advanceTimeBy(100)
             runCurrent()

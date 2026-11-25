@@ -32,44 +32,69 @@ private const val HOLD_DELAY_MS = 60L
 /** The rebound starts this long after the release, when the tapped button accelerates back outward. */
 private const val PROPAGATION_DELAY_MS = 40L
 
-private const val HOLD_PULL_DP = 2.5f
+private const val HOLD_PULL_DP = 1.5f
 
 /** Outward peak reached by a neighbor when the tapped button rebounds, and its scale dip at that moment. */
-private const val REBOUND_OFFSET_PEAK_DP = 8f
-private const val REBOUND_SCALE_PEAK = -0.06f
+private const val REBOUND_OFFSET_PEAK_DP = 4.5f
+private const val REBOUND_SCALE_PEAK = -0.035f
 
 /** Neighbors rebound with a softer spring than the tapped button, so the wave looks delayed and damped. */
-private const val NEIGHBOR_DAMPING = 0.38f
+private const val NEIGHBOR_DAMPING = 0.48f
 private const val NEIGHBOR_STIFFNESS = 450f
 
 /** Compose's default threshold (0.01) would cut the scale rebound (~0.016) short. */
 private const val SCALE_VISIBILITY_THRESHOLD = 0.001f
 
-/** Neighbor tags targeted by a pressed element, paired with their outward direction (`-1f` left, `1f` right). */
+/** Opaque handle identifying a child inside an [ExpressiveRow], created via [ExpressiveRowScope.createRef] or [ExpressiveRowScope.createRefs]. */
+@Immutable
+class ExpressiveRef
+
+/** Destructurable bundle of [ExpressiveRef] handles returned by [ExpressiveRowScope.createRefs]. */
+@Immutable
+class ExpressiveRowRefs internal constructor(private val refs: List<ExpressiveRef>) {
+    operator fun component1(): ExpressiveRef = refs[0]
+    operator fun component2(): ExpressiveRef = refs[1]
+    operator fun component3(): ExpressiveRef = refs[2]
+    operator fun component4(): ExpressiveRef = refs[3]
+    operator fun component5(): ExpressiveRef = refs[4]
+    operator fun component6(): ExpressiveRef = refs[5]
+    operator fun component7(): ExpressiveRef = refs[6]
+    operator fun component8(): ExpressiveRef = refs[7]
+    operator fun component9(): ExpressiveRef = refs[8]
+    operator fun component10(): ExpressiveRef = refs[9]
+    operator fun component11(): ExpressiveRef = refs[10]
+    operator fun component12(): ExpressiveRef = refs[11]
+    operator fun component13(): ExpressiveRef = refs[12]
+    operator fun component14(): ExpressiveRef = refs[13]
+    operator fun component15(): ExpressiveRef = refs[14]
+    operator fun component16(): ExpressiveRef = refs[15]
+}
+
+/** Neighbor refs targeted by a pressed element, paired with their outward direction (`-1f` left, `1f` right). */
 data class SideBounceNeighbors(
-    val leftTag: String? = null,
-    val rightTag: String? = null
+    val left: ExpressiveRef? = null,
+    val right: ExpressiveRef? = null
 ) {
-    fun entries(): List<Pair<String, Float>> = buildList {
-        if (leftTag != null) add(leftTag to -1f)
-        if (rightTag != null) add(rightTag to 1f)
+    fun entries(): List<Pair<ExpressiveRef, Float>> = buildList {
+        if (left != null) add(left to -1f)
+        if (right != null) add(right to 1f)
     }
 }
 
 /**
- * Horizontal offset [tag] takes while [heldSources] are pressed: it leans [pullDp] towards each held source
- * that targets it. An element currently in [heldTags] stays under the finger, and pulls from both sides cancel out.
+ * Horizontal offset [ref] takes while [heldSources] are pressed: it leans [pullDp] towards each held source
+ * that targets it. An element currently in [heldRefs] stays under the finger, and pulls from both sides cancel out.
  */
 fun computeNetHoldPullDp(
-    tag: String,
-    heldTags: Set<String>,
+    ref: ExpressiveRef,
+    heldRefs: Set<ExpressiveRef>,
     heldSources: Collection<SideBounceNeighbors>,
     pullDp: Float
 ): Float {
-    if (tag in heldTags) return 0f
+    if (ref in heldRefs) return 0f
     return heldSources.sumOf { neighbors ->
         neighbors.entries()
-            .filter { it.first == tag }
+            .filter { it.first == ref }
             .sumOf { (_, awayDirection) -> (-awayDirection * pullDp).toDouble() }
     }.toFloat()
 }
@@ -86,7 +111,7 @@ fun springImpulseVelocity(peak: Float, dampingRatio: Float, stiffness: Float): F
     return peak * wd / (exp(-decay * tPeak) * sin(wd * tPeak))
 }
 
-/** Motion a tagged element receives when a neighbor is pressed. Read only during the draw phase. */
+/** Motion a referenced element receives when a neighbor is pressed. Read only during the draw phase. */
 class ButtonMotionState {
     val offsetDp = Animatable(0f)
     val scaleDelta = Animatable(0f)
@@ -95,48 +120,48 @@ class ButtonMotionState {
 /**
  * Coordinates neighbor lean and rebound animations inside an [ExpressiveRow].
  *
- * Tagged elements register dynamically via [retainTag]/[releaseTag] and report their own press state via
- * [onTagPress]/[onTagRelease] so multi-touch never pulls an element currently under a finger.
+ * Referenced elements register dynamically via [retainRef]/[releaseRef] and report their own press state via
+ * [onRefPress]/[onRefRelease] so multi-touch never pulls an element currently under a finger.
  */
 class ExpressiveRowMotion(
     private val scope: CoroutineScope
 ) {
-    private val states = mutableMapOf<String, ButtonMotionState>()
-    private val tagRefCounts = mutableMapOf<String, Int>()
-    private val pressedTagCounts = mutableMapOf<String, Int>()
+    private val states = mutableMapOf<ExpressiveRef, ButtonMotionState>()
+    private val refCounts = mutableMapOf<ExpressiveRef, Int>()
+    private val pressedRefCounts = mutableMapOf<ExpressiveRef, Int>()
     private val activeSources = mutableMapOf<Any, SideBounceNeighbors>()
     private val heldSources = mutableMapOf<Any, SideBounceNeighbors>()
     private val holdJobs = mutableMapOf<Any, Job>()
 
-    fun stateFor(tag: String): ButtonMotionState = states.getOrPut(tag) { ButtonMotionState() }
+    fun stateFor(ref: ExpressiveRef): ButtonMotionState = states.getOrPut(ref) { ButtonMotionState() }
 
-    fun retainTag(tag: String) {
-        tagRefCounts[tag] = (tagRefCounts[tag] ?: 0) + 1
+    fun retainRef(ref: ExpressiveRef) {
+        refCounts[ref] = (refCounts[ref] ?: 0) + 1
     }
 
-    fun releaseTag(tag: String) {
-        val next = (tagRefCounts[tag] ?: 0) - 1
+    fun releaseRef(ref: ExpressiveRef) {
+        val next = (refCounts[ref] ?: 0) - 1
         if (next <= 0) {
-            tagRefCounts.remove(tag)
-            states.remove(tag)
-            if (pressedTagCounts.remove(tag) != null) applyHoldPull()
+            refCounts.remove(ref)
+            states.remove(ref)
+            if (pressedRefCounts.remove(ref) != null) applyHoldPull()
         } else {
-            tagRefCounts[tag] = next
+            refCounts[ref] = next
         }
     }
 
-    fun onTagPress(tag: String) {
-        val prev = pressedTagCounts[tag] ?: 0
-        pressedTagCounts[tag] = prev + 1
+    fun onRefPress(ref: ExpressiveRef) {
+        val prev = pressedRefCounts[ref] ?: 0
+        pressedRefCounts[ref] = prev + 1
         if (prev == 0) applyHoldPull()
     }
 
-    fun onTagRelease(tag: String) {
-        val next = (pressedTagCounts[tag] ?: 0) - 1
+    fun onRefRelease(ref: ExpressiveRef) {
+        val next = (pressedRefCounts[ref] ?: 0) - 1
         if (next <= 0) {
-            if (pressedTagCounts.remove(tag) != null) applyHoldPull()
+            if (pressedRefCounts.remove(ref) != null) applyHoldPull()
         } else {
-            pressedTagCounts[tag] = next
+            pressedRefCounts[ref] = next
         }
     }
 
@@ -156,7 +181,7 @@ class ExpressiveRowMotion(
         if (heldSources.remove(sourceId) != null) applyHoldPull()
         scope.launch {
             delay(PROPAGATION_DELAY_MS)
-            neighbors.entries().forEach { (tag, direction) -> rebound(tag, direction) }
+            neighbors.entries().forEach { (ref, direction) -> rebound(ref, direction) }
         }
     }
 
@@ -167,9 +192,9 @@ class ExpressiveRowMotion(
     }
 
     private fun applyHoldPull() {
-        val heldTags = pressedTagCounts.keys
-        states.forEach { (tag, state) ->
-            val target = computeNetHoldPullDp(tag, heldTags, heldSources.values, HOLD_PULL_DP)
+        val heldRefs = pressedRefCounts.keys
+        states.forEach { (ref, state) ->
+            val target = computeNetHoldPullDp(ref, heldRefs, heldSources.values, HOLD_PULL_DP)
             // Leave untouched elements alone: restarting their spring would cut a rebound still in flight.
             if (target != state.offsetDp.targetValue) {
                 scope.launch { state.offsetDp.animateTo(target, neighborSpring()) }
@@ -177,8 +202,8 @@ class ExpressiveRowMotion(
         }
     }
 
-    private fun rebound(tag: String, direction: Float) {
-        val state = states[tag] ?: return
+    private fun rebound(ref: ExpressiveRef, direction: Float) {
+        val state = states[ref] ?: return
         scope.launch {
             state.offsetDp.animateTo(
                 targetValue = 0f,
@@ -202,23 +227,29 @@ class ExpressiveRowMotion(
         spring(NEIGHBOR_DAMPING, NEIGHBOR_STIFFNESS, visibilityThreshold)
 }
 
-/** Scope for children of [ExpressiveRow], providing [expressiveTag] and [expressiveSideBounce]. */
+/** Scope for children of [ExpressiveRow], providing [createRef], [createRefs], and [expressiveSideBounce]. */
 @LayoutScopeMarker
 @Immutable
 interface ExpressiveRowScope : RowScope {
 
-    /** Registers this element under [tag] so neighbors can lean towards and bounce it when pressed. */
+    /** Creates a single remembered [ExpressiveRef] scoped to this [ExpressiveRow]. */
     @Composable
-    fun Modifier.expressiveTag(tag: String): Modifier
+    fun createRef(): ExpressiveRef
+
+    /** Creates a destructurable bundle of remembered [ExpressiveRef] handles scoped to this [ExpressiveRow]. */
+    @Composable
+    fun createRefs(): ExpressiveRowRefs
 
     /**
-     * Observes presses on this element and animates the elements tagged [leftTag] and [rightTag]
-     * inside the enclosing [ExpressiveRow].
+     * Participates in neighbor bounce animations inside the enclosing [ExpressiveRow]:
+     * - Pass [ref] to let neighbors lean towards and bounce this element.
+     * - Pass [left] and/or [right] to push those neighbors when this element is pressed and released.
      */
     @Composable
     fun Modifier.expressiveSideBounce(
-        leftTag: String? = null,
-        rightTag: String? = null,
+        ref: ExpressiveRef? = null,
+        left: ExpressiveRef? = null,
+        right: ExpressiveRef? = null,
         enabled: Boolean = true,
         interactionSource: InteractionSource? = null
     ): Modifier
@@ -230,54 +261,69 @@ private class ExpressiveRowScopeInstance(
 ) : ExpressiveRowScope, RowScope by rowScope {
 
     @Composable
-    override fun Modifier.expressiveTag(tag: String): Modifier {
-        val state = remember(motion, tag) { motion.stateFor(tag) }
+    override fun createRef(): ExpressiveRef = remember { ExpressiveRef() }
 
-        DisposableEffect(motion, tag) {
-            motion.retainTag(tag)
-            onDispose { motion.releaseTag(tag) }
+    @Composable
+    override fun createRefs(): ExpressiveRowRefs = remember { ExpressiveRowRefs(List(16) { ExpressiveRef() }) }
+
+    @Composable
+    override fun Modifier.expressiveSideBounce(
+        ref: ExpressiveRef?,
+        left: ExpressiveRef?,
+        right: ExpressiveRef?,
+        enabled: Boolean,
+        interactionSource: InteractionSource?
+    ): Modifier {
+        if (ref == null && left == null && right == null) return this
+
+        val state = if (ref != null) {
+            DisposableEffect(motion, ref) {
+                motion.retainRef(ref)
+                onDispose { motion.releaseRef(ref) }
+            }
+            remember(motion, ref) { motion.stateFor(ref) }
+        } else {
+            null
         }
 
+        val hasNeighbors = left != null || right != null
+        val sourceId = remember { Any() }
+        val neighbors = remember(left, right) { SideBounceNeighbors(left, right) }
+
         // Observe pointer before graphicsLayer so translation/scale never shifts hit bounds.
-        return this
-            .observeExpressivePress(
-                enabled = true,
-                interactionSource = null,
-                onPress = { motion.onTagPress(tag) },
-                onRelease = { motion.onTagRelease(tag) },
-                onCancel = { motion.onTagRelease(tag) }
-            )
-            .graphicsLayer {
+        val observed = this.observeExpressivePress(
+            enabled = enabled || ref != null,
+            interactionSource = interactionSource,
+            onPress = {
+                if (ref != null) motion.onRefPress(ref)
+                if (enabled && hasNeighbors) motion.onSourcePress(sourceId, neighbors)
+            },
+            onRelease = {
+                if (ref != null) motion.onRefRelease(ref)
+                if (enabled && hasNeighbors) motion.onSourceRelease(sourceId)
+            },
+            onCancel = {
+                if (ref != null) motion.onRefRelease(ref)
+                if (enabled && hasNeighbors) motion.onSourceCancel(sourceId)
+            }
+        )
+
+        return if (state != null) {
+            observed.graphicsLayer {
                 translationX = state.offsetDp.value.dp.toPx()
                 val scale = 1f + state.scaleDelta.value
                 scaleX = scale
                 scaleY = scale
             }
-    }
-
-    @Composable
-    override fun Modifier.expressiveSideBounce(
-        leftTag: String?,
-        rightTag: String?,
-        enabled: Boolean,
-        interactionSource: InteractionSource?
-    ): Modifier {
-        if (leftTag == null && rightTag == null) return this
-        val sourceId = remember { Any() }
-        val neighbors = remember(leftTag, rightTag) { SideBounceNeighbors(leftTag, rightTag) }
-        return this.observeExpressivePress(
-            enabled = enabled,
-            interactionSource = interactionSource,
-            onPress = { motion.onSourcePress(sourceId, neighbors) },
-            onRelease = { motion.onSourceRelease(sourceId) },
-            onCancel = { motion.onSourceCancel(sourceId) }
-        )
+        } else {
+            observed
+        }
     }
 }
 
 /**
  * A [Row] whose children can coordinate neighbor lean and rebound animations via
- * [ExpressiveRowScope.expressiveTag] and [ExpressiveRowScope.expressiveSideBounce].
+ * [ExpressiveRowScope.createRefs] and [ExpressiveRowScope.expressiveSideBounce].
  */
 @Composable
 fun ExpressiveRow(

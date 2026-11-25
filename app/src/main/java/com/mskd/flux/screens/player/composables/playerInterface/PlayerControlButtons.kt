@@ -47,11 +47,12 @@ fun PlayerControlButtons(
         verticalAlignment = Alignment.CenterVertically
     ) {
 
+        val (rewindRef, playRef, forwardRef) = createRefs()
+
         MediumFloatingActionButton(
             modifier = Modifier
                 .playerControlSlide(slideSign = 1f, slide = slide)
-                .expressiveTag("rewind")
-                .expressiveSideBounce(rightTag = "play")
+                .expressiveSideBounce(ref = rewindRef, right = playRef)
                 .expressivePress(),
             onClick = { sendIntent(PlayerIntent.OnFastRewind) },
             shape = CircleShape,
@@ -71,8 +72,7 @@ fun PlayerControlButtons(
 
         LargeExtendedFloatingActionButton(
             modifier = Modifier
-                .expressiveTag("play")
-                .expressiveSideBounce(leftTag = "rewind", rightTag = "forward")
+                .expressiveSideBounce(ref = playRef, left = rewindRef, right = forwardRef)
                 .expressivePress(),
             onClick = { sendIntent(PlayerIntent.TogglePlayButton) },
             shape = FloatingActionButtonDefaults.largeExtendedFabShape
@@ -87,8 +87,7 @@ fun PlayerControlButtons(
         MediumFloatingActionButton(
             modifier = Modifier
                 .playerControlSlide(slideSign = -1f, slide = slide)
-                .expressiveTag("forward")
-                .expressiveSideBounce(leftTag = "play")
+                .expressiveSideBounce(ref = forwardRef, left = playRef)
                 .expressivePress(),
             onClick = { sendIntent(PlayerIntent.OnFastForward) },
             shape = CircleShape,

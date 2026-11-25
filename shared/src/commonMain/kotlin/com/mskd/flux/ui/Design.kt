@@ -85,6 +85,10 @@ object Design {
         val waveProgress: Boolean = true
     )
 
+    object Button {
+        val blurRadius = 16.dp
+        val opacity = .6f
+    }
 }
 
 val LocalUiShapes = compositionLocalOf { Design.Shapes() }

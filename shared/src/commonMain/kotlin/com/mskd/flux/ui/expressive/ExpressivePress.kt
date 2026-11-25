@@ -114,6 +114,7 @@ fun Modifier.expressivePress(
     dampingRatio: Float = PRESS_DAMPING,
     stiffness: Float = PRESS_STIFFNESS
 ): Modifier {
+
     var isPressed by remember { mutableStateOf(false) }
 
     // Read in the draw phase only, so the animation does not recompose the caller on every frame.

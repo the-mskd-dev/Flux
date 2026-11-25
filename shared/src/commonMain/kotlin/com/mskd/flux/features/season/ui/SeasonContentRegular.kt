@@ -2,10 +2,10 @@ package com.mskd.flux.features.season.ui
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -21,6 +21,7 @@ import com.mskd.flux.features.season.presentation.SeasonContent
 import com.mskd.flux.features.season.presentation.SeasonIntent
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.ui.PortraitPreview
+import com.mskd.flux.ui.plus
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
 import kotlinx.collections.immutable.persistentListOf
@@ -37,7 +38,11 @@ fun SeasonContentRegular(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = FluxUI.Space.medium),
+            .consumeWindowInsets(scaffoldInnerPadding),
+        contentPadding = scaffoldInnerPadding.plus(
+            includeTop = false,
+            horizontal = FluxUI.Space.medium,
+        ),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 
@@ -93,13 +98,6 @@ fun SeasonContentRegular(
             titleColor = episodesTitleColor,
             actions = seasonEpisodeActions(sendIntent),
         )
-
-        item {
-            Spacer(modifier = Modifier
-                .padding(bottom = FluxUI.Space.bottomScreen)
-                .height(scaffoldInnerPadding.calculateBottomPadding())
-            )
-        }
 
     }
 

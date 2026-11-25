@@ -9,6 +9,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -35,6 +38,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.core.model.artwork.ContentType
@@ -68,8 +72,10 @@ import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.blurBackground
 import com.mskd.flux.ui.blurForeground
 import com.mskd.flux.ui.components.LoadingScreen
+import com.mskd.flux.ui.components.fluxSafeSystemInsets
 import com.mskd.flux.ui.dimensions.rememberScreenDimensions
 import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.theme.LocalBottomBarPadding
 import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -158,12 +164,17 @@ fun CatalogContent(
     val columns = if (screenDimensions.isLarge) 5 else FluxUI.itemsPerRow.artworks
 
     val density = LocalDensity.current
+    val layoutDirection = LocalLayoutDirection.current
     var headerHeight by remember { mutableStateOf(0.dp) }
     val hazeState = rememberHazeState()
 
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.background
+        containerColor = MaterialTheme.colorScheme.background,
+        contentWindowInsets = fluxSafeSystemInsets
     ) { paddingValues ->
+
+        val startPadding = paddingValues.calculateStartPadding(layoutDirection) + FluxUI.Space.medium
+        val endPadding = paddingValues.calculateEndPadding(layoutDirection) + FluxUI.Space.medium
 
         Box(modifier = Modifier.fillMaxSize()) {
 
@@ -189,14 +200,16 @@ fun CatalogContent(
                 LazyVerticalGrid(
                     modifier = Modifier
                         .fillMaxSize()
+                        .consumeWindowInsets(paddingValues)
                         .graphicsLayer { translationY = offsetY },
                     columns = GridCells.Fixed(columns),
                     verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
                     horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
                     contentPadding = PaddingValues(
-                        start = FluxUI.Space.medium,
-                        end = FluxUI.Space.medium,
-                        top = headerHeight
+                        start = startPadding,
+                        end = endPadding,
+                        top = headerHeight,
+                        bottom = maxOf(paddingValues.calculateBottomPadding(), LocalBottomBarPadding.current) + FluxUI.Space.large
                     ),
                 ) {
 
@@ -217,6 +230,8 @@ fun CatalogContent(
                         CatalogHistory(
                             modifier = Modifier.animateItem(),
                             entries = state.history,
+                            startPadding = startPadding,
+                            endPadding = endPadding,
                             sendIntent = sendIntent
                         )
 
@@ -253,6 +268,8 @@ fun CatalogContent(
                                     artworks = state.artworks,
                                     sortingMode = state.sortingMode,
                                     privateFolderEnabled = state.privateFolderEnabled,
+                                    startPadding = startPadding,
+                                    endPadding = endPadding,
                                     sendIntent = sendIntent
                                 )
                             }
@@ -262,6 +279,8 @@ fun CatalogContent(
                                     genres = state.genres,
                                     sortingMode = state.sortingMode,
                                     privateFolderEnabled = state.privateFolderEnabled,
+                                    startPadding = startPadding,
+                                    endPadding = endPadding,
                                     sendIntent = sendIntent
                                 )
                             }
@@ -275,7 +294,6 @@ fun CatalogContent(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(top = FluxUI.Space.medium)
-                                .padding(bottom = paddingValues.calculateBottomPadding() + FluxUI.Space.bottomScreen)
                         ) {
 
                             CatalogMenu(
@@ -299,7 +317,11 @@ fun CatalogContent(
                     .fillMaxWidth()
                     .onSizeChanged { headerHeight = with(density) { it.height.toDp() } }
                     .blurForeground(state = hazeState, progressive = true)
-                    .padding(top = paddingValues.calculateTopPadding()),
+                    .padding(
+                        top = paddingValues.calculateTopPadding(),
+                        start = paddingValues.calculateStartPadding(layoutDirection),
+                        end = paddingValues.calculateEndPadding(layoutDirection)
+                    ),
                 sendIntent = sendIntent
             )
 

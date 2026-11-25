@@ -21,6 +21,7 @@ import com.mskd.flux.features.player.presentation.PlayerIntent
 import com.mskd.flux.features.player.presentation.PlayerViewModel
 import com.mskd.flux.features.player.presentation.WindowStateHolder
 import com.mskd.flux.ui.global.LifecycleComponent
+import com.mskd.flux.ui.theme.ForceLightSystemBarIcons
 import com.mskd.flux.utils.extensions.findActivity
 import kotlinx.coroutines.launch
 
@@ -48,6 +49,8 @@ fun PlayerSideEffects(
             activity.removeOnPictureInPictureModeChangedListener(observer)
         }
     }
+
+    ForceLightSystemBarIcons(enabled = !isInPip)
 
     DisposableEffect(activity) {
         activity?.setOnUserLeaveHintCallback {

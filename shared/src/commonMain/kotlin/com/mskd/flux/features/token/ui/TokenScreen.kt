@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -54,6 +54,7 @@ import com.mskd.flux.ui.components.FluxScaffold
 import com.mskd.flux.ui.components.buttons.FluxIconButton
 import com.mskd.flux.ui.components.buttons.FluxTextButton
 import com.mskd.flux.ui.global.BackGesture
+import com.mskd.flux.ui.scaffoldPadding
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.text.buildLinkedString
 import com.mskd.flux.ui.theme.FluxTheme
@@ -142,14 +143,17 @@ fun TokenScreenContent(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.background)
                 .fillMaxSize()
+                .consumeWindowInsets(innerPadding)
                 .imePadding()
-                .padding(horizontal = FluxUI.Space.medium)
-                .verticalScroll(rememberScrollState()),
+                .verticalScroll(rememberScrollState())
+                .scaffoldPadding(
+                    innerPadding = innerPadding,
+                    horizontal = FluxUI.Space.medium,
+                    bottom = if (!state.showBackButton) 72.dp else FluxUI.Space.large,
+                ),
             verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
-            Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
 
             TokenDescription()
 
@@ -182,8 +186,6 @@ fun TokenScreenContent(
 
                 }
             }
-
-            Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
 
         }
 

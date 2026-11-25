@@ -4,8 +4,12 @@ import android.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.MaterialTheme
@@ -23,6 +27,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.core.model.artwork.ContentType
@@ -46,6 +51,7 @@ import com.mskd.flux.ui.components.FluxSearchField
 import com.mskd.flux.ui.dimensions.itemWidthFor
 import com.mskd.flux.ui.dimensions.rememberScreenDimensions
 import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.theme.LocalBottomBarPadding
 import com.mskd.flux.ui.theme.LocalUiGlobal
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -94,6 +100,7 @@ fun SearchContent(
     val columns = if (isLargeScreen) 5 else FluxUI.itemsPerRow.artworks
     var itemWidth by remember { mutableStateOf(FluxUI.Dimension.itemWidth) }
     val density = LocalDensity.current
+    val layoutDirection = LocalLayoutDirection.current
     val focusManager = LocalFocusManager.current
     val lazyGridState = rememberLazyGridState()
 
@@ -122,6 +129,13 @@ fun SearchContent(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .consumeWindowInsets(innerPadding)
+                .imePadding()
+                .padding(
+                    start = innerPadding.calculateStartPadding(layoutDirection) + FluxUI.Space.medium,
+                    end = innerPadding.calculateEndPadding(layoutDirection) + FluxUI.Space.medium
+                )
                 .onSizeChanged { size ->
                     with(density) {
                         itemWidth = itemWidthFor(
@@ -129,9 +143,7 @@ fun SearchContent(
                             columns = columns
                         )
                     }
-                }
-                .background(MaterialTheme.colorScheme.background)
-                .padding(horizontal = FluxUI.Space.medium),
+                },
             verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
         ) {
 
@@ -158,7 +170,7 @@ fun SearchContent(
                 state = lazyGridState,
                 columns = columns,
                 artworks = state.artworks,
-                bottomPadding = innerPadding.calculateBottomPadding(),
+                bottomPadding = maxOf(innerPadding.calculateBottomPadding(), LocalBottomBarPadding.current) + FluxUI.Space.large,
                 itemWidth = itemWidth,
                 sendIntent = sendIntent
             )

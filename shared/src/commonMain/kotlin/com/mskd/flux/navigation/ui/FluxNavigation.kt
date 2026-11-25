@@ -3,9 +3,11 @@ package com.mskd.flux.navigation.ui
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,6 +41,8 @@ import com.mskd.flux.navigation.domain.navigateToTab
 import com.mskd.flux.navigation.domain.popScreen
 import com.mskd.flux.navigation.ui.navigationBar.FluxNavigationBar
 import com.mskd.flux.report.CrashLogger
+import com.mskd.flux.ui.theme.LocalBottomBarPadding
+import com.mskd.flux.ui.theme.LocalSystemBarsAppearance
 import com.mskd.flux.ui.theme.createColorScheme
 import org.koin.compose.koinInject
 
@@ -86,9 +90,16 @@ fun FluxNavigation(
     val showBottomBar = currentRoute.let {
         it is Route.Catalog || it is Route.Search || it is Route.Settings
     }
+    val isSolidBottomBarVisible = showBottomBar && customization.navigationStyle == NavigationStyle.BOTTOM_BAR
+
+    val systemBarsAppearance = LocalSystemBarsAppearance.current
+    LaunchedEffect(systemBarsAppearance, isSolidBottomBarVisible) {
+        systemBarsAppearance.enforceNavigationBarContrast = !isSolidBottomBarVisible
+    }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         bottomBar = {
 
             if (customization.navigationStyle != NavigationStyle.TOP_BAR) {
@@ -107,9 +118,11 @@ fun FluxNavigation(
                 }
             }
         }
-    ) { _ ->
+    ) { rootPadding ->
 
-        NavDisplay(
+        CompositionLocalProvider(LocalBottomBarPadding provides rootPadding.calculateBottomPadding()) {
+
+            NavDisplay(
             backStack = backStack,
             onBack = { backStack.removeLastOrNull() },
             entryDecorators = listOf(
@@ -203,6 +216,8 @@ fun FluxNavigation(
 
             },
         )
+
+        }
 
     }
 

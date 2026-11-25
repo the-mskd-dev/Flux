@@ -28,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
@@ -54,12 +55,14 @@ import org.jetbrains.compose.resources.stringResource
 fun CatalogHistory(
     modifier: Modifier = Modifier,
     entries: List<HistoryEntry>,
+    startPadding: Dp = FluxUI.Space.medium,
+    endPadding: Dp = FluxUI.Space.medium,
     sendIntent: (CatalogIntent) -> Unit
 ) {
 
     AnimatedVisibility(
         modifier = modifier
-            .bleedHorizontal()
+            .bleedHorizontal(start = startPadding, end = endPadding)
             .fillMaxWidth(),
         visible = entries.isNotEmpty()
     ) {
@@ -72,7 +75,7 @@ fun CatalogHistory(
             Text.Content.Title(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = FluxUI.Space.medium),
+                    .padding(start = startPadding, end = endPadding),
                 text = stringResource(Res.string.continue_watching),
                 color = MaterialTheme.colorScheme.onBackground
             )
@@ -80,7 +83,7 @@ fun CatalogHistory(
             LazyRow(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
-                contentPadding = PaddingValues(horizontal = FluxUI.Space.medium)
+                contentPadding = PaddingValues(start = startPadding, end = endPadding)
             ) {
 
                 items(items = entries, key = { it.media.artworkId }) { entry ->

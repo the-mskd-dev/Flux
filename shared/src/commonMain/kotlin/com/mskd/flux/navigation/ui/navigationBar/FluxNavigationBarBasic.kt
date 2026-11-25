@@ -2,10 +2,16 @@ package com.mskd.flux.navigation.ui.navigationBar
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.union
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,7 +30,9 @@ fun FluxNavigationBarBasic(
     onTabSelected: (Route) -> Unit,
 ) {
 
-    NavigationBar {
+    NavigationBar(
+        windowInsets = NavigationBarDefaults.windowInsets.union(WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal))
+    ) {
 
         BottomBarTab.entries.forEach { tab ->
             NavigationBarItem(

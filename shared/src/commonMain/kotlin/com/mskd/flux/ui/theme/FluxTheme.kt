@@ -26,6 +26,7 @@ import dev.chrisbanes.haze.rememberHazeState
 fun FluxTheme(
     isOnline: Boolean = true,
     customization: CustomizationDataStore.State = CustomizationDataStore.State(),
+    systemBarsAppearance: SystemBarsAppearanceState = remember { SystemBarsAppearanceState() },
     content: @Composable () -> Unit
 ) {
 
@@ -57,7 +58,8 @@ fun FluxTheme(
             waveProgress = customization.waveProgress
         ),
         LocalEmphasizedTypography provides fluxEmphasizedTypography(),
-        LocalModalHost provides modalHost
+        LocalModalHost provides modalHost,
+        LocalSystemBarsAppearance provides systemBarsAppearance
     ) {
 
         MaterialExpressiveTheme(

@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -25,10 +26,10 @@ import com.mskd.flux.features.privateFolder.presentation.PrivateFolderUiState
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.dimensions.rememberScreenDimensions
-import com.mskd.flux.ui.displayCutoutPaddingInLandscape
 import com.mskd.flux.ui.media.MediaItem
 import com.mskd.flux.ui.modal.menu.FluxPopUpMenu
 import com.mskd.flux.ui.modal.menu.FluxPopUpMenuItem
+import com.mskd.flux.ui.plus
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
@@ -52,15 +53,13 @@ fun PrivateContentGrid(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .displayCutoutPaddingInLandscape(),
+            .consumeWindowInsets(innerPadding),
         columns = GridCells.Fixed(columns),
         verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
         horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
-        contentPadding = PaddingValues(
-            top = innerPadding.calculateTopPadding() + FluxUI.Space.medium,
-            bottom = innerPadding.calculateBottomPadding() + FluxUI.Space.bottomScreen,
-            start = FluxUI.Space.medium,
-            end = FluxUI.Space.medium
+        contentPadding = innerPadding.plus(
+            top = FluxUI.Space.medium,
+            horizontal = FluxUI.Space.medium,
         )
     ) {
 

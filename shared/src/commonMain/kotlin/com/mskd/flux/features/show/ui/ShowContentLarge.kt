@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -33,6 +34,7 @@ import com.mskd.flux.features.show.ui.composables.SeasonItem
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.PeopleMockup
 import com.mskd.flux.ui.LandscapePreview
+import com.mskd.flux.ui.plus
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
@@ -65,16 +67,17 @@ fun ShowContentLarge(
         }
 
         LazyVerticalGrid(
-            modifier = Modifier.weight(.5f),
+            modifier = Modifier
+                .weight(.5f)
+                .consumeWindowInsets(scaffoldInnerPadding),
             columns = GridCells.Fixed(3),
             horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
             verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
-            contentPadding = PaddingValues(horizontal = FluxUI.Space.medium)
+            contentPadding = scaffoldInnerPadding.plus(
+                includeStart = false,
+                horizontal = FluxUI.Space.medium,
+            )
         ) {
-
-            item(span = { GridItemSpan(maxLineSpan) }) {
-                Spacer(modifier = Modifier.height(scaffoldInnerPadding.calculateTopPadding()))
-            }
 
             item(span = { GridItemSpan(maxLineSpan) }) {
 
@@ -163,13 +166,6 @@ fun ShowContentLarge(
 
                 }
 
-            }
-
-            item(span = { GridItemSpan(maxLineSpan) }) {
-                Spacer(modifier = Modifier
-                    .padding(bottom = FluxUI.Space.bottomScreen)
-                    .height(scaffoldInnerPadding.calculateBottomPadding())
-                )
             }
 
         }

@@ -11,7 +11,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
-import androidx.compose.foundation.layout.displayCutoutPadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -37,7 +36,6 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.mskd.flux.ui.dimensions.rememberScreenDimensions
 import com.mskd.flux.ui.theme.FluxUI
 import dev.chrisbanes.haze.HazeInput
 import dev.chrisbanes.haze.HazePerformanceMode
@@ -253,26 +251,24 @@ fun Modifier.groupedShape(
     return this.clip(shape)
 }
 
-fun Modifier.bleedHorizontal(amount: Dp = FluxUI.Space.medium) = layout { measurable, constraints ->
-    val expandPx = amount.roundToPx()
+fun Modifier.bleedHorizontal(amount: Dp = FluxUI.Space.medium) =
+    bleedHorizontal(start = amount, end = amount)
+
+fun Modifier.bleedHorizontal(
+    start: Dp,
+    end: Dp,
+) = layout { measurable, constraints ->
+    val startPx = start.roundToPx()
+    val endPx = end.roundToPx()
 
     val expandedConstraints = constraints.copy(
-        minWidth = (constraints.minWidth + expandPx * 2).coerceAtLeast(0),
-        maxWidth = constraints.maxWidth + expandPx * 2
+        minWidth = (constraints.minWidth + startPx + endPx).coerceAtLeast(0),
+        maxWidth = if (constraints.hasBoundedWidth) constraints.maxWidth + startPx + endPx else constraints.maxWidth
     )
 
     val placeable = measurable.measure(expandedConstraints)
 
-    layout(placeable.width - expandPx * 2, placeable.height) {
-        placeable.placeRelative(x = -expandPx, y = 0)
+    layout(placeable.width - startPx - endPx, placeable.height) {
+        placeable.placeRelative(x = -startPx, y = 0)
     }
-}
-
-@Composable
-fun Modifier.displayCutoutPaddingInLandscape() : Modifier {
-    val screenDimensions = rememberScreenDimensions()
-
-    return this.then(
-        if (screenDimensions.isLarge) Modifier.displayCutoutPadding() else Modifier
-    )
 }

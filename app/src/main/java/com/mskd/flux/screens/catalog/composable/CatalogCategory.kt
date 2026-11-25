@@ -21,6 +21,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
@@ -35,6 +37,8 @@ fun CatalogCategory(
     artworks: List<Artwork>,
     sortingOption: CatalogSortingMode,
     privateFolderEnabled: Boolean,
+    startPadding: Dp = FluxUI.Space.medium,
+    endPadding: Dp = FluxUI.Space.medium,
     onCategoryTap: () -> Unit,
     sendIntent: (CatalogIntent) -> Unit,
 ) {
@@ -57,8 +61,9 @@ fun CatalogCategory(
             .fillMaxWidth()
             .onSizeChanged { size ->
                 with(density) {
+                    val usableWidth = (size.width.toDp() - (startPadding - FluxUI.Space.medium) - (endPadding - FluxUI.Space.medium)).coerceAtLeast(0.dp)
                     itemWidth = itemWidthFor(
-                        screenWidthDp = size.width.toDp(),
+                        screenWidthDp = usableWidth,
                         columns = columns
                     )
                 }
@@ -70,7 +75,7 @@ fun CatalogCategory(
             modifier = Modifier
                 .clickable { onCategoryTap() }
                 .fillMaxWidth()
-                .padding(start = FluxUI.Space.medium),
+                .padding(start = startPadding, end = endPadding),
             text = name,
             color = MaterialTheme.colorScheme.onBackground
         )
@@ -78,7 +83,7 @@ fun CatalogCategory(
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
             state = listState,
-            contentPadding = PaddingValues(horizontal = FluxUI.Space.medium),
+            contentPadding = PaddingValues(start = startPadding, end = endPadding),
             horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
         ) {
 

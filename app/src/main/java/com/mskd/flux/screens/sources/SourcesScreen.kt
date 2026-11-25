@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -57,6 +58,7 @@ import com.mskd.flux.ui.components.FluxScaffold
 import com.mskd.flux.ui.components.LoadingScreen
 import com.mskd.flux.ui.components.rememberSafFolderPicker
 import com.mskd.flux.ui.global.BackGesture
+import com.mskd.flux.ui.plus
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
@@ -196,12 +198,12 @@ fun SourcesScreenContent(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background),
+                .background(MaterialTheme.colorScheme.background)
+                .consumeWindowInsets(innerPadding),
+            contentPadding = innerPadding.plus(
+                bottom = if (content.fromSetup) 88.dp else FluxUI.Space.large
+            ),
         ) {
-
-            item {
-                Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
-            }
 
             item {
                 Text.Annotated(
@@ -294,10 +296,6 @@ fun SourcesScreenContent(
                 if (index != folders.lastIndex)
                     Spacer(Modifier.height(FluxUI.Space.listItem))
 
-            }
-
-            item {
-                Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding() + 50.dp))
             }
 
         }

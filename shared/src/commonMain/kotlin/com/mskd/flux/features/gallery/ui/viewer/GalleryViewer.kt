@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.toSize
 import com.mskd.flux.features.gallery.domain.model.GalleryImage
 import com.mskd.flux.features.gallery.presentation.ArtworkImageButton
 import com.mskd.flux.ui.global.BackGesture
+import com.mskd.flux.ui.theme.ForceLightSystemBarIcons
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
@@ -144,6 +145,7 @@ fun GalleryViewer(
 
     // Back first zooms the image out, then dismisses the viewer like the swipe down
     BackGesture(onBack = { if (zoomed) zoomOutRequest++ else dismiss() })
+    ForceLightSystemBarIcons()
 
     Box(
         modifier = Modifier

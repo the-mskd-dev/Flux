@@ -46,6 +46,7 @@
             android:excludeFromRecents="true"
             android:finishOnTaskLaunch="true"
             android:launchMode="singleInstance"
+            android:windowSoftInputMode="adjustResize"
             android:theme="@style/Theme.Flux" />
 
         <service

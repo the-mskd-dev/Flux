@@ -3,9 +3,8 @@ package com.mskd.flux.features.settings.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
@@ -35,8 +34,10 @@ import com.mskd.flux.system.rememberNotificationsPermission
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.components.FluxOptionsDialog
 import com.mskd.flux.ui.components.FluxScaffold
+import com.mskd.flux.ui.scaffoldPadding
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.theme.LocalBottomBarPadding
 import com.mskd.flux.ui.theme.LocalUiGlobal
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.settings
@@ -110,12 +111,12 @@ fun SettingsContent(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.background)
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
+                .consumeWindowInsets(innerPadding)
+                .verticalScroll(rememberScrollState())
+                .scaffoldPadding(innerPadding, minBottom = LocalBottomBarPadding.current),
             verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
-            Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
 
             SettingsCustomizationSection(
                 state = state,
@@ -150,8 +151,6 @@ fun SettingsContent(
                 showPlayStore = state.showPlayStore,
                 sendIntent = sendIntent
             )
-
-            Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding() + FluxUI.Space.bottomScreen))
 
         }
 

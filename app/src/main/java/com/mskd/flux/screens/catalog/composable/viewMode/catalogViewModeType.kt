@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
@@ -27,6 +28,8 @@ fun LazyGridScope.catalogViewModeType(
     artworks: List<Artwork>,
     sortingMode: CatalogSortingMode,
     privateFolderEnabled: Boolean,
+    startPadding: Dp = FluxUI.Space.medium,
+    endPadding: Dp = FluxUI.Space.medium,
     sendIntent: (CatalogIntent) -> Unit
 ) {
 
@@ -34,7 +37,7 @@ fun LazyGridScope.catalogViewModeType(
         Column(
             modifier = Modifier
                 .animateItem()
-                .bleedHorizontal(),
+                .bleedHorizontal(start = startPadding, end = endPadding),
             verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large)
         ) {
 
@@ -43,6 +46,8 @@ fun LazyGridScope.catalogViewModeType(
                 artworks = artworks.filter { it.type == ContentType.SHOW && !it.isUnknown },
                 sortingOption = sortingMode,
                 privateFolderEnabled = privateFolderEnabled,
+                startPadding = startPadding,
+                endPadding = endPadding,
                 onCategoryTap = { sendIntent(CatalogIntent.OnCategoryClick(ContentType.SHOW)) },
                 sendIntent = sendIntent
             )
@@ -52,6 +57,8 @@ fun LazyGridScope.catalogViewModeType(
                 artworks = artworks.filter { it.type == ContentType.MOVIE && !it.isUnknown },
                 sortingOption = sortingMode,
                 privateFolderEnabled = privateFolderEnabled,
+                startPadding = startPadding,
+                endPadding = endPadding,
                 onCategoryTap = { sendIntent(CatalogIntent.OnCategoryClick(ContentType.MOVIE)) },
                 sendIntent = sendIntent
             )

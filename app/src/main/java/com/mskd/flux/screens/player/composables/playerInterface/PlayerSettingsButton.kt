@@ -1,7 +1,13 @@
 package com.mskd.flux.screens.player.composables.playerInterface
 
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.displayCutout
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.union
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
@@ -20,7 +26,7 @@ fun PlayerSettingsButton(
 
     SmallButton(
         modifier = modifier
-            .statusBarsPadding()
+            .windowInsetsPadding(WindowInsets.systemBars.union(WindowInsets.displayCutout).only(WindowInsetsSides.Top + WindowInsetsSides.End))
             .padding(horizontal = FluxUI.Space.medium),
         onClick = { sendIntent(PlayerIntent.ShowSettings(sheet = SettingsSheet.Settings)) },
         enabled = enabled,

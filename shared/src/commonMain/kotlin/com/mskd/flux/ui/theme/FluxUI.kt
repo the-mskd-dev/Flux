@@ -42,7 +42,6 @@ object FluxUI {
         val small = 8.dp
         val medium = 16.dp
         val large = 24.dp
-        val bottomScreen = 100.dp
     }
 
     object Animation {
@@ -99,3 +98,4 @@ val LocalUiGlobal = compositionLocalOf { FluxUI.Global() }
 val LocalUiItemsPerRow = compositionLocalOf { FluxUI.ItemsPerRow() }
 val LocalUiEpisodes = compositionLocalOf { FluxUI.Episodes() }
 val LocalUiPlayer = compositionLocalOf { FluxUI.Player() }
+val LocalBottomBarPadding = compositionLocalOf { 0.dp }

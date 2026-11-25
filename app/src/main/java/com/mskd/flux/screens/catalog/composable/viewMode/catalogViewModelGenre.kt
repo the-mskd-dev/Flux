@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.Genre
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
@@ -26,6 +27,8 @@ fun LazyGridScope.catalogViewModeGenre(
     genres: List<Genre>,
     sortingMode: CatalogSortingMode,
     privateFolderEnabled: Boolean,
+    startPadding: Dp = FluxUI.Space.medium,
+    endPadding: Dp = FluxUI.Space.medium,
     sendIntent: (CatalogIntent) -> Unit
 ) {
 
@@ -34,7 +37,7 @@ fun LazyGridScope.catalogViewModeGenre(
         Column(
             modifier = Modifier
                 .animateItem()
-                .bleedHorizontal(),
+                .bleedHorizontal(start = startPadding, end = endPadding),
             verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large)
         ) {
 
@@ -43,15 +46,17 @@ fun LazyGridScope.catalogViewModeGenre(
 
                 genres
                     .map { genre -> genre to validArtworks.filter { it.genreIds.contains(genre.id) } }
-                    .sortedByDescending { (_, genreArtworks) -> genreArtworks.size }
+                    .sortedByDescending { [_, genreArtworks] -> genreArtworks.size }
             }
 
-            categories.forEach { (genre, categoryArtworks) ->
+            categories.forEach { [genre, categoryArtworks] ->
                 CatalogCategory(
                     name = genre.name,
                     artworks = categoryArtworks,
                     sortingOption = sortingMode,
                     privateFolderEnabled = privateFolderEnabled,
+                    startPadding = startPadding,
+                    endPadding = endPadding,
                     onCategoryTap = { sendIntent(CatalogIntent.OnGenreClick(genre = genre)) },
                     sendIntent = sendIntent
                 )

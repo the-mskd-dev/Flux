@@ -10,6 +10,7 @@ import androidx.core.view.WindowInsetsControllerCompat
 fun Activity.hideSystemBars() {
 
     val windowInsets = WindowInsetsControllerCompat(this.window, this.window.decorView)
+    windowInsets.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
     windowInsets.hide(WindowInsetsCompat.Type.systemBars())
 
 }

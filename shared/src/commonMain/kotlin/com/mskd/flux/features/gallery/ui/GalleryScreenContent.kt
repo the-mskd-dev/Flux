@@ -10,12 +10,18 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.union
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
@@ -58,6 +64,7 @@ import com.mskd.flux.ui.components.FluxScaffold
 import com.mskd.flux.ui.components.buttons.FluxTextButton
 import com.mskd.flux.ui.dimensions.rememberScreenDimensions
 import com.mskd.flux.ui.image.Image
+import com.mskd.flux.ui.plus
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
@@ -130,13 +137,14 @@ fun GalleryScreenContent(
 
             LazyVerticalStaggeredGrid(
                 state = gridState,
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .consumeWindowInsets(innerPadding),
                 columns = StaggeredGridCells.Fixed(columns),
-                contentPadding = PaddingValues(
-                    start = FluxUI.Space.medium,
-                    end = FluxUI.Space.medium,
-                    top = innerPadding.calculateTopPadding() + FluxUI.Space.small,
-                    bottom = innerPadding.calculateBottomPadding() + FluxUI.Space.medium,
+                contentPadding = innerPadding.plus(
+                    top = FluxUI.Space.small,
+                    bottom = FluxUI.Space.medium,
+                    horizontal = FluxUI.Space.medium,
                 ),
                 horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
                 verticalItemSpacing = FluxUI.Space.small,
@@ -251,7 +259,7 @@ fun GalleryScreenContent(
             hostState = snackbarHostState,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .navigationBarsPadding()
+                .windowInsetsPadding(WindowInsets.systemBars.union(WindowInsets.displayCutout).only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal))
         )
 
     }

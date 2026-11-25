@@ -5,9 +5,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
@@ -22,6 +22,7 @@ import com.mskd.flux.features.artwork.ui.composables.episodeList
 import com.mskd.flux.features.season.presentation.SeasonContent
 import com.mskd.flux.features.season.presentation.SeasonIntent
 import com.mskd.flux.ui.LandscapePreview
+import com.mskd.flux.ui.plus
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
@@ -54,14 +55,15 @@ fun SeasonContentLarge(
         }
 
         LazyColumn(
-            modifier = Modifier.weight(.5f),
+            modifier = Modifier
+                .weight(.5f)
+                .consumeWindowInsets(scaffoldInnerPadding),
             horizontalAlignment = Alignment.CenterHorizontally,
-            contentPadding = PaddingValues(horizontal = FluxUI.Space.medium)
+            contentPadding = scaffoldInnerPadding.plus(
+                includeStart = false,
+                horizontal = FluxUI.Space.medium,
+            )
         ) {
-
-            item {
-                Spacer(modifier = Modifier.height(scaffoldInnerPadding.calculateTopPadding()))
-            }
 
             item {
                 Text.MainTitle(
@@ -109,13 +111,6 @@ fun SeasonContentLarge(
                 titleColor = episodesTitleColor,
                 actions = seasonEpisodeActions(sendIntent),
             )
-
-            item {
-                Spacer(modifier = Modifier
-                    .padding(bottom = FluxUI.Space.bottomScreen)
-                    .height(scaffoldInnerPadding.calculateBottomPadding())
-                )
-            }
 
         }
 

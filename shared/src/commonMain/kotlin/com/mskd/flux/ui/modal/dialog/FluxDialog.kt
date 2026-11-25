@@ -16,8 +16,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -74,7 +74,8 @@ fun FluxDialogHost(
             visible = visible,
             modifier = Modifier
                 .align(Alignment.Center)
-                .padding(horizontal = FluxUI.Space.large)
+                .safeDrawingPadding()
+                .padding(horizontal = FluxUI.Space.large, vertical = FluxUI.Space.medium)
             ,
             enter = scaleIn(
                 animationSpec = spring(
@@ -88,8 +89,7 @@ fun FluxDialogHost(
             Surface(
                 modifier = Modifier
                     .fillMaxWidthWithLimit()
-                    .heightIn(max = 700.dp)
-                    .imePadding(),
+                    .heightIn(max = 700.dp),
                 shape = RoundedCornerShape(28.dp),
                 color = Color.Transparent,
                 contentColor = MaterialTheme.colorScheme.onSurface

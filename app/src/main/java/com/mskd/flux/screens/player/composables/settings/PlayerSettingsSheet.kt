@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
@@ -29,6 +30,7 @@ import com.mskd.flux.features.player.presentation.PlayerIntent
 import com.mskd.flux.features.player.presentation.SettingsSheet
 import com.mskd.flux.mockups.PlayerMockups
 import com.mskd.flux.ui.FluxPreview
+import com.mskd.flux.ui.modal.edgeToEdgeDialogProperties
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
@@ -54,8 +56,10 @@ fun PlayerSettingsSheet(
 
     BasicAlertDialog(
         modifier = Modifier
-            .clip(AlertDialogDefaults.shape)
-            .padding(vertical = FluxUI.Space.large),
+            .safeDrawingPadding()
+            .padding(vertical = FluxUI.Space.large)
+            .clip(AlertDialogDefaults.shape),
+        properties = edgeToEdgeDialogProperties(),
         onDismissRequest = { sendIntent(PlayerIntent.ShowSettings(sheet = null)) },
     ) {
 

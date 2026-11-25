@@ -3,9 +3,15 @@ package com.mskd.flux.ui.components
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.union
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -32,6 +38,9 @@ import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxUI
 import dev.chrisbanes.haze.rememberHazeState
 
+val fluxSafeSystemInsets: WindowInsets
+    @Composable get() = WindowInsets.systemBars.union(WindowInsets.displayCutout)
+
 @Composable
 fun FluxScaffold(
     title: String?,
@@ -57,6 +66,7 @@ fun FluxScaffold(
 
     Scaffold(
         modifier = Modifier.then(scrollBehavior?.let { Modifier.nestedScroll(it.nestedScrollConnection) } ?: Modifier),
+        contentWindowInsets = fluxSafeSystemInsets,
         snackbarHost = snackbarHost,
         containerColor = containerColor,
         floatingActionButton = floatingActionButton,
@@ -129,7 +139,8 @@ fun FluxTopAppBar(
                 )
             }
         },
-        scrollBehavior = scrollBehavior
+        scrollBehavior = scrollBehavior,
+        windowInsets = fluxSafeSystemInsets.only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)
     )
 
 }

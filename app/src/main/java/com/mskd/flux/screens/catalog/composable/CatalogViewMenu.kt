@@ -13,8 +13,8 @@ import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.domain.model.CatalogViewMode
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.ui.FluxThemePreview
-import com.mskd.flux.ui.components.ExpressiveRow
-import com.mskd.flux.ui.components.buttons.expressivePress
+import com.mskd.flux.ui.expressive.ExpressiveRow
+import com.mskd.flux.ui.expressive.expressivePress
 import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_sort

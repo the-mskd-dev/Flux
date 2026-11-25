@@ -15,8 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import com.mskd.flux.features.player.presentation.PlayerIntent
 import com.mskd.flux.ui.FluxPreview
-import com.mskd.flux.ui.components.ExpressiveRow
-import com.mskd.flux.ui.components.buttons.expressivePress
+import com.mskd.flux.ui.expressive.ExpressiveRow
+import com.mskd.flux.ui.expressive.expressivePress
 import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res

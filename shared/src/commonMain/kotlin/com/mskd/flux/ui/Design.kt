@@ -63,7 +63,7 @@ object Design {
     }
 
     data class Shapes(
-        val corners: RoundedCornerShape = RoundedCornerShape(12.dp),
+        val corners: RoundedCornerShape = RoundedCornerShape(24.dp),
         val listItem: Dp = 16.dp
     )
 

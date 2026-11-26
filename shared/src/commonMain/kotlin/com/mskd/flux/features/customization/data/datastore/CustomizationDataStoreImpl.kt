@@ -1,6 +1,7 @@
 package com.mskd.flux.features.customization.data.datastore
 
 import androidx.datastore.core.DataStore
+import androidx.datastore.core.IOException
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
@@ -13,7 +14,6 @@ import com.mskd.flux.ui.UiCommon
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
-import java.io.IOException
 
 class CustomizationDataStoreImpl(
     val customizationDataStore: DataStore<Preferences>
@@ -41,7 +41,7 @@ class CustomizationDataStoreImpl(
             val oldBlurredHeader = preferences[Keys.OLD_BLURRED_HEADER] ?: false
             val largeEpisodeImage = preferences[Keys.LARGE_EPISODE_IMAGE] ?: false
             val itemsPerRow = preferences[Keys.ITEMS_PER_ROW] ?: 3
-            val itemsCorners = preferences[Keys.ITEMS_CORNERS] ?: 12
+            val itemsCorners = preferences[Keys.ITEMS_CORNERS] ?: 24
             val seasonsPerRow = preferences[Keys.SEASONS_PER_ROW] ?: 3
             val navigationStyle = preferences[Keys.NAVIGATION_STYLE]?.let { NavigationStyle.fromOrdinal(it) } ?: NavigationStyle.PILL
 

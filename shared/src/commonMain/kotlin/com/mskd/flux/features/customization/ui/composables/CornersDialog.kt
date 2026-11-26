@@ -45,7 +45,7 @@ fun CornersDialog(
     val options = mapOf(
         8 to Res.string.small,
         12 to Res.string.medium,
-        16 to Res.string.large
+        24 to Res.string.large
     )
     var currentValue by remember { mutableIntStateOf(value) }
     val animatedValue by animateIntAsState(currentValue)

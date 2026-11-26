@@ -29,8 +29,8 @@ fun FluxCard(
 
     Box(
         modifier = modifier
-            .clip(LocalUiShapes.current.corners)
             .expressivePress(enabled = onClick != null)
+            .clip(LocalUiShapes.current.corners)
             .then(if (onClick != null) Modifier.clickable { onClick() } else Modifier)
             .background(background)
             .padding(
@@ -50,7 +50,9 @@ fun FluxCard_Preview() {
             modifier = Modifier.padding(Design.Space.medium),
             contentAlignment = Alignment.Center
         ) {
-            FluxCard {
+            FluxCard(
+                onClick = {}
+            ) {
                 Column {
                     Text.Content.Title("Card title")
                     Text.Content.Body("Some content body")

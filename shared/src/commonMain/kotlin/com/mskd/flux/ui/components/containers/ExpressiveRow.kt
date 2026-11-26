@@ -1,4 +1,4 @@
-package com.mskd.flux.ui.expressive
+package com.mskd.flux.ui.components.containers
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.spring
@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
+import com.mskd.flux.ui.expressive.observeExpressivePress
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay

@@ -1,7 +1,6 @@
 package com.mskd.flux.screens.search.components
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.ime
 import androidx.compose.runtime.Composable
@@ -17,11 +16,9 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.features.search.presentation.SearchIntent
-import com.mskd.flux.ui.components.FluxFilterChip
 import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.components.buttons.FilterButton
-import com.mskd.flux.ui.expressive.ExpressiveRow
-import com.mskd.flux.ui.expressive.expressivePress
+import com.mskd.flux.ui.components.containers.ExpressiveRow
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.genres
 import flux.shared.generated.resources.movies

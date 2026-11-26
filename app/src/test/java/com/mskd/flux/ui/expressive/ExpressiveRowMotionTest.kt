@@ -1,6 +1,11 @@
 package com.mskd.flux.ui.expressive
 
 import androidx.compose.runtime.MonotonicFrameClock
+import com.mskd.flux.ui.components.containers.ExpressiveRef
+import com.mskd.flux.ui.components.containers.ExpressiveRowMotion
+import com.mskd.flux.ui.components.containers.SideBounceNeighbors
+import com.mskd.flux.ui.components.containers.computeNetHoldPullDp
+import com.mskd.flux.ui.components.containers.springImpulseVelocity
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.floats.plusOrMinus
 import io.kotest.matchers.floats.shouldBeLessThan
@@ -35,14 +40,34 @@ class ExpressiveRowMotionTest : FunSpec({
         val forward = ExpressiveRef()
 
         val rewindHeld = listOf(SideBounceNeighbors(right = play))
-        computeNetHoldPullDp(play, heldRefs = emptySet(), heldSources = rewindHeld, pullDp = 2.5f) shouldBe -2.5f
+        computeNetHoldPullDp(
+            play,
+            heldRefs = emptySet(),
+            heldSources = rewindHeld,
+            pullDp = 2.5f
+        ) shouldBe -2.5f
 
         val forwardHeld = listOf(SideBounceNeighbors(left = play))
-        computeNetHoldPullDp(play, heldRefs = emptySet(), heldSources = forwardHeld, pullDp = 2.5f) shouldBe 2.5f
+        computeNetHoldPullDp(
+            play,
+            heldRefs = emptySet(),
+            heldSources = forwardHeld,
+            pullDp = 2.5f
+        ) shouldBe 2.5f
 
         val playHeld = listOf(SideBounceNeighbors(left = rewind, right = forward))
-        computeNetHoldPullDp(rewind, heldRefs = emptySet(), heldSources = playHeld, pullDp = 2.5f) shouldBe 2.5f
-        computeNetHoldPullDp(forward, heldRefs = emptySet(), heldSources = playHeld, pullDp = 2.5f) shouldBe -2.5f
+        computeNetHoldPullDp(
+            rewind,
+            heldRefs = emptySet(),
+            heldSources = playHeld,
+            pullDp = 2.5f
+        ) shouldBe 2.5f
+        computeNetHoldPullDp(
+            forward,
+            heldRefs = emptySet(),
+            heldSources = playHeld,
+            pullDp = 2.5f
+        ) shouldBe -2.5f
     }
 
     test("an element is not pulled by unrelated sources or when it is itself held") {
@@ -50,8 +75,18 @@ class ExpressiveRowMotionTest : FunSpec({
         val forward = ExpressiveRef()
 
         val rewindHeld = listOf(SideBounceNeighbors(right = play))
-        computeNetHoldPullDp(forward, heldRefs = emptySet(), heldSources = rewindHeld, pullDp = 2.5f) shouldBe 0f
-        computeNetHoldPullDp(play, heldRefs = setOf(play), heldSources = rewindHeld, pullDp = 2.5f) shouldBe 0f
+        computeNetHoldPullDp(
+            forward,
+            heldRefs = emptySet(),
+            heldSources = rewindHeld,
+            pullDp = 2.5f
+        ) shouldBe 0f
+        computeNetHoldPullDp(
+            play,
+            heldRefs = setOf(play),
+            heldSources = rewindHeld,
+            pullDp = 2.5f
+        ) shouldBe 0f
     }
 
     test("opposite pulls from both neighbors cancel out") {
@@ -60,7 +95,12 @@ class ExpressiveRowMotionTest : FunSpec({
             SideBounceNeighbors(right = play),
             SideBounceNeighbors(left = play)
         )
-        computeNetHoldPullDp(play, heldRefs = emptySet(), heldSources = bothSidesHeld, pullDp = 2.5f) shouldBe 0f
+        computeNetHoldPullDp(
+            play,
+            heldRefs = emptySet(),
+            heldSources = bothSidesHeld,
+            pullDp = 2.5f
+        ) shouldBe 0f
     }
 
     // Independent check: integrate the spring step by step and read the extreme it reaches from rest.
@@ -161,7 +201,9 @@ class ExpressiveRowMotionTest : FunSpec({
             val missingLeft = ExpressiveRef()
             val missingRight = ExpressiveRef()
             val source = Any()
-            motion.onSourcePress(source, SideBounceNeighbors(left = missingLeft, right = missingRight))
+            motion.onSourcePress(source,
+                SideBounceNeighbors(left = missingLeft, right = missingRight)
+            )
             motion.onSourceRelease(source)
             advanceTimeBy(100)
             runCurrent()

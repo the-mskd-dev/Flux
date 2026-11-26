@@ -1,6 +1,7 @@
 package com.mskd.flux.ui.components.buttons
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Spring
@@ -40,6 +41,8 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.ui.Design
@@ -71,26 +74,26 @@ fun FilterButton(
     count: Int = 0,
     onClick: () -> Unit,
     selected: Boolean = false,
-    contentDescription: String
+    contentDescription: String? = null
 ) {
 
-    var used by remember { mutableStateOf(selected || count > 0) }
-    var displayedCount by remember { mutableIntStateOf(count) }
-
-    if (count > 0) displayedCount = count
-
-    LaunchedEffect(selected, count) {
-        used = selected || count > 0
+    require(text != null || contentDescription != null) {
+        "FilterButton needs either text or contentDescription"
     }
 
+    val used = selected || count > 0
+
+    var displayedCount by remember { mutableIntStateOf(count) }
+    LaunchedEffect(count) { if (count > 0) displayedCount = count }
+
     val containerColor by animateColorAsState(
-        if (used) MaterialTheme.colorScheme.tertiary
-        else MaterialTheme.colorScheme.tertiaryContainer
+        if (used) MaterialTheme.colorScheme.tertiaryContainer
+        else MaterialTheme.colorScheme.primaryContainer
     )
 
     val contentColor by animateColorAsState(
-        if (used) MaterialTheme.colorScheme.onTertiary
-        else MaterialTheme.colorScheme.onTertiaryContainer
+        if (used) MaterialTheme.colorScheme.onTertiaryContainer
+        else MaterialTheme.colorScheme.onPrimaryContainer
     )
 
     val cornerPercent by animateIntAsState(
@@ -100,7 +103,8 @@ fun FilterButton(
 
     FilledTonalButton(
         modifier = modifier
-            .expressivePress(),
+            .expressivePress()
+            .semantics { this.selected = selected },
         onClick = onClick,
         shape = RoundedCornerShape(percent = cornerPercent),
         colors = ButtonDefaults.filledTonalButtonColors(
@@ -122,17 +126,18 @@ fun FilterButton(
             ) {
                 Icon(
                     imageVector = Icons.Filled.Done,
-                    tint = contentColor,
-                    contentDescription = "$contentDescription selected",
+                    contentDescription = null,
                     modifier = Modifier.size(FilterChipDefaults.IconSize)
                 )
             }
 
-            painter?.let {
-                Icon(
-                    painter = it,
-                    contentDescription = contentDescription
-                )
+            Crossfade(targetState = painter, label = "icon") { p ->
+                p?.let {
+                    Icon(
+                        painter = it,
+                        contentDescription = if (text == null) contentDescription else null
+                    )
+                }
             }
 
             text?.let {

@@ -68,7 +68,6 @@ fun SearchFilters(
             text = stringResource(Res.string.movies),
             selected = selectedType == ContentType.MOVIE,
             onClick = { prepareIntent(SearchIntent.FilterOnType(ContentType.MOVIE)) },
-            contentDescription = stringResource(Res.string.movies)
         )
 
         FilterButton(
@@ -76,7 +75,6 @@ fun SearchFilters(
             text = stringResource(Res.string.shows),
             selected = selectedType == ContentType.SHOW,
             onClick = { prepareIntent(SearchIntent.FilterOnType(ContentType.SHOW)) },
-            contentDescription = stringResource(Res.string.shows),
         )
 
         if (showGenresFilter) {

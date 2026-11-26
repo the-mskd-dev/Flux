@@ -5,9 +5,14 @@ import com.mskd.flux.configs.fluxExtensions
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
 import com.mskd.flux.features.artwork.fake.FakeObserveArtworkUseCase
+import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
+import com.mskd.flux.features.catalog.domain.model.SyncState
+import com.mskd.flux.features.catalog.domain.model.SyncType
+import com.mskd.flux.features.identification.presentation.IdentificationAvailability
 import com.mskd.flux.features.player.domain.playback.PlaybackLaunch
 import com.mskd.flux.features.player.domain.playback.PlaybackOutcome
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
+import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.system.FilesLauncher
 import io.kotest.core.spec.style.FunSpec
@@ -18,6 +23,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 
 class UnknownViewModelTest : FunSpec({
 
@@ -26,8 +32,11 @@ class UnknownViewModelTest : FunSpec({
     lateinit var viewModel: UnknownViewModel
     lateinit var observeArtworkUseCase: ObserveArtworkUseCase
     lateinit var settingsDataStore: SettingsDataStore
+    lateinit var tokenDataStore: TokenDataStore
     lateinit var playbackLaunch: PlaybackLaunch
     lateinit var filesLauncher: FilesLauncher
+    lateinit var token: MutableStateFlow<String>
+    lateinit var syncState: MutableStateFlow<SyncState>
 
     val updateVm: () -> Unit = {
 
@@ -37,6 +46,8 @@ class UnknownViewModelTest : FunSpec({
         viewModel = UnknownViewModel(
             observeArtworkUseCase = observeArtworkUseCase,
             settingsDataStore = settingsDataStore,
+            tokenDataStore = tokenDataStore,
+            catalogSyncCoordinator = mockk<CatalogSyncCoordinator> { every { state } returns syncState },
             playbackLaunch = playbackLaunch,
             filesLauncher = filesLauncher
         )
@@ -49,6 +60,12 @@ class UnknownViewModelTest : FunSpec({
 
         settingsDataStore = mockk(relaxed = true) {
             every { flow } returns MutableStateFlow(SettingsDataStore.State())
+        }
+
+        token = MutableStateFlow("token")
+        syncState = MutableStateFlow(SyncState.Idle())
+        tokenDataStore = mockk(relaxed = true) {
+            every { flow } returns token
         }
 
         updateVm()
@@ -65,6 +82,7 @@ class UnknownViewModelTest : FunSpec({
 
                 initialState.medias shouldBe MediaMockups.unknowns
                 initialState.screen.shouldBeInstanceOf<State.Content<Unit>>()
+                initialState.dialog shouldBe null
 
             }
 
@@ -181,6 +199,85 @@ class UnknownViewModelTest : FunSpec({
 
 
         }
+    }
+
+    context("Manual identification") {
+
+        val media = MediaMockups.unknownEpisode
+
+        suspend fun identification(): IdentificationAvailability =
+            viewModel.uiState.first { it.screen is State.Content }.identification
+
+        test("offered with a TMDB token") {
+            identification() shouldBe IdentificationAvailability.ENABLED
+        }
+
+        test("hidden without TMDB token") {
+            token.value = ""
+            updateVm()
+            identification() shouldBe IdentificationAvailability.HIDDEN
+        }
+
+        test("disabled during a Sync, enabled again once it ends") {
+            syncState.value = SyncState.Syncing(type = SyncType.LIGHT)
+            updateVm()
+            viewModel.uiState.test {
+                awaitItem().identification shouldBe IdentificationAvailability.DISABLED
+                syncState.value = SyncState.Idle()
+                awaitItem().identification shouldBe IdentificationAvailability.ENABLED
+            }
+        }
+
+        test("ShowIdentificationDialog is ignored when hidden without token") {
+            token.value = ""
+            updateVm()
+            viewModel.uiState.test {
+                awaitItem().identification shouldBe IdentificationAvailability.HIDDEN
+                viewModel.handleIntent(UnknownIntent.ShowIdentificationDialog(media = media))
+                expectNoEvents()
+            }
+        }
+
+        test("the dialog opens only when the option is enabled") {
+            syncState.value = SyncState.Syncing(type = SyncType.LIGHT)
+            updateVm()
+            viewModel.uiState.test {
+                awaitItem().identification shouldBe IdentificationAvailability.DISABLED
+                viewModel.handleIntent(UnknownIntent.ShowIdentificationDialog(media = media))
+                expectNoEvents()
+
+                syncState.value = SyncState.Idle()
+                awaitItem().identification shouldBe IdentificationAvailability.ENABLED
+                viewModel.handleIntent(UnknownIntent.ShowIdentificationDialog(media = media))
+                awaitItem().dialog shouldBe UnknownDialog.Identification(media = media)
+            }
+        }
+
+        test("CloseDialog closes the identification dialog") {
+            viewModel.uiState.test {
+                awaitItem()
+                viewModel.handleIntent(UnknownIntent.ShowIdentificationDialog(media = media))
+                awaitItem().dialog shouldBe UnknownDialog.Identification(media = media)
+
+                viewModel.handleIntent(UnknownIntent.CloseDialog)
+                awaitItem().dialog shouldBe null
+            }
+        }
+
+        test("OnIdentified closes the identification dialog without emitting navigation events") {
+            viewModel.uiState.test {
+                awaitItem()
+                viewModel.handleIntent(UnknownIntent.ShowIdentificationDialog(media = media))
+                awaitItem().dialog shouldBe UnknownDialog.Identification(media = media)
+
+                viewModel.event.test {
+                    viewModel.handleIntent(UnknownIntent.OnIdentified)
+                    expectNoEvents()
+                }
+                awaitItem().dialog shouldBe null
+            }
+        }
+
     }
 
 })

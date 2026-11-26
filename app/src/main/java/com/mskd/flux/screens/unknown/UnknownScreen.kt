@@ -33,7 +33,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.core.State
+import com.mskd.flux.features.identification.domain.model.IdentificationSource
+import com.mskd.flux.features.identification.presentation.IdentificationAvailability
+import com.mskd.flux.features.identification.ui.IdentificationDialog
 import com.mskd.flux.features.player.domain.model.PlayerParams
+import com.mskd.flux.features.unknown.presentation.UnknownDialog
 import com.mskd.flux.features.unknown.presentation.UnknownEvent
 import com.mskd.flux.features.unknown.presentation.UnknownIntent
 import com.mskd.flux.features.unknown.presentation.UnknownViewModel
@@ -93,6 +97,8 @@ fun UnknownScreen(
                 UnknownScreenContent(
                     medias = uiState.filteredMedias,
                     searchQuery = uiState.searchQuery,
+                    identification = uiState.identification,
+                    dialog = uiState.dialog,
                     sendIntent = viewModel::handleIntent
                 )
             }
@@ -106,6 +112,8 @@ fun UnknownScreen(
 fun UnknownScreenContent(
     medias: List<Episode>,
     searchQuery: String,
+    identification: IdentificationAvailability = IdentificationAvailability.HIDDEN,
+    dialog: UnknownDialog? = null,
     sendIntent: (UnknownIntent) -> Unit
 ) {
 
@@ -198,6 +206,7 @@ fun UnknownScreenContent(
                             UnknownDropDownMenu(
                                 isVisible = isVisible,
                                 episode = media,
+                                identification = identification,
                                 onDismissRequest = onDismissRequest,
                                 sendIntent = sendIntent
                             )
@@ -208,6 +217,14 @@ fun UnknownScreenContent(
 
             }
 
+        }
+
+        (dialog as? UnknownDialog.Identification)?.let {
+            IdentificationDialog(
+                source = IdentificationSource.UnknownMedia(media = it.media),
+                onDismiss = { sendIntent(UnknownIntent.CloseDialog) },
+                onIdentified = { _, _ -> sendIntent(UnknownIntent.OnIdentified) },
+            )
         }
 
     }

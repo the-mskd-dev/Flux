@@ -2,6 +2,7 @@ package com.mskd.flux.features.artwork.ui.composables
 
 import androidx.compose.runtime.Composable
 import com.mskd.flux.core.model.artwork.ContentType
+import com.mskd.flux.features.identification.domain.model.IdentificationSource
 import com.mskd.flux.features.identification.ui.IdentificationDialog
 import com.mskd.flux.ui.components.ResetProgressDialog
 
@@ -20,7 +21,7 @@ fun ArtworkDialogs(
 
     if (isIdentificationVisible) {
         IdentificationDialog(
-            artworkId = artworkId,
+            source = IdentificationSource.KnownArtwork(artworkId),
             onDismiss = onDismiss,
             onIdentified = onIdentified,
         )

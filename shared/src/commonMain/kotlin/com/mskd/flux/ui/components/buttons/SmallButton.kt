@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.ui.Design
+import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.expressive.expressivePress
 import com.mskd.flux.ui.theme.FluxTheme
 
@@ -32,8 +33,8 @@ fun SmallButton(
     onClick: () -> Unit,
     imageVector: ImageVector,
     enabled: Boolean = true,
-    containerColor: Color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = Design.Button.opacity),
-    contentColor: Color = MaterialTheme.colorScheme.onSecondaryContainer,
+    containerColor: Color = MaterialTheme.colorScheme.surfaceContainer,
+    contentColor: Color = MaterialTheme.colorScheme.onSurface,
     contentDescription: String
 ) {
 
@@ -49,7 +50,6 @@ fun SmallButton(
         Box(
             modifier = Modifier
                 .matchParentSize()
-                .blur(radius = Design.Button.blurRadius)
                 .background(containerColor)
         )
 
@@ -69,8 +69,8 @@ fun SmallButton(
     onClick: () -> Unit,
     painter: Painter,
     enabled: Boolean = true,
-    containerColor: Color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = Design.Button.opacity),
-    contentColor: Color = MaterialTheme.colorScheme.onSecondaryContainer,
+    containerColor: Color = MaterialTheme.colorScheme.surface,
+    contentColor: Color = MaterialTheme.colorScheme.onSurface,
     contentDescription: String
 ) {
 
@@ -86,7 +86,6 @@ fun SmallButton(
         Box(
             modifier = Modifier
                 .matchParentSize()
-                .blur(radius = Design.Button.blurRadius)
                 .background(containerColor)
         )
 
@@ -103,7 +102,7 @@ fun SmallButton(
 @Preview
 @Composable
 fun SmallButton_Preview() {
-    MaterialTheme {
+    FluxThemePreview {
         SmallButton(
             onClick = {},
             imageVector = Icons.AutoMirrored.Rounded.ArrowBack,

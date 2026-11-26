@@ -12,12 +12,16 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.features.search.presentation.SearchIntent
 import com.mskd.flux.ui.components.FluxFilterChip
 import com.mskd.flux.ui.Design
+import com.mskd.flux.ui.components.buttons.FilterButton
+import com.mskd.flux.ui.expressive.ExpressiveRow
+import com.mskd.flux.ui.expressive.expressivePress
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.genres
 import flux.shared.generated.resources.movies
@@ -52,28 +56,36 @@ fun SearchFilters(
         pendingIntent = intent
     }
 
-    Row(
+    ExpressiveRow(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(Design.Space.small)
     ) {
 
-        FluxFilterChip(
+        val [movies, shows, genres] = createRefs()
+
+        FilterButton(
+            modifier = Modifier.expressiveSideBounce(ref = movies, right = shows),
             text = stringResource(Res.string.movies),
             selected = selectedType == ContentType.MOVIE,
             onClick = { prepareIntent(SearchIntent.FilterOnType(ContentType.MOVIE)) },
+            contentDescription = stringResource(Res.string.movies)
         )
 
-        FluxFilterChip(
+        FilterButton(
+            modifier = Modifier.expressiveSideBounce(ref = shows, left = movies, right = genres),
             text = stringResource(Res.string.shows),
             selected = selectedType == ContentType.SHOW,
             onClick = { prepareIntent(SearchIntent.FilterOnType(ContentType.SHOW)) },
+            contentDescription = stringResource(Res.string.shows),
         )
 
         if (showGenresFilter) {
-            FluxFilterChip(
+            FilterButton(
+                modifier = Modifier.expressiveSideBounce(ref = genres, left = shows),
                 text = stringResource(Res.string.genres) + if (selectedGenresCount > 0) " ($selectedGenresCount)" else "",
                 selected = selectedGenresCount > 0,
                 onClick = { prepareIntent(SearchIntent.ShowGenresSelection(show = true)) },
+                contentDescription = stringResource(Res.string.genres)
             )
         }
 

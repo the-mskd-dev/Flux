@@ -24,7 +24,7 @@ val moduleIdentification = module {
 
     viewModel { params ->
         IdentificationViewModel(
-            artworkId = params.get(),
+            source = params.get(),
             databaseRepository = get(),
             apiRepository = get(),
             identifyManually = get(),

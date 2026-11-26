@@ -3,9 +3,10 @@ package com.mskd.flux.features.identification.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mskd.flux.core.database.domain.repository.DatabaseRepository
-import com.mskd.flux.core.model.artwork.Artwork
+import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.core.network.tmdb.domain.repository.ApiRepository
+import com.mskd.flux.features.identification.domain.model.IdentificationSource
 import com.mskd.flux.features.identification.domain.usecase.IdentifyManuallyUseCase
 import com.mskd.flux.report.Trace
 import kotlinx.collections.immutable.toImmutableList
@@ -21,7 +22,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class IdentificationViewModel(
-    private val artworkId: Long,
+    private val source: IdentificationSource,
     private val databaseRepository: DatabaseRepository,
     private val apiRepository: ApiRepository,
     private val identifyManually: IdentifyManuallyUseCase,
@@ -37,7 +38,8 @@ class IdentificationViewModel(
     private val _uiState = MutableStateFlow(IdentificationUiState())
     val uiState: StateFlow<IdentificationUiState> = _uiState.asStateFlow()
 
-    private var artwork: Artwork? = null
+    private var targetType: ContentType? = null
+    private var currentArtworkId: Long? = null
     private var searchJob: Job? = null
 
     //endregion
@@ -46,13 +48,25 @@ class IdentificationViewModel(
 
     init {
         viewModelScope.launch {
-            val source = databaseRepository.getArtwork(artworkId = artworkId)
-            artwork = source
-            // The title of the file name, not the TMDB title: it is what the Sync searched
-            val file = databaseRepository.getMovie(artworkId = artworkId)?.file
-                ?: databaseRepository.getEpisodes(artworkId = artworkId).firstOrNull()?.file
-            _uiState.update { it.copy(query = file?.nameProperties?.title.orEmpty()) }
-            if (source == null) _uiState.update { it.copy(results = State.Error()) } else search()
+            when (source) {
+                is IdentificationSource.KnownArtwork -> {
+                    val artwork = databaseRepository.getArtwork(artworkId = source.artworkId)
+                    targetType = artwork?.type
+                    currentArtworkId = artwork?.id
+                    // The title of the file name, not the TMDB title: it is what the Sync searched
+                    val file = databaseRepository.getMovie(artworkId = source.artworkId)?.file
+                        ?: databaseRepository.getEpisodes(artworkId = source.artworkId).firstOrNull()?.file
+                    _uiState.update { it.copy(query = file?.nameProperties?.title.orEmpty()) }
+                    if (artwork == null) _uiState.update { it.copy(results = State.Error()) } else search()
+                }
+                is IdentificationSource.UnknownMedia -> {
+                    val file = source.media.file
+                    targetType = if (file.isEpisode) ContentType.SHOW else ContentType.MOVIE
+                    currentArtworkId = null
+                    _uiState.update { it.copy(query = file.nameProperties.title) }
+                    search()
+                }
+            }
         }
     }
 
@@ -74,7 +88,7 @@ class IdentificationViewModel(
 
     private fun search() {
 
-        val artwork = artwork ?: return
+        val type = targetType ?: return
         val query = _uiState.value.query.trim()
 
         searchJob?.cancel()
@@ -82,16 +96,20 @@ class IdentificationViewModel(
 
         searchJob = viewModelScope.launch {
             val results = try {
-                val candidates = if (query.isEmpty()) emptyList() else apiRepository.searchArtworks(title = query, type = artwork.type)
+                val candidates = if (query.isEmpty()) emptyList() else apiRepository.searchArtworks(title = query, type = type)
                 State.Content(
                     candidates.map { candidate ->
-                        IdentificationCandidate(artwork = candidate.artwork, year = candidate.year, isCurrent = candidate.artwork.id == artwork.id)
+                        IdentificationCandidate(
+                            artwork = candidate.artwork,
+                            year = candidate.year,
+                            isCurrent = candidate.artwork.id == currentArtworkId,
+                        )
                     }.toImmutableList()
                 )
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
-                Trace.error(TAG, "Fail to search '$query' for artworkId:$artworkId", e)
+                Trace.error(TAG, "Fail to search '$query' for ${source.key}", e)
                 State.Error()
             }
             _uiState.update { it.copy(results = results) }
@@ -106,7 +124,7 @@ class IdentificationViewModel(
         _uiState.update { it.copy(isIdentifying = true, identificationFailed = false) }
 
         viewModelScope.launch {
-            identifyManually(artworkId = artworkId, target = candidate.artwork)
+            identifyManually(source = source, target = candidate.artwork)
                 .onSuccess { _event.emit(IdentificationEvent.Identified(artworkId = it, type = candidate.artwork.type)) }
                 .onFailure { _uiState.update { it.copy(isIdentifying = false, identificationFailed = true) } }
         }

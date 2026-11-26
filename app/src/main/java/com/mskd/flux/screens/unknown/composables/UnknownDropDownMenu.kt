@@ -3,11 +3,14 @@ package com.mskd.flux.screens.unknown.composables
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import com.mskd.flux.core.model.artwork.Episode
+import com.mskd.flux.features.identification.presentation.IdentificationAvailability
 import com.mskd.flux.features.unknown.presentation.UnknownIntent
 import com.mskd.flux.ui.modal.menu.FluxPopUpMenu
 import com.mskd.flux.ui.modal.menu.FluxPopUpMenuItem
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_file_explorer
+import flux.shared.generated.resources.ic_search
+import flux.shared.generated.resources.identification_select_data
 import flux.shared.generated.resources.open_in_file_explorer
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -16,11 +19,32 @@ import org.jetbrains.compose.resources.stringResource
 fun UnknownDropDownMenu(
     isVisible: Boolean,
     episode: Episode,
+    identification: IdentificationAvailability,
     onDismissRequest: () -> Unit,
     sendIntent: (UnknownIntent) -> Unit
 ) {
 
     val items = buildList {
+
+        // Manual identification
+        if (identification != IdentificationAvailability.HIDDEN) {
+            add(
+                FluxPopUpMenuItem(
+                    text = stringResource(Res.string.identification_select_data),
+                    onClick = {
+                        sendIntent(UnknownIntent.ShowIdentificationDialog(media = episode))
+                        onDismissRequest()
+                    },
+                    leadingIcon = {
+                        Icon(
+                            painter = painterResource(Res.drawable.ic_search),
+                            contentDescription = stringResource(Res.string.identification_select_data)
+                        )
+                    },
+                    enabled = identification == IdentificationAvailability.ENABLED,
+                )
+            )
+        }
 
         // Open in file explorer
         add(

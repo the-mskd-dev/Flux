@@ -8,10 +8,15 @@ import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.artwork.domain.usecase.observeArtwork.ObserveArtworkUseCase
+import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
+import com.mskd.flux.features.catalog.domain.model.SyncState
+import com.mskd.flux.features.identification.presentation.IdentificationAvailability
 import com.mskd.flux.features.player.domain.playback.PlaybackLaunch
 import com.mskd.flux.features.player.domain.playback.PlaybackOutcome
 import com.mskd.flux.features.settings.domain.datastore.SettingsDataStore
+import com.mskd.flux.features.token.domain.datastore.TokenDataStore
 import com.mskd.flux.system.FilesLauncher
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -26,6 +31,8 @@ class UnknownViewModel(
     private val filesLauncher: FilesLauncher,
     observeArtworkUseCase: ObserveArtworkUseCase,
     settingsDataStore: SettingsDataStore,
+    tokenDataStore: TokenDataStore,
+    catalogSyncCoordinator: CatalogSyncCoordinator,
     private val playbackLaunch: PlaybackLaunch,
 ) : ViewModel() {
 
@@ -35,12 +42,25 @@ class UnknownViewModel(
     val event = _event.asSharedFlow()
 
     private val _searchQuery = MutableStateFlow("")
+    private val _dialog = MutableStateFlow<UnknownDialog?>(null)
+
+    private val identificationAvailability: Flow<IdentificationAvailability> = combine(
+        tokenDataStore.flow,
+        catalogSyncCoordinator.state,
+    ) { token, sync ->
+        IdentificationAvailability.of(
+            tokenAvailable = token.isNotBlank(),
+            syncing = sync is SyncState.Syncing,
+        )
+    }
 
     val uiState: StateFlow<UnknownUiState> = combine(
         observeArtworkUseCase(artworkId = Artwork.UNKNOWN_ID),
         settingsDataStore.flow,
-        _searchQuery
-    ) { artworkContent, settings, searchQuery ->
+        _searchQuery,
+        identificationAvailability,
+        _dialog,
+    ) { artworkContent, settings, searchQuery, identification, dialog ->
 
         val fullShow = (artworkContent as? State.Content)?.content as? FullArtwork.FullShow
         UnknownUiState(
@@ -49,7 +69,9 @@ class UnknownViewModel(
             medias = fullShow?.episodes?.sortedWith(
                 compareBy<Episode> { it.title }.thenBy { it.season }.thenBy { it.number }
             ) ?: emptyList(),
-            useExternalPlayer = settings.externalPlayer
+            useExternalPlayer = settings.externalPlayer,
+            identification = identification,
+            dialog = dialog,
         )
     }
     .stateIn(
@@ -69,6 +91,8 @@ class UnknownViewModel(
             UnknownIntent.OnBackTap -> _event.emit(UnknownEvent.BackToPreviousScreen)
             UnknownIntent.OnInfoTap -> _event.emit(UnknownEvent.NavigateToHowToScreen)
             is UnknownIntent.DoSearch -> doSearch(query = intent.query)
+            is UnknownIntent.ShowIdentificationDialog -> showIdentificationDialog(media = intent.media)
+            UnknownIntent.CloseDialog, UnknownIntent.OnIdentified -> closeDialog()
         }
     }
 
@@ -85,6 +109,15 @@ class UnknownViewModel(
 
     private fun doSearch(query: String) {
         _searchQuery.update { query }
+    }
+
+    private fun showIdentificationDialog(media: Episode) {
+        if (uiState.value.identification != IdentificationAvailability.ENABLED) return
+        _dialog.update { UnknownDialog.Identification(media = media) }
+    }
+
+    private fun closeDialog() {
+        _dialog.update { null }
     }
 
     //endregion

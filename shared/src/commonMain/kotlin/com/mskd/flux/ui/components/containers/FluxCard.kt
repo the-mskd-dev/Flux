@@ -23,7 +23,7 @@ import com.mskd.flux.ui.text.Text
 fun FluxCard(
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
-    background: Color = MaterialTheme.colorScheme.surface,
+    background: Color = MaterialTheme.colorScheme.primaryContainer,
     content: @Composable BoxScope.() -> Unit
 ) {
 

@@ -58,7 +58,7 @@ fun SearchFilters(
 
     ExpressiveRow(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(Design.Space.small)
+        horizontalArrangement = Arrangement.spacedBy(Design.Space.extraSmall)
     ) {
 
         val [movies, shows, genres] = createRefs()

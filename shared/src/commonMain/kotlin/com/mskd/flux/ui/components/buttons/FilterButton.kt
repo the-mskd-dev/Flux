@@ -3,6 +3,9 @@ package com.mskd.flux.ui.components.buttons
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateIntAsState
+import androidx.compose.animation.core.animateValueAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.scaleIn
@@ -15,6 +18,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.ButtonDefaults
@@ -23,8 +27,11 @@ import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -67,28 +74,40 @@ fun FilterButton(
     contentDescription: String
 ) {
 
+    var used by remember { mutableStateOf(selected || count > 0) }
+    var displayedCount by remember { mutableIntStateOf(count) }
+
+    if (count > 0) displayedCount = count
+
+    LaunchedEffect(selected, count) {
+        used = selected || count > 0
+    }
+
     val containerColor by animateColorAsState(
-        if (selected || count > 0) MaterialTheme.colorScheme.tertiary
+        if (used) MaterialTheme.colorScheme.tertiary
         else MaterialTheme.colorScheme.tertiaryContainer
     )
 
     val contentColor by animateColorAsState(
-        if (selected || count > 0) MaterialTheme.colorScheme.onTertiary
+        if (used) MaterialTheme.colorScheme.onTertiary
         else MaterialTheme.colorScheme.onTertiaryContainer
+    )
+
+    val cornerPercent by animateIntAsState(
+        targetValue = if (used) 30 else 50,
+        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
     )
 
     FilledTonalButton(
         modifier = modifier
             .expressivePress(),
         onClick = onClick,
+        shape = RoundedCornerShape(percent = cornerPercent),
         colors = ButtonDefaults.filledTonalButtonColors(
             containerColor = containerColor,
             contentColor = contentColor
         )
     ) {
-
-        var displayedCount by remember { mutableIntStateOf(count) }
-        if (count > 0) displayedCount = count
 
         Row(
             modifier = Modifier.expressiveContentSize(),

@@ -16,6 +16,7 @@ import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.expressive.ExpressiveRow
 import com.mskd.flux.ui.expressive.expressivePress
 import com.mskd.flux.ui.Design
+import com.mskd.flux.ui.components.buttons.FilterButton
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_sort
 import flux.shared.generated.resources.sort
@@ -37,33 +38,19 @@ fun CatalogViewMenu(
 
         val [sortRef, viewRef] = createRefs()
 
-        FilledTonalButton(
-            modifier = Modifier
-                .expressiveSideBounce(ref = sortRef, right = viewRef)
-                .expressivePress(),
+        FilterButton(
+            modifier = Modifier.expressiveSideBounce(ref = sortRef, right = viewRef),
             onClick = { sendIntent(CatalogIntent.ShowSortingModes(show = true)) },
-        ) {
-            Icon(
-                painter = painterResource(Res.drawable.ic_sort),
-                contentDescription = stringResource(Res.string.sort)
-            )
-        }
+            painter = painterResource(Res.drawable.ic_sort),
+            contentDescription = stringResource(Res.string.sort)
+        )
 
-        FilledTonalButton(
-            modifier = Modifier
-                .expressiveSideBounce(ref = viewRef, left = sortRef)
-                .expressivePress(),
+        FilterButton(
+            modifier = Modifier.expressiveSideBounce(ref = viewRef, left = sortRef),
             onClick = { sendIntent(CatalogIntent.ShowViewModes(show = true)) },
-        ) {
-            AnimatedContent(
-                targetState = viewMode
-            ) { mode ->
-                Icon(
-                    painter = painterResource(mode.drawableRes),
-                    contentDescription = stringResource(Res.string.view)
-                )
-            }
-        }
+            painter = painterResource(viewMode.drawableRes),
+            contentDescription = stringResource(Res.string.view)
+        )
 
     }
 

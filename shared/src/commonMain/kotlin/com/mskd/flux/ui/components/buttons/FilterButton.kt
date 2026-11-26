@@ -1,8 +1,11 @@
 package com.mskd.flux.ui.components.buttons
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,6 +24,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -31,6 +37,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxThemePreview
+import com.mskd.flux.ui.expressive.CONTENT_SIZE_DAMPING
+import com.mskd.flux.ui.expressive.CONTENT_SIZE_STIFFNESS
+import com.mskd.flux.ui.expressive.expressiveContentSize
 import com.mskd.flux.ui.expressive.expressivePress
 import com.mskd.flux.ui.text.Text
 import flux.shared.generated.resources.Res
@@ -38,6 +47,14 @@ import flux.shared.generated.resources.ic_sort
 import flux.shared.generated.resources.sort
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+
+private val FilterItemEnter = fadeIn() + scaleIn(
+    initialScale = 0.6f,
+    animationSpec = spring(
+        dampingRatio = CONTENT_SIZE_DAMPING,
+        stiffness = CONTENT_SIZE_STIFFNESS
+    )
+)
 
 @Composable
 fun FilterButton(
@@ -62,8 +79,7 @@ fun FilterButton(
 
     FilledTonalButton(
         modifier = modifier
-            .expressivePress()
-            .animateContentSize(),
+            .expressivePress(),
         onClick = onClick,
         colors = ButtonDefaults.filledTonalButtonColors(
             containerColor = containerColor,
@@ -71,12 +87,20 @@ fun FilterButton(
         )
     ) {
 
+        var displayedCount by remember { mutableIntStateOf(count) }
+        if (count > 0) displayedCount = count
+
         Row(
+            modifier = Modifier.expressiveContentSize(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(Design.Space.extraSmall)
         ) {
 
-            AnimatedVisibility(selected) {
+            AnimatedVisibility(
+                visible = selected,
+                enter = FilterItemEnter,
+                exit = ExitTransition.None
+            ) {
                 Icon(
                     imageVector = Icons.Filled.Done,
                     tint = contentColor,
@@ -98,9 +122,13 @@ fun FilterButton(
                 )
             }
 
-            AnimatedVisibility(count > 0) {
+            AnimatedVisibility(
+                visible = count > 0,
+                enter = FilterItemEnter,
+                exit = ExitTransition.None
+            ) {
                 Text.Button.Chip(
-                    text = "($count)"
+                    text = "($displayedCount)"
                 )
             }
 

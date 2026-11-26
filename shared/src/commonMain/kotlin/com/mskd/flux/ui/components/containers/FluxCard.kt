@@ -1,6 +1,7 @@
 package com.mskd.flux.ui.components.containers
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
@@ -15,11 +16,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.LocalUiShapes
+import com.mskd.flux.ui.expressive.expressivePress
 import com.mskd.flux.ui.text.Text
 
 @Composable
 fun FluxCard(
     modifier: Modifier = Modifier,
+    onClick: (() -> Unit)? = null,
     background: Color = MaterialTheme.colorScheme.surface,
     content: @Composable BoxScope.() -> Unit
 ) {
@@ -27,6 +30,8 @@ fun FluxCard(
     Box(
         modifier = modifier
             .clip(LocalUiShapes.current.corners)
+            .expressivePress(enabled = onClick != null)
+            .then(if (onClick != null) Modifier.clickable { onClick() } else Modifier)
             .background(background)
             .padding(
                 vertical = Design.Space.large,

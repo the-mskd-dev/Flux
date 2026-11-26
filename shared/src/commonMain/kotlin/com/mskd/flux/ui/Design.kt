@@ -87,7 +87,7 @@ object Design {
 
     object Button {
         val blurRadius = 16.dp
-        val opacity = .6f
+        const val opacity = .6f
     }
 }
 

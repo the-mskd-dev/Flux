@@ -5,6 +5,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -22,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.expressive.expressivePress
+import com.mskd.flux.ui.theme.FluxTheme
 
 @Composable
 fun SmallButton(
@@ -95,4 +98,16 @@ fun SmallButton(
 
     }
 
+}
+
+@Preview
+@Composable
+fun SmallButton_Preview() {
+    MaterialTheme {
+        SmallButton(
+            onClick = {},
+            imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+            contentDescription = "preview button"
+        )
+    }
 }

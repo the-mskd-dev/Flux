@@ -72,6 +72,7 @@ components-resources = { group = "org.jetbrains.compose.components", name = "com
 compose-ui = { group = "org.jetbrains.compose.ui", name = "ui", version.ref = "compose" }
 compose-ui-graphics = { group = "org.jetbrains.compose.ui", name = "ui-graphics", version.ref = "compose" }
 compose-ui-text = { group = "org.jetbrains.compose.ui", name = "ui-text", version.ref = "compose" }
+compose-ui-tooling = { group = "org.jetbrains.compose.ui", name = "ui-tooling", version.ref = "compose" }
 compose-ui-tooling-preview = { group = "org.jetbrains.compose.ui", name = "ui-tooling-preview", version.ref = "compose" }
 compose-material3 = { group = "org.jetbrains.compose.material3", name = "material3", version = "1.13.0-rc01" }
 compose-constraintlayout = { group = "tech.annexflow.compose", name = "constraintlayout-compose-multiplatform", version = "0.8.3" }
@@ -231,6 +232,7 @@ shared-ui = [
     "compose-ui-text",
     "compose-ui-graphics",
     "components-resources",
+    "compose-ui-tooling",
     "compose-ui-tooling-preview",
     "compose-constraintlayout",
     "compose-material-icons",

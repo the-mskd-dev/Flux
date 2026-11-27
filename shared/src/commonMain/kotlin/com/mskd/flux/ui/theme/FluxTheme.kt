@@ -23,6 +23,9 @@ import com.mskd.flux.ui.modal.ModalHostState
 import com.mskd.flux.ui.modal.bottomSheet.FluxBottomSheetHost
 import com.mskd.flux.ui.modal.dialog.FluxDialogHost
 import com.mskd.flux.ui.modal.scrim.FluxScrimHost
+import com.mskd.flux.ui.motion.FluxMotionScheme
+import com.mskd.flux.ui.motion.LocalFluxMotionScheme
+import com.mskd.flux.ui.motion.Motion
 import com.mskd.flux.ui.text.LocalEmphasizedTypography
 import com.mskd.flux.ui.text.fluxEmphasizedTypography
 import com.mskd.flux.ui.text.fluxTypography
@@ -33,6 +36,7 @@ fun FluxTheme(
     isOnline: Boolean = true,
     customization: CustomizationDataStore.State = CustomizationDataStore.State(),
     systemBarsAppearance: SystemBarsAppearanceState = remember { SystemBarsAppearanceState() },
+    motionScheme: FluxMotionScheme = Motion.Expressive,
     content: @Composable () -> Unit
 ) {
 
@@ -65,11 +69,13 @@ fun FluxTheme(
         ),
         LocalEmphasizedTypography provides fluxEmphasizedTypography(),
         LocalModalHost provides modalHost,
-        LocalSystemBarsAppearance provides systemBarsAppearance
+        LocalSystemBarsAppearance provides systemBarsAppearance,
+        LocalFluxMotionScheme provides motionScheme
     ) {
 
         MaterialExpressiveTheme(
             colorScheme = colorScheme,
+            motionScheme = motionScheme,
             typography = fluxTypography(),
         ) {
 

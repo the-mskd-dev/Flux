@@ -36,6 +36,7 @@ import com.mskd.flux.features.sources.domain.model.cleanPath
 import com.mskd.flux.features.sources.domain.model.name
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.groupedShape
+import com.mskd.flux.ui.motion.Motion
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.Design
 import flux.shared.generated.resources.Res
@@ -65,8 +66,11 @@ fun LazyItemScope.CustomSourceItem(
     }
 
     val cornersAnimation by animateDpAsState(
-        if (isSwiping) Design.shapes.listItem else 0.dp
+        targetValue = if (isSwiping) Design.shapes.listItem else 0.dp,
+        animationSpec = Motion.defaultSpatial()
     )
+    // Motion.defaultSpatial() is underdamped and can briefly overshoot below 0.dp when settling back to 0.
+    val swipeCornerShape = RoundedCornerShape(cornersAnimation.coerceAtLeast(0.dp))
 
     LaunchedEffect(folder.path) {
         dismissState.snapTo(SwipeToDismissBoxValue.Settled)
@@ -88,7 +92,7 @@ fun LazyItemScope.CustomSourceItem(
                 modifier = Modifier
                     .padding(horizontal = Design.Space.medium)
                     .groupedShape(index = index, lastIndex = lastIndex)
-                    .clip(RoundedCornerShape(cornersAnimation)),
+                    .clip(swipeCornerShape),
                 colors = ListItemDefaults.colors(
                     containerColor = backgroundColor,
                     contentColor = contentColor

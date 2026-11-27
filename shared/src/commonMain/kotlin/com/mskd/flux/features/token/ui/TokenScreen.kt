@@ -54,6 +54,7 @@ import com.mskd.flux.ui.components.FluxScaffold
 import com.mskd.flux.ui.components.buttons.FluxIconButton
 import com.mskd.flux.ui.components.buttons.FluxTextButton
 import com.mskd.flux.ui.global.BackGesture
+import com.mskd.flux.ui.motion.Motion
 import com.mskd.flux.ui.scaffoldPadding
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.text.buildLinkedString
@@ -124,8 +125,8 @@ fun TokenScreenContent(
 
             AnimatedVisibility(
                 visible = !state.showBackButton,
-                enter = Design.Animation.buttonEnter,
-                exit = Design.Animation.buttonExit
+                enter = Motion.buttonEnter(),
+                exit = Motion.buttonExit()
             ) {
 
                 FluxTextButton(

@@ -6,6 +6,8 @@ import com.mskd.flux.ui.components.containers.ExpressiveRowMotion
 import com.mskd.flux.ui.components.containers.SideBounceNeighbors
 import com.mskd.flux.ui.components.containers.computeNetHoldPullDp
 import com.mskd.flux.ui.components.containers.springImpulseVelocity
+import com.mskd.flux.ui.motion.FluxSpring
+import com.mskd.flux.ui.motion.Motion
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.floats.plusOrMinus
 import io.kotest.matchers.floats.shouldBeLessThan
@@ -209,13 +211,47 @@ class ExpressiveRowMotionTest : FunSpec({
             runCurrent()
         }
     }
+
+    test("custom neighborSpring drives rebound velocity calculation with its parameters") {
+        val customSpring = FluxSpring(dampingRatio = 0.25f, stiffness = 900f)
+
+        fun measureReboundVelocity(spring: FluxSpring): Float {
+            var velocity = 0f
+            withMotionScope(neighborSpring = spring) { motion ->
+                val play = ExpressiveRef()
+                val playState = motion.stateFor(play)
+                motion.retainRef(play)
+
+                val source = Any()
+                motion.onSourcePress(source, SideBounceNeighbors(right = play))
+                advanceTimeBy(30)
+                runCurrent()
+                motion.onSourceRelease(source)
+                advanceTimeBy(50)
+                runCurrent()
+
+                velocity = playState.offsetDp.velocity
+            }
+            return velocity
+        }
+
+        val customVelocity = measureReboundVelocity(customSpring)
+        val defaultVelocity = measureReboundVelocity(Motion.Expressive.neighborBounce)
+
+        simulatedExtreme(customVelocity, customSpring.dampingRatio, customSpring.stiffness) shouldBe
+            (4.5f plusOrMinus 0.05f)
+        (customVelocity != defaultVelocity) shouldBe true
+    }
 })
 
 @OptIn(ExperimentalCoroutinesApi::class)
-private inline fun withMotionScope(block: TestScope.(ExpressiveRowMotion) -> Unit) {
+private inline fun withMotionScope(
+    neighborSpring: FluxSpring = Motion.Expressive.neighborBounce,
+    block: TestScope.(ExpressiveRowMotion) -> Unit
+) {
     val scope = TestScope(TestMonotonicFrameClock())
     try {
-        scope.block(ExpressiveRowMotion(scope.backgroundScope))
+        scope.block(ExpressiveRowMotion(scope.backgroundScope, neighborSpring))
     } finally {
         scope.cancel()
     }

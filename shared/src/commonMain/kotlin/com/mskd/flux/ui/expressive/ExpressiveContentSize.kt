@@ -5,7 +5,6 @@ import androidx.compose.animation.core.AnimationEndReason
 import androidx.compose.animation.core.AnimationVector2D
 import androidx.compose.animation.core.VectorConverter
 import androidx.compose.animation.core.VisibilityThreshold
-import androidx.compose.animation.core.spring
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
@@ -14,19 +13,20 @@ import androidx.compose.ui.layout.IntrinsicMeasureScope
 import androidx.compose.ui.layout.Measurable
 import androidx.compose.ui.layout.MeasureResult
 import androidx.compose.ui.layout.MeasureScope
+import androidx.compose.ui.node.CompositionLocalConsumerModifierNode
 import androidx.compose.ui.node.LayoutModifierNode
 import androidx.compose.ui.node.ModifierNodeElement
+import androidx.compose.ui.node.currentValueOf
 import androidx.compose.ui.node.invalidatePlacement
 import androidx.compose.ui.platform.InspectorInfo
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.constrain
+import com.mskd.flux.ui.motion.FluxSpring
+import com.mskd.flux.ui.motion.LocalFluxMotionScheme
+import com.mskd.flux.ui.motion.Motion
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-
-/** Content size bounce of expressive controls: overshoots the target size and settles with a spring. */
-const val CONTENT_SIZE_DAMPING = 0.5f
-const val CONTENT_SIZE_STIFFNESS = 350f
 
 private val InvalidSize = IntSize(Int.MIN_VALUE, Int.MIN_VALUE)
 
@@ -38,8 +38,7 @@ private val InvalidSize = IntSize(Int.MIN_VALUE, Int.MIN_VALUE)
  */
 class ExpressiveContentSizeState(
     private val scope: CoroutineScope,
-    var dampingRatio: Float = CONTENT_SIZE_DAMPING,
-    var stiffness: Float = CONTENT_SIZE_STIFFNESS,
+    var spring: FluxSpring = Motion.Expressive.contentSize,
     var finishedListener: ((initialValue: IntSize, targetValue: IntSize) -> Unit)? = null
 ) {
     private var anim: Animatable<IntSize, AnimationVector2D>? = null
@@ -57,11 +56,7 @@ class ExpressiveContentSizeState(
             val startSize = existing.value
             // Update synchronously so repeated measure passes before the coroutine starts don't re-launch.
             currentTarget = targetSize
-            val spec = spring(
-                dampingRatio = dampingRatio,
-                stiffness = stiffness,
-                visibilityThreshold = IntSize.VisibilityThreshold
-            )
+            val spec = spring.toSpec(visibilityThreshold = IntSize.VisibilityThreshold)
             scope.launch {
                 val result = existing.animateTo(
                     targetValue = targetSize,
@@ -89,42 +84,40 @@ class ExpressiveContentSizeState(
  * containers such as pill buttons can stretch and undershoot smoothly without clipping inner content.
  */
 fun Modifier.expressiveContentSize(
-    dampingRatio: Float = CONTENT_SIZE_DAMPING,
-    stiffness: Float = CONTENT_SIZE_STIFFNESS,
+    spring: FluxSpring? = null,
     alignment: Alignment = Alignment.Center,
     clip: Boolean = false,
     finishedListener: ((initialValue: IntSize, targetValue: IntSize) -> Unit)? = null
 ): Modifier = (if (clip) this.clipToBounds() else this) then
     ExpressiveContentSizeElement(
-        dampingRatio = dampingRatio,
-        stiffness = stiffness,
+        spring = spring,
         alignment = alignment,
         finishedListener = finishedListener
     )
 
 private data class ExpressiveContentSizeElement(
-    val dampingRatio: Float,
-    val stiffness: Float,
+    val spring: FluxSpring?,
     val alignment: Alignment,
     val finishedListener: ((initialValue: IntSize, targetValue: IntSize) -> Unit)?
 ) : ModifierNodeElement<ExpressiveContentSizeNode>() {
 
     override fun create(): ExpressiveContentSizeNode = ExpressiveContentSizeNode(
-        dampingRatio = dampingRatio,
-        stiffness = stiffness,
+        spring = spring,
         alignment = alignment,
         finishedListener = finishedListener
     )
 
     override fun update(node: ExpressiveContentSizeNode) {
         val alignmentChanged = node.alignment != alignment
-        node.dampingRatio = dampingRatio
-        node.stiffness = stiffness
+        node.spring = spring
         node.alignment = alignment
         node.finishedListener = finishedListener
         node.state?.let {
-            it.dampingRatio = dampingRatio
-            it.stiffness = stiffness
+            if (node.isAttached) {
+                it.spring = node.resolveSpring()
+            } else if (spring != null) {
+                it.spring = spring
+            }
             it.finishedListener = finishedListener
         }
         if (alignmentChanged) {
@@ -134,20 +127,20 @@ private data class ExpressiveContentSizeElement(
 
     override fun InspectorInfo.inspectableProperties() {
         name = "expressiveContentSize"
-        properties["dampingRatio"] = dampingRatio
-        properties["stiffness"] = stiffness
+        properties["spring"] = spring
         properties["alignment"] = alignment
     }
 }
 
 private class ExpressiveContentSizeNode(
-    var dampingRatio: Float,
-    var stiffness: Float,
+    var spring: FluxSpring?,
     var alignment: Alignment,
     var finishedListener: ((initialValue: IntSize, targetValue: IntSize) -> Unit)?
-) : LayoutModifierNode, Modifier.Node() {
+) : LayoutModifierNode, CompositionLocalConsumerModifierNode, Modifier.Node() {
 
     var state: ExpressiveContentSizeState? = null
+
+    fun resolveSpring(): FluxSpring = spring ?: currentValueOf(LocalFluxMotionScheme).contentSize
 
     override fun onReset() {
         state = null
@@ -190,12 +183,13 @@ private class ExpressiveContentSizeNode(
             }
         }
 
-        val animState = state ?: ExpressiveContentSizeState(
-            scope = coroutineScope,
-            dampingRatio = dampingRatio,
-            stiffness = stiffness,
-            finishedListener = finishedListener
-        ).also { state = it }
+        val resolvedSpring = resolveSpring()
+        val animState = state?.also { it.spring = resolvedSpring }
+            ?: ExpressiveContentSizeState(
+                scope = coroutineScope,
+                spring = resolvedSpring,
+                finishedListener = finishedListener
+            ).also { state = it }
 
         val animatedSize = constraints.constrain(animState.animateTo(measuredSize))
 

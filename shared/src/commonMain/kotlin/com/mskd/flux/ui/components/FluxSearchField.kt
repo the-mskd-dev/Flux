@@ -1,8 +1,6 @@
 package com.mskd.flux.ui.components
 
-import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.size
@@ -20,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.mskd.flux.ui.motion.Motion
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.enter_search
 import org.jetbrains.compose.resources.stringResource
@@ -36,10 +35,7 @@ fun FluxSearchField(
 
     val cornerSize by animateDpAsState(
         targetValue = if (isFocused) 32.dp else 16.dp,
-        animationSpec = spring(
-            dampingRatio = Spring.DampingRatioLowBouncy,
-            stiffness = Spring.StiffnessMediumLow
-        ),
+        animationSpec = Motion.defaultSpatial(),
         label = "TextFieldShapeAnimation"
     )
 

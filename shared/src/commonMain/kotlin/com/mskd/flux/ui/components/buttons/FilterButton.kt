@@ -4,10 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateIntAsState
-import androidx.compose.animation.core.animateValueAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.background
@@ -47,24 +44,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxThemePreview
-import com.mskd.flux.ui.expressive.CONTENT_SIZE_DAMPING
-import com.mskd.flux.ui.expressive.CONTENT_SIZE_STIFFNESS
 import com.mskd.flux.ui.expressive.expressiveContentSize
 import com.mskd.flux.ui.expressive.expressivePress
+import com.mskd.flux.ui.motion.Motion
 import com.mskd.flux.ui.text.Text
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_sort
 import flux.shared.generated.resources.sort
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-
-private val FilterItemEnter = fadeIn() + scaleIn(
-    initialScale = 0.6f,
-    animationSpec = spring(
-        dampingRatio = CONTENT_SIZE_DAMPING,
-        stiffness = CONTENT_SIZE_STIFFNESS
-    )
-)
 
 @Composable
 fun FilterButton(
@@ -86,19 +74,30 @@ fun FilterButton(
     var displayedCount by remember { mutableIntStateOf(count) }
     LaunchedEffect(count) { if (count > 0) displayedCount = count }
 
+    val fadeSpec = Motion.fastEffects<Float>()
+    val scaleSpring = Motion.contentSize
+    val filterItemEnter = remember(fadeSpec, scaleSpring) {
+        fadeIn(animationSpec = fadeSpec) + scaleIn(
+            initialScale = 0.6f,
+            animationSpec = scaleSpring.toSpec()
+        )
+    }
+
     val containerColor by animateColorAsState(
-        if (used) MaterialTheme.colorScheme.tertiaryContainer
-        else MaterialTheme.colorScheme.primaryContainer
+        targetValue = if (used) MaterialTheme.colorScheme.tertiaryContainer
+        else MaterialTheme.colorScheme.primaryContainer,
+        animationSpec = Motion.defaultEffects()
     )
 
     val contentColor by animateColorAsState(
-        if (used) MaterialTheme.colorScheme.onTertiaryContainer
-        else MaterialTheme.colorScheme.onPrimaryContainer
+        targetValue = if (used) MaterialTheme.colorScheme.onTertiaryContainer
+        else MaterialTheme.colorScheme.onPrimaryContainer,
+        animationSpec = Motion.defaultEffects()
     )
 
     val cornerPercent by animateIntAsState(
         targetValue = if (used) 30 else 50,
-        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
+        animationSpec = Motion.fastSpatial(),
     )
 
     FilledTonalButton(
@@ -121,7 +120,7 @@ fun FilterButton(
 
             AnimatedVisibility(
                 visible = selected,
-                enter = FilterItemEnter,
+                enter = filterItemEnter,
                 exit = ExitTransition.None
             ) {
                 Icon(
@@ -148,7 +147,7 @@ fun FilterButton(
 
             AnimatedVisibility(
                 visible = count > 0,
-                enter = FilterItemEnter,
+                enter = filterItemEnter,
                 exit = ExitTransition.None
             ) {
                 Text.Button.Chip(

@@ -1,5 +1,7 @@
 package com.mskd.flux.ui.media
 
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
@@ -11,11 +13,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
-import com.mskd.flux.ui.combinedClickableWithBounce
+import com.mskd.flux.ui.Design
+import com.mskd.flux.ui.expressive.expressivePress
 import com.mskd.flux.ui.image.FluxImage
 import com.mskd.flux.ui.image.seedRgb
 import com.mskd.flux.ui.image.toComposeImageBitmap
-import com.mskd.flux.ui.Design
 import kotlinx.coroutines.launch
 
 @Composable
@@ -31,11 +33,18 @@ fun MediaItem(
 
     var seedRgb by remember { mutableStateOf<Int?>(null) }
     val scope = rememberCoroutineScope()
+    val interactionSource = remember { MutableInteractionSource() }
 
     Surface(
         modifier = modifier
             .aspectRatio(ratio)
-            .combinedClickableWithBounce(
+            .expressivePress(
+                interactionSource = interactionSource,
+                pressedScale = 0.92f
+            )
+            .combinedClickable(
+                interactionSource = interactionSource,
+                indication = null,
                 onClick = { onClick(seedRgb) },
                 onLongClick = onLongClick
             ),

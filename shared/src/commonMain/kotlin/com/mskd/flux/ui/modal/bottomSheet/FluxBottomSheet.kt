@@ -1,8 +1,6 @@
 package com.mskd.flux.ui.modal.bottomSheet
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
@@ -43,6 +41,7 @@ import com.mskd.flux.ui.modal.LocalModalHost
 import com.mskd.flux.ui.modal.ModalEntry
 import com.mskd.flux.ui.modal.ModalHostState
 import com.mskd.flux.ui.modal.scrim.ScrimBackground
+import com.mskd.flux.ui.motion.Motion
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.Design
 import dev.chrisbanes.haze.HazeState
@@ -88,13 +87,10 @@ fun FluxBottomSheetHost(
                         .union(WindowInsets.displayCutout)
                         .only(WindowInsetsSides.Horizontal)
                 ),
-            enter = slideInVertically(
-                animationSpec = spring(
-                    dampingRatio = Spring.DampingRatioNoBouncy,
-                    stiffness = Spring.StiffnessMedium
-                )
-            ) { it } + fadeIn(animationSpec = spring(stiffness = Spring.StiffnessMedium)),
-            exit = slideOutVertically { it } + fadeOut()
+            enter = slideInVertically(animationSpec = Motion.defaultEffects()) { it } +
+                fadeIn(animationSpec = Motion.defaultEffects()),
+            exit = slideOutVertically(animationSpec = Motion.fastEffects()) { it } +
+                fadeOut(animationSpec = Motion.fastEffects())
         ) {
             Surface(
                 modifier = Modifier.fillMaxWidthWithLimit(),

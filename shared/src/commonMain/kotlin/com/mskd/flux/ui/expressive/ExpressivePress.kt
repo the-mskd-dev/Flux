@@ -1,7 +1,6 @@
 package com.mskd.flux.ui.expressive
 
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.interaction.InteractionSource
@@ -18,10 +17,10 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.isOutOfBounds
 import androidx.compose.ui.input.pointer.pointerInput
+import com.mskd.flux.ui.motion.FluxSpring
+import com.mskd.flux.ui.motion.Motion
 
-/** Press feedback of expressive controls: a little more bounce and a slower return than the default press. */
-const val PRESS_DAMPING = 0.35f
-const val PRESS_STIFFNESS = 800f
+/** Press scale of expressive controls when held down. */
 const val PRESS_SCALE = 0.85f
 
 /**
@@ -111,8 +110,7 @@ fun Modifier.expressivePress(
     enabled: Boolean = true,
     interactionSource: InteractionSource? = null,
     pressedScale: Float = PRESS_SCALE,
-    dampingRatio: Float = PRESS_DAMPING,
-    stiffness: Float = PRESS_STIFFNESS
+    spring: FluxSpring = Motion.press
 ): Modifier {
 
     var isPressed by remember { mutableStateOf(false) }
@@ -120,10 +118,7 @@ fun Modifier.expressivePress(
     // Read in the draw phase only, so the animation does not recompose the caller on every frame.
     val scale = animateFloatAsState(
         targetValue = if (isPressed) pressedScale else 1f,
-        animationSpec = spring(
-            dampingRatio = dampingRatio,
-            stiffness = stiffness
-        ),
+        animationSpec = spring.toSpec(),
         label = "ExpressivePress"
     )
 

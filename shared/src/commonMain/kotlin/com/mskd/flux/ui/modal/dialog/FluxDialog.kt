@@ -1,8 +1,6 @@
 package com.mskd.flux.ui.modal.dialog
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
@@ -36,6 +34,7 @@ import com.mskd.flux.ui.modal.LocalModalHost
 import com.mskd.flux.ui.modal.ModalEntry
 import com.mskd.flux.ui.modal.ModalHostState
 import com.mskd.flux.ui.modal.scrim.ScrimBackground
+import com.mskd.flux.ui.motion.Motion
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.Design
 import dev.chrisbanes.haze.HazeState
@@ -77,13 +76,10 @@ fun FluxDialogHost(
                 .safeDrawingPadding()
                 .padding(horizontal = Design.Space.large, vertical = Design.Space.medium)
             ,
-            enter = scaleIn(
-                animationSpec = spring(
-                    dampingRatio = Spring.DampingRatioLowBouncy,
-                    stiffness = Spring.StiffnessMedium
-                )
-            ) + fadeIn(animationSpec = spring(stiffness = Spring.StiffnessMedium)),
-            exit = fadeOut() + scaleOut()
+            enter = scaleIn(animationSpec = Motion.defaultSpatial()) +
+                fadeIn(animationSpec = Motion.defaultEffects()),
+            exit = scaleOut(animationSpec = Motion.fastSpatial()) +
+                fadeOut(animationSpec = Motion.fastEffects())
         ) {
 
             Surface(

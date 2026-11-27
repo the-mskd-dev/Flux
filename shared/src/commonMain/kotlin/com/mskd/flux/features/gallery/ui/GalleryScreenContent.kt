@@ -58,6 +58,7 @@ import com.mskd.flux.features.gallery.presentation.ArtworkImageButton
 import com.mskd.flux.features.gallery.presentation.GalleryFailure
 import com.mskd.flux.features.gallery.presentation.GalleryIntent
 import com.mskd.flux.features.gallery.ui.viewer.GalleryViewer
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.components.FluxScaffold
@@ -66,7 +67,6 @@ import com.mskd.flux.ui.dimensions.rememberScreenDimensions
 import com.mskd.flux.ui.image.Image
 import com.mskd.flux.ui.plus
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.Design
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.gallery_empty
 import flux.shared.generated.resources.oups_an_error_occured

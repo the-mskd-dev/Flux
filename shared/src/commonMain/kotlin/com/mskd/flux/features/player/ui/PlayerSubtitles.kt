@@ -31,8 +31,8 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Constraints
 import com.mskd.flux.features.player.domain.model.CueAnchor
 import com.mskd.flux.features.player.domain.model.SubtitleCue
-import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.Design
+import com.mskd.flux.ui.text.Text
 import kotlin.math.roundToInt
 
 /** Vertical position of an explicitly positioned cue when only horizontal placement is provided. */

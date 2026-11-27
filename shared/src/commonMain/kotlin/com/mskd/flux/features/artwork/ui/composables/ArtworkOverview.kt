@@ -5,12 +5,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.mskd.flux.features.artwork.presentation.ArtworkOverviewContent
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.media.EpisodesDetails
 import com.mskd.flux.ui.media.MediaDetailsHorizontal
 import com.mskd.flux.ui.media.OverviewItem
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.Design
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.no_summary
 import flux.shared.generated.resources.summary

@@ -27,6 +27,7 @@ import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Season
 import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.components.ProgressStatusBar
 import com.mskd.flux.ui.components.ProgressStatusChip
@@ -35,7 +36,6 @@ import com.mskd.flux.ui.image.FluxImage
 import com.mskd.flux.ui.image.seedRgb
 import com.mskd.flux.ui.image.toComposeImageBitmap
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.Design
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.episodes_count
 import flux.shared.generated.resources.season

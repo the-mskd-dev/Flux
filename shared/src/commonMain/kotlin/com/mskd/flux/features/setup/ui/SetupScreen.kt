@@ -39,11 +39,11 @@ import com.mskd.flux.navigation.domain.Route.Catalog
 import com.mskd.flux.navigation.domain.Route.Sources
 import com.mskd.flux.navigation.domain.Route.Token
 import com.mskd.flux.system.rememberStoragePermission
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.fillMaxWidthWithLimit
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.Design
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_flux
 import flux.shared.generated.resources.next

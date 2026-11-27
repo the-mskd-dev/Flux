@@ -9,9 +9,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import com.mskd.flux.core.model.artwork.Episode
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.blurText
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.Design
 
 @Composable
 fun EpisodeTitle(

@@ -15,9 +15,9 @@ import com.mskd.flux.features.identification.presentation.IdentificationUiState
 import com.mskd.flux.features.identification.presentation.IdentificationViewModel
 import com.mskd.flux.features.identification.ui.composables.IdentificationResults
 import com.mskd.flux.features.identification.ui.composables.IdentificationSearchField
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.modal.dialog.FluxDialog
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.Design
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.identification_failed
 import flux.shared.generated.resources.identification_select_data

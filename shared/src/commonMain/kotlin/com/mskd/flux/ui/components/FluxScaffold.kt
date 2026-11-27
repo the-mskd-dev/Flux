@@ -31,11 +31,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.GraphicsLayerScope
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.blurBackground
 import com.mskd.flux.ui.blurForeground
 import com.mskd.flux.ui.global.animateAlphaState
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.Design
 import dev.chrisbanes.haze.rememberHazeState
 
 val fluxSafeSystemInsets: WindowInsets

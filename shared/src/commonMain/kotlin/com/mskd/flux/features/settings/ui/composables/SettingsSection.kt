@@ -16,8 +16,8 @@ import com.mskd.flux.features.settings.domain.model.SettingsDialog
 import com.mskd.flux.features.settings.presentation.SettingsIntent
 import com.mskd.flux.features.settings.presentation.SettingsUiState
 import com.mskd.flux.system.languageDisplayName
-import com.mskd.flux.ui.fillMaxWidthWithLimit
 import com.mskd.flux.ui.Design
+import com.mskd.flux.ui.fillMaxWidthWithLimit
 import com.mskd.flux.utils.Constants
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.about

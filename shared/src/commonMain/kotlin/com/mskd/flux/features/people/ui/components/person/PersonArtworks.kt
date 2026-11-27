@@ -22,12 +22,12 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.features.people.presentation.PeopleIntent
+import com.mskd.flux.ui.Design
+import com.mskd.flux.ui.LocalUiShapes
 import com.mskd.flux.ui.bleedHorizontal
 import com.mskd.flux.ui.dimensions.itemWidthFor
 import com.mskd.flux.ui.media.MediaItem
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.Design
-import com.mskd.flux.ui.LocalUiShapes
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.also_in
 import org.jetbrains.compose.resources.stringResource

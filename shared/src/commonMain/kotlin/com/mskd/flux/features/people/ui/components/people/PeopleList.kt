@@ -19,11 +19,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import com.mskd.flux.core.model.artwork.Person
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.bleedHorizontal
 import com.mskd.flux.ui.dimensions.itemWidthFor
 import com.mskd.flux.ui.image.rememberIconPlaceholderPainter
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.Design
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.cast
 import flux.shared.generated.resources.ic_person

@@ -49,6 +49,7 @@ import com.mskd.flux.features.token.presentation.TokenIntent
 import com.mskd.flux.features.token.presentation.TokenUiState
 import com.mskd.flux.features.token.presentation.TokenViewModel
 import com.mskd.flux.navigation.domain.Route
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.components.FluxScaffold
 import com.mskd.flux.ui.components.buttons.FluxIconButton
@@ -59,7 +60,6 @@ import com.mskd.flux.ui.scaffoldPadding
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.text.buildLinkedString
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.Design
 import com.mskd.flux.utils.Constants
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.api_token

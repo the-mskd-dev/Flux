@@ -19,10 +19,10 @@ import androidx.compose.ui.unit.dp
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.PortraitPreview
 import com.mskd.flux.ui.components.FixedChip
-import com.mskd.flux.ui.Design
 import com.mskd.flux.utils.extensions.minToMs
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.content_unavailable

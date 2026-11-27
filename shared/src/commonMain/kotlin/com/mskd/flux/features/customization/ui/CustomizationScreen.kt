@@ -25,12 +25,12 @@ import com.mskd.flux.features.customization.ui.composables.CustomizationGlobalSe
 import com.mskd.flux.features.customization.ui.composables.CustomizationPlayerSection
 import com.mskd.flux.features.customization.ui.composables.CustomizationThemeSection
 import com.mskd.flux.features.customization.ui.composables.ItemsPerRowDialog
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.components.FluxOptionsDialog
 import com.mskd.flux.ui.components.FluxScaffold
 import com.mskd.flux.ui.scaffoldPadding
-import com.mskd.flux.ui.Design
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.customization
 import org.jetbrains.compose.resources.stringResource

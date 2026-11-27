@@ -13,10 +13,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.mskd.flux.features.people.domain.model.PersonDetails
 import com.mskd.flux.mockups.PeopleMockup
-import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.LocalUiShapes
+import com.mskd.flux.ui.text.Text
+import com.mskd.flux.ui.theme.FluxTheme
 import com.mskd.flux.utils.extensions.formattedText
 import com.mskd.flux.utils.extensions.parseTMDBDate
 import flux.shared.generated.resources.Res

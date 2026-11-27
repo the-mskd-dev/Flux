@@ -21,11 +21,11 @@ import com.mskd.flux.features.artwork.ui.composables.ArtworkOverview
 import com.mskd.flux.features.artwork.ui.composables.episodeList
 import com.mskd.flux.features.season.presentation.SeasonContent
 import com.mskd.flux.features.season.presentation.SeasonIntent
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.LandscapePreview
 import com.mskd.flux.ui.plus
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.Design
 
 @Composable
 fun SeasonContentLarge(

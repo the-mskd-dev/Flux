@@ -12,8 +12,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.Design
+import com.mskd.flux.ui.text.Text
 
 /**
  * Top bar of the player settings sheets: a back button, then the title on the left, followed by a divider.

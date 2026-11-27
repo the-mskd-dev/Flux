@@ -22,10 +22,10 @@ import com.mskd.flux.features.movie.presentation.MovieContent
 import com.mskd.flux.features.movie.presentation.MovieIntent
 import com.mskd.flux.features.people.ui.components.people.PeopleList
 import com.mskd.flux.mockups.PeopleMockup
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.LandscapePreview
 import com.mskd.flux.ui.plus
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.Design
 import kotlinx.collections.immutable.toImmutableList
 
 @Composable

@@ -35,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.fillMaxWidthWithLimit
 import com.mskd.flux.ui.global.BackGesture
 import com.mskd.flux.ui.modal.LocalModalHost
@@ -43,7 +44,6 @@ import com.mskd.flux.ui.modal.ModalHostState
 import com.mskd.flux.ui.modal.scrim.ScrimBackground
 import com.mskd.flux.ui.motion.Motion
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.Design
 import dev.chrisbanes.haze.HazeState
 
 

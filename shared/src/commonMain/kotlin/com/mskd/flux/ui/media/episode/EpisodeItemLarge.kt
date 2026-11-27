@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import com.mskd.flux.core.model.artwork.Episode
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.blurContent
 import com.mskd.flux.ui.blurText
 import com.mskd.flux.ui.components.buttons.ReadMoreButton
@@ -29,7 +30,6 @@ import com.mskd.flux.ui.media.MediaDetailsHorizontal
 import com.mskd.flux.ui.media.MediaDetailsVertical
 import com.mskd.flux.ui.media.MediaThumbnail
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.Design
 
 @Composable
 fun EpisodeItemLarge(

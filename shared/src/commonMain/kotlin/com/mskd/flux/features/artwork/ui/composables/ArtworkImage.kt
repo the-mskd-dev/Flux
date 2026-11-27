@@ -34,12 +34,12 @@ import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.artworkImagePath
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.blurContent
 import com.mskd.flux.ui.image.FluxImage
 import com.mskd.flux.ui.image.Image
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.Design
 import com.mskd.flux.utils.extensions.tmdbImage
 
 @Composable

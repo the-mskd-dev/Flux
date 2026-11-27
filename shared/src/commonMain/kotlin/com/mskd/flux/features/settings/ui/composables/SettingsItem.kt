@@ -15,8 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.Design
+import com.mskd.flux.ui.text.Text
 import com.mskd.flux.utils.extensions.uppercaseFirstLetter
 
 @Composable

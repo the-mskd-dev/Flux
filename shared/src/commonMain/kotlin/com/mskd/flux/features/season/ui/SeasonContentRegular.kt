@@ -20,10 +20,10 @@ import com.mskd.flux.features.artwork.ui.composables.episodeList
 import com.mskd.flux.features.season.presentation.SeasonContent
 import com.mskd.flux.features.season.presentation.SeasonIntent
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.PortraitPreview
 import com.mskd.flux.ui.plus
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.Design
 import kotlinx.collections.immutable.persistentListOf
 
 @Composable

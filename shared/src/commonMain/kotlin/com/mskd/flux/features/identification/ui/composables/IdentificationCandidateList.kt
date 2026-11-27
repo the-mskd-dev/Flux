@@ -19,10 +19,10 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.features.identification.presentation.IdentificationCandidate
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.image.FluxImage
 import com.mskd.flux.ui.image.rememberIconPlaceholderPainter
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.Design
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_images
 import flux.shared.generated.resources.identification_current

@@ -14,10 +14,10 @@ import com.mskd.flux.core.model.artwork.ArtworkPageType
 import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.bleedHorizontal
-import com.mskd.flux.ui.Design
 
 /**
  * Header of an Artwork page in the regular layout: the Artwork image across the whole screen width,

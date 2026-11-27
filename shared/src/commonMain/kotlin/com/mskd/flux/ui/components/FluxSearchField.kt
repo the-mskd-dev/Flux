@@ -35,7 +35,7 @@ fun FluxSearchField(
 
     val cornerSize by animateDpAsState(
         targetValue = if (isFocused) 32.dp else 16.dp,
-        animationSpec = Motion.defaultSpatial(),
+        animationSpec = Motion.contentSize.toSpec(),
         label = "TextFieldShapeAnimation"
     )
 

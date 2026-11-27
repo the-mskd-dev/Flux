@@ -16,7 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
-import com.mskd.flux.ui.expressive.observeExpressivePress
+import com.mskd.flux.ui.motion.observeExpressivePress
 import com.mskd.flux.ui.motion.FluxSpring
 import com.mskd.flux.ui.motion.Motion
 import kotlinx.coroutines.CoroutineScope

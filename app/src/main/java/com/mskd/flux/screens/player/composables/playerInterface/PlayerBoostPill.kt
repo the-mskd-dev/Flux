@@ -26,9 +26,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.screens.player.composables.settings.formatSpeed
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.LandscapePreview
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.Design
 import com.mskd.flux.utils.Constants
 
 /** The "2x" pill shown at the top while the Boost speed is active, in the Ambient overlay style. */

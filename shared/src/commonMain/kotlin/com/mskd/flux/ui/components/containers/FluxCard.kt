@@ -16,7 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.LocalUiShapes
-import com.mskd.flux.ui.expressive.expressivePress
+import com.mskd.flux.ui.motion.expressivePress
 import com.mskd.flux.ui.text.Text
 
 @Composable

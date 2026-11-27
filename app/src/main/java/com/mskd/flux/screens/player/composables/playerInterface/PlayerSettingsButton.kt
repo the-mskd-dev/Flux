@@ -14,8 +14,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.mskd.flux.features.player.presentation.PlayerIntent
 import com.mskd.flux.features.player.presentation.SettingsSheet
-import com.mskd.flux.ui.components.buttons.SmallButton
 import com.mskd.flux.ui.Design
+import com.mskd.flux.ui.components.buttons.SmallButton
 
 @Composable
 fun PlayerSettingsButton(

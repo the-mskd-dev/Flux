@@ -14,7 +14,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import com.mskd.flux.ui.Design
-import com.mskd.flux.ui.expressive.expressivePress
+import com.mskd.flux.ui.motion.expressivePress
 import com.mskd.flux.ui.image.FluxImage
 import com.mskd.flux.ui.image.seedRgb
 import com.mskd.flux.ui.image.toComposeImageBitmap

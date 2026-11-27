@@ -44,8 +44,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxThemePreview
-import com.mskd.flux.ui.expressive.expressiveContentSize
-import com.mskd.flux.ui.expressive.expressivePress
+import com.mskd.flux.ui.motion.expressiveContentSize
+import com.mskd.flux.ui.motion.expressivePress
 import com.mskd.flux.ui.motion.Motion
 import com.mskd.flux.ui.text.Text
 import flux.shared.generated.resources.Res

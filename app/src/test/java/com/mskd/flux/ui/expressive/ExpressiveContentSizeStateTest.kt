@@ -2,6 +2,7 @@ package com.mskd.flux.ui.expressive
 
 import androidx.compose.runtime.MonotonicFrameClock
 import androidx.compose.ui.unit.IntSize
+import com.mskd.flux.ui.motion.ExpressiveContentSizeState
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.ints.shouldBeLessThan

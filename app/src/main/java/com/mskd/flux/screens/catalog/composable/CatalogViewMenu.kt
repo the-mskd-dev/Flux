@@ -9,10 +9,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.domain.model.CatalogViewMode
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
-import com.mskd.flux.ui.FluxThemePreview
-import com.mskd.flux.ui.components.containers.ExpressiveRow
 import com.mskd.flux.ui.Design
+import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.components.buttons.FilterButton
+import com.mskd.flux.ui.components.containers.ExpressiveRow
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_sort
 import flux.shared.generated.resources.sort

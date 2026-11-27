@@ -21,7 +21,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.tooling.preview.Preview
 import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.ui.Design
-import com.mskd.flux.ui.expressive.expressivePress
+import com.mskd.flux.ui.motion.expressivePress
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_play
 import flux.shared.generated.resources.ic_replay

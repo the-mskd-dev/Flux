@@ -27,9 +27,9 @@ import com.mskd.flux.features.player.domain.manager.SeekPrecision
 import com.mskd.flux.features.player.domain.model.VideoChapter
 import com.mskd.flux.features.player.presentation.PlayerIntent
 import com.mskd.flux.features.player.ui.ChapterSlider
-import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.LocalUiPlayer
+import com.mskd.flux.ui.text.Text
 import com.mskd.flux.utils.extensions.formatMinSec
 import kotlinx.coroutines.delay
 import kotlin.math.abs

@@ -1,6 +1,7 @@
 package com.mskd.flux.ui
 
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.unit.Dp
@@ -40,6 +41,14 @@ object Design {
     object Elevation {
         val itemShadow = 1.dp
         val navigationBar = 2.dp
+    }
+
+    object Button {
+        @Composable
+        fun disabledContainer() = MaterialTheme.colorScheme.onSurface.copy(alpha = .38f)
+
+        @Composable
+        fun disabledContent() = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = .5f)
     }
 
     data class Shapes(

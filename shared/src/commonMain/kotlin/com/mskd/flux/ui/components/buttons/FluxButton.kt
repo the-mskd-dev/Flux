@@ -42,13 +42,13 @@ fun FluxButton(
     val buttonHeight = ButtonDefaults.MediumContainerHeight
 
     val containerColor = when {
-        !enabled -> MaterialTheme.colorScheme.onSurface.copy(alpha = .38f)
+        !enabled -> Design.Button.disabledContainer()
         checked -> MaterialTheme.colorScheme.secondary
         else -> MaterialTheme.colorScheme.primary
     }
 
     val contentColor = when {
-        !enabled -> MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = .5f)
+        !enabled -> Design.Button.disabledContent()
         checked -> MaterialTheme.colorScheme.onSecondary
         else -> MaterialTheme.colorScheme.onPrimary
     }

@@ -43,8 +43,8 @@ fun RadioListItem(
 ) {
 
     val containerColor by animateColorAsState(
-        targetValue = if (selected) MaterialTheme.colorScheme.primary.copy(alpha = .4f) else Color.Transparent,
-        animationSpec = Motion.fastEffects(),
+        targetValue = if (selected) MaterialTheme.colorScheme.primary.copy(alpha = .3f) else Color.Transparent,
+        animationSpec = Motion.slowEffects(),
         label = "RadioListItemContainerColor"
     )
 

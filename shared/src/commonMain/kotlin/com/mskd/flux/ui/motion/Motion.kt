@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 
 @Immutable
@@ -106,4 +107,16 @@ object Motion {
     @Composable
     fun buttonExit(): ExitTransition =
         fadeOut(animationSpec = fastEffects()) + scaleOut(animationSpec = fastSpatial())
+
+    @Composable
+    fun buttonContentEnter(): EnterTransition {
+        val fadeSpec = fastEffects<Float>()
+        val scaleSpring = contentSize
+        return remember(fadeSpec, scaleSpring) {
+            fadeIn(animationSpec = fadeSpec) + scaleIn(
+                initialScale = 0.6f,
+                animationSpec = scaleSpring.toSpec()
+            )
+        }
+    }
 }

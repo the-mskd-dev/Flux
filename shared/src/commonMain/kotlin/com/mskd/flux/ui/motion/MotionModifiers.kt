@@ -3,6 +3,7 @@ package com.mskd.flux.ui.motion
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationEndReason
 import androidx.compose.animation.core.AnimationVector2D
+import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.animation.core.VectorConverter
 import androidx.compose.animation.core.VisibilityThreshold
 import androidx.compose.animation.core.animateFloatAsState
@@ -156,6 +157,35 @@ fun Modifier.expressivePress(
             scaleX = scale.value
             scaleY = scale.value
         }
+}
+
+/**
+ * Plays a squish-and-release bounce whenever [state] changes after initial composition.
+ *
+ * Read in the draw phase only via [graphicsLayer], so the animation does not recompose the caller.
+ */
+@Composable
+fun Modifier.expressiveBounceOnChange(
+    state: Any?,
+    pressedScale: Float = PRESS_SCALE,
+    animationSpec: FiniteAnimationSpec<Float> = Motion.slowEffects()
+): Modifier {
+    val bounceScale = remember { Animatable(1f) }
+    var previousState by remember { mutableStateOf(state) }
+    val currentSpec by rememberUpdatedState(animationSpec)
+    val currentPressedScale by rememberUpdatedState(pressedScale)
+
+    LaunchedEffect(state) {
+        if (state == previousState) return@LaunchedEffect
+        previousState = state
+        bounceScale.snapTo(currentPressedScale)
+        bounceScale.animateTo(1f, animationSpec = currentSpec)
+    }
+
+    return this.graphicsLayer {
+        scaleX = bounceScale.value
+        scaleY = bounceScale.value
+    }
 }
 
 private val InvalidSize = IntSize(Int.MIN_VALUE, Int.MIN_VALUE)

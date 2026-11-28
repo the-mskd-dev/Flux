@@ -19,7 +19,7 @@ import com.mskd.flux.ui.motion.expressivePress
 import com.mskd.flux.ui.text.Text
 
 @Composable
-fun FluxCard(
+fun FluxBox(
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
     background: Color = MaterialTheme.colorScheme.primaryContainer,
@@ -43,13 +43,13 @@ fun FluxCard(
 
 @Preview
 @Composable
-fun FluxCard_Preview() {
+fun FluxBox_Preview() {
     MaterialTheme {
         Box(
             modifier = Modifier.padding(Design.Space.medium),
             contentAlignment = Alignment.Center
         ) {
-            FluxCard(
+            FluxBox(
                 onClick = {}
             ) {
                 Column {

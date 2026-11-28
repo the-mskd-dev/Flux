@@ -19,10 +19,10 @@ import androidx.compose.ui.unit.dp
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.PortraitPreview
 import com.mskd.flux.ui.components.FixedChip
-import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.extensions.minToMs
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.content_unavailable
@@ -49,7 +49,7 @@ fun EpisodeItem(
         contentAlignment = Alignment.Center
     ) {
 
-        if (FluxUI.episodes.large) {
+        if (Design.episodes.large) {
             EpisodeItemLarge(
                 episode = episode,
                 isSelected = isSelected,
@@ -121,7 +121,7 @@ fun EpisodeItem_Preview() {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(vertical = 20.dp),
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
+            verticalArrangement = Arrangement.spacedBy(Design.Space.medium)
         ) {
             EpisodeItemLarge(
                 episode = MediaMockups.episode1,
@@ -149,7 +149,7 @@ fun EpisodeItemWatching_Preview() {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(vertical = 20.dp),
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
+            verticalArrangement = Arrangement.spacedBy(Design.Space.medium)
         ) {
             EpisodeItemLarge(
                 episode = MediaMockups.episode1.copy(
@@ -183,7 +183,7 @@ fun EpisodeItemWatched_Preview() {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(vertical = 20.dp),
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
+            verticalArrangement = Arrangement.spacedBy(Design.Space.medium)
         ) {
             EpisodeItemLarge(
                 episode = MediaMockups.episode1.copy(

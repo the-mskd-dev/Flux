@@ -13,9 +13,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import com.mskd.flux.core.model.artwork.Person
 import com.mskd.flux.features.people.ui.components.person.PersonPicture
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.image.rememberIconPlaceholderPainter
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_person
 
@@ -41,7 +41,7 @@ fun PeopleItem(
         )
 
         Column(
-            modifier = Modifier.padding(horizontal = FluxUI.Space.small, vertical = FluxUI.Space.small),
+            modifier = Modifier.padding(horizontal = Design.Space.small, vertical = Design.Space.small),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 

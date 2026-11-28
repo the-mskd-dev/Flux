@@ -3,9 +3,8 @@ package com.mskd.flux.features.customization.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
@@ -26,11 +25,12 @@ import com.mskd.flux.features.customization.ui.composables.CustomizationGlobalSe
 import com.mskd.flux.features.customization.ui.composables.CustomizationPlayerSection
 import com.mskd.flux.features.customization.ui.composables.CustomizationThemeSection
 import com.mskd.flux.features.customization.ui.composables.ItemsPerRowDialog
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.components.FluxOptionsDialog
 import com.mskd.flux.ui.components.FluxScaffold
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.scaffoldPadding
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.customization
 import org.jetbrains.compose.resources.stringResource
@@ -111,12 +111,12 @@ fun CustomizationContent(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.background)
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium),
+                .consumeWindowInsets(innerPadding)
+                .verticalScroll(rememberScrollState())
+                .scaffoldPadding(innerPadding),
+            verticalArrangement = Arrangement.spacedBy(Design.Space.medium),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
-            Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
 
             CustomizationThemeSection(
                 state = state,
@@ -137,8 +137,6 @@ fun CustomizationContent(
                 state = state,
                 sendIntent = sendIntent
             )
-
-            Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
 
         }
 

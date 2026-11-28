@@ -10,12 +10,18 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.union
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
@@ -52,14 +58,15 @@ import com.mskd.flux.features.gallery.presentation.ArtworkImageButton
 import com.mskd.flux.features.gallery.presentation.GalleryFailure
 import com.mskd.flux.features.gallery.presentation.GalleryIntent
 import com.mskd.flux.features.gallery.ui.viewer.GalleryViewer
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.components.FluxScaffold
-import com.mskd.flux.ui.components.FluxTextButton
+import com.mskd.flux.ui.components.buttons.FluxTextButton
 import com.mskd.flux.ui.dimensions.rememberScreenDimensions
 import com.mskd.flux.ui.image.Image
+import com.mskd.flux.ui.plus
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.gallery_empty
 import flux.shared.generated.resources.oups_an_error_occured
@@ -116,7 +123,7 @@ fun GalleryScreenContent(
                     contentAlignment = Alignment.Center
                 ) {
                     GalleryFilters(
-                        modifier = Modifier.align(Alignment.TopEnd).fillMaxWidth().padding(horizontal = FluxUI.Space.medium, vertical = FluxUI.Space.small),
+                        modifier = Modifier.align(Alignment.TopEnd).fillMaxWidth().padding(horizontal = Design.Space.medium, vertical = Design.Space.small),
                         sendIntent = sendIntent
                     )
                     Text.Content.Title(
@@ -130,16 +137,17 @@ fun GalleryScreenContent(
 
             LazyVerticalStaggeredGrid(
                 state = gridState,
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .consumeWindowInsets(innerPadding),
                 columns = StaggeredGridCells.Fixed(columns),
-                contentPadding = PaddingValues(
-                    start = FluxUI.Space.medium,
-                    end = FluxUI.Space.medium,
-                    top = innerPadding.calculateTopPadding() + FluxUI.Space.small,
-                    bottom = innerPadding.calculateBottomPadding() + FluxUI.Space.medium,
+                contentPadding = innerPadding.plus(
+                    top = Design.Space.small,
+                    bottom = Design.Space.medium,
+                    horizontal = Design.Space.medium,
                 ),
-                horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
-                verticalItemSpacing = FluxUI.Space.small,
+                horizontalArrangement = Arrangement.spacedBy(Design.Space.small),
+                verticalItemSpacing = Design.Space.small,
             ) {
 
                 item(span = StaggeredGridItemSpan.FullLine) {
@@ -178,7 +186,7 @@ fun GalleryScreenContent(
                             .fillMaxWidth()
                             .onGloballyPositioned { thumbnailBounds[key] = Rect(it.positionInRoot(), it.size.toSize()) }
                             .alpha(if (key == viewedKey) 0f else 1f)
-                            .clip(FluxUI.shapes.corners)
+                            .clip(Design.shapes.corners)
                             // Transparent Logos stay visible on a neutral background
                             .then(
                                 if (image.type == GalleryImageType.LOGO) Modifier.background(MaterialTheme.colorScheme.surfaceVariant)
@@ -232,7 +240,7 @@ fun GalleryScreenContent(
                         viewerReturnedToThumbnail = true
                         sendIntent(GalleryIntent.OnViewerClose)
                     },
-                    thumbnailShape = FluxUI.shapes.corners,
+                    thumbnailShape = Design.shapes.corners,
                     thumbnailBounds = { thumbnailBounds[it.key()] },
                 )
             }
@@ -251,7 +259,7 @@ fun GalleryScreenContent(
             hostState = snackbarHostState,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .navigationBarsPadding()
+                .windowInsetsPadding(WindowInsets.systemBars.union(WindowInsets.displayCutout).only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal))
         )
 
     }

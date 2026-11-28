@@ -8,15 +8,16 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mskd.flux.core.model.artwork.ContentType
+import com.mskd.flux.features.identification.domain.model.IdentificationSource
 import com.mskd.flux.features.identification.presentation.IdentificationEvent
 import com.mskd.flux.features.identification.presentation.IdentificationIntent
 import com.mskd.flux.features.identification.presentation.IdentificationUiState
 import com.mskd.flux.features.identification.presentation.IdentificationViewModel
 import com.mskd.flux.features.identification.ui.composables.IdentificationResults
 import com.mskd.flux.features.identification.ui.composables.IdentificationSearchField
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.modal.dialog.FluxDialog
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.identification_failed
 import flux.shared.generated.resources.identification_select_data
@@ -24,18 +25,21 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
-/** Lists the TMDB results for the Artwork [artworkId]: choosing one performs a Manual identification. */
+/** Lists the TMDB results for [source]: choosing one performs a Manual identification. */
 @Composable
 fun IdentificationDialog(
-    artworkId: Long,
+    source: IdentificationSource,
     onDismiss: () -> Unit,
     onIdentified: (artworkId: Long, type: ContentType) -> Unit,
-    viewModel: IdentificationViewModel = koinViewModel(key = "identification_$artworkId", parameters = { parametersOf(artworkId) }),
+    viewModel: IdentificationViewModel = koinViewModel(
+        key = "identification_${source.key}",
+        parameters = { parametersOf(source) },
+    ),
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(viewModel) {
         viewModel.event.collect { event ->
             when (event) {
                 is IdentificationEvent.Identified -> onIdentified(event.artworkId, event.type)
@@ -62,7 +66,7 @@ private fun IdentificationDialogContent(
     sendIntent: (IdentificationIntent) -> Unit,
 ) {
 
-    Column(verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)) {
+    Column(verticalArrangement = Arrangement.spacedBy(Design.Space.medium)) {
 
         IdentificationSearchField(
             query = uiState.query,

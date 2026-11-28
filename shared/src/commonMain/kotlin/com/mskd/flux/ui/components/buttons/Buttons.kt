@@ -1,4 +1,4 @@
-package com.mskd.flux.ui.components
+package com.mskd.flux.ui.components.buttons
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
@@ -23,8 +22,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_arrow_down
 import flux.shared.generated.resources.read_less
@@ -32,7 +31,6 @@ import flux.shared.generated.resources.read_more
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun FluxTextButton(
     text: String,
@@ -55,7 +53,6 @@ fun FluxTextButton(
 
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun FluxIconButton(
     modifier: Modifier = Modifier,
@@ -105,8 +102,8 @@ fun ReadMoreButton_Preview() {
     Column(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.background)
-            .padding(FluxUI.Space.large),
-        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large)
+            .padding(Design.Space.large),
+        verticalArrangement = Arrangement.spacedBy(Design.Space.large)
     ) {
         ReadMoreButton(
             onClick = {  },

@@ -8,8 +8,8 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
 
 @Composable
 fun BottomSheetCheckBoxItem(
@@ -22,7 +22,7 @@ fun BottomSheetCheckBoxItem(
             .fillMaxWidth()
             .clickable { onClick() },
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
+        horizontalArrangement = Arrangement.spacedBy(Design.Space.small)
     ) {
         Checkbox(
             checked = isSelected,

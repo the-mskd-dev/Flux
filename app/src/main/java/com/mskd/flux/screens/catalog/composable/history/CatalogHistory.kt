@@ -28,21 +28,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.features.history.data.mapper.toHistoryEntry
 import com.mskd.flux.features.history.domain.model.HistoryEntry
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.FluxThemePreview
+import com.mskd.flux.ui.LocalUiShapes
 import com.mskd.flux.ui.bleedHorizontal
 import com.mskd.flux.ui.components.ProgressStatusBar
 import com.mskd.flux.ui.fillMaxWidthWithLimit
 import com.mskd.flux.ui.image.FluxImage
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.ui.theme.LocalUiShapes
 import com.mskd.flux.utils.extensions.minToMs
 import com.mskd.flux.utils.extensions.timeDescription
 import flux.shared.generated.resources.Res
@@ -54,33 +55,35 @@ import org.jetbrains.compose.resources.stringResource
 fun CatalogHistory(
     modifier: Modifier = Modifier,
     entries: List<HistoryEntry>,
+    startPadding: Dp = Design.Space.medium,
+    endPadding: Dp = Design.Space.medium,
     sendIntent: (CatalogIntent) -> Unit
 ) {
 
     AnimatedVisibility(
         modifier = modifier
-            .bleedHorizontal()
+            .bleedHorizontal(start = startPadding, end = endPadding)
             .fillMaxWidth(),
         visible = entries.isNotEmpty()
     ) {
 
         Column(
             modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
+            verticalArrangement = Arrangement.spacedBy(Design.Space.medium)
         ) {
 
             Text.Content.Title(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = FluxUI.Space.medium),
+                    .padding(start = startPadding, end = endPadding),
                 text = stringResource(Res.string.continue_watching),
                 color = MaterialTheme.colorScheme.onBackground
             )
 
             LazyRow(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
-                contentPadding = PaddingValues(horizontal = FluxUI.Space.medium)
+                horizontalArrangement = Arrangement.spacedBy(Design.Space.small),
+                contentPadding = PaddingValues(start = startPadding, end = endPadding)
             ) {
 
                 items(items = entries, key = { it.media.artworkId }) { entry ->
@@ -116,7 +119,7 @@ fun CatalogHistoryItem(
         modifier = modifier.fillMaxWidthWithLimit(fraction = .8f, max = 450.dp),
         shape = shape,
         onClick = { sendIntent(CatalogIntent.PlayMedia(media = media)) },
-        shadowElevation = FluxUI.Elevation.itemShadow,
+        shadowElevation = Design.Elevation.itemShadow,
         color = MaterialTheme.colorScheme.surfaceContainerLow
     ) {
 
@@ -124,15 +127,15 @@ fun CatalogHistoryItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
-                .padding(all = FluxUI.Space.small),
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
+                .padding(all = Design.Space.small),
+            verticalArrangement = Arrangement.spacedBy(Design.Space.small)
         ) {
 
             Box(
                 modifier = Modifier
                     .clip(shape)
                     .fillMaxWidth()
-                    .aspectRatio(FluxUI.Ratio.landscape),
+                    .aspectRatio(Design.Ratio.landscape),
                 contentAlignment = Alignment.BottomCenter
             ) {
 
@@ -154,13 +157,13 @@ fun CatalogHistoryItem(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = FluxUI.Space.small),
+                    .padding(horizontal = Design.Space.small),
                 verticalAlignment = Alignment.CenterVertically
             ) {
 
                 Column(
                     modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall),
+                    verticalArrangement = Arrangement.spacedBy(Design.Space.extraSmall),
                 ) {
 
                     Text.Card.Title(

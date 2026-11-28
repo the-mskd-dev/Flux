@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,10 +27,12 @@ import androidx.compose.ui.draw.clip
 import com.mskd.flux.features.player.presentation.PlayerIntent
 import com.mskd.flux.features.player.presentation.SettingsSheet
 import com.mskd.flux.features.player.ui.PlayerSheetTopBar
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxPreview
+import com.mskd.flux.ui.global.BackGesture
+import com.mskd.flux.ui.modal.edgeToEdgeDialogProperties
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.Constants
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.playback_speed
@@ -42,9 +45,17 @@ fun PlayerPlaybackSpeedSheet(
 ) {
 
     BasicAlertDialog(
-        modifier = Modifier.clip(AlertDialogDefaults.shape),
+        modifier = Modifier
+            .safeDrawingPadding()
+            .padding(vertical = Design.Space.large)
+            .clip(AlertDialogDefaults.shape),
+        properties = edgeToEdgeDialogProperties(),
         onDismissRequest = { sendIntent(PlayerIntent.ShowSettings(sheet = null)) },
     ) {
+
+        BackGesture {
+            sendIntent(PlayerIntent.ShowSettings(sheet = SettingsSheet.Settings))
+        }
 
         Surface(
             modifier = Modifier.wrapContentWidth().wrapContentHeight(),
@@ -75,7 +86,7 @@ fun PlayerPlaybackSpeedSheet(
                 itemsIndexed(Constants.PLAYER.PLAYBACK_SPEEDS) { index, speed ->
 
                     if (index != 0)
-                        HorizontalDivider(modifier = Modifier.fillMaxWidth().padding(horizontal = FluxUI.Space.medium))
+                        HorizontalDivider(modifier = Modifier.fillMaxWidth().padding(horizontal = Design.Space.medium))
 
                     Row(
                         modifier = Modifier
@@ -84,9 +95,9 @@ fun PlayerPlaybackSpeedSheet(
                                 sendIntent(PlayerIntent.SetPlaybackSpeed(speed = speed))
                                 sendIntent(PlayerIntent.ShowSettings(sheet = null))
                             }
-                            .padding(horizontal = FluxUI.Space.medium, vertical = FluxUI.Space.medium),
+                            .padding(horizontal = Design.Space.medium, vertical = Design.Space.medium),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
+                        horizontalArrangement = Arrangement.spacedBy(Design.Space.small)
                     ) {
 
                         Text.List.Title(

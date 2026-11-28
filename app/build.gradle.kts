@@ -30,15 +30,19 @@ if (keystorePropertiesFile.exists()) {
 
 configure<ApplicationExtension> {
     namespace = "com.mskd.flux"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
+    compileSdk {
+        version = release(libs.versions.android.compileSdk.get().toInt()) {
+            minorApiLevel = libs.versions.android.compileSdkMinor.get().toInt()
+        }
+    }
     ndkVersion = "29.0.13113456"
 
     defaultConfig {
         applicationId = "com.mskd.flux"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 42
-        versionName = "1.9.3"
+        versionCode = 43
+        versionName = "1.9.4"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }

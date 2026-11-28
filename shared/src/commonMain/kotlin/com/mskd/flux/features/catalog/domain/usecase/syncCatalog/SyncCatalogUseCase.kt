@@ -1,8 +1,8 @@
 package com.mskd.flux.features.catalog.domain.usecase.syncCatalog
 
 import com.mskd.flux.features.catalog.domain.coordinator.CatalogSyncCoordinator
-import com.mskd.flux.features.catalog.domain.model.SyncType
 import com.mskd.flux.features.catalog.domain.model.SyncState
+import com.mskd.flux.features.catalog.domain.model.SyncType
 import com.mskd.flux.features.catalog.domain.sync.SyncContext
 import com.mskd.flux.features.catalog.domain.sync.SyncPipeline
 import com.mskd.flux.features.catalog.domain.sync.SyncProgress

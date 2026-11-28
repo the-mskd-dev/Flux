@@ -343,7 +343,7 @@ fun PlayerContent(
                 )
             }
             .pointerInput(Unit) {
-                var side = Side.LEFT
+                var side: Side? = null
                 var pendingDelta = 0f
 
                 fun flush() {
@@ -354,6 +354,7 @@ fun PlayerContent(
                         Side.LEFT -> currentWindowStateHolder.changeBrightness(delta)
                             ?.let { currentShowAmbient(AmbientOverlay.Type.BRIGHTNESS, it) }
                         Side.RIGHT -> currentSendIntent(PlayerIntent.OnVolumeChange(delta))
+                        else -> {}
                     }
                 }
 
@@ -368,14 +369,20 @@ fun PlayerContent(
                     }
                     detectVerticalDragGestures(
                         onDragStart = { offset ->
-                            side = if (offset.x > size.width / 2) Side.RIGHT else Side.LEFT
+                            side = when {
+                                offset.x < size.width * .25f -> Side.LEFT
+                                offset.x > size.width * .75f -> Side.RIGHT
+                                else -> null
+                            }
                             pendingDelta = 0f
                         },
                         onDragEnd = { flush() },
                         onDragCancel = { flush() },
                         onVerticalDrag = { change, dragAmount ->
-                            pendingDelta += (-dragAmount / size.height) * 2
-                            frameRequests.trySend(Unit)
+                            if (side != null) {
+                                pendingDelta += (-dragAmount / size.height) * 2
+                                frameRequests.trySend(Unit)
+                            }
                             change.consume()
                         },
                     )

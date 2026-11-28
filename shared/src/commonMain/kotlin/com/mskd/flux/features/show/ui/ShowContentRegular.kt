@@ -3,10 +3,9 @@ package com.mskd.flux.features.show.ui
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -27,10 +26,11 @@ import com.mskd.flux.features.show.presentation.ShowIntent
 import com.mskd.flux.features.show.ui.composables.SeasonItem
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.PeopleMockup
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.PortraitPreview
+import com.mskd.flux.ui.plus
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.seasons
 import org.jetbrains.compose.resources.stringResource
@@ -43,14 +43,19 @@ fun ShowContentRegular(
     sendIntent: (ShowIntent) -> Unit
 ) {
 
-    val columns = FluxUI.itemsPerRow.seasons
+    val columns = Design.itemsPerRow.seasons
 
     LazyVerticalGrid(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .consumeWindowInsets(scaffoldInnerPadding),
         columns = GridCells.Fixed(columns),
-        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
-        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
-        contentPadding = PaddingValues(horizontal = FluxUI.Space.medium)
+        verticalArrangement = Arrangement.spacedBy(Design.Space.small),
+        horizontalArrangement = Arrangement.spacedBy(Design.Space.small),
+        contentPadding = scaffoldInnerPadding.plus(
+            includeTop = false,
+            horizontal = Design.Space.medium,
+        )
     ) {
 
         item(span = { GridItemSpan(maxLineSpan) }) {
@@ -68,9 +73,9 @@ fun ShowContentRegular(
 
             Column(
                 modifier = Modifier
-                    .padding(top = FluxUI.Space.large)
-                    .padding(bottom = FluxUI.Space.medium),
-                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium),
+                    .padding(top = Design.Space.large)
+                    .padding(bottom = Design.Space.medium),
+                verticalArrangement = Arrangement.spacedBy(Design.Space.medium),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
@@ -118,13 +123,6 @@ fun ShowContentRegular(
 
             }
 
-        }
-
-        item(span = { GridItemSpan(maxLineSpan) }) {
-            Spacer(modifier = Modifier
-                .padding(bottom = FluxUI.Space.bottomScreen)
-                .height(scaffoldInnerPadding.calculateBottomPadding())
-            )
         }
 
     }

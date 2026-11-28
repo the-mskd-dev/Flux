@@ -5,12 +5,16 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -24,12 +28,16 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.core.State
+import com.mskd.flux.features.identification.domain.model.IdentificationSource
+import com.mskd.flux.features.identification.presentation.IdentificationAvailability
+import com.mskd.flux.features.identification.ui.IdentificationDialog
 import com.mskd.flux.features.player.domain.model.PlayerParams
+import com.mskd.flux.features.unknown.presentation.UnknownDialog
 import com.mskd.flux.features.unknown.presentation.UnknownEvent
 import com.mskd.flux.features.unknown.presentation.UnknownIntent
 import com.mskd.flux.features.unknown.presentation.UnknownViewModel
@@ -37,6 +45,7 @@ import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.navigation.domain.Route.Player
 import com.mskd.flux.screens.unknown.composables.UnknownDropDownMenu
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.components.ErrorScreen
 import com.mskd.flux.ui.components.FluxScaffold
@@ -45,7 +54,6 @@ import com.mskd.flux.ui.components.LoadingScreen
 import com.mskd.flux.ui.media.episode.EpisodeItem
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_help
 import flux.shared.generated.resources.no_item
@@ -56,7 +64,6 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun UnknownScreen(
     navigate: (Route) -> Unit,
@@ -90,6 +97,8 @@ fun UnknownScreen(
                 UnknownScreenContent(
                     medias = uiState.filteredMedias,
                     searchQuery = uiState.searchQuery,
+                    identification = uiState.identification,
+                    dialog = uiState.dialog,
                     sendIntent = viewModel::handleIntent
                 )
             }
@@ -103,10 +112,13 @@ fun UnknownScreen(
 fun UnknownScreenContent(
     medias: List<Episode>,
     searchQuery: String,
+    identification: IdentificationAvailability = IdentificationAvailability.HIDDEN,
+    dialog: UnknownDialog? = null,
     sendIntent: (UnknownIntent) -> Unit
 ) {
 
     val focusManager = LocalFocusManager.current
+    val layoutDirection = LocalLayoutDirection.current
     val lazyColumnState = rememberLazyListState()
 
     LaunchedEffect(lazyColumnState) {
@@ -135,7 +147,12 @@ fun UnknownScreenContent(
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
-                .padding(horizontal = FluxUI.Space.medium),
+                .consumeWindowInsets(innerPadding)
+                .imePadding()
+                .padding(
+                    start = innerPadding.calculateStartPadding(layoutDirection) + Design.Space.medium,
+                    end = innerPadding.calculateEndPadding(layoutDirection) + Design.Space.medium
+                ),
         ) {
 
             Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
@@ -143,14 +160,15 @@ fun UnknownScreenContent(
             FluxSearchField(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = FluxUI.Space.large),
+                    .padding(bottom = Design.Space.large),
                 value = searchQuery,
                 onValueChange = { sendIntent(UnknownIntent.DoSearch(it)) },
             )
 
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
+                verticalArrangement = Arrangement.spacedBy(Design.Space.small),
+                contentPadding = PaddingValues(bottom = innerPadding.calculateBottomPadding() + Design.Space.large),
                 state = lazyColumnState
             ) {
 
@@ -160,9 +178,7 @@ fun UnknownScreenContent(
                         Box(
                             modifier = Modifier
                                 .animateItem()
-                                .fillMaxWidth()
-                                .padding(innerPadding)
-                                .systemBarsPadding(),
+                                .fillMaxWidth(),
                             contentAlignment = Alignment.TopStart
                         ) {
 
@@ -190,6 +206,7 @@ fun UnknownScreenContent(
                             UnknownDropDownMenu(
                                 isVisible = isVisible,
                                 episode = media,
+                                identification = identification,
                                 onDismissRequest = onDismissRequest,
                                 sendIntent = sendIntent
                             )
@@ -200,6 +217,14 @@ fun UnknownScreenContent(
 
             }
 
+        }
+
+        (dialog as? UnknownDialog.Identification)?.let {
+            IdentificationDialog(
+                source = IdentificationSource.UnknownMedia(media = it.media),
+                onDismiss = { sendIntent(UnknownIntent.CloseDialog) },
+                onIdentified = { _, _ -> sendIntent(UnknownIntent.OnIdentified) },
+            )
         }
 
     }

@@ -2,10 +2,10 @@ package com.mskd.flux.features.movie.ui
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -20,9 +20,10 @@ import com.mskd.flux.features.movie.presentation.MovieIntent
 import com.mskd.flux.features.people.ui.components.people.PeopleList
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.PeopleMockup
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.PortraitPreview
+import com.mskd.flux.ui.plus
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
 import kotlinx.collections.immutable.toImmutableList
 
 @Composable
@@ -35,7 +36,11 @@ fun MovieContentRegular(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = FluxUI.Space.medium),
+            .consumeWindowInsets(scaffoldInnerPadding),
+        contentPadding = scaffoldInnerPadding.plus(
+            includeTop = false,
+            horizontal = Design.Space.medium,
+        ),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 
@@ -49,7 +54,7 @@ fun MovieContentRegular(
                 pageType = ArtworkPageType.MOVIE,
                 isImageBlurred = false,
                 // The content is already inset by the page padding
-                titleHorizontalMargin = FluxUI.Space.medium * 2,
+                titleHorizontalMargin = Design.Space.medium * 2,
                 onImageClick = { sendIntent(MovieIntent.OnArtworkImageClick) },
                 buttons = { modifier ->
                     ArtworkButtons(
@@ -64,7 +69,7 @@ fun MovieContentRegular(
         }
 
         item {
-            Spacer(modifier = Modifier.height(FluxUI.Space.large))
+            Spacer(modifier = Modifier.height(Design.Space.large))
         }
 
         item {
@@ -78,18 +83,11 @@ fun MovieContentRegular(
         }
 
         item {
-            Spacer(modifier = Modifier.height(FluxUI.Space.large))
+            Spacer(modifier = Modifier.height(Design.Space.large))
         }
 
         if (content.people.isNotEmpty()) {
             item { PeopleList(people = content.people, onClick = { sendIntent(MovieIntent.OnPersonClick(person = it)) }) }
-        }
-
-        item {
-            Spacer(modifier = Modifier
-                .padding(bottom = FluxUI.Space.bottomScreen)
-                .height(scaffoldInnerPadding.calculateBottomPadding())
-            )
         }
 
     }

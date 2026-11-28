@@ -2,36 +2,36 @@ package com.mskd.flux.screens.catalog.composable.promo
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.ui.text.style.TextAlign
-import flux.shared.generated.resources.play_store_promo_title
-import flux.shared.generated.resources.play_store_promo_signature
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
-import flux.shared.generated.resources.ic_playstore
-import org.jetbrains.compose.resources.painterResource
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.modal.dialog.FluxDialog
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.close
+import flux.shared.generated.resources.ic_playstore
 import flux.shared.generated.resources.play_store
 import flux.shared.generated.resources.play_store_promo_outro
+import flux.shared.generated.resources.play_store_promo_signature
 import flux.shared.generated.resources.play_store_promo_support
 import flux.shared.generated.resources.play_store_promo_thanks
 import flux.shared.generated.resources.play_store_promo_thanks_intro
+import flux.shared.generated.resources.play_store_promo_title
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 /**
@@ -56,7 +56,7 @@ fun CatalogPlayStorePromoDialog(
                 modifier = Modifier
                     .fillMaxWidth()
                     .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
+                verticalArrangement = Arrangement.spacedBy(Design.Space.medium)
             ) {
 
                 Text.Content.Body(text = stringResource(Res.string.play_store_promo_thanks_intro))
@@ -70,7 +70,7 @@ fun CatalogPlayStorePromoDialog(
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
+                        horizontalArrangement = Arrangement.spacedBy(Design.Space.small)
                     ) {
                         Icon(
                             modifier = Modifier.size(20.dp),

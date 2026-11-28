@@ -13,8 +13,11 @@ enum class IdentificationAvailability {
     companion object {
 
         /** Offered even when a file has a TMDB ID in its name: the Manual identification has priority over it. */
-        fun of(artwork: Artwork, tokenAvailable: Boolean, syncing: Boolean): IdentificationAvailability = when {
-            artwork.isUnknown || !tokenAvailable -> HIDDEN
+        fun of(artwork: Artwork, tokenAvailable: Boolean, syncing: Boolean): IdentificationAvailability =
+            if (artwork.isUnknown) HIDDEN else of(tokenAvailable = tokenAvailable, syncing = syncing)
+
+        fun of(tokenAvailable: Boolean, syncing: Boolean): IdentificationAvailability = when {
+            !tokenAvailable -> HIDDEN
             syncing -> DISABLED
             else -> ENABLED
         }

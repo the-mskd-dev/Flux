@@ -4,10 +4,18 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.union
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -31,11 +39,11 @@ import com.mskd.flux.navigation.domain.Route.Catalog
 import com.mskd.flux.navigation.domain.Route.Sources
 import com.mskd.flux.navigation.domain.Route.Token
 import com.mskd.flux.system.rememberStoragePermission
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.fillMaxWidthWithLimit
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_flux
 import flux.shared.generated.resources.next
@@ -101,8 +109,15 @@ fun SetupScreenContent(
 
         Box(
             modifier = Modifier
-                .padding(FluxUI.Space.medium)
-                .fillMaxWidthWithLimit(),
+                .fillMaxWidthWithLimit()
+                .verticalScroll(rememberScrollState())
+                .windowInsetsPadding(WindowInsets.systemBars.union(WindowInsets.displayCutout))
+                .padding(
+                    start = Design.Space.medium,
+                    end = Design.Space.medium,
+                    top = Design.Space.medium,
+                    bottom = 88.dp
+                ),
         ) {
 
             AnimatedContent(
@@ -124,8 +139,8 @@ fun SetupScreenContent(
         ExtendedFloatingActionButton(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(all = FluxUI.Space.medium)
-                .navigationBarsPadding()
+                .windowInsetsPadding(WindowInsets.systemBars.union(WindowInsets.displayCutout).only(WindowInsetsSides.Bottom + WindowInsetsSides.End))
+                .padding(all = Design.Space.medium)
             ,
             onClick = { sendIntent(SetupIntent.OnNextButton) }
         ) {

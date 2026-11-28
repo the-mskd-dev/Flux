@@ -13,10 +13,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.mskd.flux.features.people.domain.model.PersonDetails
 import com.mskd.flux.mockups.PeopleMockup
+import com.mskd.flux.ui.Design
+import com.mskd.flux.ui.LocalUiShapes
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.ui.theme.LocalUiShapes
 import com.mskd.flux.utils.extensions.formattedText
 import com.mskd.flux.utils.extensions.parseTMDBDate
 import flux.shared.generated.resources.Res
@@ -45,14 +45,14 @@ fun PersonDetails(
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = LocalUiShapes.current.corners,
-        shadowElevation = FluxUI.Elevation.itemShadow,
+        shadowElevation = Design.Elevation.itemShadow,
         color = MaterialTheme.colorScheme.secondaryContainer
     ) {
 
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(all = FluxUI.Space.medium),
+                .padding(all = Design.Space.medium),
         ) {
 
             if (details.originalName != null && details.originalName != details.name) {
@@ -112,7 +112,7 @@ fun PersonDetailsItem(
 
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall),
+        horizontalArrangement = Arrangement.spacedBy(Design.Space.extraSmall),
         verticalAlignment = Alignment.Top
     ) {
 

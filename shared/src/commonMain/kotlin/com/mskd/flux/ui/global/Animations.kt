@@ -1,10 +1,9 @@
 package com.mskd.flux.ui.global
 
-import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import com.mskd.flux.ui.motion.Motion
 
 @Composable
 fun animateAlphaState(
@@ -14,10 +13,7 @@ fun animateAlphaState(
 ): State<Float> {
     return animateFloatAsState(
         targetValue = targetValue,
-        animationSpec = spring(
-            stiffness = Spring.StiffnessLow,
-            dampingRatio = Spring.DampingRatioNoBouncy
-        ),
+        animationSpec = Motion.slowEffects(),
         label = label,
         finishedListener = finishedListener
     )

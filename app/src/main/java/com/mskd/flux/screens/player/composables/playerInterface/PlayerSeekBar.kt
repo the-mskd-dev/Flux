@@ -4,9 +4,15 @@ import android.os.SystemClock
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.union
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -21,9 +27,9 @@ import com.mskd.flux.features.player.domain.manager.SeekPrecision
 import com.mskd.flux.features.player.domain.model.VideoChapter
 import com.mskd.flux.features.player.presentation.PlayerIntent
 import com.mskd.flux.features.player.ui.ChapterSlider
+import com.mskd.flux.ui.Design
+import com.mskd.flux.ui.LocalUiPlayer
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.ui.theme.LocalUiPlayer
 import com.mskd.flux.utils.extensions.formatMinSec
 import kotlinx.coroutines.delay
 import kotlin.math.abs
@@ -71,10 +77,10 @@ fun PlayerSeekBar(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .navigationBarsPadding()
-            .padding(horizontal = FluxUI.Space.medium),
+            .windowInsetsPadding(WindowInsets.systemBars.union(WindowInsets.displayCutout).only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal))
+            .padding(horizontal = Design.Space.medium),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
+        horizontalArrangement = Arrangement.spacedBy(Design.Space.small)
     ) {
 
         PlayerSeekBarTime(

@@ -9,15 +9,16 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.ContentType
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.screens.catalog.composable.CatalogCategory
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.bleedHorizontal
-import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.movies
 import flux.shared.generated.resources.shows
@@ -27,6 +28,8 @@ fun LazyGridScope.catalogViewModeType(
     artworks: List<Artwork>,
     sortingMode: CatalogSortingMode,
     privateFolderEnabled: Boolean,
+    startPadding: Dp = Design.Space.medium,
+    endPadding: Dp = Design.Space.medium,
     sendIntent: (CatalogIntent) -> Unit
 ) {
 
@@ -34,8 +37,8 @@ fun LazyGridScope.catalogViewModeType(
         Column(
             modifier = Modifier
                 .animateItem()
-                .bleedHorizontal(),
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large)
+                .bleedHorizontal(start = startPadding, end = endPadding),
+            verticalArrangement = Arrangement.spacedBy(Design.Space.large)
         ) {
 
             CatalogCategory(
@@ -43,6 +46,8 @@ fun LazyGridScope.catalogViewModeType(
                 artworks = artworks.filter { it.type == ContentType.SHOW && !it.isUnknown },
                 sortingOption = sortingMode,
                 privateFolderEnabled = privateFolderEnabled,
+                startPadding = startPadding,
+                endPadding = endPadding,
                 onCategoryTap = { sendIntent(CatalogIntent.OnCategoryClick(ContentType.SHOW)) },
                 sendIntent = sendIntent
             )
@@ -52,6 +57,8 @@ fun LazyGridScope.catalogViewModeType(
                 artworks = artworks.filter { it.type == ContentType.MOVIE && !it.isUnknown },
                 sortingOption = sortingMode,
                 privateFolderEnabled = privateFolderEnabled,
+                startPadding = startPadding,
+                endPadding = endPadding,
                 onCategoryTap = { sendIntent(CatalogIntent.OnCategoryClick(ContentType.MOVIE)) },
                 sendIntent = sendIntent
             )

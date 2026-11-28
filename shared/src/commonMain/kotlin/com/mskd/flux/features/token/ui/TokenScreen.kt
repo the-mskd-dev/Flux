@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -49,15 +49,17 @@ import com.mskd.flux.features.token.presentation.TokenIntent
 import com.mskd.flux.features.token.presentation.TokenUiState
 import com.mskd.flux.features.token.presentation.TokenViewModel
 import com.mskd.flux.navigation.domain.Route
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxPreview
-import com.mskd.flux.ui.components.FluxIconButton
 import com.mskd.flux.ui.components.FluxScaffold
-import com.mskd.flux.ui.components.FluxTextButton
+import com.mskd.flux.ui.components.buttons.FluxIconButton
+import com.mskd.flux.ui.components.buttons.FluxTextButton
 import com.mskd.flux.ui.global.BackGesture
+import com.mskd.flux.ui.motion.Motion
+import com.mskd.flux.ui.scaffoldPadding
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.text.buildLinkedString
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.Constants
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.api_token
@@ -123,8 +125,8 @@ fun TokenScreenContent(
 
             AnimatedVisibility(
                 visible = !state.showBackButton,
-                enter = FluxUI.Animation.buttonEnter,
-                exit = FluxUI.Animation.buttonExit
+                enter = Motion.buttonEnter(),
+                exit = Motion.buttonExit()
             ) {
 
                 FluxTextButton(
@@ -142,14 +144,17 @@ fun TokenScreenContent(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.background)
                 .fillMaxSize()
+                .consumeWindowInsets(innerPadding)
                 .imePadding()
-                .padding(horizontal = FluxUI.Space.medium)
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium),
+                .verticalScroll(rememberScrollState())
+                .scaffoldPadding(
+                    innerPadding = innerPadding,
+                    horizontal = Design.Space.medium,
+                    bottom = if (!state.showBackButton) 72.dp else Design.Space.large,
+                ),
+            verticalArrangement = Arrangement.spacedBy(Design.Space.medium),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
-            Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
 
             TokenDescription()
 
@@ -164,7 +169,7 @@ fun TokenScreenContent(
                 )
 
                 AnimatedVisibility(
-                    modifier = Modifier.padding(start = FluxUI.Space.extraSmall, top = FluxUI.Space.small),
+                    modifier = Modifier.padding(start = Design.Space.extraSmall, top = Design.Space.small),
                     visible = state.message != TokenMessage.None,
                 ) {
 
@@ -183,8 +188,6 @@ fun TokenScreenContent(
                 }
             }
 
-            Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
-
         }
 
     }
@@ -196,7 +199,7 @@ fun TokenDescription() {
 
     Column(
         modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large),
+        verticalArrangement = Arrangement.spacedBy(Design.Space.large),
         horizontalAlignment = Alignment.Start
     ) {
 
@@ -224,7 +227,7 @@ fun TokenTutorial() {
 
     Column(
         modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large),
+        verticalArrangement = Arrangement.spacedBy(Design.Space.large),
         horizontalAlignment = Alignment.Start
     ) {
 
@@ -276,8 +279,8 @@ fun TokenInput(
     Row(
         modifier = Modifier
             .widthIn(max = 700.dp)
-            .padding(top = FluxUI.Space.large),
-        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
+            .padding(top = Design.Space.large),
+        horizontalArrangement = Arrangement.spacedBy(Design.Space.small),
         verticalAlignment = Alignment.CenterVertically
     ) {
         TextField(

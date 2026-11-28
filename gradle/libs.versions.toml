@@ -1,27 +1,28 @@
 [versions]
 # -- Android SDK --
 android-compileSdk = "37"
+android-compileSdkMinor = "1"
 android-minSdk = "29"
 android-targetSdk = "37"
 
 # -- Build & Plugins --
-agp = "9.3.1"
-kotlin = "2.4.21"
-ksp = "2.3.13"
+agp = "9.5.2"
+kotlin = "2.5.0-RC"
+ksp = "2.3.14"
 koinPlugin = "1.2.3"
 firebaseCrashlyticsPlugin = "3.0.8"
-googleServices = "4.5.0"
+googleServices = "4.6.0"
 
 # -- Compose --
-composeMultiplatform = "1.12.2"
+composeMultiplatform = "1.13.0-rc01"
 composeMaterialAdaptive = "1.3.0"
-compose = "1.13.0-alpha01"
+compose = "1.13.0-rc01"
 
 # -- Android Core --
-lifecycle = "2.11.0"
+lifecycle = "2.11.1"
 
 # -- Kotlin --
-kotlinxSerializationCore = "1.12.0"
+kotlinxSerializationCore = "1.13.0"
 
 # -- UI --
 haze = "2.1.0"
@@ -47,7 +48,7 @@ coil = "3.6.3"
 acra = "5.14.2"
 
 # -- Testing --
-kotest = "6.2.6"
+kotest = "6.2.7"
 mockk = "1.14.12"
 
 [libraries]
@@ -60,7 +61,7 @@ androidx-activity-compose = { group = "androidx.activity", name = "activity-comp
 androidx-documentfile = { group = "androidx.documentfile", name = "documentfile", version = "1.1.0" }
 
 # -- Compose --
-androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version = "2026.09.00" }
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version = "2026.11.01" }
 androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata" }
 androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
@@ -71,8 +72,9 @@ components-resources = { group = "org.jetbrains.compose.components", name = "com
 compose-ui = { group = "org.jetbrains.compose.ui", name = "ui", version.ref = "compose" }
 compose-ui-graphics = { group = "org.jetbrains.compose.ui", name = "ui-graphics", version.ref = "compose" }
 compose-ui-text = { group = "org.jetbrains.compose.ui", name = "ui-text", version.ref = "compose" }
+compose-ui-tooling = { group = "org.jetbrains.compose.ui", name = "ui-tooling", version.ref = "compose" }
 compose-ui-tooling-preview = { group = "org.jetbrains.compose.ui", name = "ui-tooling-preview", version.ref = "compose" }
-compose-material3 = { group = "org.jetbrains.compose.material3", name = "material3", version = "1.13.0-alpha01" }
+compose-material3 = { group = "org.jetbrains.compose.material3", name = "material3", version = "1.13.0-rc01" }
 compose-constraintlayout = { group = "tech.annexflow.compose", name = "constraintlayout-compose-multiplatform", version = "0.8.3" }
 compose-material-icons = { group = "org.jetbrains.compose.material", name = "material-icons-core", version = "1.7.3" }
 compose-material-adaptive = { group = "org.jetbrains.compose.material3.adaptive", name = "adaptive", version.ref = "composeMaterialAdaptive" }
@@ -93,7 +95,7 @@ material-kolor = { group = "com.materialkolor", name = "material-kolor", version
 
 # -- Navigation --
 navigation-ui = { group = "org.jetbrains.androidx.navigation3", name = "navigation3-ui", version = "1.2.0" }
-navigation-lifecycle = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel-navigation3", version.ref = "lifecycle" }
+navigation-lifecycle = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel-navigation3", version = "2.11.0" }
 compose-navigation = { group = "org.jetbrains.androidx.navigation", name = "navigation-compose", version = "2.10.0" }
 
 # -- Accompanist --
@@ -146,7 +148,7 @@ acra-mail = { group = "ch.acra", name = "acra-mail", version.ref = "acra" }
 acra-dialog = { group = "ch.acra", name = "acra-dialog", version.ref = "acra" }
 
 # -- Firebase --
-firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version = "35.1.0" } # PLAY_STORE
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version = "35.2.0" } # PLAY_STORE
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" } # PLAY_STORE
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" } # PLAY_STORE
 
@@ -161,7 +163,7 @@ turbine = { group = "app.cash.turbine", name = "turbine", version = "1.2.1" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version = "1.11.0" }
 koin-test = { group = "io.insert-koin", name = "koin-test", version.ref = "koin" }
 koin-test-junit4 = { group = "io.insert-koin", name = "koin-test-junit4", version.ref = "koin" }
-kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version = "2.4.21" }
+kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
 androidx-test-ext = { group = "androidx.test.ext", name = "junit", version = "1.3.0" }
 androidx-test-espresso = { group = "androidx.test.espresso", name = "espresso-core", version = "3.7.0" }
 truth = { group = "com.google.truth", name = "truth", version = "1.4.5" }
@@ -230,6 +232,7 @@ shared-ui = [
     "compose-ui-text",
     "compose-ui-graphics",
     "components-resources",
+    "compose-ui-tooling",
     "compose-ui-tooling-preview",
     "compose-constraintlayout",
     "compose-material-icons",

@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -22,21 +21,24 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.dimensions.itemWidthFor
 import com.mskd.flux.ui.dimensions.rememberScreenDimensions
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun CatalogCategory(
     name: String? = null,
     artworks: List<Artwork>,
     sortingOption: CatalogSortingMode,
     privateFolderEnabled: Boolean,
+    startPadding: Dp = Design.Space.medium,
+    endPadding: Dp = Design.Space.medium,
     onCategoryTap: () -> Unit,
     sendIntent: (CatalogIntent) -> Unit,
 ) {
@@ -46,8 +48,8 @@ fun CatalogCategory(
 
     val listState = rememberLazyListState()
     val screenDimensions = rememberScreenDimensions()
-    val columns = if (screenDimensions.isLarge) 5 else FluxUI.itemsPerRow.artworks
-    var itemWidth by remember { mutableStateOf(FluxUI.Dimension.itemWidth) }
+    val columns = if (screenDimensions.isLarge) 5 else Design.itemsPerRow.artworks
+    var itemWidth by remember { mutableStateOf(Design.Dimension.itemWidth) }
     val density = LocalDensity.current
 
     LaunchedEffect(sortingOption) {
@@ -59,20 +61,21 @@ fun CatalogCategory(
             .fillMaxWidth()
             .onSizeChanged { size ->
                 with(density) {
+                    val usableWidth = (size.width.toDp() - (startPadding - Design.Space.medium) - (endPadding - Design.Space.medium)).coerceAtLeast(0.dp)
                     itemWidth = itemWidthFor(
-                        screenWidthDp = size.width.toDp(),
+                        screenWidthDp = usableWidth,
                         columns = columns
                     )
                 }
             },
-        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
+        verticalArrangement = Arrangement.spacedBy(Design.Space.medium)
     ) {
 
         Text.Content.Title(
             modifier = Modifier
                 .clickable { onCategoryTap() }
                 .fillMaxWidth()
-                .padding(start = FluxUI.Space.medium),
+                .padding(start = startPadding, end = endPadding),
             text = name,
             color = MaterialTheme.colorScheme.onBackground
         )
@@ -80,8 +83,8 @@ fun CatalogCategory(
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
             state = listState,
-            contentPadding = PaddingValues(horizontal = FluxUI.Space.medium),
-            horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
+            contentPadding = PaddingValues(start = startPadding, end = endPadding),
+            horizontalArrangement = Arrangement.spacedBy(Design.Space.small)
         ) {
 
             items(artworks, key = { it.id }) {
@@ -90,7 +93,7 @@ fun CatalogCategory(
                     modifier = Modifier
                         .animateItem()
                         .width(itemWidth)
-                        .aspectRatio(FluxUI.Dimension.itemRatio),
+                        .aspectRatio(Design.Dimension.itemRatio),
                     artwork = it,
                     privateFolderEnabled = privateFolderEnabled,
                     sendIntent = sendIntent

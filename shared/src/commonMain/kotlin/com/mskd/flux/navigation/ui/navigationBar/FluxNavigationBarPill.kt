@@ -7,10 +7,16 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.union
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -28,10 +34,10 @@ import androidx.compose.ui.unit.dp
 import com.mskd.flux.navigation.domain.BottomBarTab
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.navigation.domain.isSameTabAs
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -42,16 +48,16 @@ fun FluxNavigationBarPill(
 
     Box(
         modifier = Modifier
-            .padding(horizontal = FluxUI.Space.medium)
+            .padding(horizontal = Design.Space.medium)
             .fillMaxWidth(),
         contentAlignment = Alignment.Center
     ) {
 
         Surface(
             modifier = Modifier
-                .navigationBarsPadding()
-                .padding(bottom = FluxUI.Space.medium),
-            shadowElevation = FluxUI.Elevation.navigationBar,
+                .windowInsetsPadding(WindowInsets.navigationBars.union(WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal)))
+                .padding(bottom = Design.Space.medium),
+            shadowElevation = Design.Elevation.navigationBar,
             shape = CircleShape,
             color = NavigationBarDefaults.containerColor,
             tonalElevation = NavigationBarDefaults.Elevation
@@ -59,9 +65,9 @@ fun FluxNavigationBarPill(
 
             Row(
                 modifier = Modifier
-                    .padding(all = FluxUI.Space.small),
+                    .padding(all = Design.Space.small),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
+                horizontalArrangement = Arrangement.spacedBy(Design.Space.small)
             ) {
                 BottomBarTab.entries.forEach { tab ->
                     FluxNavigationBarPillItem(
@@ -102,7 +108,7 @@ fun FluxNavigationBarPillItem(
             .background(animatedBackgroundColor)
             .padding(all = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall)
+        horizontalArrangement = Arrangement.spacedBy(Design.Space.extraSmall)
     ) {
 
         AnimatedVisibility(

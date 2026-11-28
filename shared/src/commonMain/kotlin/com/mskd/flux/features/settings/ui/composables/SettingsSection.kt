@@ -16,8 +16,8 @@ import com.mskd.flux.features.settings.domain.model.SettingsDialog
 import com.mskd.flux.features.settings.presentation.SettingsIntent
 import com.mskd.flux.features.settings.presentation.SettingsUiState
 import com.mskd.flux.system.languageDisplayName
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.fillMaxWidthWithLimit
-import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.Constants
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.about
@@ -52,8 +52,6 @@ import flux.shared.generated.resources.ic_pip
 import flux.shared.generated.resources.ic_player
 import flux.shared.generated.resources.ic_playstore
 import flux.shared.generated.resources.ic_social_media
-import flux.shared.generated.resources.play_store
-import flux.shared.generated.resources.play_store_desc
 import flux.shared.generated.resources.ic_sources
 import flux.shared.generated.resources.ic_sync
 import flux.shared.generated.resources.ic_version
@@ -61,6 +59,8 @@ import flux.shared.generated.resources.ic_visibility
 import flux.shared.generated.resources.information_language
 import flux.shared.generated.resources.make_a_donation
 import flux.shared.generated.resources.picture_in_picture
+import flux.shared.generated.resources.play_store
+import flux.shared.generated.resources.play_store_desc
 import flux.shared.generated.resources.private_folder
 import flux.shared.generated.resources.private_folder_desc
 import flux.shared.generated.resources.private_folder_include_nsfw
@@ -90,8 +90,8 @@ fun SettingsSection(
     Column(
         modifier = Modifier
             .fillMaxWidthWithLimit()
-            .padding(horizontal = FluxUI.Space.medium)
-            .clip(FluxUI.shapes.corners),
+            .padding(horizontal = Design.Space.medium)
+            .clip(Design.shapes.corners),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.spacedBy(2.dp)
     ) { content(iconColor, iconBackgroundColor) }

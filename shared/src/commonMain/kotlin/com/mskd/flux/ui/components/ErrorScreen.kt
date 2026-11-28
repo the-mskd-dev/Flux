@@ -4,17 +4,19 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import com.mskd.flux.ui.Design
+import com.mskd.flux.ui.components.buttons.FluxTextButton
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.oups_an_error_occured
 import flux.shared.generated.resources.retry
@@ -32,18 +34,19 @@ fun ErrorScreen(
     FluxScaffold(
         onBackTap = onBackButtonClick,
         title = null
-    ) {
+    ) { innerPadding ->
 
         Box(
             modifier = modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
-                .systemBarsPadding(),
+                .padding(innerPadding)
+                .consumeWindowInsets(innerPadding),
             contentAlignment = Alignment.Center
         ) {
 
             Column(
-                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium),
+                verticalArrangement = Arrangement.spacedBy(Design.Space.medium),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 

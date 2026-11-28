@@ -1,0 +1,8 @@
+- Feature: Manually identify media from the Unknown screen
+- Feature: Expressive animated controls in the player
+- Feature: Narrow brightness and volume swipe zones to edges
+- Fix: Back gesture in player settings returns to settings menu
+- Fix: Avoid permission errors when opening the file explorer
+- Core: Edge-to-edge layout and system bar insets
+- Core: Shared design system and motion foundation
+- Core: R8 resource shrinking and dependency updates

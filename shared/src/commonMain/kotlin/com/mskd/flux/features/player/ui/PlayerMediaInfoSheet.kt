@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
@@ -19,10 +20,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import com.mskd.flux.features.player.domain.model.MediaInfo
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxPreview
+import com.mskd.flux.ui.modal.edgeToEdgeDialogProperties
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.audio_codec
 import flux.shared.generated.resources.bitrate
@@ -45,7 +47,11 @@ fun PlayerMediaInfoSheet(
 ) {
 
     BasicAlertDialog(
-        modifier = Modifier.clip(AlertDialogDefaults.shape),
+        modifier = Modifier
+            .safeDrawingPadding()
+            .padding(vertical = Design.Space.large)
+            .clip(AlertDialogDefaults.shape),
+        properties = edgeToEdgeDialogProperties(),
         onDismissRequest = onBack,
     ) {
 
@@ -124,8 +130,8 @@ private fun MediaInfoRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(all = FluxUI.Space.medium),
-        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
+            .padding(all = Design.Space.medium),
+        horizontalArrangement = Arrangement.spacedBy(Design.Space.small),
         verticalAlignment = Alignment.CenterVertically
     ) {
 

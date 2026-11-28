@@ -2,13 +2,11 @@ package com.mskd.flux.screens.search.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -23,10 +21,9 @@ import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.shownPosterPath
 import com.mskd.flux.features.search.presentation.SearchIntent
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxThemePreview
-import com.mskd.flux.ui.displayCutoutPaddingInLandscape
 import com.mskd.flux.ui.media.MediaItem
-import com.mskd.flux.ui.theme.FluxUI
 
 @Composable
 fun SearchContentGrid(
@@ -40,10 +37,11 @@ fun SearchContentGrid(
 ) {
 
     LazyVerticalGrid(
-        modifier = modifier.displayCutoutPaddingInLandscape(),
+        modifier = modifier,
         columns = GridCells.Fixed(columns),
-        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
-        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
+        horizontalArrangement = Arrangement.spacedBy(Design.Space.small),
+        verticalArrangement = Arrangement.spacedBy(Design.Space.small),
+        contentPadding = PaddingValues(bottom = bottomPadding),
         state = state
     ) {
 
@@ -62,7 +60,7 @@ fun SearchContentGrid(
                 MediaItem(
                     modifier = Modifier
                         .width(itemWidth)
-                        .aspectRatio(FluxUI.Dimension.itemRatio),
+                        .aspectRatio(Design.Dimension.itemRatio),
                     path = artwork.shownPosterPath,
                     description = artwork.title,
                     onClick = { sendIntent(SearchIntent.OnArtworkTap(artwork = artwork, rgb = it)) }
@@ -70,10 +68,6 @@ fun SearchContentGrid(
 
             }
 
-        }
-
-        item(span = { GridItemSpan(maxLineSpan) }) {
-            Spacer(modifier = Modifier.height(bottomPadding + FluxUI.Space.bottomScreen))
         }
 
     }
@@ -87,7 +81,7 @@ fun SearchContentGrid_Preview() {
         SearchContentGrid(
             artworks = MediaMockups.artworks,
             columns = 3,
-            itemWidth = FluxUI.Dimension.itemWidth,
+            itemWidth = Design.Dimension.itemWidth,
             sendIntent = {}
         )
     }

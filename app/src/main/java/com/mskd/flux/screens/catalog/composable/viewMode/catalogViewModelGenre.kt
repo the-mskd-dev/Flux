@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.Genre
 import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
@@ -17,15 +18,17 @@ import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.mockups.DetailsMockup
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.screens.catalog.composable.CatalogCategory
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.bleedHorizontal
-import com.mskd.flux.ui.theme.FluxUI
 
 fun LazyGridScope.catalogViewModeGenre(
     artworks: List<Artwork>,
     genres: List<Genre>,
     sortingMode: CatalogSortingMode,
     privateFolderEnabled: Boolean,
+    startPadding: Dp = Design.Space.medium,
+    endPadding: Dp = Design.Space.medium,
     sendIntent: (CatalogIntent) -> Unit
 ) {
 
@@ -34,8 +37,8 @@ fun LazyGridScope.catalogViewModeGenre(
         Column(
             modifier = Modifier
                 .animateItem()
-                .bleedHorizontal(),
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large)
+                .bleedHorizontal(start = startPadding, end = endPadding),
+            verticalArrangement = Arrangement.spacedBy(Design.Space.large)
         ) {
 
             val categories = remember(artworks, genres) {
@@ -43,15 +46,17 @@ fun LazyGridScope.catalogViewModeGenre(
 
                 genres
                     .map { genre -> genre to validArtworks.filter { it.genreIds.contains(genre.id) } }
-                    .sortedByDescending { (_, genreArtworks) -> genreArtworks.size }
+                    .sortedByDescending { [_, genreArtworks] -> genreArtworks.size }
             }
 
-            categories.forEach { (genre, categoryArtworks) ->
+            categories.forEach { [genre, categoryArtworks] ->
                 CatalogCategory(
                     name = genre.name,
                     artworks = categoryArtworks,
                     sortingOption = sortingMode,
                     privateFolderEnabled = privateFolderEnabled,
+                    startPadding = startPadding,
+                    endPadding = endPadding,
                     onCategoryTap = { sendIntent(CatalogIntent.OnGenreClick(genre = genre)) },
                     sendIntent = sendIntent
                 )

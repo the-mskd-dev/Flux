@@ -16,9 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.dp
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.modal.dialog.FluxDialog
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.reset
 import flux.shared.generated.resources.reset_progress
@@ -70,7 +70,7 @@ fun ProgressStatusChip(
                 .background(MaterialTheme.colorScheme.tertiary)
                 .height(32.dp)
                 .widthIn(min = 40.dp)
-                .padding(horizontal = FluxUI.Space.small),
+                .padding(horizontal = Design.Space.small),
             contentAlignment = Alignment.Center
         ) {
             Text.Button.Chip(

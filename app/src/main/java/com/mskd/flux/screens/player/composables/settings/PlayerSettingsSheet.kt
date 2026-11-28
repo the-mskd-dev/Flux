@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
@@ -28,10 +29,11 @@ import com.mskd.flux.features.player.domain.model.VideoChapter
 import com.mskd.flux.features.player.presentation.PlayerIntent
 import com.mskd.flux.features.player.presentation.SettingsSheet
 import com.mskd.flux.mockups.PlayerMockups
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxPreview
+import com.mskd.flux.ui.modal.edgeToEdgeDialogProperties
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.by_default
 import flux.shared.generated.resources.chapters
@@ -54,8 +56,10 @@ fun PlayerSettingsSheet(
 
     BasicAlertDialog(
         modifier = Modifier
-            .clip(AlertDialogDefaults.shape)
-            .padding(vertical = FluxUI.Space.large),
+            .safeDrawingPadding()
+            .padding(vertical = Design.Space.large)
+            .clip(AlertDialogDefaults.shape),
+        properties = edgeToEdgeDialogProperties(),
         onDismissRequest = { sendIntent(PlayerIntent.ShowSettings(sheet = null)) },
     ) {
 
@@ -81,7 +85,7 @@ fun PlayerSettingsSheet(
                     }
                 )
 
-                HorizontalDivider(modifier = Modifier.padding(horizontal = FluxUI.Space.medium))
+                HorizontalDivider(modifier = Modifier.padding(horizontal = Design.Space.medium))
 
                 PlayerSettingsItem(
                     label = "Subtitles",
@@ -93,7 +97,7 @@ fun PlayerSettingsSheet(
                         sendIntent(PlayerIntent.ShowSettings(sheet = intent)) }
                 )
 
-                HorizontalDivider(modifier = Modifier.padding(horizontal = FluxUI.Space.medium))
+                HorizontalDivider(modifier = Modifier.padding(horizontal = Design.Space.medium))
 
                 PlayerSettingsItem(
                     label = stringResource(Res.string.playback_speed),
@@ -101,7 +105,7 @@ fun PlayerSettingsSheet(
                     onClick = { sendIntent(PlayerIntent.ShowSettings(sheet = SettingsSheet.PlaybackSpeed)) }
                 )
 
-                HorizontalDivider(modifier = Modifier.padding(horizontal = FluxUI.Space.medium))
+                HorizontalDivider(modifier = Modifier.padding(horizontal = Design.Space.medium))
 
                 PlayerSettingsItem(
                     label = stringResource(Res.string.subtitle_delay),
@@ -109,7 +113,7 @@ fun PlayerSettingsSheet(
                     onClick = { sendIntent(PlayerIntent.ShowSettings(sheet = SettingsSheet.SubtitleDelay)) }
                 )
 
-                HorizontalDivider(modifier = Modifier.padding(horizontal = FluxUI.Space.medium))
+                HorizontalDivider(modifier = Modifier.padding(horizontal = Design.Space.medium))
 
                 PlayerSettingsItem(
                     label = stringResource(Res.string.media_info),
@@ -120,7 +124,7 @@ fun PlayerSettingsSheet(
                 // Only offered when the Media has at least 2 Chapters
                 if (chapters != null) {
 
-                    HorizontalDivider(modifier = Modifier.padding(horizontal = FluxUI.Space.medium))
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = Design.Space.medium))
 
                     PlayerSettingsItem(
                         label = stringResource(Res.string.chapters),
@@ -149,8 +153,8 @@ fun PlayerSettingsItem(
         modifier = Modifier
             .clickable { onClick() }
             .fillMaxWidth()
-            .padding(all = FluxUI.Space.medium),
-        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
+            .padding(all = Design.Space.medium),
+        horizontalArrangement = Arrangement.spacedBy(Design.Space.small),
         verticalAlignment = Alignment.CenterVertically
     ) {
 

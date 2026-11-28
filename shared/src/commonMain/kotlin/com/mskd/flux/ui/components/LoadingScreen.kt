@@ -8,9 +8,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.union
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.CircularWavyProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -18,12 +22,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.text.TextProvider
-import com.mskd.flux.ui.theme.FluxUI
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun LoadingScreen(
     text: TextProvider? = null,
@@ -46,15 +49,16 @@ fun LoadingScreen(
     ) {
 
         Column(
+            modifier = Modifier.windowInsetsPadding(WindowInsets.systemBars.union(WindowInsets.displayCutout)),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
+            verticalArrangement = Arrangement.spacedBy(Design.Space.medium)
         ) {
 
             LoadingIndicator(progress = progress)
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
+                horizontalArrangement = Arrangement.spacedBy(Design.Space.small)
             ) {
 
                 Text.Content.Body(
@@ -78,7 +82,6 @@ fun LoadingScreen(
 }
 
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun LoadingIndicator(progress: (() -> Float)?) {
 

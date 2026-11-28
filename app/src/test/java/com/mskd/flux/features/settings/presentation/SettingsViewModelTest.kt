@@ -6,8 +6,8 @@ import com.mskd.flux.core.model.core.AppInfo
 import com.mskd.flux.core.model.core.Flavor
 import com.mskd.flux.core.model.core.FluxOptionsDialogState
 import com.mskd.flux.core.model.language.Language
-import com.mskd.flux.features.catalog.domain.model.SyncType
 import com.mskd.flux.features.catalog.domain.model.SyncState
+import com.mskd.flux.features.catalog.domain.model.SyncType
 import com.mskd.flux.features.catalog.domain.usecase.syncCatalog.SyncCatalogUseCase
 import com.mskd.flux.features.privateFolder.domain.datastore.PrivateFolderDataStore
 import com.mskd.flux.features.privateFolder.domain.usecase.disablePrivateFolder.DisablePrivateFolderUseCase

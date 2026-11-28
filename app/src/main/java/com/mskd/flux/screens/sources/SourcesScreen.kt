@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,7 +20,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
@@ -40,7 +40,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.setup.ui.composables.sourcesAnnotatedString
 import com.mskd.flux.features.sources.presentation.SourcesContent
@@ -52,6 +51,7 @@ import com.mskd.flux.features.sources.ui.items.SystemSourceItem
 import com.mskd.flux.mockups.FilesMockups
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.system.rememberStoragePermission
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.components.ErrorScreen
@@ -59,8 +59,8 @@ import com.mskd.flux.ui.components.FluxScaffold
 import com.mskd.flux.ui.components.LoadingScreen
 import com.mskd.flux.ui.components.rememberSafFolderPicker
 import com.mskd.flux.ui.global.BackGesture
+import com.mskd.flux.ui.plus
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.add_source
 import flux.shared.generated.resources.folder_deleted
@@ -76,7 +76,6 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun SourcesScreen(
     navigate: (Route) -> Unit,
@@ -155,7 +154,6 @@ fun SourcesScreen(
 
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SourcesScreenContent(
     content: SourcesContent,
@@ -200,18 +198,18 @@ fun SourcesScreenContent(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background),
+                .background(MaterialTheme.colorScheme.background)
+                .consumeWindowInsets(innerPadding),
+            contentPadding = innerPadding.plus(
+                bottom = if (content.fromSetup) 88.dp else Design.Space.large
+            ),
         ) {
-
-            item {
-                Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
-            }
 
             item {
                 Text.Annotated(
                     modifier = Modifier
-                        .padding(bottom = FluxUI.Space.small)
-                        .padding(horizontal = FluxUI.Space.medium.times(2))
+                        .padding(bottom = Design.Space.small)
+                        .padding(horizontal = Design.Space.medium.times(2))
                     ,
                     text = sourcesAnnotatedString(Res.string.system_folders_toggle_desc),
                     style = MaterialTheme.typography.bodySmall
@@ -221,7 +219,7 @@ fun SourcesScreenContent(
             item {
                 ListItem(
                     modifier = Modifier
-                        .padding(horizontal = FluxUI.Space.medium)
+                        .padding(horizontal = Design.Space.medium)
                         .clip(CircleShape)
                         .fillMaxWidth(),
                     colors = ListItemDefaults.colors(
@@ -250,9 +248,9 @@ fun SourcesScreenContent(
                 ) {
                     Column(
                         modifier = Modifier
-                            .padding(all = FluxUI.Space.medium)
-                            .clip(RoundedCornerShape(FluxUI.shapes.listItem)),
-                        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.listItem)
+                            .padding(all = Design.Space.medium)
+                            .clip(RoundedCornerShape(Design.shapes.listItem)),
+                        verticalArrangement = Arrangement.spacedBy(Design.Space.listItem)
                     ) {
 
                         SystemSourceItem(name = Environment.DIRECTORY_MOVIES)
@@ -264,13 +262,13 @@ fun SourcesScreenContent(
             item {
                 TextButton(
                     modifier = Modifier
-                        .padding(top = FluxUI.Space.medium)
-                        .padding(horizontal = FluxUI.Space.medium),
+                        .padding(top = Design.Space.medium)
+                        .padding(horizontal = Design.Space.medium),
                     onClick = { sendIntent(SourcesIntent.OpenFolderSelection) }
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall)
+                        horizontalArrangement = Arrangement.spacedBy(Design.Space.extraSmall)
                     ) {
                         Icon(painter = painterResource(Res.drawable.ic_add), contentDescription = "")
                         Text.List.Section(text = stringResource(Res.string.add_source))
@@ -296,12 +294,8 @@ fun SourcesScreenContent(
                 )
 
                 if (index != folders.lastIndex)
-                    Spacer(Modifier.height(FluxUI.Space.listItem))
+                    Spacer(Modifier.height(Design.Space.listItem))
 
-            }
-
-            item {
-                Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding() + 50.dp))
             }
 
         }

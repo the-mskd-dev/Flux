@@ -3,7 +3,6 @@ package com.mskd.flux.features.setup.ui.composables
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -11,15 +10,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.setup_sources_default_desc
 import flux.shared.generated.resources.setup_sources_default_title
 import org.jetbrains.compose.resources.stringResource
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SetupSourcesItem(
     title: String,
@@ -51,7 +49,7 @@ fun SetupSourcesItem_Selected_Preview() {
         Box(
             modifier = Modifier
                 .background(color = MaterialTheme.colorScheme.background)
-                .padding(all = FluxUI.Space.medium)
+                .padding(all = Design.Space.medium)
             ,
             contentAlignment = Alignment.Center
         ) {
@@ -72,7 +70,7 @@ fun SetupSourcesItem_Unselected_Preview() {
         Box(
             modifier = Modifier
                 .background(color = MaterialTheme.colorScheme.surfaceContainer)
-                .padding(all = FluxUI.Space.medium)
+                .padding(all = Design.Space.medium)
             ,
             contentAlignment = Alignment.Center
         ) {

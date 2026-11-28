@@ -3,11 +3,9 @@ package com.mskd.flux.features.message.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -17,11 +15,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.mskd.flux.features.message.presentation.MessageIntent
 import com.mskd.flux.features.message.presentation.MessageViewModel
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.components.FluxScaffold
+import com.mskd.flux.ui.scaffoldPadding
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.message_details
 import flux.shared.generated.resources.message_title
@@ -45,18 +44,17 @@ fun MessageScreen(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.background)
                 .fillMaxSize()
+                .consumeWindowInsets(innerPadding)
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = FluxUI.Space.medium),
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large),
+                .scaffoldPadding(innerPadding, horizontal = Design.Space.medium),
+            verticalArrangement = Arrangement.spacedBy(Design.Space.large),
             horizontalAlignment = Alignment.Start
         ) {
-
-            Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
 
             Column(
                 modifier = Modifier
                     .fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium),
+                verticalArrangement = Arrangement.spacedBy(Design.Space.medium),
                 horizontalAlignment = Alignment.Start
             ) {
 
@@ -72,8 +70,6 @@ fun MessageScreen(
             ) {
                 Text.Button.Default(stringResource(Res.string.participate))
             }
-
-            Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
 
         }
 

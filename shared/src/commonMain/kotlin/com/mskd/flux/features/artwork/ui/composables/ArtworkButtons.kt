@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ToggleButton
@@ -24,12 +23,12 @@ import androidx.compose.ui.unit.dp
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.Status
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxPreview
-import com.mskd.flux.ui.components.FluxTextButton
 import com.mskd.flux.ui.components.ProgressStatusBar
+import com.mskd.flux.ui.components.buttons.FluxTextButton
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.extensions.minToMs
 import com.mskd.flux.utils.extensions.timeDescription
 import flux.shared.generated.resources.Res
@@ -45,7 +44,6 @@ import flux.shared.generated.resources.rewatch
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun ArtworkButtons(
     modifier: Modifier = Modifier,
@@ -74,7 +72,7 @@ fun ArtworkButtons(
 
         ToggleButton(
             modifier = Modifier
-                .padding(top = FluxUI.Space.small)
+                .padding(top = Design.Space.small)
                 .height(buttonHeight)
                 .fillMaxWidth(),
             checked = media.status == Status.WATCHED,
@@ -138,7 +136,7 @@ fun MediaStatusProgression(
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.medium),
+            horizontalArrangement = Arrangement.spacedBy(Design.Space.medium),
             verticalAlignment = Alignment.CenterVertically
         ){
 

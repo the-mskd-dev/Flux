@@ -3,6 +3,7 @@ package com.mskd.flux.system
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.DocumentsContract
 import androidx.core.net.toUri
@@ -42,7 +43,9 @@ class AndroidFilesLauncher(private val context: Context) : FilesLauncher {
         if (targetUri != null) {
             val preciseIntent = Intent(Intent.ACTION_VIEW).apply {
                 setDataAndType(targetUri, DocumentsContract.Document.MIME_TYPE_DIR)
-                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                if (hasReadUriPermission(targetUri)) {
+                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                }
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
 
@@ -69,6 +72,10 @@ class AndroidFilesLauncher(private val context: Context) : FilesLauncher {
             Trace.error(tag = "FilesLauncher", message = "No file explorer available at all", e)
         }
     }
+
+    private fun hasReadUriPermission(uri: Uri): Boolean =
+        context.checkCallingOrSelfUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION) ==
+            PackageManager.PERMISSION_GRANTED
 
     private companion object {
         const val EXTERNAL_STORAGE_AUTHORITY = "com.android.externalstorage.documents"

@@ -3,10 +3,9 @@ package com.mskd.flux.features.howTo.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -16,11 +15,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.components.FluxScaffold
+import com.mskd.flux.ui.scaffoldPadding
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.how_to_name_files
 import flux.shared.generated.resources.how_to_name_files_desc
@@ -45,18 +45,18 @@ fun HowToScreen(onBack: () -> Unit) {
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.background)
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large),
+                .consumeWindowInsets(innerPadding)
+                .verticalScroll(rememberScrollState())
+                .scaffoldPadding(innerPadding),
+            verticalArrangement = Arrangement.spacedBy(Design.Space.large),
             horizontalAlignment = Alignment.Start
         ) {
-
-            Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
 
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = FluxUI.Space.medium),
-                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large),
+                    .padding(horizontal = Design.Space.medium),
+                verticalArrangement = Arrangement.spacedBy(Design.Space.large),
                 horizontalAlignment = Alignment.Start
             ) {
 
@@ -65,8 +65,6 @@ fun HowToScreen(onBack: () -> Unit) {
                 HowToNameFiles()
 
             }
-
-            Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
 
         }
 
@@ -79,17 +77,17 @@ fun HowToNameFiles() {
 
     Column(
         modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large),
+        verticalArrangement = Arrangement.spacedBy(Design.Space.large),
         horizontalAlignment = Alignment.Start
     ) {
 
         Column(
             modifier = Modifier
-                .clip(FluxUI.shapes.corners)
+                .clip(Design.shapes.corners)
                 .background(MaterialTheme.colorScheme.surfaceContainer)
                 .fillMaxWidth()
-                .padding(all = FluxUI.Space.medium),
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
+                .padding(all = Design.Space.medium),
+            verticalArrangement = Arrangement.spacedBy(Design.Space.medium)
         ) {
 
             Text.Content.Title(text = stringResource(Res.string.movies))
@@ -97,7 +95,7 @@ fun HowToNameFiles() {
 
             Column(
                 modifier = Modifier.alpha(.7f),
-                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall)
+                verticalArrangement = Arrangement.spacedBy(Design.Space.extraSmall)
             ) {
 
                 val movies = stringArrayResource(Res.array.movies_naming)
@@ -112,11 +110,11 @@ fun HowToNameFiles() {
 
         Column(
             modifier = Modifier
-                .clip(FluxUI.shapes.corners)
+                .clip(Design.shapes.corners)
                 .background(MaterialTheme.colorScheme.surfaceContainer)
                 .fillMaxWidth()
-                .padding(all = FluxUI.Space.medium),
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
+                .padding(all = Design.Space.medium),
+            verticalArrangement = Arrangement.spacedBy(Design.Space.medium)
         ) {
 
             Text.Content.Title(text = stringResource(Res.string.shows))
@@ -124,7 +122,7 @@ fun HowToNameFiles() {
 
             Column(
                 modifier = Modifier.alpha(.7f),
-                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall)
+                verticalArrangement = Arrangement.spacedBy(Design.Space.extraSmall)
             ) {
 
                 val shows = stringArrayResource(Res.array.shows_naming)

@@ -1,24 +1,26 @@
 package com.mskd.flux
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import android.content.Intent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.lifecycle.lifecycleScope
-import com.mskd.flux.external.AndroidExternalPlayerAdapter
-import com.mskd.flux.external.ExternalPlayerResult
-import com.mskd.flux.features.player.domain.model.PlayerParams
-import com.mskd.flux.features.player.domain.playback.PlaybackLaunch
-import kotlinx.coroutines.launch
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.lifecycle.lifecycleScope
 import com.mskd.flux.app.AppViewModel
+import com.mskd.flux.external.AndroidExternalPlayerAdapter
+import com.mskd.flux.external.ExternalPlayerResult
 import com.mskd.flux.features.connectivity.domain.ConnectivityRepository
+import com.mskd.flux.features.player.domain.model.PlayerParams
+import com.mskd.flux.features.player.domain.playback.PlaybackLaunch
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.navigation.domain.identifiedDestination
 import com.mskd.flux.navigation.ui.FluxNavigation
@@ -31,8 +33,11 @@ import com.mskd.flux.screens.sources.SourcesScreen
 import com.mskd.flux.screens.unknown.UnknownScreen
 import com.mskd.flux.system.rememberNotificationsPermission
 import com.mskd.flux.system.rememberStoragePermission
+import com.mskd.flux.ui.UiCommon
 import com.mskd.flux.ui.theme.FluxTheme
+import com.mskd.flux.ui.theme.SystemBarsAppearanceState
 import com.mskd.flux.ui.theme.createColorScheme
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
 class MainActivity : ComponentActivity() {
@@ -66,6 +71,30 @@ class MainActivity : ComponentActivity() {
             val storagePermission = rememberStoragePermission()
             val notificationsPermission = rememberNotificationsPermission()
             val isOnline by connectivityRepository.isOnline.collectAsState(false)
+            val systemBarsAppearance = remember { SystemBarsAppearanceState() }
+
+            val isSystemDark = isSystemInDarkTheme()
+            val isAppDark = when (customization.uiTheme) {
+                UiCommon.THEME.DARK -> true
+                UiCommon.THEME.LIGHT -> false
+                else -> isSystemDark
+            }
+            val useLightIcons = isAppDark || systemBarsAppearance.forceLightIcons
+            val enforceNavBarContrast = systemBarsAppearance.enforceNavigationBarContrast
+
+            LaunchedEffect(useLightIcons, enforceNavBarContrast) {
+                val barStyle = if (useLightIcons) {
+                    SystemBarStyle.dark(android.graphics.Color.TRANSPARENT)
+                } else {
+                    SystemBarStyle.light(android.graphics.Color.TRANSPARENT, android.graphics.Color.TRANSPARENT)
+                }
+                enableEdgeToEdge(
+                    statusBarStyle = barStyle,
+                    navigationBarStyle = barStyle,
+                )
+                // Must be set AFTER enableEdgeToEdge(), which resets it to false for light/dark SystemBarStyle.
+                window.isNavigationBarContrastEnforced = enforceNavBarContrast
+            }
 
             LaunchedEffect(Unit) {
                 if (notificationsPermission?.isGranted == false && settings.externalPlayer) {
@@ -77,7 +106,8 @@ class MainActivity : ComponentActivity() {
 
             FluxTheme(
                 isOnline = isOnline,
-                customization = customization
+                customization = customization,
+                systemBarsAppearance = systemBarsAppearance
             ) {
 
                 FluxNavigation(

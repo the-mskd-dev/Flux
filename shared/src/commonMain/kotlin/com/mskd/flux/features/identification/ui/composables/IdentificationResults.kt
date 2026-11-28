@@ -13,9 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.core.model.core.State
 import com.mskd.flux.features.identification.presentation.IdentificationCandidate
-import com.mskd.flux.ui.components.FluxTextButton
+import com.mskd.flux.ui.Design
+import com.mskd.flux.ui.components.buttons.FluxTextButton
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.identification_no_result
 import flux.shared.generated.resources.identification_search_failed
@@ -57,7 +57,7 @@ private fun SearchError(onRetry: () -> Unit) {
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
+        verticalArrangement = Arrangement.spacedBy(Design.Space.small),
     ) {
         Text.Content.Body(text = stringResource(Res.string.identification_search_failed))
         FluxTextButton(

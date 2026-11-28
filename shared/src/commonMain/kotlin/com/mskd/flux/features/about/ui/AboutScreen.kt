@@ -3,11 +3,9 @@ package com.mskd.flux.features.about.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -17,12 +15,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.AnnotatedString
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.components.FluxScaffold
+import com.mskd.flux.ui.scaffoldPadding
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.text.buildLinkedString
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.Constants
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.about
@@ -54,19 +53,17 @@ fun AboutScreen(onBack: () -> Unit) {
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.background)
                 .fillMaxSize()
+                .consumeWindowInsets(innerPadding)
                 .verticalScroll(rememberScrollState())
-                .navigationBarsPadding()
-                .padding(bottom = FluxUI.Space.large),
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
+                .scaffoldPadding(innerPadding),
+            verticalArrangement = Arrangement.spacedBy(Design.Space.medium)
         ) {
-
-            Spacer(modifier = Modifier.height(innerPadding.calculateTopPadding()))
 
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = FluxUI.Space.medium),
-                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large),
+                    .padding(horizontal = Design.Space.medium),
+                verticalArrangement = Arrangement.spacedBy(Design.Space.large),
                 horizontalAlignment = Alignment.Start
             ) {
 
@@ -105,8 +102,6 @@ fun AboutScreen(onBack: () -> Unit) {
                 )
             }
 
-            Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
-
         }
 
     }
@@ -120,11 +115,11 @@ fun AboutSection(
 ) {
     Column(
         modifier = Modifier
-            .clip(FluxUI.shapes.corners)
+            .clip(Design.shapes.corners)
             .background(MaterialTheme.colorScheme.surfaceContainer)
             .fillMaxWidth()
-            .padding(all = FluxUI.Space.medium),
-        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
+            .padding(all = Design.Space.medium),
+        verticalArrangement = Arrangement.spacedBy(Design.Space.medium)
     ) {
         Text.Content.Title(text = title)
         Text.Content.Body(text = content)
@@ -138,11 +133,11 @@ fun AboutSectionWithLinks(
 ) {
     Column(
         modifier = Modifier
-            .clip(FluxUI.shapes.corners)
+            .clip(Design.shapes.corners)
             .background(MaterialTheme.colorScheme.surfaceContainer)
             .fillMaxWidth()
-            .padding(all = FluxUI.Space.medium),
-        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
+            .padding(all = Design.Space.medium),
+        verticalArrangement = Arrangement.spacedBy(Design.Space.medium)
     ) {
         Text.Content.Title(text = title)
         Text.Annotated(

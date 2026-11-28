@@ -8,7 +8,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -18,10 +19,10 @@ import androidx.compose.ui.unit.dp
 import com.mskd.flux.features.privateFolder.presentation.PrivateFolderIntent
 import com.mskd.flux.features.privateFolder.presentation.PrivateFolderUiState
 import com.mskd.flux.features.privateFolder.ui.composables.PinTextField
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_lock
 import flux.shared.generated.resources.pin_gate_title
@@ -39,9 +40,9 @@ fun PrivatePinGate(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .systemBarsPadding()
             .imePadding()
-            .padding(horizontal = FluxUI.Space.medium),
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = Design.Space.medium, vertical = Design.Space.medium),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -53,14 +54,14 @@ fun PrivatePinGate(
             tint = MaterialTheme.colorScheme.onBackground
         )
 
-        Spacer(modifier = Modifier.height(FluxUI.Space.large))
+        Spacer(modifier = Modifier.height(Design.Space.large))
 
         Text.Content.Body(
             text = stringResource(Res.string.pin_gate_title),
             color = MaterialTheme.colorScheme.onBackground
         )
 
-        Spacer(modifier = Modifier.height(FluxUI.Space.medium))
+        Spacer(modifier = Modifier.height(Design.Space.medium))
 
         PinTextField(
             isError = isError,

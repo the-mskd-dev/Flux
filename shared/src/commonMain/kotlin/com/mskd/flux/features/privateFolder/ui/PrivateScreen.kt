@@ -2,10 +2,10 @@ package com.mskd.flux.features.privateFolder.ui
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -74,7 +74,9 @@ fun PrivateScreenContent(
             if (locked) {
 
                 PrivatePinGate(
-                    modifier = Modifier.padding(innerPadding),
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .consumeWindowInsets(innerPadding),
                     isError = state.pinError,
                     sendIntent = sendIntent
                 )
@@ -85,7 +87,7 @@ fun PrivateScreenContent(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(innerPadding)
-                        .systemBarsPadding(),
+                        .consumeWindowInsets(innerPadding),
                     contentAlignment = Alignment.TopStart
                 ) {
                     Text.Content.Body(

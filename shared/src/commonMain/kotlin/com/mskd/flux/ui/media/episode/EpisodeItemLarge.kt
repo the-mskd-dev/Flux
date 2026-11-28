@@ -21,15 +21,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import com.mskd.flux.core.model.artwork.Episode
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.blurContent
 import com.mskd.flux.ui.blurText
-import com.mskd.flux.ui.components.ReadMoreButton
+import com.mskd.flux.ui.components.buttons.ReadMoreButton
 import com.mskd.flux.ui.grayScale
 import com.mskd.flux.ui.media.MediaDetailsHorizontal
 import com.mskd.flux.ui.media.MediaDetailsVertical
 import com.mskd.flux.ui.media.MediaThumbnail
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
 
 @Composable
 fun EpisodeItemLarge(
@@ -53,7 +53,7 @@ fun EpisodeItemLarge(
 
     Column(
         modifier = modifier
-            .clip(FluxUI.shapes.corners)
+            .clip(Design.shapes.corners)
             .let { if (episode.isAvailable) it else it.grayScale() }
             .background(bgColor)
             .combinedClickable(
@@ -69,7 +69,7 @@ fun EpisodeItemLarge(
                 ) else Modifier
             )
             .fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
+        verticalArrangement = Arrangement.spacedBy(Design.Space.small),
     ) {
 
         MediaThumbnail(
@@ -82,8 +82,8 @@ fun EpisodeItemLarge(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(FluxUI.Space.medium),
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
+                .padding(Design.Space.medium),
+            verticalArrangement = Arrangement.spacedBy(Design.Space.small),
             horizontalAlignment = Alignment.Start
         ) {
 

@@ -1,9 +1,10 @@
-## Version 1.9.3
+## Version 1.9.4
 
-- Feature: Native ASS and bitmap subtitle rendering in the player
-- Feature: Multiple external subtitle files discovered and labeled automatically
-- Feature: Smarter automatic subtitle selection based on preferred language
-- Fix: Subtitles stay fixed while pinching to fill the picture
-- Core: Consolidate progress tracking into ProgressTracker
-- Core: Always prefetch HD images and remove the setting
-- Core: Refactor playback launch
+- Feature: Manually identify media from the Unknown screen
+- Feature: Expressive animated controls in the player
+- Feature: Narrow brightness and volume swipe zones to edges
+- Fix: Back gesture in player settings returns to settings menu
+- Fix: Avoid permission errors when opening the file explorer
+- Core: Edge-to-edge layout and system bar insets
+- Core: Shared design system and motion foundation
+- Core: R8 resource shrinking and dependency updates

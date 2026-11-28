@@ -21,9 +21,9 @@ import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.shownPosterPath
 import com.mskd.flux.features.search.presentation.SearchIntent
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.media.MediaItem
-import com.mskd.flux.ui.theme.FluxUI
 
 @Composable
 fun SearchContentGrid(
@@ -39,8 +39,8 @@ fun SearchContentGrid(
     LazyVerticalGrid(
         modifier = modifier,
         columns = GridCells.Fixed(columns),
-        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
-        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
+        horizontalArrangement = Arrangement.spacedBy(Design.Space.small),
+        verticalArrangement = Arrangement.spacedBy(Design.Space.small),
         contentPadding = PaddingValues(bottom = bottomPadding),
         state = state
     ) {
@@ -60,7 +60,7 @@ fun SearchContentGrid(
                 MediaItem(
                     modifier = Modifier
                         .width(itemWidth)
-                        .aspectRatio(FluxUI.Dimension.itemRatio),
+                        .aspectRatio(Design.Dimension.itemRatio),
                     path = artwork.shownPosterPath,
                     description = artwork.title,
                     onClick = { sendIntent(SearchIntent.OnArtworkTap(artwork = artwork, rgb = it)) }
@@ -81,7 +81,7 @@ fun SearchContentGrid_Preview() {
         SearchContentGrid(
             artworks = MediaMockups.artworks,
             columns = 3,
-            itemWidth = FluxUI.Dimension.itemWidth,
+            itemWidth = Design.Dimension.itemWidth,
             sendIntent = {}
         )
     }

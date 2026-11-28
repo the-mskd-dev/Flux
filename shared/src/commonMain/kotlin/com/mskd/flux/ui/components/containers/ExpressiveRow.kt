@@ -1,7 +1,6 @@
-package com.mskd.flux.ui.expressive
+package com.mskd.flux.ui.components.containers
 
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.spring
 import androidx.compose.foundation.interaction.InteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.LayoutScopeMarker
@@ -10,12 +9,21 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
+import com.mskd.flux.ui.motion.FluxSpring
+import com.mskd.flux.ui.motion.Motion
+import com.mskd.flux.ui.motion.observeExpressivePress
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -36,10 +44,6 @@ private const val HOLD_PULL_DP = 1.5f
 /** Outward peak reached by a neighbor when the tapped button rebounds, and its scale dip at that moment. */
 private const val REBOUND_OFFSET_PEAK_DP = 4.5f
 private const val REBOUND_SCALE_PEAK = -0.035f
-
-/** Neighbors rebound with a softer spring than the tapped button, so the wave looks delayed and damped. */
-private const val NEIGHBOR_DAMPING = 0.48f
-private const val NEIGHBOR_STIFFNESS = 450f
 
 /** Compose's default threshold (0.01) would cut the scale rebound (~0.016) short. */
 private const val SCALE_VISIBILITY_THRESHOLD = 0.001f
@@ -123,7 +127,8 @@ class ButtonMotionState {
  * [onRefPress]/[onRefRelease] so multi-touch never pulls an element currently under a finger.
  */
 class ExpressiveRowMotion(
-    private val scope: CoroutineScope
+    private val scope: CoroutineScope,
+    var neighborSpring: FluxSpring = Motion.Expressive.neighborBounce
 ) {
     private val states = mutableMapOf<ExpressiveRef, ButtonMotionState>()
     private val refCounts = mutableMapOf<ExpressiveRef, Int>()
@@ -178,6 +183,10 @@ class ExpressiveRowMotion(
         holdJobs.remove(sourceId)?.cancel()
         val neighbors = activeSources.remove(sourceId) ?: return
         if (heldSources.remove(sourceId) != null) applyHoldPull()
+        triggerSideBounce(neighbors)
+    }
+
+    fun triggerSideBounce(neighbors: SideBounceNeighbors) {
         scope.launch {
             delay(PROPAGATION_DELAY_MS)
             neighbors.entries().forEach { (ref, direction) -> rebound(ref, direction) }
@@ -196,34 +205,32 @@ class ExpressiveRowMotion(
             val target = computeNetHoldPullDp(ref, heldRefs, heldSources.values, HOLD_PULL_DP)
             // Leave untouched elements alone: restarting their spring would cut a rebound still in flight.
             if (target != state.offsetDp.targetValue) {
-                scope.launch { state.offsetDp.animateTo(target, neighborSpring()) }
+                scope.launch { state.offsetDp.animateTo(target, neighborSpring.toSpec()) }
             }
         }
     }
 
     private fun rebound(ref: ExpressiveRef, direction: Float) {
         val state = states[ref] ?: return
+        val spring = neighborSpring
         scope.launch {
             state.offsetDp.animateTo(
                 targetValue = 0f,
-                animationSpec = neighborSpring(),
+                animationSpec = spring.toSpec(),
                 // Added to the current velocity, so a bounce already in flight is not cut dead by a new tap.
                 initialVelocity = state.offsetDp.velocity +
-                    direction * springImpulseVelocity(REBOUND_OFFSET_PEAK_DP, NEIGHBOR_DAMPING, NEIGHBOR_STIFFNESS)
+                    direction * springImpulseVelocity(REBOUND_OFFSET_PEAK_DP, spring.dampingRatio, spring.stiffness)
             )
         }
         scope.launch {
             state.scaleDelta.animateTo(
                 targetValue = 0f,
-                animationSpec = neighborSpring(SCALE_VISIBILITY_THRESHOLD),
+                animationSpec = spring.toSpec(visibilityThreshold = SCALE_VISIBILITY_THRESHOLD),
                 initialVelocity = state.scaleDelta.velocity +
-                    springImpulseVelocity(REBOUND_SCALE_PEAK, NEIGHBOR_DAMPING, NEIGHBOR_STIFFNESS)
+                    springImpulseVelocity(REBOUND_SCALE_PEAK, spring.dampingRatio, spring.stiffness)
             )
         }
     }
-
-    private fun neighborSpring(visibilityThreshold: Float = 0.01f) =
-        spring(NEIGHBOR_DAMPING, NEIGHBOR_STIFFNESS, visibilityThreshold)
 }
 
 /** Scope for children of [ExpressiveRow], providing [createRef], [createRefs], and [expressiveSideBounce]. */
@@ -251,6 +258,19 @@ interface ExpressiveRowScope : RowScope {
         right: ExpressiveRef? = null,
         enabled: Boolean = true,
         interactionSource: InteractionSource? = null
+    ): Modifier
+
+    /**
+     * Triggers a neighbor side-bounce whenever [state] changes after initial composition and [enabled] is true.
+     *
+     * Pass [left] and/or [right] to push those neighbors without requiring a pointer press on this element.
+     */
+    @Composable
+    fun Modifier.expressiveSideBounceOnChange(
+        state: Any?,
+        left: ExpressiveRef? = null,
+        right: ExpressiveRef? = null,
+        enabled: Boolean = true
     ): Modifier
 }
 
@@ -318,6 +338,30 @@ private class ExpressiveRowScopeInstance(
             observed
         }
     }
+
+    @Composable
+    override fun Modifier.expressiveSideBounceOnChange(
+        state: Any?,
+        left: ExpressiveRef?,
+        right: ExpressiveRef?,
+        enabled: Boolean
+    ): Modifier {
+        if (left == null && right == null) return this
+
+        var previousState by remember { mutableStateOf(state) }
+        val currentEnabled by rememberUpdatedState(enabled)
+        val currentNeighbors by rememberUpdatedState(SideBounceNeighbors(left, right))
+
+        LaunchedEffect(state) {
+            if (state == previousState) return@LaunchedEffect
+            previousState = state
+            if (currentEnabled) {
+                motion.triggerSideBounce(currentNeighbors)
+            }
+        }
+
+        return this
+    }
 }
 
 /**
@@ -332,7 +376,9 @@ fun ExpressiveRow(
     content: @Composable ExpressiveRowScope.() -> Unit
 ) {
     val scope = rememberCoroutineScope()
-    val motion = remember(scope) { ExpressiveRowMotion(scope) }
+    val neighborSpring = Motion.neighborBounce
+    val motion = remember(scope) { ExpressiveRowMotion(scope, neighborSpring) }
+    SideEffect { motion.neighborSpring = neighborSpring }
 
     Row(
         modifier = modifier,

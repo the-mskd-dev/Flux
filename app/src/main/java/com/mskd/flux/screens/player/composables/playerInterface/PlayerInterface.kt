@@ -46,7 +46,7 @@ import com.mskd.flux.features.player.presentation.PlayerInterfaceState
 import com.mskd.flux.features.player.presentation.PlayerOverlays
 import com.mskd.flux.features.player.presentation.PlayerSession
 import com.mskd.flux.screens.player.composables.collectSelectedAsState
-import com.mskd.flux.ui.theme.FluxUI
+import com.mskd.flux.ui.Design
 import kotlinx.coroutines.flow.StateFlow
 
 private val EmptyShape = object : Shape {
@@ -182,14 +182,14 @@ fun PlayerInterface(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .windowInsetsPadding(WindowInsets.systemBars.union(WindowInsets.displayCutout).only(WindowInsetsSides.End))
-                .padding(end = FluxUI.Space.large),
+                .padding(end = Design.Space.large),
             chapterButton = chapterButton.value,
             bottomMargin = {
                 if (showInterface) {
                     // seekBarHeight already includes bottomInset (from PlayerSeekBar's windowInsetsPadding)
-                    seekBarHeight + FluxUI.Space.medium
+                    seekBarHeight + Design.Space.medium
                 } else {
-                    bottomInset + FluxUI.Space.large
+                    bottomInset + Design.Space.large
                 }
             },
             sendIntent = sendIntent
@@ -210,9 +210,9 @@ val PlayerInterfaceConstraintSet = ConstraintSet {
     )
 
     constrain(topBar) {
-        top.linkTo(parent.top, FluxUI.Space.medium)
+        top.linkTo(parent.top, Design.Space.medium)
         start.linkTo(parent.start)
-        end.linkTo(settings.start, FluxUI.Space.medium)
+        end.linkTo(settings.start, Design.Space.medium)
         width = Dimension.fillToConstraints
     }
 
@@ -232,11 +232,11 @@ val PlayerInterfaceConstraintSet = ConstraintSet {
     constrain(seekBar) {
         start.linkTo(parent.start)
         end.linkTo(parent.end)
-        bottom.linkTo(parent.bottom, FluxUI.Space.medium)
+        bottom.linkTo(parent.bottom, Design.Space.medium)
     }
 
     constrain(nextEpisode) {
-        end.linkTo(parent.end, FluxUI.Space.medium)
+        end.linkTo(parent.end, Design.Space.medium)
         bottom.linkTo(seekBar.top)
     }
 

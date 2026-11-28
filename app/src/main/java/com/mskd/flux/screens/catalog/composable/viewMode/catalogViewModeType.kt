@@ -16,9 +16,9 @@ import com.mskd.flux.features.catalog.domain.model.CatalogSortingMode
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.screens.catalog.composable.CatalogCategory
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.bleedHorizontal
-import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.movies
 import flux.shared.generated.resources.shows
@@ -28,8 +28,8 @@ fun LazyGridScope.catalogViewModeType(
     artworks: List<Artwork>,
     sortingMode: CatalogSortingMode,
     privateFolderEnabled: Boolean,
-    startPadding: Dp = FluxUI.Space.medium,
-    endPadding: Dp = FluxUI.Space.medium,
+    startPadding: Dp = Design.Space.medium,
+    endPadding: Dp = Design.Space.medium,
     sendIntent: (CatalogIntent) -> Unit
 ) {
 
@@ -38,7 +38,7 @@ fun LazyGridScope.catalogViewModeType(
             modifier = Modifier
                 .animateItem()
                 .bleedHorizontal(start = startPadding, end = endPadding),
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large)
+            verticalArrangement = Arrangement.spacedBy(Design.Space.large)
         ) {
 
             CatalogCategory(

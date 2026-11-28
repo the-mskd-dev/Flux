@@ -20,10 +20,10 @@ import com.mskd.flux.features.artwork.ui.composables.episodeList
 import com.mskd.flux.features.season.presentation.SeasonContent
 import com.mskd.flux.features.season.presentation.SeasonIntent
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.PortraitPreview
 import com.mskd.flux.ui.plus
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
 import kotlinx.collections.immutable.persistentListOf
 
 @Composable
@@ -41,7 +41,7 @@ fun SeasonContentRegular(
             .consumeWindowInsets(scaffoldInnerPadding),
         contentPadding = scaffoldInnerPadding.plus(
             includeTop = false,
-            horizontal = FluxUI.Space.medium,
+            horizontal = Design.Space.medium,
         ),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -56,7 +56,7 @@ fun SeasonContentRegular(
                 pageType = ArtworkPageType.SEASON,
                 isImageBlurred = content.isArtworkImageBlurred,
                 // The content is already inset by the page padding
-                titleHorizontalMargin = FluxUI.Space.medium * 2,
+                titleHorizontalMargin = Design.Space.medium * 2,
                 onImageClick = { sendIntent(SeasonIntent.OnArtworkImageClick) },
                 buttons = { modifier ->
                     ArtworkButtons(
@@ -71,7 +71,7 @@ fun SeasonContentRegular(
         }
 
         item {
-            Spacer(modifier = Modifier.height(FluxUI.Space.large))
+            Spacer(modifier = Modifier.height(Design.Space.large))
         }
 
         item {
@@ -86,7 +86,7 @@ fun SeasonContentRegular(
         }
 
         item {
-            Spacer(modifier = Modifier.height(FluxUI.Space.large))
+            Spacer(modifier = Modifier.height(Design.Space.large))
         }
 
         episodeList(

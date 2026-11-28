@@ -34,10 +34,11 @@ import androidx.compose.ui.unit.dp
 import com.mskd.flux.features.sources.domain.model.UserFolder
 import com.mskd.flux.features.sources.domain.model.cleanPath
 import com.mskd.flux.features.sources.domain.model.name
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.groupedShape
+import com.mskd.flux.ui.motion.Motion
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_error
 import kotlinx.coroutines.launch
@@ -65,8 +66,11 @@ fun LazyItemScope.CustomSourceItem(
     }
 
     val cornersAnimation by animateDpAsState(
-        if (isSwiping) FluxUI.shapes.listItem else 0.dp
+        targetValue = if (isSwiping) Design.shapes.listItem else 0.dp,
+        animationSpec = Motion.defaultSpatial()
     )
+    // Motion.defaultSpatial() is underdamped and can briefly overshoot below 0.dp when settling back to 0.
+    val swipeCornerShape = RoundedCornerShape(cornersAnimation.coerceAtLeast(0.dp))
 
     LaunchedEffect(folder.path) {
         dismissState.snapTo(SwipeToDismissBoxValue.Settled)
@@ -86,9 +90,9 @@ fun LazyItemScope.CustomSourceItem(
         content = {
             ListItem(
                 modifier = Modifier
-                    .padding(horizontal = FluxUI.Space.medium)
+                    .padding(horizontal = Design.Space.medium)
                     .groupedShape(index = index, lastIndex = lastIndex)
-                    .clip(RoundedCornerShape(cornersAnimation)),
+                    .clip(swipeCornerShape),
                 colors = ListItemDefaults.colors(
                     containerColor = backgroundColor,
                     contentColor = contentColor
@@ -126,7 +130,7 @@ fun LazyItemScope.CustomSourceItem(
                         imageVector = Icons.Default.Delete,
                         contentDescription = "Remove item",
                         modifier = Modifier
-                            .padding(horizontal = FluxUI.Space.medium)
+                            .padding(horizontal = Design.Space.medium)
                             .groupedShape(index = index, lastIndex = lastIndex)
                             .clip(RoundedCornerShape(cornersAnimation))
                             .fillMaxSize()
@@ -149,9 +153,9 @@ fun CustomSourceItem_Preview() {
     FluxThemePreview {
         LazyColumn(
             modifier = Modifier
-                .padding(FluxUI.Space.medium)
-                .clip(FluxUI.shapes.corners),
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.extraSmall)
+                .padding(Design.Space.medium)
+                .clip(Design.shapes.corners),
+            verticalArrangement = Arrangement.spacedBy(Design.Space.extraSmall)
         ) {
 
             item {

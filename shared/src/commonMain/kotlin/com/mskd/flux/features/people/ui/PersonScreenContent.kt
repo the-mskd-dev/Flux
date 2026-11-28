@@ -19,12 +19,12 @@ import com.mskd.flux.features.people.presentation.PeopleIntent
 import com.mskd.flux.features.people.ui.components.person.PersonArtworks
 import com.mskd.flux.features.people.ui.components.person.PersonDetails
 import com.mskd.flux.features.people.ui.components.person.PersonPicture
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.components.FluxScaffold
 import com.mskd.flux.ui.fillMaxWidthWithLimit
 import com.mskd.flux.ui.media.OverviewItem
 import com.mskd.flux.ui.plus
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.biography
 import org.jetbrains.compose.resources.stringResource
@@ -50,8 +50,8 @@ fun PersonScreenContent(
                     .fillMaxHeight()
                     .fillMaxWidthWithLimit()
                     .consumeWindowInsets(innerPadding),
-                contentPadding = innerPadding.plus(horizontal = FluxUI.Space.medium),
-                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium),
+                contentPadding = innerPadding.plus(horizontal = Design.Space.medium),
+                verticalArrangement = Arrangement.spacedBy(Design.Space.medium),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 

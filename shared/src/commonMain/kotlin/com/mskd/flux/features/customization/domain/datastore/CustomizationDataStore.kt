@@ -28,7 +28,7 @@ interface CustomizationDataStore {
         val oldBlurredHeader: Boolean = false,
         val largeEpisodeImage: Boolean = false,
         val itemsPerRow: Int = 3,
-        val itemsCorners: Int = 12,
+        val itemsCorners: Int = 24,
         val seasonsPerRow: Int = 3,
         val navigationStyle: NavigationStyle = NavigationStyle.PILL
     )

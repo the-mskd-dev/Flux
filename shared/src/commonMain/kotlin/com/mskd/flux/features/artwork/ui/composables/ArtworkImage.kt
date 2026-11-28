@@ -34,12 +34,12 @@ import com.mskd.flux.core.model.artwork.FullArtwork
 import com.mskd.flux.core.model.artwork.Media
 import com.mskd.flux.core.model.artwork.artworkImagePath
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.blurContent
 import com.mskd.flux.ui.image.FluxImage
 import com.mskd.flux.ui.image.Image
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.extensions.tmdbImage
 
 @Composable
@@ -56,7 +56,7 @@ fun ArtworkImage(
 
     val clickableModifier = if (onClick != null) modifier.clickable(onClick = onClick) else modifier
 
-    when (ArtworkHeaderMode.of(pageType = pageType, blurredHeader = FluxUI.global.oldBlurredHeader)) {
+    when (ArtworkHeaderMode.of(pageType = pageType, blurredHeader = Design.global.oldBlurredHeader)) {
         ArtworkHeaderMode.BLURRED -> ArtworkImageBlurred(
             modifier = clickableModifier,
             fullArtwork = fullArtwork,
@@ -183,7 +183,7 @@ fun ArtworkImageBlurred(
             AsyncImage(
                 modifier = Modifier
                     .align(Alignment.Center)
-                    .clip(FluxUI.shapes.corners)
+                    .clip(Design.shapes.corners)
                     .aspectRatio(ratio)
                     .fillMaxSize(),
                 model = imageRequest,

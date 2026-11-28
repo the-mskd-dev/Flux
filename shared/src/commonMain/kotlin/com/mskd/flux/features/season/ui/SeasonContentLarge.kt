@@ -21,11 +21,11 @@ import com.mskd.flux.features.artwork.ui.composables.ArtworkOverview
 import com.mskd.flux.features.artwork.ui.composables.episodeList
 import com.mskd.flux.features.season.presentation.SeasonContent
 import com.mskd.flux.features.season.presentation.SeasonIntent
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.LandscapePreview
 import com.mskd.flux.ui.plus
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
 
 @Composable
 fun SeasonContentLarge(
@@ -61,7 +61,7 @@ fun SeasonContentLarge(
             horizontalAlignment = Alignment.CenterHorizontally,
             contentPadding = scaffoldInnerPadding.plus(
                 includeStart = false,
-                horizontal = FluxUI.Space.medium,
+                horizontal = Design.Space.medium,
             )
         ) {
 
@@ -74,7 +74,7 @@ fun SeasonContentLarge(
             }
 
             item {
-                Spacer(modifier = Modifier.height(FluxUI.Space.large))
+                Spacer(modifier = Modifier.height(Design.Space.large))
             }
 
             item {
@@ -86,7 +86,7 @@ fun SeasonContentLarge(
             }
 
             item {
-                Spacer(modifier = Modifier.height(FluxUI.Space.large))
+                Spacer(modifier = Modifier.height(Design.Space.large))
             }
 
             item {
@@ -99,7 +99,7 @@ fun SeasonContentLarge(
             }
 
             item {
-                Spacer(modifier = Modifier.height(FluxUI.Space.large))
+                Spacer(modifier = Modifier.height(Design.Space.large))
             }
 
             episodeList(

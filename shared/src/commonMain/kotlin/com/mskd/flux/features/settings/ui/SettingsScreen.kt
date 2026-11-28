@@ -31,14 +31,14 @@ import com.mskd.flux.features.settings.ui.composables.SettingsTmdbSection
 import com.mskd.flux.navigation.domain.Route
 import com.mskd.flux.navigation.domain.Route.Token
 import com.mskd.flux.system.rememberNotificationsPermission
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxPreview
+import com.mskd.flux.ui.LocalBottomBarPadding
+import com.mskd.flux.ui.LocalUiGlobal
 import com.mskd.flux.ui.components.FluxOptionsDialog
 import com.mskd.flux.ui.components.FluxScaffold
 import com.mskd.flux.ui.scaffoldPadding
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.ui.theme.LocalBottomBarPadding
-import com.mskd.flux.ui.theme.LocalUiGlobal
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.settings
 import org.jetbrains.compose.resources.stringResource
@@ -114,7 +114,7 @@ fun SettingsContent(
                 .consumeWindowInsets(innerPadding)
                 .verticalScroll(rememberScrollState())
                 .scaffoldPadding(innerPadding, minBottom = LocalBottomBarPadding.current),
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium),
+            verticalArrangement = Arrangement.spacedBy(Design.Space.medium),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 

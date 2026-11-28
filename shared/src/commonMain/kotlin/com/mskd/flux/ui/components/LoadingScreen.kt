@@ -22,9 +22,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.text.TextProvider
-import com.mskd.flux.ui.theme.FluxUI
 import kotlin.math.roundToInt
 
 @Composable
@@ -51,14 +51,14 @@ fun LoadingScreen(
         Column(
             modifier = Modifier.windowInsetsPadding(WindowInsets.systemBars.union(WindowInsets.displayCutout)),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
+            verticalArrangement = Arrangement.spacedBy(Design.Space.medium)
         ) {
 
             LoadingIndicator(progress = progress)
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
+                horizontalArrangement = Arrangement.spacedBy(Design.Space.small)
             ) {
 
                 Text.Content.Body(

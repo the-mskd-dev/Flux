@@ -44,15 +44,15 @@ import com.mskd.flux.navigation.domain.artworkPage
 import com.mskd.flux.screens.search.components.SearchContentGrid
 import com.mskd.flux.screens.search.components.SearchFilters
 import com.mskd.flux.screens.search.components.SearchGenresSheet
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.FluxThemePreview
+import com.mskd.flux.ui.LocalBottomBarPadding
+import com.mskd.flux.ui.LocalUiGlobal
 import com.mskd.flux.ui.components.FluxScaffold
 import com.mskd.flux.ui.components.FluxSearchField
 import com.mskd.flux.ui.dimensions.itemWidthFor
 import com.mskd.flux.ui.dimensions.rememberScreenDimensions
-import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.ui.theme.LocalBottomBarPadding
-import com.mskd.flux.ui.theme.LocalUiGlobal
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.collectLatest
@@ -97,8 +97,8 @@ fun SearchContent(
     var focusRequested by rememberSaveable { mutableStateOf(false) }
     val screenDimensions = rememberScreenDimensions()
     val isLargeScreen = screenDimensions.isLarge
-    val columns = if (isLargeScreen) 5 else FluxUI.itemsPerRow.artworks
-    var itemWidth by remember { mutableStateOf(FluxUI.Dimension.itemWidth) }
+    val columns = if (isLargeScreen) 5 else Design.itemsPerRow.artworks
+    var itemWidth by remember { mutableStateOf(Design.Dimension.itemWidth) }
     val density = LocalDensity.current
     val layoutDirection = LocalLayoutDirection.current
     val focusManager = LocalFocusManager.current
@@ -133,8 +133,8 @@ fun SearchContent(
                 .consumeWindowInsets(innerPadding)
                 .imePadding()
                 .padding(
-                    start = innerPadding.calculateStartPadding(layoutDirection) + FluxUI.Space.medium,
-                    end = innerPadding.calculateEndPadding(layoutDirection) + FluxUI.Space.medium
+                    start = innerPadding.calculateStartPadding(layoutDirection) + Design.Space.medium,
+                    end = innerPadding.calculateEndPadding(layoutDirection) + Design.Space.medium
                 )
                 .onSizeChanged { size ->
                     with(density) {
@@ -144,7 +144,7 @@ fun SearchContent(
                         )
                     }
                 },
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
+            verticalArrangement = Arrangement.spacedBy(Design.Space.small),
         ) {
 
             FluxSearchField(
@@ -170,7 +170,7 @@ fun SearchContent(
                 state = lazyGridState,
                 columns = columns,
                 artworks = state.artworks,
-                bottomPadding = maxOf(innerPadding.calculateBottomPadding(), LocalBottomBarPadding.current) + FluxUI.Space.large,
+                bottomPadding = maxOf(innerPadding.calculateBottomPadding(), LocalBottomBarPadding.current) + Design.Space.large,
                 itemWidth = itemWidth,
                 sendIntent = sendIntent
             )

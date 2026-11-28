@@ -26,11 +26,11 @@ import com.mskd.flux.features.show.presentation.ShowIntent
 import com.mskd.flux.features.show.ui.composables.SeasonItem
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.PeopleMockup
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.PortraitPreview
 import com.mskd.flux.ui.plus
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.seasons
 import org.jetbrains.compose.resources.stringResource
@@ -43,18 +43,18 @@ fun ShowContentRegular(
     sendIntent: (ShowIntent) -> Unit
 ) {
 
-    val columns = FluxUI.itemsPerRow.seasons
+    val columns = Design.itemsPerRow.seasons
 
     LazyVerticalGrid(
         modifier = Modifier
             .fillMaxSize()
             .consumeWindowInsets(scaffoldInnerPadding),
         columns = GridCells.Fixed(columns),
-        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
-        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
+        verticalArrangement = Arrangement.spacedBy(Design.Space.small),
+        horizontalArrangement = Arrangement.spacedBy(Design.Space.small),
         contentPadding = scaffoldInnerPadding.plus(
             includeTop = false,
-            horizontal = FluxUI.Space.medium,
+            horizontal = Design.Space.medium,
         )
     ) {
 
@@ -73,9 +73,9 @@ fun ShowContentRegular(
 
             Column(
                 modifier = Modifier
-                    .padding(top = FluxUI.Space.large)
-                    .padding(bottom = FluxUI.Space.medium),
-                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium),
+                    .padding(top = Design.Space.large)
+                    .padding(bottom = Design.Space.medium),
+                verticalArrangement = Arrangement.spacedBy(Design.Space.medium),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 

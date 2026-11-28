@@ -22,11 +22,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
 import com.mskd.flux.R
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.modal.dialog.FluxDialog
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
 import org.acra.dialog.CrashReportDialogHelper
 
 class CrashDialogActivity : FragmentActivity() {
@@ -94,7 +94,7 @@ fun CrashDialogContent(
 
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
+                verticalArrangement = Arrangement.spacedBy(Design.Space.medium)
             ) {
 
                 Text.Content.Body(stringResource(R.string.acra_dialog_message))

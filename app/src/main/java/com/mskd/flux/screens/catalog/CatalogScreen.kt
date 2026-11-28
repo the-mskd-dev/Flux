@@ -67,15 +67,15 @@ import com.mskd.flux.screens.catalog.composable.viewMode.CatalogViewModeSheet
 import com.mskd.flux.screens.catalog.composable.viewMode.catalogViewModeGenre
 import com.mskd.flux.screens.catalog.composable.viewMode.catalogViewModeGrid
 import com.mskd.flux.screens.catalog.composable.viewMode.catalogViewModeType
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.FluxThemePreview
+import com.mskd.flux.ui.LocalBottomBarPadding
 import com.mskd.flux.ui.blurBackground
 import com.mskd.flux.ui.blurForeground
 import com.mskd.flux.ui.components.LoadingScreen
 import com.mskd.flux.ui.components.fluxSafeSystemInsets
 import com.mskd.flux.ui.dimensions.rememberScreenDimensions
-import com.mskd.flux.ui.theme.FluxUI
-import com.mskd.flux.ui.theme.LocalBottomBarPadding
 import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -161,7 +161,7 @@ fun CatalogContent(
     }
 
     val screenDimensions = rememberScreenDimensions()
-    val columns = if (screenDimensions.isLarge) 5 else FluxUI.itemsPerRow.artworks
+    val columns = if (screenDimensions.isLarge) 5 else Design.itemsPerRow.artworks
 
     val density = LocalDensity.current
     val layoutDirection = LocalLayoutDirection.current
@@ -173,8 +173,8 @@ fun CatalogContent(
         contentWindowInsets = fluxSafeSystemInsets
     ) { paddingValues ->
 
-        val startPadding = paddingValues.calculateStartPadding(layoutDirection) + FluxUI.Space.medium
-        val endPadding = paddingValues.calculateEndPadding(layoutDirection) + FluxUI.Space.medium
+        val startPadding = paddingValues.calculateStartPadding(layoutDirection) + Design.Space.medium
+        val endPadding = paddingValues.calculateEndPadding(layoutDirection) + Design.Space.medium
 
         Box(modifier = Modifier.fillMaxSize()) {
 
@@ -203,13 +203,13 @@ fun CatalogContent(
                         .consumeWindowInsets(paddingValues)
                         .graphicsLayer { translationY = offsetY },
                     columns = GridCells.Fixed(columns),
-                    verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
-                    horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
+                    verticalArrangement = Arrangement.spacedBy(Design.Space.small),
+                    horizontalArrangement = Arrangement.spacedBy(Design.Space.small),
                     contentPadding = PaddingValues(
                         start = startPadding,
                         end = endPadding,
                         top = headerHeight,
-                        bottom = maxOf(paddingValues.calculateBottomPadding(), LocalBottomBarPadding.current) + FluxUI.Space.large
+                        bottom = maxOf(paddingValues.calculateBottomPadding(), LocalBottomBarPadding.current) + Design.Space.large
                     ),
                 ) {
 
@@ -243,7 +243,7 @@ fun CatalogContent(
 
                             Column(
                                 modifier = Modifier.fillMaxWidth(),
-                                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
+                                verticalArrangement = Arrangement.spacedBy(Design.Space.medium)
                             ) {
 
                                 CatalogViewMenu(
@@ -293,7 +293,7 @@ fun CatalogContent(
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(top = FluxUI.Space.medium)
+                                .padding(top = Design.Space.medium)
                         ) {
 
                             CatalogMenu(

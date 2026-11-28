@@ -30,12 +30,12 @@ import com.mskd.flux.features.player.presentation.PlayerIntent
 import com.mskd.flux.features.player.presentation.SettingsSheet
 import com.mskd.flux.features.player.ui.PlayerSheetTopBar
 import com.mskd.flux.mockups.PlayerMockups
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.global.BackGesture
 import com.mskd.flux.ui.modal.edgeToEdgeDialogProperties
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.extensions.formatMinSec
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.chapter_number
@@ -52,7 +52,7 @@ fun PlayerChaptersSheet(
     BasicAlertDialog(
         modifier = Modifier
             .safeDrawingPadding()
-            .padding(vertical = FluxUI.Space.large)
+            .padding(vertical = Design.Space.large)
             .clip(AlertDialogDefaults.shape),
         properties = edgeToEdgeDialogProperties(),
         onDismissRequest = { sendIntent(PlayerIntent.ShowSettings(sheet = null)) },
@@ -91,15 +91,15 @@ fun PlayerChaptersSheet(
                 itemsIndexed(chapters) { index, chapter ->
 
                     if (index != 0)
-                        HorizontalDivider(modifier = Modifier.fillMaxWidth().padding(horizontal = FluxUI.Space.medium))
+                        HorizontalDivider(modifier = Modifier.fillMaxWidth().padding(horizontal = Design.Space.medium))
 
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable { sendIntent(PlayerIntent.SelectChapter(chapter = chapter)) }
-                            .padding(horizontal = FluxUI.Space.medium, vertical = FluxUI.Space.medium),
+                            .padding(horizontal = Design.Space.medium, vertical = Design.Space.medium),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
+                        horizontalArrangement = Arrangement.spacedBy(Design.Space.small)
                     ) {
 
                         Text.List.Title(

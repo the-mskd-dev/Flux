@@ -14,9 +14,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.components.buttons.FluxTextButton
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.oups_an_error_occured
 import flux.shared.generated.resources.retry
@@ -46,7 +46,7 @@ fun ErrorScreen(
         ) {
 
             Column(
-                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium),
+                verticalArrangement = Arrangement.spacedBy(Design.Space.medium),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 

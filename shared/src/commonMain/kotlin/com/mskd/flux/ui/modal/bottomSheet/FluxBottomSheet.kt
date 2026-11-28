@@ -1,8 +1,6 @@
 package com.mskd.flux.ui.modal.bottomSheet
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
@@ -37,14 +35,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.fillMaxWidthWithLimit
 import com.mskd.flux.ui.global.BackGesture
 import com.mskd.flux.ui.modal.LocalModalHost
 import com.mskd.flux.ui.modal.ModalEntry
 import com.mskd.flux.ui.modal.ModalHostState
 import com.mskd.flux.ui.modal.scrim.ScrimBackground
+import com.mskd.flux.ui.motion.Motion
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
 import dev.chrisbanes.haze.HazeState
 
 
@@ -88,13 +87,10 @@ fun FluxBottomSheetHost(
                         .union(WindowInsets.displayCutout)
                         .only(WindowInsetsSides.Horizontal)
                 ),
-            enter = slideInVertically(
-                animationSpec = spring(
-                    dampingRatio = Spring.DampingRatioNoBouncy,
-                    stiffness = Spring.StiffnessMedium
-                )
-            ) { it } + fadeIn(animationSpec = spring(stiffness = Spring.StiffnessMedium)),
-            exit = slideOutVertically { it } + fadeOut()
+            enter = slideInVertically(animationSpec = Motion.defaultEffects()) { it } +
+                fadeIn(animationSpec = Motion.defaultEffects()),
+            exit = slideOutVertically(animationSpec = Motion.fastEffects()) { it } +
+                fadeOut(animationSpec = Motion.fastEffects())
         ) {
             Surface(
                 modifier = Modifier.fillMaxWidthWithLimit(),
@@ -108,13 +104,13 @@ fun FluxBottomSheetHost(
                         .fillMaxWidth()
                         .heightIn(max = maxSheetHeight)
                         .background(MaterialTheme.colorScheme.surfaceContainer),
-                    verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
+                    verticalArrangement = Arrangement.spacedBy(Design.Space.small)
                 ) {
 
                     Text.List.Title(
                         modifier = Modifier
-                            .padding(top = FluxUI.Space.medium)
-                            .padding(horizontal = FluxUI.Space.medium),
+                            .padding(top = Design.Space.medium)
+                            .padding(horizontal = Design.Space.medium),
                         text = entry?.title,
                     )
 
@@ -122,7 +118,7 @@ fun FluxBottomSheetHost(
                         modifier = Modifier
                             .weight(1f, fill = false)
                             .verticalScroll(rememberScrollState()),
-                        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
+                        verticalArrangement = Arrangement.spacedBy(Design.Space.small)
                     ) {
 
                         entry?.content(this)
@@ -130,7 +126,7 @@ fun FluxBottomSheetHost(
                         Spacer(
                             modifier = Modifier
                                 .windowInsetsPadding(WindowInsets.navigationBars.only(WindowInsetsSides.Bottom))
-                                .padding(vertical = FluxUI.Space.medium)
+                                .padding(vertical = Design.Space.medium)
                         )
                     }
 

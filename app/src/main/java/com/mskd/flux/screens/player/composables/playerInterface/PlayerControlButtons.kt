@@ -14,11 +14,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import com.mskd.flux.features.player.presentation.PlayerIntent
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxPreview
-import com.mskd.flux.ui.expressive.ExpressiveRow
-import com.mskd.flux.ui.expressive.expressivePress
+import com.mskd.flux.ui.components.containers.ExpressiveRow
+import com.mskd.flux.ui.motion.expressivePress
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_forward_10
 import flux.shared.generated.resources.ic_forward_30
@@ -43,7 +43,7 @@ fun PlayerControlButtons(
 
     ExpressiveRow(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.medium),
+        horizontalArrangement = Arrangement.spacedBy(Design.Space.medium),
         verticalAlignment = Alignment.CenterVertically
     ) {
 

@@ -1,8 +1,6 @@
 package com.mskd.flux.ui.modal.dialog
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
@@ -30,14 +28,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.fillMaxWidthWithLimit
 import com.mskd.flux.ui.global.BackGesture
 import com.mskd.flux.ui.modal.LocalModalHost
 import com.mskd.flux.ui.modal.ModalEntry
 import com.mskd.flux.ui.modal.ModalHostState
 import com.mskd.flux.ui.modal.scrim.ScrimBackground
+import com.mskd.flux.ui.motion.Motion
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
 import dev.chrisbanes.haze.HazeState
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.cancel
@@ -75,15 +74,12 @@ fun FluxDialogHost(
             modifier = Modifier
                 .align(Alignment.Center)
                 .safeDrawingPadding()
-                .padding(horizontal = FluxUI.Space.large, vertical = FluxUI.Space.medium)
+                .padding(horizontal = Design.Space.large, vertical = Design.Space.medium)
             ,
-            enter = scaleIn(
-                animationSpec = spring(
-                    dampingRatio = Spring.DampingRatioLowBouncy,
-                    stiffness = Spring.StiffnessMedium
-                )
-            ) + fadeIn(animationSpec = spring(stiffness = Spring.StiffnessMedium)),
-            exit = fadeOut() + scaleOut()
+            enter = scaleIn(animationSpec = Motion.defaultSpatial()) +
+                fadeIn(animationSpec = Motion.defaultEffects()),
+            exit = scaleOut(animationSpec = Motion.fastSpatial()) +
+                fadeOut(animationSpec = Motion.fastEffects())
         ) {
 
             Surface(
@@ -99,13 +95,13 @@ fun FluxDialogHost(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(MaterialTheme.colorScheme.surfaceContainer)
-                        .padding(horizontal = FluxUI.Space.large),
+                        .padding(horizontal = Design.Space.large),
                 ) {
 
                     Text.Content.Title(
                         modifier = Modifier.padding(
-                            top = FluxUI.Space.large,
-                            bottom = FluxUI.Space.medium
+                            top = Design.Space.large,
+                            bottom = Design.Space.medium
                         ),
                         text = entry?.title,
                     )
@@ -116,9 +112,9 @@ fun FluxDialogHost(
 
                     Row(
                         modifier = Modifier
-                            .padding(vertical = FluxUI.Space.large)
+                            .padding(vertical = Design.Space.large)
                             .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small, Alignment.End),
+                        horizontalArrangement = Arrangement.spacedBy(Design.Space.small, Alignment.End),
                     ) {
 
                         entry?.let {

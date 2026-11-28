@@ -9,9 +9,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.empty_catalog
 import flux.shared.generated.resources.empty_catalog_desc
@@ -22,11 +22,11 @@ import org.jetbrains.compose.resources.stringResource
 fun CatalogEmptyContent(sendIntent: (CatalogIntent) -> Unit) {
 
     Column(
-        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
+        verticalArrangement = Arrangement.spacedBy(Design.Space.medium)
     ) {
 
         Text.Content.Title(
-            modifier = Modifier.padding(top = FluxUI.Space.medium),
+            modifier = Modifier.padding(top = Design.Space.medium),
             text = stringResource(Res.string.empty_catalog)
         )
 
@@ -36,7 +36,7 @@ fun CatalogEmptyContent(sendIntent: (CatalogIntent) -> Unit) {
 
         TextButton(
             onClick = { sendIntent(CatalogIntent.OnHowToClick) },
-            contentPadding = PaddingValues(vertical = FluxUI.Space.medium)
+            contentPadding = PaddingValues(vertical = Design.Space.medium)
         ) {
             Text.Button.Default(text = stringResource(Res.string.how_to_name_files),)
         }

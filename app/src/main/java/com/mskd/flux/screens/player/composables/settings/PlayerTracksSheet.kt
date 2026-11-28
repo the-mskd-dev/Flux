@@ -29,12 +29,12 @@ import com.mskd.flux.features.player.presentation.PlayerIntent
 import com.mskd.flux.features.player.presentation.SettingsSheet
 import com.mskd.flux.features.player.ui.PlayerSheetTopBar
 import com.mskd.flux.mockups.PlayerMockups
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.global.BackGesture
 import com.mskd.flux.ui.modal.edgeToEdgeDialogProperties
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.audio_tracks
 import flux.shared.generated.resources.by_default
@@ -56,7 +56,7 @@ fun PlayerTracksSheet(
     BasicAlertDialog(
         modifier = Modifier
             .safeDrawingPadding()
-            .padding(vertical = FluxUI.Space.large)
+            .padding(vertical = Design.Space.large)
             .clip(AlertDialogDefaults.shape),
         properties = edgeToEdgeDialogProperties(),
         onDismissRequest = { sendIntent(PlayerIntent.ShowSettings(sheet = null)) },
@@ -95,7 +95,7 @@ fun PlayerTracksSheet(
                 itemsIndexed(tracks.filter { it.type == type }) { index, track ->
 
                     if (index != 0)
-                        HorizontalDivider(modifier = Modifier.fillMaxWidth().padding(horizontal = FluxUI.Space.medium))
+                        HorizontalDivider(modifier = Modifier.fillMaxWidth().padding(horizontal = Design.Space.medium))
 
                     Row(
                         modifier = Modifier
@@ -104,7 +104,7 @@ fun PlayerTracksSheet(
                                 sendIntent(PlayerIntent.SelectTrack(track = track))
                                 sendIntent(PlayerIntent.ShowSettings(sheet = null))
                             }
-                            .padding(horizontal = FluxUI.Space.medium, vertical = FluxUI.Space.medium),
+                            .padding(horizontal = Design.Space.medium, vertical = Design.Space.medium),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {

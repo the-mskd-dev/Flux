@@ -33,11 +33,11 @@ import com.mskd.flux.features.show.presentation.ShowIntent
 import com.mskd.flux.features.show.ui.composables.SeasonItem
 import com.mskd.flux.mockups.MediaMockups
 import com.mskd.flux.mockups.PeopleMockup
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.LandscapePreview
 import com.mskd.flux.ui.plus
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.seasons
 import org.jetbrains.compose.resources.stringResource
@@ -71,11 +71,11 @@ fun ShowContentLarge(
                 .weight(.5f)
                 .consumeWindowInsets(scaffoldInnerPadding),
             columns = GridCells.Fixed(3),
-            horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
+            horizontalArrangement = Arrangement.spacedBy(Design.Space.small),
+            verticalArrangement = Arrangement.spacedBy(Design.Space.small),
             contentPadding = scaffoldInnerPadding.plus(
                 includeStart = false,
-                horizontal = FluxUI.Space.medium,
+                horizontal = Design.Space.medium,
             )
         ) {
 
@@ -83,7 +83,7 @@ fun ShowContentLarge(
 
                 ArtworkTitle(
                     modifier = Modifier
-                        .padding(FluxUI.Space.medium)
+                        .padding(Design.Space.medium)
                         .wrapContentWidth(),
                     artwork = fullShow.artwork,
                 )
@@ -91,13 +91,13 @@ fun ShowContentLarge(
             }
 
             item(span = { GridItemSpan(maxLineSpan) }) {
-                Spacer(modifier = Modifier.height(FluxUI.Space.large))
+                Spacer(modifier = Modifier.height(Design.Space.large))
             }
 
             item(span = { GridItemSpan(maxLineSpan) }) {
 
                 ArtworkOverview(
-                    modifier = Modifier.padding(horizontal = FluxUI.Space.medium),
+                    modifier = Modifier.padding(horizontal = Design.Space.medium),
                     overview = ArtworkOverviewContent.ShowOverview(
                         description = fullShow.artwork.description.ifEmpty { null },
                         genres = fullShow.genres,
@@ -107,7 +107,7 @@ fun ShowContentLarge(
             }
 
             item(span = { GridItemSpan(maxLineSpan) }) {
-                Spacer(modifier = Modifier.height(FluxUI.Space.large))
+                Spacer(modifier = Modifier.height(Design.Space.large))
             }
 
             item(span = { GridItemSpan(maxLineSpan) }) {
@@ -115,7 +115,7 @@ fun ShowContentLarge(
                 Text.Content.Title(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = FluxUI.Space.medium),
+                        .padding(horizontal = Design.Space.medium),
                     text = stringResource(Res.string.seasons),
                     color = MaterialTheme.colorScheme.onBackground
                 )
@@ -123,7 +123,7 @@ fun ShowContentLarge(
             }
 
             item(span = { GridItemSpan(maxLineSpan) }) {
-                Spacer(modifier = Modifier.height(FluxUI.Space.medium))
+                Spacer(modifier = Modifier.height(Design.Space.medium))
             }
 
             items(
@@ -139,7 +139,7 @@ fun ShowContentLarge(
                 ) {
 
                     SeasonItem(
-                        modifier = Modifier.width(FluxUI.Dimension.itemWidth),
+                        modifier = Modifier.width(Design.Dimension.itemWidth),
                         season = season,
                         episodes = fullShow.episodes.filter { it.season == season.season },
                         onClick = {

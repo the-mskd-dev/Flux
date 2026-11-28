@@ -23,10 +23,10 @@ import androidx.compose.ui.unit.dp
 import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.add_source
 import flux.shared.generated.resources.add_token
@@ -49,8 +49,8 @@ fun CatalogMenu(
 
     FlowRow(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
-        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
+        horizontalArrangement = Arrangement.spacedBy(Design.Space.small),
+        verticalArrangement = Arrangement.spacedBy(Design.Space.small)
     ) {
 
         if (artworks.any { it.isUnknown }) {
@@ -105,7 +105,7 @@ fun CatalogMenuItem(
     Surface(
         modifier = Modifier.width(200.dp),
         shape = CircleShape,
-        shadowElevation = FluxUI.Elevation.itemShadow,
+        shadowElevation = Design.Elevation.itemShadow,
         color = MaterialTheme.colorScheme.secondaryContainer,
         onClick = onClick
     ) {
@@ -113,7 +113,7 @@ fun CatalogMenuItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = FluxUI.Space.medium, vertical = 12.dp),
+                .padding(horizontal = Design.Space.medium, vertical = 12.dp),
             horizontalArrangement = AssistChipDefaults.horizontalArrangement(),
             verticalAlignment = Alignment.CenterVertically,
         ) {

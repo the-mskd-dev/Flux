@@ -15,9 +15,9 @@ import com.mskd.flux.features.privateFolder.ui.composables.PinTextField
 import com.mskd.flux.features.settings.presentation.PrivateFolderPinDialog
 import com.mskd.flux.features.settings.presentation.SettingsIntent
 import com.mskd.flux.features.settings.presentation.SettingsUiState
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.modal.dialog.FluxDialog
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.pin_create_subtitle
 import flux.shared.generated.resources.pin_create_title
@@ -80,7 +80,7 @@ fun SettingsPinDialog(
         content = {
 
             Column(
-                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
+                verticalArrangement = Arrangement.spacedBy(Design.Space.small)
             ) {
 
                 Text.Content.Body(text = subtitle)

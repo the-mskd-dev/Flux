@@ -6,9 +6,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.image.FluxImage
 import com.mskd.flux.ui.image.rememberIconPlaceholderPainter
-import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.extensions.tmdbImage
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_person
@@ -23,9 +23,9 @@ fun PersonPicture(
 ) {
 
     Surface(
-        modifier = modifier.aspectRatio(FluxUI.Dimension.itemRatio),
-        shape = FluxUI.shapes.corners,
-        shadowElevation = FluxUI.Elevation.itemShadow,
+        modifier = modifier.aspectRatio(Design.Dimension.itemRatio),
+        shape = Design.shapes.corners,
+        shadowElevation = Design.Elevation.itemShadow,
         onClick = onClick
     ) {
 

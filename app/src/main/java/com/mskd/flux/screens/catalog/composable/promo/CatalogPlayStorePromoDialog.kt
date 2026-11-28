@@ -18,9 +18,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.features.catalog.presentation.CatalogIntent
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.modal.dialog.FluxDialog
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.close
 import flux.shared.generated.resources.ic_playstore
@@ -56,7 +56,7 @@ fun CatalogPlayStorePromoDialog(
                 modifier = Modifier
                     .fillMaxWidth()
                     .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
+                verticalArrangement = Arrangement.spacedBy(Design.Space.medium)
             ) {
 
                 Text.Content.Body(text = stringResource(Res.string.play_store_promo_thanks_intro))
@@ -70,7 +70,7 @@ fun CatalogPlayStorePromoDialog(
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small)
+                        horizontalArrangement = Arrangement.spacedBy(Design.Space.small)
                     ) {
                         Icon(
                             modifier = Modifier.size(20.dp),

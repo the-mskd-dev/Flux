@@ -15,13 +15,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.AnnotatedString
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxPreview
 import com.mskd.flux.ui.components.FluxScaffold
 import com.mskd.flux.ui.scaffoldPadding
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.text.buildLinkedString
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.Constants
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.about
@@ -56,14 +56,14 @@ fun AboutScreen(onBack: () -> Unit) {
                 .consumeWindowInsets(innerPadding)
                 .verticalScroll(rememberScrollState())
                 .scaffoldPadding(innerPadding),
-            verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
+            verticalArrangement = Arrangement.spacedBy(Design.Space.medium)
         ) {
 
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = FluxUI.Space.medium),
-                verticalArrangement = Arrangement.spacedBy(FluxUI.Space.large),
+                    .padding(horizontal = Design.Space.medium),
+                verticalArrangement = Arrangement.spacedBy(Design.Space.large),
                 horizontalAlignment = Alignment.Start
             ) {
 
@@ -115,11 +115,11 @@ fun AboutSection(
 ) {
     Column(
         modifier = Modifier
-            .clip(FluxUI.shapes.corners)
+            .clip(Design.shapes.corners)
             .background(MaterialTheme.colorScheme.surfaceContainer)
             .fillMaxWidth()
-            .padding(all = FluxUI.Space.medium),
-        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
+            .padding(all = Design.Space.medium),
+        verticalArrangement = Arrangement.spacedBy(Design.Space.medium)
     ) {
         Text.Content.Title(text = title)
         Text.Content.Body(text = content)
@@ -133,11 +133,11 @@ fun AboutSectionWithLinks(
 ) {
     Column(
         modifier = Modifier
-            .clip(FluxUI.shapes.corners)
+            .clip(Design.shapes.corners)
             .background(MaterialTheme.colorScheme.surfaceContainer)
             .fillMaxWidth()
-            .padding(all = FluxUI.Space.medium),
-        verticalArrangement = Arrangement.spacedBy(FluxUI.Space.medium)
+            .padding(all = Design.Space.medium),
+        verticalArrangement = Arrangement.spacedBy(Design.Space.medium)
     ) {
         Text.Content.Title(text = title)
         Text.Annotated(

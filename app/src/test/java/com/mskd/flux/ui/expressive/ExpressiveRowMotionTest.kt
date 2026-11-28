@@ -1,6 +1,13 @@
 package com.mskd.flux.ui.expressive
 
 import androidx.compose.runtime.MonotonicFrameClock
+import com.mskd.flux.ui.components.containers.ExpressiveRef
+import com.mskd.flux.ui.components.containers.ExpressiveRowMotion
+import com.mskd.flux.ui.components.containers.SideBounceNeighbors
+import com.mskd.flux.ui.components.containers.computeNetHoldPullDp
+import com.mskd.flux.ui.components.containers.springImpulseVelocity
+import com.mskd.flux.ui.motion.FluxSpring
+import com.mskd.flux.ui.motion.Motion
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.floats.plusOrMinus
 import io.kotest.matchers.floats.shouldBeLessThan
@@ -35,14 +42,34 @@ class ExpressiveRowMotionTest : FunSpec({
         val forward = ExpressiveRef()
 
         val rewindHeld = listOf(SideBounceNeighbors(right = play))
-        computeNetHoldPullDp(play, heldRefs = emptySet(), heldSources = rewindHeld, pullDp = 2.5f) shouldBe -2.5f
+        computeNetHoldPullDp(
+            play,
+            heldRefs = emptySet(),
+            heldSources = rewindHeld,
+            pullDp = 2.5f
+        ) shouldBe -2.5f
 
         val forwardHeld = listOf(SideBounceNeighbors(left = play))
-        computeNetHoldPullDp(play, heldRefs = emptySet(), heldSources = forwardHeld, pullDp = 2.5f) shouldBe 2.5f
+        computeNetHoldPullDp(
+            play,
+            heldRefs = emptySet(),
+            heldSources = forwardHeld,
+            pullDp = 2.5f
+        ) shouldBe 2.5f
 
         val playHeld = listOf(SideBounceNeighbors(left = rewind, right = forward))
-        computeNetHoldPullDp(rewind, heldRefs = emptySet(), heldSources = playHeld, pullDp = 2.5f) shouldBe 2.5f
-        computeNetHoldPullDp(forward, heldRefs = emptySet(), heldSources = playHeld, pullDp = 2.5f) shouldBe -2.5f
+        computeNetHoldPullDp(
+            rewind,
+            heldRefs = emptySet(),
+            heldSources = playHeld,
+            pullDp = 2.5f
+        ) shouldBe 2.5f
+        computeNetHoldPullDp(
+            forward,
+            heldRefs = emptySet(),
+            heldSources = playHeld,
+            pullDp = 2.5f
+        ) shouldBe -2.5f
     }
 
     test("an element is not pulled by unrelated sources or when it is itself held") {
@@ -50,8 +77,18 @@ class ExpressiveRowMotionTest : FunSpec({
         val forward = ExpressiveRef()
 
         val rewindHeld = listOf(SideBounceNeighbors(right = play))
-        computeNetHoldPullDp(forward, heldRefs = emptySet(), heldSources = rewindHeld, pullDp = 2.5f) shouldBe 0f
-        computeNetHoldPullDp(play, heldRefs = setOf(play), heldSources = rewindHeld, pullDp = 2.5f) shouldBe 0f
+        computeNetHoldPullDp(
+            forward,
+            heldRefs = emptySet(),
+            heldSources = rewindHeld,
+            pullDp = 2.5f
+        ) shouldBe 0f
+        computeNetHoldPullDp(
+            play,
+            heldRefs = setOf(play),
+            heldSources = rewindHeld,
+            pullDp = 2.5f
+        ) shouldBe 0f
     }
 
     test("opposite pulls from both neighbors cancel out") {
@@ -60,7 +97,12 @@ class ExpressiveRowMotionTest : FunSpec({
             SideBounceNeighbors(right = play),
             SideBounceNeighbors(left = play)
         )
-        computeNetHoldPullDp(play, heldRefs = emptySet(), heldSources = bothSidesHeld, pullDp = 2.5f) shouldBe 0f
+        computeNetHoldPullDp(
+            play,
+            heldRefs = emptySet(),
+            heldSources = bothSidesHeld,
+            pullDp = 2.5f
+        ) shouldBe 0f
     }
 
     // Independent check: integrate the spring step by step and read the extreme it reaches from rest.
@@ -161,19 +203,75 @@ class ExpressiveRowMotionTest : FunSpec({
             val missingLeft = ExpressiveRef()
             val missingRight = ExpressiveRef()
             val source = Any()
-            motion.onSourcePress(source, SideBounceNeighbors(left = missingLeft, right = missingRight))
+            motion.onSourcePress(source,
+                SideBounceNeighbors(left = missingLeft, right = missingRight)
+            )
             motion.onSourceRelease(source)
             advanceTimeBy(100)
             runCurrent()
         }
     }
+
+    test("triggerSideBounce rebounds target after propagation delay and ignores unregistered refs") {
+        withMotionScope { motion ->
+            val content = ExpressiveRef()
+            val unregistered = ExpressiveRef()
+            val contentState = motion.stateFor(content)
+            motion.retainRef(content)
+
+            motion.triggerSideBounce(SideBounceNeighbors(left = unregistered, right = content))
+            advanceTimeBy(30)
+            runCurrent()
+            contentState.offsetDp.velocity shouldBe 0f
+            contentState.scaleDelta.velocity shouldBe 0f
+
+            advanceTimeBy(20)
+            runCurrent()
+            (contentState.offsetDp.velocity > 0f) shouldBe true
+            contentState.scaleDelta.velocity shouldBeLessThan 0f
+        }
+    }
+
+    test("custom neighborSpring drives rebound velocity calculation with its parameters") {
+        val customSpring = FluxSpring(dampingRatio = 0.25f, stiffness = 900f)
+
+        fun measureReboundVelocity(spring: FluxSpring): Float {
+            var velocity = 0f
+            withMotionScope(neighborSpring = spring) { motion ->
+                val play = ExpressiveRef()
+                val playState = motion.stateFor(play)
+                motion.retainRef(play)
+
+                val source = Any()
+                motion.onSourcePress(source, SideBounceNeighbors(right = play))
+                advanceTimeBy(30)
+                runCurrent()
+                motion.onSourceRelease(source)
+                advanceTimeBy(50)
+                runCurrent()
+
+                velocity = playState.offsetDp.velocity
+            }
+            return velocity
+        }
+
+        val customVelocity = measureReboundVelocity(customSpring)
+        val defaultVelocity = measureReboundVelocity(Motion.Expressive.neighborBounce)
+
+        simulatedExtreme(customVelocity, customSpring.dampingRatio, customSpring.stiffness) shouldBe
+            (4.5f plusOrMinus 0.05f)
+        (customVelocity != defaultVelocity) shouldBe true
+    }
 })
 
 @OptIn(ExperimentalCoroutinesApi::class)
-private inline fun withMotionScope(block: TestScope.(ExpressiveRowMotion) -> Unit) {
+private inline fun withMotionScope(
+    neighborSpring: FluxSpring = Motion.Expressive.neighborBounce,
+    block: TestScope.(ExpressiveRowMotion) -> Unit
+) {
     val scope = TestScope(TestMonotonicFrameClock())
     try {
-        scope.block(ExpressiveRowMotion(scope.backgroundScope))
+        scope.block(ExpressiveRowMotion(scope.backgroundScope, neighborSpring))
     } finally {
         scope.cancel()
     }

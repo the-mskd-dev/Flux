@@ -29,10 +29,10 @@ import com.mskd.flux.core.model.artwork.Artwork
 import com.mskd.flux.core.model.artwork.shownLogoPath
 import com.mskd.flux.features.images.domain.LOGO_REQUEST_SIZE
 import com.mskd.flux.mockups.MediaMockups
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxThemePreview
 import com.mskd.flux.ui.PortraitPreview
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.extensions.tmdbLogo
 
 /**
@@ -101,7 +101,7 @@ private fun ArtworkTitlePreview(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(FluxUI.Space.medium),
+                    .padding(Design.Space.medium),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 ArtworkTitle(artwork = artwork)

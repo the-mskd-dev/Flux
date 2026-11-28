@@ -22,9 +22,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import com.mskd.flux.core.model.artwork.Episode
 import com.mskd.flux.core.model.artwork.Media
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.components.buttons.SmallButton
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.episode
 import flux.shared.generated.resources.season
@@ -42,8 +42,8 @@ fun PlayerTopBar(
         modifier = modifier
             .windowInsetsPadding(WindowInsets.systemBars.union(WindowInsets.displayCutout).only(WindowInsetsSides.Top + WindowInsetsSides.Start))
             .fillMaxWidth()
-            .padding(horizontal = FluxUI.Space.medium),
-        horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.small),
+            .padding(horizontal = Design.Space.medium),
+        horizontalArrangement = Arrangement.spacedBy(Design.Space.small),
         verticalAlignment = Alignment.CenterVertically
     ) {
 

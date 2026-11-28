@@ -35,13 +35,13 @@ import androidx.compose.ui.unit.dp
 import com.mskd.flux.features.player.presentation.PlayerIntent
 import com.mskd.flux.features.player.presentation.SettingsSheet
 import com.mskd.flux.features.player.ui.PlayerSheetTopBar
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.FluxPreview
-import com.mskd.flux.ui.expressive.expressivePress
 import com.mskd.flux.ui.global.BackGesture
 import com.mskd.flux.ui.modal.edgeToEdgeDialogProperties
+import com.mskd.flux.ui.motion.expressivePress
 import com.mskd.flux.ui.text.Text
 import com.mskd.flux.ui.theme.FluxTheme
-import com.mskd.flux.ui.theme.FluxUI
 import com.mskd.flux.utils.Constants
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.ic_add
@@ -64,7 +64,7 @@ fun PlayerSubtitleDelaySheet(
     BasicAlertDialog(
         modifier = Modifier
             .safeDrawingPadding()
-            .padding(vertical = FluxUI.Space.large)
+            .padding(vertical = Design.Space.large)
             .clip(AlertDialogDefaults.shape),
         properties = edgeToEdgeDialogProperties(),
         onDismissRequest = { sendIntent(PlayerIntent.ShowSettings(sheet = null)) },
@@ -91,9 +91,9 @@ fun PlayerSubtitleDelaySheet(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(FluxUI.Space.large),
+                        .padding(Design.Space.large),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(FluxUI.Space.medium, Alignment.CenterHorizontally)
+                    horizontalArrangement = Arrangement.spacedBy(Design.Space.medium, Alignment.CenterHorizontally)
                 ) {
 
                     StepButton(

@@ -10,11 +10,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.mskd.flux.core.model.artwork.Episode
+import com.mskd.flux.ui.Design
 import com.mskd.flux.ui.media.episode.EpisodeActions
 import com.mskd.flux.ui.media.episode.EpisodeDropDownMenu
 import com.mskd.flux.ui.media.episode.EpisodeItem
 import com.mskd.flux.ui.text.Text
-import com.mskd.flux.ui.theme.FluxUI
 import flux.shared.generated.resources.Res
 import flux.shared.generated.resources.episodes
 import org.jetbrains.compose.resources.stringResource
@@ -37,7 +37,7 @@ fun LazyListScope.episodeList(
 
     item {
 
-        Column(verticalArrangement = Arrangement.spacedBy(FluxUI.Space.small)) {
+        Column(verticalArrangement = Arrangement.spacedBy(Design.Space.small)) {
 
             Text.Content.Title(
                 modifier = Modifier.fillMaxWidth(),
@@ -50,7 +50,7 @@ fun LazyListScope.episodeList(
     }
 
     item {
-        Spacer(modifier = Modifier.height(FluxUI.Space.medium))
+        Spacer(modifier = Modifier.height(Design.Space.medium))
     }
 
     items(
@@ -78,7 +78,7 @@ fun LazyListScope.episodeList(
             }
         )
 
-        Spacer(modifier = Modifier.height(FluxUI.Space.small))
+        Spacer(modifier = Modifier.height(Design.Space.small))
 
     }
 

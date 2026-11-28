@@ -212,6 +212,26 @@ class ExpressiveRowMotionTest : FunSpec({
         }
     }
 
+    test("triggerSideBounce rebounds target after propagation delay and ignores unregistered refs") {
+        withMotionScope { motion ->
+            val content = ExpressiveRef()
+            val unregistered = ExpressiveRef()
+            val contentState = motion.stateFor(content)
+            motion.retainRef(content)
+
+            motion.triggerSideBounce(SideBounceNeighbors(left = unregistered, right = content))
+            advanceTimeBy(30)
+            runCurrent()
+            contentState.offsetDp.velocity shouldBe 0f
+            contentState.scaleDelta.velocity shouldBe 0f
+
+            advanceTimeBy(20)
+            runCurrent()
+            (contentState.offsetDp.velocity > 0f) shouldBe true
+            contentState.scaleDelta.velocity shouldBeLessThan 0f
+        }
+    }
+
     test("custom neighborSpring drives rebound velocity calculation with its parameters") {
         val customSpring = FluxSpring(dampingRatio = 0.25f, stiffness = 900f)
 

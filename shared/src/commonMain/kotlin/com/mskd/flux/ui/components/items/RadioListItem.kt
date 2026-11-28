@@ -8,7 +8,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -28,7 +27,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.ui.Design
+import com.mskd.flux.ui.components.containers.ExpressiveRow
 import com.mskd.flux.ui.motion.Motion
+import com.mskd.flux.ui.motion.expressiveBounceOnChange
 import com.mskd.flux.ui.text.Text
 
 @Composable
@@ -45,7 +46,7 @@ fun RadioListItem(
         label = "RadioListItemContainerColor"
     )
 
-    Row(
+    ExpressiveRow(
         modifier = modifier
             .fillMaxWidth()
             .clip(CircleShape)
@@ -56,10 +57,27 @@ fun RadioListItem(
         horizontalArrangement = Arrangement.spacedBy(Design.Space.small)
     ) {
 
-        RadioChip(selected = selected)
+        val content = createRef()
+
+        RadioChip(
+            modifier = Modifier
+                .expressiveBounceOnChange(
+                    state = selected,
+                    enabled = selected,
+                    animationSpec = Motion.press.toSpec()
+                )
+                .expressiveSideBounceOnChange(
+                    state = selected,
+                    enabled = selected,
+                    right = content
+                ),
+            selected = selected
+        )
 
         Text.Adaptive(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier
+                .expressiveSideBounce(ref = content)
+                .weight(1f),
             text = text,
             style = Text.Style.listBody().copy(fontWeight = if (selected) FontWeight.W500 else FontWeight.Normal)
         )
@@ -69,7 +87,10 @@ fun RadioListItem(
 }
 
 @Composable
-fun RadioChip(selected: Boolean) {
+fun RadioChip(
+    modifier: Modifier = Modifier,
+    selected: Boolean
+) {
 
     val circleAnim by animateDpAsState(
         targetValue = if (selected) 8.dp else .5.dp,
@@ -78,7 +99,7 @@ fun RadioChip(selected: Boolean) {
     )
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .clip(CircleShape)
             .size(24.dp)
             .background(Color.White),

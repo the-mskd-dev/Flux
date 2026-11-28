@@ -160,26 +160,32 @@ fun Modifier.expressivePress(
 }
 
 /**
- * Plays a squish-and-release bounce whenever [state] changes after initial composition.
+ * Plays a squish-and-release bounce whenever [state] changes after initial composition and [enabled] is true.
  *
  * Read in the draw phase only via [graphicsLayer], so the animation does not recompose the caller.
  */
 @Composable
 fun Modifier.expressiveBounceOnChange(
     state: Any?,
+    enabled: Boolean = true,
     pressedScale: Float = PRESS_SCALE,
     animationSpec: FiniteAnimationSpec<Float> = Motion.slowEffects()
 ): Modifier {
     val bounceScale = remember { Animatable(1f) }
     var previousState by remember { mutableStateOf(state) }
+    val currentEnabled by rememberUpdatedState(enabled)
     val currentSpec by rememberUpdatedState(animationSpec)
     val currentPressedScale by rememberUpdatedState(pressedScale)
 
     LaunchedEffect(state) {
         if (state == previousState) return@LaunchedEffect
         previousState = state
-        bounceScale.snapTo(currentPressedScale)
-        bounceScale.animateTo(1f, animationSpec = currentSpec)
+        if (currentEnabled) {
+            bounceScale.snapTo(currentPressedScale)
+            bounceScale.animateTo(1f, animationSpec = currentSpec)
+        } else if (bounceScale.value != 1f) {
+            bounceScale.animateTo(1f, animationSpec = currentSpec)
+        }
     }
 
     return this.graphicsLayer {

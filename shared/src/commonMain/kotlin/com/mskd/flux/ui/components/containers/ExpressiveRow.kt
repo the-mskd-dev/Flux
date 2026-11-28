@@ -9,9 +9,14 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
@@ -178,6 +183,10 @@ class ExpressiveRowMotion(
         holdJobs.remove(sourceId)?.cancel()
         val neighbors = activeSources.remove(sourceId) ?: return
         if (heldSources.remove(sourceId) != null) applyHoldPull()
+        triggerSideBounce(neighbors)
+    }
+
+    fun triggerSideBounce(neighbors: SideBounceNeighbors) {
         scope.launch {
             delay(PROPAGATION_DELAY_MS)
             neighbors.entries().forEach { (ref, direction) -> rebound(ref, direction) }
@@ -250,6 +259,19 @@ interface ExpressiveRowScope : RowScope {
         enabled: Boolean = true,
         interactionSource: InteractionSource? = null
     ): Modifier
+
+    /**
+     * Triggers a neighbor side-bounce whenever [state] changes after initial composition and [enabled] is true.
+     *
+     * Pass [left] and/or [right] to push those neighbors without requiring a pointer press on this element.
+     */
+    @Composable
+    fun Modifier.expressiveSideBounceOnChange(
+        state: Any?,
+        left: ExpressiveRef? = null,
+        right: ExpressiveRef? = null,
+        enabled: Boolean = true
+    ): Modifier
 }
 
 private class ExpressiveRowScopeInstance(
@@ -315,6 +337,30 @@ private class ExpressiveRowScopeInstance(
         } else {
             observed
         }
+    }
+
+    @Composable
+    override fun Modifier.expressiveSideBounceOnChange(
+        state: Any?,
+        left: ExpressiveRef?,
+        right: ExpressiveRef?,
+        enabled: Boolean
+    ): Modifier {
+        if (left == null && right == null) return this
+
+        var previousState by remember { mutableStateOf(state) }
+        val currentEnabled by rememberUpdatedState(enabled)
+        val currentNeighbors by rememberUpdatedState(SideBounceNeighbors(left, right))
+
+        LaunchedEffect(state) {
+            if (state == previousState) return@LaunchedEffect
+            previousState = state
+            if (currentEnabled) {
+                motion.triggerSideBounce(currentNeighbors)
+            }
+        }
+
+        return this
     }
 }
 

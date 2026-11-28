@@ -7,7 +7,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -27,7 +26,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mskd.flux.ui.Design
+import com.mskd.flux.ui.components.containers.ExpressiveRow
 import com.mskd.flux.ui.motion.Motion
+import com.mskd.flux.ui.motion.expressiveBounceOnChange
 import com.mskd.flux.ui.text.Text
 
 @Composable
@@ -38,7 +39,7 @@ fun CheckListItem(
     onClick: () -> Unit
 ) {
 
-    Row(
+    ExpressiveRow(
         modifier = modifier
             .fillMaxWidth()
             .clip(CircleShape)
@@ -48,10 +49,27 @@ fun CheckListItem(
         horizontalArrangement = Arrangement.spacedBy(Design.Space.small)
     ) {
 
-        CheckCase(selected = selected)
+        val content = createRef()
+
+        CheckCase(
+            modifier = Modifier
+                .expressiveBounceOnChange(
+                    state = selected,
+                    enabled = selected,
+                    animationSpec = Motion.press.toSpec()
+                )
+                .expressiveSideBounceOnChange(
+                    state = selected,
+                    enabled = selected,
+                    right = content
+                ),
+            selected = selected
+        )
 
         Text.Adaptive(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier
+                .expressiveSideBounce(ref = content)
+                .weight(1f),
             text = text,
             style = Text.Style.listBody()
         )
@@ -61,7 +79,10 @@ fun CheckListItem(
 }
 
 @Composable
-fun CheckCase(selected: Boolean) {
+fun CheckCase(
+    modifier: Modifier = Modifier,
+    selected: Boolean
+) {
 
     val shape = RoundedCornerShape(percent = 40)
 
@@ -72,7 +93,7 @@ fun CheckCase(selected: Boolean) {
     )
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .clip(shape)
             .size(24.dp)
             .border(
